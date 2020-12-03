@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group
+        android:id="@+id/top_group" android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_home"
+            android:icon="@drawable/ic_drawer_home"
+            android:title="@string/nav_home" />
+    </group>
+    <group
+        android:id="@+id/middle_group" android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_nfc"
+            android:icon="@drawable/ic_drawer_about"
+            android:title="@string/nav_nfc" />
+        <item
+            android:id="@+id/nav_camera"
+            android:icon="@drawable/ic_drawer_home"
+            android:title="@string/nav_camera" />
+        <item
+            android:id="@+id/nav_asset_information"
+            android:icon="@drawable/ic_drawer_home"
+            android:title="@string/nav_asset_information" />
+    </group>
+    <group
+        android:id="@+id/bottom_group" android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_setting"
+            android:icon="@drawable/ic_drawer_about"
+            android:title="@string/nav_setting" />
+        <item
+            android:id="@+id/nav_help"
+            android:icon="@drawable/ic_drawer_home"
+            android:title="@string/nav_help" />
+        <item
+            android:id="@+id/nav_lastsync"
+            android:icon="@drawable/ic_drawer_home"
+            android:title="@string/nav_lastsync" />
+    </group>
+
+</menu>
