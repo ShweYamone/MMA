@@ -28,7 +28,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class HomeFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemClickListener {
+public class HomeFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemSelectedListener {
 
     @BindView(R.id.cvCorrectiveMaintenance)
     CardView cvCorrectiveMaintenance;
@@ -115,32 +115,31 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
                 break;
         }
 
-        initSpinner();
+        spinnerArrAdaper = new ArrayAdapter(this.getContext(), android.R.layout.simple_spinner_item, list);
+        spinnerArrAdaper.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerStatus.setAdapter(spinnerArrAdaper);
+        spinnerStatus.setOnItemSelectedListener(this);
     }
 
     private void showCorrectiveMaintenance() {
-        ivCorrective.setColorFilter(ContextCompat.getColor(this.getContext(), R.color.colorPrimary), android.graphics.PorterDuff.Mode.MULTIPLY);
+        ivCorrective.setColorFilter(ContextCompat.getColor(this.getContext(), R.color.colorPrimary));
         tvCorrective.setTextColor(getResources().getColor(R.color.colorBlack));
 
-        ivPreventive.setColorFilter(ContextCompat.getColor(this.getContext(), R.color.color_edt_grey), android.graphics.PorterDuff.Mode.MULTIPLY);
-        tvPreventive.setTextColor(getResources().getColor(R.color.color_edt_grey_dark));
+        ivPreventive.setColorFilter(ContextCompat.getColor(this.getContext(), R.color.color_grey_stroke_dark));
+        tvPreventive.setTextColor(getResources().getColor(R.color.color_grey_stroke_dark));
         list = new String[]{"ALL", "New", "ACK", "INPRG"};
+
     }
 
     private void showPreventiveMaintenance() {
-        ivPreventive.setColorFilter(ContextCompat.getColor(this.getContext(), R.color.colorPrimary), android.graphics.PorterDuff.Mode.MULTIPLY);
+        ivPreventive.setColorFilter(ContextCompat.getColor(this.getContext(), R.color.colorPrimary));
         tvPreventive.setTextColor(getResources().getColor(R.color.colorBlack));
 
-        ivCorrective.setColorFilter(ContextCompat.getColor(this.getContext(), R.color.color_grey_stroke), android.graphics.PorterDuff.Mode.MULTIPLY);
-        tvCorrective.setTextColor(getResources().getColor(R.color.color_grey_stroke));
+        ivCorrective.setColorFilter(ContextCompat.getColor(this.getContext(), R.color.color_grey_stroke_dark));
+        tvCorrective.setTextColor(getResources().getColor(R.color.color_grey_stroke_dark));
         list = new String[]{"ALL", "New", "INPRG"};
     }
 
-    private void initSpinner() {
-        spinnerArrAdaper = new ArrayAdapter(this.getContext(), android.R.layout.simple_spinner_item, list);
-        spinnerStatus.setAdapter(spinnerArrAdaper);
-        spinnerStatus.setOnItemClickListener(this);
-    }
 
     private void prepareMaintenaceList() {
         MaintenanceInfoModel obj = new MaintenanceInfoModel("xxxx", "APPR", "Faculty", "Rochr Do Ladier Go", "12/4/2020 7:03PM");
@@ -152,7 +151,12 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
     }
 
     @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
 
     }
 }

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.LoginActivity"
+    android:orientation="vertical">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" >
+            <TextView
+                android:id="@+id/toolbar_title"
+                android:text="MMA"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
+                android:layout_gravity="center" />
+        </androidx.appcompat.widget.Toolbar>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <LinearLayout
+        android:layout_margin="@dimen/margin_xlarge"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center">
+        <EditText
+            android:id="@+id/etUserName"
+            android:background="@drawable/bg_et_border_login"
+            android:hint="@string/username"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/edittext_height"
+            android:paddingLeft="@dimen/padding_10"
+            android:drawableLeft="@drawable/login_person"
+            android:drawablePadding="@dimen/padding_10"/>
+        <EditText
+            android:id="@+id/etPassword"
+            android:layout_marginTop="@dimen/margin_normal"
+            android:background="@drawable/bg_et_border_login"
+            android:hint="@string/password"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/edittext_height"
+            android:paddingLeft="@dimen/padding_10"
+            android:drawableLeft="@drawable/login_lock"
+            android:drawablePadding="@dimen/padding_10"/>
+
+        <Button
+            android:id="@+id/btnLogin"
+            android:layout_marginTop="@dimen/margin_xlarge"
+            android:background="@drawable/bg_btn_login"
+            android:text="@string/login"
+            android:textSize="@dimen/txt_size_large"
+            android:textColor="@color/color_edt_grey"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+</LinearLayout>

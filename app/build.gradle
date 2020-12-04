@@ -46,6 +46,8 @@ dependencies {
     implementation 'com.jakewharton:butterknife:10.1.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.1.0'
 
+    //Circular Progressbar
+    implementation 'com.mikhaellopez:circularprogressbar:3.0.3'
 
 
 }

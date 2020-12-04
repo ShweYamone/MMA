@@ -1,4 +1,4 @@
-package com.freelance.solutionhub.mma;
+package com.freelance.solutionhub.mma.activity;
 
 
 import android.os.Bundle;
@@ -19,6 +19,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.freelance.solutionhub.mma.R;
 import com.freelance.solutionhub.mma.fragment.HomeFragment;
 import com.google.android.material.navigation.NavigationView;
 
@@ -41,10 +42,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void setupToolbar() {
         Toolbar toolbar = findViewById(R.id.toolbar);
-        TextView mTitle = toolbar.findViewById(R.id.toolbar_title);
-
-        setSupportActionBar(toolbar);
-        mTitle.setText(toolbar.getTitle());
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 

@@ -15,6 +15,19 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
+    <!-- Login Activity-->
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="login">login</string>
+
+    <!-- NFC Reading -->
+    <string name="ready_to_scan">Ready To Scan</string>
+    <string name="hold_ur_phone_near_nfc">Hold your phone near the NFC tag.</string>
+    <string name="cancel">cancel</string>
+
+    <!-- Loading -->
+    <string name="checking_with_backend">Checking with backend.</string>
+    <string name="wait">Please wait....</string>
     <!-- MMA value for step-1 -->
     <string name="mso_information">MSO Information</string>
     <string name="mso_number">MSO Number:</string>
@@ -73,7 +86,7 @@
     <string name="third_party_company_name">3rd Party Company Name:</string>
     <string name="third_party_contractor_name">3rd Party Contractor Name:</string>
     <string name="third_party_contractor_no">3rd Party Contractor No:</string>
-    
+
     <!-- MMA value for step-3 -->
     <array name="weather">
         <item name="sunny">Sunny</item>

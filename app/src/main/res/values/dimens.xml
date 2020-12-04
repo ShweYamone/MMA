@@ -49,7 +49,7 @@
     <dimen name="placeholderImage">60dp</dimen>
     <dimen name="placeholderTextHeight">8dp</dimen>
     <dimen name="padding_10">10dp</dimen>
-
+    <dimen name="padding_8">8dp</dimen>
     <dimen name="padding_4">4dp</dimen>
 
     <dimen name="placeholder_width">105dp</dimen>
