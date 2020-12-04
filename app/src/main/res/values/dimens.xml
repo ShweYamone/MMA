@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+
+    <dimen name="txt_size_xxx_small">6sp</dimen>
+    <dimen name="txt_size_xx_small">8sp</dimen>
+    <dimen name="txt_size_ex_small">10sp</dimen>
+    <dimen name="txt_size_small">12sp</dimen>
+    <dimen name="txt_size_normal">14sp</dimen>
+    <dimen name="txt_size_large">16sp</dimen>
+    <dimen name="txt_size_ex_large">20sp</dimen>
+    <dimen name="txt_size_xx_large">30sp</dimen>
+    <dimen name="txt_size_x_large">20sp</dimen>
+    <dimen name="txt_size_xxx_large">35sp</dimen>
+
+
+    <dimen name="margin_xxsmall">1dp</dimen>
+    <dimen name="margin_xsmall">3dp</dimen>
+    <dimen name="margin_small">8dp</dimen>
+    <dimen name="margin_normal">16dp</dimen>
+    <dimen name="margin_large">24dp</dimen>
+    <dimen name="margin_xlarge">32dp</dimen>
+    <dimen name="margin_xxlarge">64dp</dimen>
+    <dimen name="margin_xxxlarge">86dp</dimen>
+    <dimen name="margin_xxxxlarge">110dp</dimen>
+
+    <dimen name="fab_size_normal">70dp</dimen>
+
+    <dimen name="edittext_height">46dp</dimen>
+
+    <dimen name="chat_edittxt_height">43dp</dimen>
+
+
+    <dimen name="card_corner_radius">5dp</dimen>
+
+    <dimen name="card_corner_large">10dp</dimen>
+
+
+    <dimen name="button_radius">30dp</dimen>
+
+    <dimen name="chat_button_radius">13dp</dimen>
+    <dimen name="card_elevation">10dp</dimen>
+
+    <dimen name="margin_bottom_navigation">55dp</dimen>
+
+    <dimen name="activityPadding">16dp</dimen>
+    <dimen name="placeholderImage">60dp</dimen>
+    <dimen name="placeholderTextHeight">8dp</dimen>
+    <dimen name="padding_10">10dp</dimen>
+
+    <dimen name="padding_4">4dp</dimen>
+
+    <dimen name="placeholder_width">105dp</dimen>
+    <dimen name="placeholder_height">170dp</dimen>
+
+
+    <dimen name="card_margin">8dp</dimen>
+    <dimen name="movie_poster_height">150dp</dimen>
+
+    <dimen name="searchview_corner">10dp</dimen>
+
+
+    <dimen name="bottom_navigation_icon_size" tools:override="true">27dp</dimen>
+
+    <dimen name="searchview_radius">3dp</dimen>
+
+    <dimen name="et_radius">6dp</dimen>
+
+
+
+    <dimen name="home_list_width">110dp</dimen>
+    <dimen name="home_list_hight">190dp</dimen>
+
+    <dimen name="layout_button_height">46dp</dimen>
+
+
+    <dimen name="default_margin">16dp</dimen>
+    <dimen name="drawable_padding">24dp</dimen>
+    <dimen name="text_size">16sp</dimen>
+    <dimen name="normal_padding">16dp</dimen>
+</resources>

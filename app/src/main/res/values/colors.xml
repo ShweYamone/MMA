@@ -5,4 +5,82 @@
     <color name="colorAccent">#D81B60</color>
     <color name="window_background">#FFF5F5F5</color>
     <color name="navigation_item">#4caf50</color>
+
+    <color name="colorWhite">#ffffff</color>
+    <color name="colorBlack">#000000</color>
+    <color name="colorTextColorPrimary">#3C3C3C</color>
+    <color name="colorTextColorSecondary">#A0A0A0</color>
+
+
+    <color name="colorTextLightGrey">#dddddd</color>
+    <color name="colorDefaultBgColor">#fafafa</color>
+    <color name="color_grey_stroke">#d4d3d3</color>
+    <color name="color_grey_stroke_dark">#bcbbbb</color>
+    <color name="color_edt_grey">#eeeeee</color>
+    <color name="color_edt_grey_dark">#dddddd</color>
+    <color name="color_white_press">#bcbbbb</color>
+    <color name="color_border">#dedede</color>
+    <color name="color_green_text">#81cd50</color>
+    <color name="color_danger">#ce6565</color>
+    <color name="color_danger_dark">#af4d4d</color>
+    <color name="color_black_trans">#4D000000</color>
+    <color name="color_blue">#0548b3</color>
+    <color name="color_red">#ff0000</color>
+    <color name="color_white_trans">#ffffff</color>
+    <color name="color_noti_background">#F4F4F4</color>
+
+    <color name="white_trans">#80ffffff</color>
+
+
+    <color name="color_et_normal">#6D6D6D</color>
+    <color name="color_et_focus">#575656</color>
+
+    <color name="color_rated_card">#E0DEDE</color>
+    <color name="color_cancel">#ECF0F1</color>
+
+    <color name="background">#70898D</color>
+
+    <color name="transparent">#00000000</color>
+
+    <color name="colorLightBlack">#3C3C3C</color>
+    <color name="colorDarkBlue">#3B5998</color>
+    <color name="colorLightViolet">#F5E6FE</color>
+    <color name="colorLightBlue">#E1E2FE</color>
+    <color name="colorGold">#FFAA00</color>
+
+    <color name="colorRecyclerBgLight">#F0F6F8</color>
+    <color name="colorTransparent">#00000000</color>
+    <color name="colorBlackTransparent">#292929</color>
+    <color name="colorView">#DDDDDD</color>
+    <color name="colorVioletDark">#8030BA</color>
+
+    <color name="color_1">#5a61f9</color>
+    <color name="color_2">#6565f7</color>
+    <color name="color_3">#8572f3</color>
+    <color name="color_4">#a27de7</color>
+    <color name="color_5">#A27DEF</color>
+    <color name="color_6">#EB99E5</color>
+    <color name="colorModernBlue">#5961F9</color>
+    <color name="colorSecondary">#9a6be6</color>
+    <color name="colorRed">#bd081c</color>
+
+    <color name="color_palette1">#ffb3ba</color>
+    <color name="color_palette2">#ffdfba</color>
+    <color name="color_palette3">#FAD88F</color>
+    <color name="color_palette4">#baffc9</color>
+    <color name="color_palette5">#bae1ff</color>
+
+    <color name="color_palette3trans">#4DFAD88F</color>
+
+    <color name="color_dark_palette1">#2e2b2e</color>
+    <color name="color_dark_palette2">#2b2645</color>
+    <color name="color_dark_palette3">#182733</color>
+    <color name="color_dark_palette4">#3b4f5e</color>
+    <color name="color_dark_palette5">#2c2b31</color>
+
+    <color name="colorLine">#cbcbcb</color>
+    <color name="colorLineFocused">#B4B4B4</color>
+
+    <color name="color_app_background">#F7F9FC</color>
+
 </resources>
