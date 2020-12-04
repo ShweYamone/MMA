@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <LinearLayout
+        android:layout_marginTop="@dimen/margin_normal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_status_border"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_marginTop="@dimen/margin_small"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:layout_margin="@dimen/margin_small"
+                android:layout_weight="3.3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <TextView
+                    android:text="MSO Number:"
+                    android:textSize="@dimen/txt_size_small"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:id="@+id/tvMSONumber"
+                    android:text="xxxxxx"
+                    android:textColor="@color/colorBlack"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_margin="@dimen/margin_small"
+                android:layout_weight="5"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <TextView
+                    android:text="Status:"
+                    android:textSize="@dimen/txt_size_small"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:id="@+id/tvStatus"
+                    android:text="APPR"
+                    android:textColor="@color/colorBlack"
+                    android:textStyle="bold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+            <ImageView
+                android:layout_margin="@dimen/margin_small"
+                android:src="@drawable/ic_menu"
+                android:tint="@color/colorPrimary"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="33dp"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:layout_margin="@dimen/margin_small"
+                android:layout_weight="3.3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <TextView
+                    android:text="Panel health status"
+                    android:textSize="@dimen/txt_size_small"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:id="@+id/tvPanelHealthStatus"
+                    android:text="Faculty"
+                    android:textColor="@color/colorBlack"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_margin="@dimen/margin_small"
+                android:layout_weight="5"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <TextView
+                    android:text="Location:"
+                    android:textSize="@dimen/txt_size_small"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:id="@+id/tvLocation"
+                    android:text="Rochar Rd Canter Ader Lly"
+                    android:textColor="@color/colorBlack"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+            <ImageView
+                android:layout_margin="@dimen/margin_small"
+                android:tint="@color/colorBlack"
+                android:src="@drawable/ic_menu"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="33dp"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tvTime"
+        android:paddingLeft="@dimen/padding_4"
+        android:paddingRight="@dimen/padding_4"
+        android:layout_marginTop="@dimen/margin_small"
+        android:layout_marginRight="@dimen/margin_xxlarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:text="01.10.2019/11:00AM"
+        android:textSize="@dimen/txt_size_small"
+        android:background="@color/colorWhite"/>
+
+</RelativeLayout>

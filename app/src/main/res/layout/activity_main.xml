@@ -34,7 +34,7 @@
         </com.google.android.material.appbar.AppBarLayout>
         <FrameLayout
             android:id="@+id/container_body"
-            android:background="@color/color_grey_stroke"
+            android:background="@color/colorTextLightGrey"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
         </FrameLayout>
@@ -47,8 +47,6 @@
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
         android:layout_marginTop="?attr/actionBarSize"
-        app:itemIconTint="@android:color/holo_green_dark"
-        app:itemTextColor="@android:color/holo_green_light"
         app:menu="@menu/drawer_view" >
 
 

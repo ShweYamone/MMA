@@ -19,10 +19,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.freelance.solutionhub.mma.fragment.HelpFragment;
 import com.freelance.solutionhub.mma.fragment.HomeFragment;
 import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.snackbar.Snackbar;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -130,9 +128,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 fragment = new HomeFragment();
                 title = getString(R.string.nav_home);
                 break;
-            case R.id.nav_camera:
-                fragment = new HelpFragment();
-                break;
+            
             default:
                 break;
         }
