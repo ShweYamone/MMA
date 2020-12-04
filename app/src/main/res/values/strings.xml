@@ -14,4 +14,48 @@
     <string name="drawer_close">drawer_close</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- MMA value for step-1 -->
+    <string name="mso_information">MSO Information</string>
+    <string name="mso_number">MSO Number:</string>
+    <string name="panel_id">Panel ID:</string>
+    <string name="fault_type">Fault Type:</string>
+    <string name="mso_priority">MSO Priority:</string>
+    <string name="allowable_resolution_date_time">Allowable Resolution Date/Time</string>
+    <string name="allowable_respond_date_time">Allowable Respond Date/Time</string>
+    <string name="fault_detected_date_time">Fault Detected Date/Time</string>
+    <string name="mso_notified_date_time">MSO Notified Date/Time</string>
+    <string name="bust_stop_number">Bust Stop Number:</string>
+    <string name="location">Location:</string>
+    <string name="attach_pre_maintenance_photo">Attach Pre-Maintenance Photo:</string>
+
+    <!-- MMA value for step-2 -->
+    <string name="maintenance_work_information">Maintenance Work Information</string>
+    <string name="acknowledged_by">Acknowledged By:</string>
+    <string name="acknowledge_date_time">Acknowledge Date/Time</string>
+    <string name="first_respond_date_time">1st Respond Date/Time</string>
+    <string name="reported_problem_code">Reported Problem Code:</string>
+    <string name="actual_problem_code">Actual Problem Code:</string>
+    <string name="cause_code">Cause Code:</string>
+    <string name="remedy_code">Remedy Code:</string>
+    <string name="other_fault">Other Fault:</string>
+    <string name="third_party_fault_comments">3rd Party Fault Comments:</string>
+    <string name="add_third_party_information">Add 3rd Party Information</string>
+    <string name="part_replacement">Part Replacement:</string>
+    <string name="required_part_placement">Required Part placement</string>
+    <string name="scan_faulty_parts">Scan Faulty Parts:</string>
+    <string name="component_id">Component ID:</string>
+
+    <!-- MMA value (third party information) Telco -->
+    <string name="telco">Telco</string>
+    <string name="telco_no">Telco No:</string>
+    <string name="docker_no">Docker No:</string>
+    <string name="ct_personnel">CT Personnel:</string>
+    <string name="refer_date_time">Refer Date/Time:</string>
+
+    <!-- Button -->
+    <string name="save">SAVE</string>
+    <string name="job_done">Job Done</string>
+    <string name="qr_scan">QR SCAN</string>
+
 </resources>
