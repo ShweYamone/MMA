@@ -1,9 +1,5 @@
 package com.freelance.solutionhub.mma.fragment;
 
-import android.content.Context;
-import android.content.Intent;
-import android.media.Image;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.cardview.widget.CardView;
@@ -15,8 +11,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.freelance.solutionhub.mma.R;
@@ -29,7 +28,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class HomeFragment extends Fragment implements View.OnClickListener{
+public class HomeFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemClickListener {
 
     @BindView(R.id.cvCorrectiveMaintenance)
     CardView cvCorrectiveMaintenance;
@@ -64,6 +63,11 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
     @BindView(R.id.tvPreventive)
     TextView tvPreventive;
 
+    @BindView(R.id.spinnerStatus)
+    Spinner spinnerStatus;
+
+    private String[] list;
+    private ArrayAdapter spinnerArrAdaper;
     private MaintenanceAdapter mAdapter;
     private List<MaintenanceInfoModel> maintenanceList = new ArrayList<>();
 
@@ -101,6 +105,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
                 layoutMaintenaceCV.setVisibility(View.GONE);
                 layoutMaintenanceList.setVisibility(View.VISIBLE);
                 showPreventiveMaintenance();
+
                 break;
             case R.id.cvCorrective:
                 showCorrectiveMaintenance();
@@ -109,6 +114,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
                 showPreventiveMaintenance();
                 break;
         }
+
+        initSpinner();
     }
 
     private void showCorrectiveMaintenance() {
@@ -117,6 +124,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
 
         ivPreventive.setColorFilter(ContextCompat.getColor(this.getContext(), R.color.color_edt_grey), android.graphics.PorterDuff.Mode.MULTIPLY);
         tvPreventive.setTextColor(getResources().getColor(R.color.color_edt_grey_dark));
+        list = new String[]{"ALL", "New", "ACK", "INPRG"};
     }
 
     private void showPreventiveMaintenance() {
@@ -125,6 +133,13 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
 
         ivCorrective.setColorFilter(ContextCompat.getColor(this.getContext(), R.color.color_grey_stroke), android.graphics.PorterDuff.Mode.MULTIPLY);
         tvCorrective.setTextColor(getResources().getColor(R.color.color_grey_stroke));
+        list = new String[]{"ALL", "New", "INPRG"};
+    }
+
+    private void initSpinner() {
+        spinnerArrAdaper = new ArrayAdapter(this.getContext(), android.R.layout.simple_spinner_item, list);
+        spinnerStatus.setAdapter(spinnerArrAdaper);
+        spinnerStatus.setOnItemClickListener(this);
     }
 
     private void prepareMaintenaceList() {
@@ -133,6 +148,11 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
         maintenanceList.add(obj); maintenanceList.add(obj);
         maintenanceList.add(obj); maintenanceList.add(obj); maintenanceList.add(obj);
         mAdapter.notifyDataSetChanged();
+
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
     }
 }

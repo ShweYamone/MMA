@@ -128,7 +128,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 fragment = new HomeFragment();
                 title = getString(R.string.nav_home);
                 break;
-            
             default:
                 break;
         }
