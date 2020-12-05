@@ -34,7 +34,7 @@
     <string name="start_datetime">Start Date/Time</string>
     <string name="end_datetime">End Date/Time</string>
     <string name="close">Close</string>
-    <string name="temp_text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque a quam ut enim maximus </string>
+    <string name="temp_text">Lorem ipsum dolor sit amet, consectetur elit Quisque a quam ut enim maximus </string>
     <!-- CM value for step-1 -->
     <string name="mso_information">MSO Information</string>
     <string name="mso_number">MSO Number:</string>

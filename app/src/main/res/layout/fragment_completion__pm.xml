@@ -6,10 +6,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".fragment.Completion_PMFragment"
     android:orientation="vertical"
-    android:gravity="center"
-    android:layout_margin="@dimen/margin_large">
+    android:gravity="bottom"
+    android:layout_margin="@dimen/margin_xlarge">
 
     <RelativeLayout
+        android:layout_marginBottom="@dimen/margin_xxlarge"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <LinearLayout
@@ -25,6 +26,9 @@
 
                 <LinearLayout
                     android:layout_marginTop="@dimen/margin_xlarge"
+                    android:layout_marginLeft="@dimen/margin_normal"
+                    android:layout_marginRight="@dimen/margin_normal"
+                    android:layout_marginBottom="@dimen/margin_xlarge"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
@@ -32,17 +36,22 @@
                         android:gravity="center"
                         android:layout_margin="@dimen/margin_small"
                         android:text="@string/work_complete"
-                        android:textColor="@color/colorBlack"
+                        android:textColor="@color/colorLightBlack"
                         android:textStyle="bold"
+                        android:textSize="@dimen/txt_size_ex_large"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"/>
-                    <View
-                        android:background="@color/colorBlack"
+                    <ImageView
                         android:layout_width="match_parent"
-                        android:layout_height="1dp"/>
+                        android:layout_height="5dp"
+                        android:src="@drawable/dotted"
+                        android:layerType="software" />
                     <TextView
+                        android:layout_marginTop="@dimen/margin_large"
+                        android:layout_marginBottom="@dimen/margin_xxsmall"
                         android:gravity="center"
                         android:text="@string/start_datetime"
+                        android:textSize="@dimen/txt_size_small"
                         android:textColor="@color/color_blue"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"/>
@@ -54,8 +63,11 @@
                         android:layout_height="wrap_content"/>
 
                     <TextView
+                        android:layout_marginTop="@dimen/margin_large"
+                        android:layout_marginBottom="@dimen/margin_xxsmall"
                         android:gravity="center"
                         android:text="@string/end_datetime"
+                        android:textSize="@dimen/txt_size_small"
                         android:textColor="@color/color_blue"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"/>
@@ -67,15 +79,17 @@
                         android:layout_height="wrap_content"/>
 
                     <TextView
+                        android:layout_marginTop="@dimen/margin_xlarge"
+                        android:layout_marginBottom="@dimen/margin_xsmall"
                         android:gravity="center"
                         android:text="@string/remarks"
                         android:textColor="@color/colorBlack"
+                        android:textSize="@dimen/txt_size_large"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"/>
                     <TextView
-                        android:gravity="center"
                         android:text="@string/temp_text"
-                        android:textAlignment="inherit"
+                        android:textAlignment="viewStart"
                         android:textColor="@color/colorLightBlack"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"/>
@@ -90,4 +104,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
     </RelativeLayout>
+
+    <Button
+        android:layout_marginTop="@dimen/margin_xxxlarge"
+        android:layout_marginBottom="@dimen/margin_normal"
+        android:background="@drawable/bg_btn_login"
+        android:text="@string/close"
+        android:textAllCaps="false"
+        android:textColor="@color/colorWhite"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 </LinearLayout>
