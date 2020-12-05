@@ -74,7 +74,7 @@
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="3"
+                            android:layout_weight="2.5"
                             android:textColor="@color/colorPrimary"
                             android:text="@string/mso_number"
                             android:fontFamily="@font/crimson_text_regular"
@@ -83,7 +83,7 @@
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
+                            android:layout_weight="1.5"
                             android:textColor="@color/colorPrimary"
                             android:text="@string/panel_id"
                             android:fontFamily="@font/crimson_text_regular"
@@ -97,7 +97,7 @@
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="3"
+                            android:layout_weight="2.5"
                             android:textColor="@color/colorBlack"
                             android:text="PGS/18/100000307"
                             android:fontFamily="@font/crimson_text_regular"
@@ -106,7 +106,7 @@
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
+                            android:layout_weight="1.5"
                             android:textColor="@color/colorBlack"
                             android:text="VMS1 002"
                             android:fontFamily="@font/crimson_text_regular"
@@ -128,7 +128,7 @@
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="3"
+                            android:layout_weight="2.5"
                             android:textColor="@color/colorPrimary"
                             android:text="@string/fault_type"
                             android:fontFamily="@font/crimson_text_regular"
@@ -137,7 +137,7 @@
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
+                            android:layout_weight="1.5"
                             android:textColor="@color/colorPrimary"
                             android:text="@string/mso_priority"
                             android:fontFamily="@font/crimson_text_regular"
@@ -151,7 +151,7 @@
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="3"
+                            android:layout_weight="2.5"
                             android:textColor="@color/colorBlack"
                             android:text="Disconnect"
                             android:fontFamily="@font/crimson_text_regular"
@@ -160,7 +160,7 @@
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
+                            android:layout_weight="1.5"
                             android:textColor="@color/colorBlack"
                             android:text="Critical"
                             android:fontFamily="@font/crimson_text_regular"
