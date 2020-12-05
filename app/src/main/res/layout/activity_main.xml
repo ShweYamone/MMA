@@ -50,6 +50,19 @@
         android:layout_marginTop="?attr/actionBarSize"
         app:menu="@menu/drawer_view" >
 
+        <TextView
+            android:id="@+id/logout"
+            android:background="@color/colorPrimary"
+            android:drawableLeft="@drawable/logout_exit"
+            android:paddingLeft="@dimen/margin_normal"
+            android:drawablePadding="@dimen/margin_large"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/edittext_height"
+            android:gravity="center_vertical"
+            android:layout_gravity="bottom"
+            android:text="@string/log_out"
+            android:textColor="@color/colorWhite"
+            android:textStyle="bold"/>
 
     </com.google.android.material.navigation.NavigationView>
 </androidx.drawerlayout.widget.DrawerLayout>

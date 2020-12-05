@@ -135,9 +135,12 @@
     <string name="job_done">Job Done</string>
     <string name="qr_scan">QR SCAN</string>
 
+    <string name="log_out">Logout</string>
+
     <!-- edit text message -->
     <string name="text_here">Text here</string>
     <string name="input_text">Input text</string>
     <string name="comment_here">Comment here</string>
+
 
 </resources>
