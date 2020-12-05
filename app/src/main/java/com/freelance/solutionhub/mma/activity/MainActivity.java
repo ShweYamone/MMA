@@ -124,9 +124,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 fragment = new HomeFragment();
                 title = getString(R.string.nav_home);
                 break;
-            case R.id.nav_lastsync:
-                fragment = new Completion_PMFragment();
-                break;
             default:
                 break;
         }
