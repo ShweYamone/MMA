@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".fragment.Completion_PMFragment"
+    android:background="@color/colorTextLightGrey"
     android:orientation="vertical">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -52,10 +53,7 @@
                     app:cardCornerRadius="@dimen/card_corner_radius">
 
                     <LinearLayout
-                        android:layout_marginTop="@dimen/margin_xlarge"
-                        android:layout_marginLeft="@dimen/margin_normal"
-                        android:layout_marginRight="@dimen/margin_normal"
-                        android:layout_marginBottom="@dimen/margin_xlarge"
+                        android:layout_margin="@dimen/margin_large"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
@@ -89,7 +87,6 @@
                                     android:text="@string/component_id"
                                     android:textColor="@color/color_blue"
                                     android:textSize="@dimen/txt_size_small"
-                                    android:shadowColor="@color/colorBlack"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"/>
                                 <TextView
@@ -102,6 +99,7 @@
                                     android:layout_height="wrap_content"/>
                             </LinearLayout>
                             <LinearLayout
+                                android:layout_marginLeft="@dimen/margin_large"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
@@ -139,7 +137,6 @@
                                     android:text="@string/component_type"
                                     android:textColor="@color/color_blue"
                                     android:textSize="@dimen/txt_size_small"
-                                    android:shadowColor="@color/colorBlack"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"/>
                                 <TextView
@@ -152,6 +149,7 @@
                                     android:layout_height="wrap_content"/>
                             </LinearLayout>
                             <LinearLayout
+                                android:layout_marginLeft="@dimen/margin_large"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
@@ -160,7 +158,6 @@
                                     android:text="@string/component_status"
                                     android:textColor="@color/color_blue"
                                     android:textSize="@dimen/txt_size_small"
-                                    android:shadowColor="@color/colorBlack"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"/>
                                 <TextView
@@ -176,8 +173,7 @@
 
                         <TextView
                             android:layout_marginTop="@dimen/margin_xlarge"
-                            android:layout_marginBottom="@dimen/margin_xsmall"
-                            android:text="@string/component_desc"
+                           android:text="@string/component_desc"
                             android:textColor="@color/color_blue"
                             android:textSize="@dimen/txt_size_small"
                             android:shadowColor="@color/colorBlack"
