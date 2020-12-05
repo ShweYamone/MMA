@@ -132,5 +132,6 @@
 
     <!-- edit text message -->
     <string name="text_here">Text here</string>
+    <string name="input_text">Input text</string>
 
 </resources>

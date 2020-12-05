@@ -6,9 +6,45 @@
     tools:context=".fragment.Second_Step_PM_Fragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="fill_parent"
+        android:scrollbarAlwaysDrawVerticalTrack="true"
+        android:layout_margin="@dimen/activity_vertical_margin">
+        <TextView
+            android:id="@+id/tv_remarks"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorBlack"
+            android:text="@string/remarks"
+            android:fontFamily="@font/crimson_text_bold"
+            android:textSize="@dimen/txt_size_large"/>
+        <LinearLayout
+            android:layout_below="@+id/tv_remarks"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/round_rect_shape_line">
 
+            <EditText
+                android:id="@+id/edit_text"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:textSize="@dimen/txt_size_normal"
+                android:inputType="text|textMultiLine"
+                android:layout_margin="@dimen/margin_small"
+                android:background="@color/white_trans"
+                android:hint="@string/input_text"
+                android:gravity="top"/>
+        </LinearLayout>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:textColor="@color/colorWhite"
+            android:background="@drawable/round_rect_shape_button"
+            android:layout_margin="@dimen/margin_small"
+            android:textAllCaps="false"
+            android:text="@string/job_done"/>
+    </RelativeLayout>
 </FrameLayout>
