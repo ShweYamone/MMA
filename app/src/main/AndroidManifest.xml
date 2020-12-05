@@ -11,8 +11,8 @@
         android:theme="@style/AppTheme">
 
         <activity android:name=".activity.PMActivity">
-
         </activity>
+
         <activity android:name=".activity.LoadingActivity"></activity>
         <activity android:name=".activity.NFCReadingActivity"></activity>
         <activity android:name=".activity.LoginActivity"></activity>

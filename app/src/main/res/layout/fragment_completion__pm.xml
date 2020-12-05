@@ -37,6 +37,7 @@
                         android:layout_margin="@dimen/margin_small"
                         android:text="@string/work_complete"
                         android:textColor="@color/colorLightBlack"
+                        android:fontFamily="@font/crimson_text_regular"
                         android:textStyle="bold"
                         android:textSize="@dimen/txt_size_ex_large"
                         android:layout_width="match_parent"
@@ -59,6 +60,7 @@
                         android:gravity="center"
                         android:text="12/05/2019/ 12:00:34"
                         android:textColor="@color/colorLightBlack"
+                        android:fontFamily="@font/crimson_text_regular"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"/>
 
@@ -75,6 +77,7 @@
                         android:gravity="center"
                         android:text="12/05/2019/ 12:00:34"
                         android:textColor="@color/colorLightBlack"
+                        android:fontFamily="@font/crimson_text_regular"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"/>
 
@@ -83,7 +86,8 @@
                         android:layout_marginBottom="@dimen/margin_xsmall"
                         android:gravity="center"
                         android:text="@string/remarks"
-                        android:textColor="@color/colorBlack"
+                        android:textStyle="bold"
+                        android:textColor="@color/colorLightBlack"
                         android:textSize="@dimen/txt_size_large"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"/>
@@ -91,6 +95,7 @@
                         android:text="@string/temp_text"
                         android:textAlignment="viewStart"
                         android:textColor="@color/colorLightBlack"
+                        android:fontFamily="@font/crimson_text_regular"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"/>
                 </LinearLayout>
