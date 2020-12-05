@@ -16,15 +16,17 @@
         android:orientation="vertical">
         <TextView
             android:text="Choose Maintenance Service"
+            android:fontFamily="@font/crimson_text_regular"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
+
         <androidx.cardview.widget.CardView
             android:id="@+id/cvCorrectiveMaintenance"
             android:layout_marginTop="@dimen/margin_xlarge"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:elevation="10dp"
-            card_view:cardCornerRadius="@dimen/card_corner_radius">>
+            card_view:cardCornerRadius="@dimen/card_corner_radius">
             <LinearLayout
                 android:layout_marginTop="@dimen/margin_xlarge"
                 android:layout_marginBottom="@dimen/margin_xlarge"
@@ -43,9 +45,10 @@
                     android:orientation="vertical">
                     <TextView
                         android:text="Corrective Maintenance"
-                        android:textSize="@dimen/txt_size_large"
+                        android:textSize="@dimen/txt_size_x_large"
                         android:textStyle="bold"
                         android:textColor="@color/colorLightBlack"
+                        android:fontFamily="@font/crimson_text_regular"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>
                     <TextView
@@ -104,9 +107,10 @@
                     android:orientation="vertical">
                     <TextView
                         android:text="Preventive Maintenance"
-                        android:textSize="@dimen/txt_size_large"
+                        android:textSize="@dimen/txt_size_x_large"
                         android:textStyle="bold"
                         android:textColor="@color/colorLightBlack"
+                        android:fontFamily="@font/crimson_text_regular"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>
                     <TextView
@@ -182,6 +186,7 @@
                     <TextView
                         android:id="@+id/tvCorrective"
                         android:text="Corrective Maintenance"
+                        android:fontFamily="@font/crimson_text_regular"
                         android:layout_marginLeft="@dimen/margin_small"
                         android:textStyle="bold"
                         android:layout_gravity="center"
@@ -213,6 +218,7 @@
                     <TextView
                         android:id="@+id/tvPreventive"
                         android:text="Preventive Maintenance"
+                        android:fontFamily="@font/crimson_text_regular"
                         android:layout_marginLeft="@dimen/margin_small"
                         android:textStyle="bold"
                         android:layout_gravity="center"
