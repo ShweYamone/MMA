@@ -23,6 +23,6 @@ public class First_Step_PM_Fragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_first__step__p_m_, container, false);
+        return inflater.inflate(R.layout.fragment_first_step_p_m_, container, false);
     }
 }

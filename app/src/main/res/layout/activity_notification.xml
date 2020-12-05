@@ -38,8 +38,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginLeft="@dimen/margin_normal"
-        android:layout_marginRight="@dimen/margin_normal"
-        android:layout_marginBottom="@dimen/margin_small"/>
+        android:layout_marginRight="@dimen/margin_normal"/>
 
     <LinearLayout
         android:id="@+id/layoutEmpty"
