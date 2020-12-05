@@ -38,6 +38,15 @@
     <!-- CM Work orde completion -->
     <string name="arrival_date_time">Arrival Date/Time</string>
     <string name="job_completion_date_time">Job Completion Date/Time</string>
+
+    <!-- Asset Information -->
+    <string name="asset_information">Asset Information</string>
+    <string name="component">Component</string>
+    <string name="serial_number">Serial Number:</string>
+    <string name="component_type">Component Type:</string>
+    <string name="component_status">Component Status:</string>
+    <string name="component_desc">Component Description</string>
+
     <!-- CM value for step-1 -->
     <string name="mso_information">MSO Information</string>
     <string name="mso_number">MSO Number:</string>

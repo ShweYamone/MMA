@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".fragment.Completion_PMFragment"
     android:orientation="vertical"
-    android:gravity="bottom"
-    android:layout_margin="@dimen/margin_xlarge">
+    android:padding="@dimen/margin_xlarge">
 
     <RelativeLayout
-        android:layout_marginBottom="@dimen/margin_xxlarge"
+        android:layout_marginTop="@dimen/margin_xlarge"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <LinearLayout
@@ -133,7 +132,8 @@
 
     <Button
         android:id="@+id/btnClose"
-        android:layout_marginTop="@dimen/margin_xxxlarge"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="@dimen/margin_xxlarge"
         android:layout_marginBottom="@dimen/margin_normal"
         android:background="@drawable/bg_btn_login"
         android:text="@string/close"
@@ -141,4 +141,4 @@
         android:textColor="@color/colorWhite"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
-</LinearLayout>
+</RelativeLayout>

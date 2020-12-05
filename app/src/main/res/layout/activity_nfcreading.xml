@@ -12,8 +12,9 @@
 
     <TextView
         android:text="@string/ready_to_scan"
-        android:textSize="@dimen/txt_size_large"
+        android:textSize="@dimen/txt_size_ex_large"
         android:textColor="@color/color_grey_stroke"
+        android:fontFamily="@font/crimson_text_regular"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_weight="0.8"
@@ -24,13 +25,14 @@
         android:tint="@color/colorWhite"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:layout_weight="1.7"/>
+        android:layout_weight="2"/>
 
     <TextView
         android:gravity="center"
         android:text="@string/hold_ur_phone_near_nfc"
         android:textColor="@color/color_grey_stroke_dark"
         android:textSize="@dimen/txt_size_normal"
+        android:fontFamily="@font/crimson_text_regular"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_weight="1"/>
