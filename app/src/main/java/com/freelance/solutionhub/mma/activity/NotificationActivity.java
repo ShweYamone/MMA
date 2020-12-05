@@ -1,6 +1,8 @@
 package com.freelance.solutionhub.mma.activity;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -20,6 +22,8 @@ import butterknife.ButterKnife;
 
 public class NotificationActivity extends AppCompatActivity {
 
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
     @BindView(R.id.recyclerview_NotiList)
     RecyclerView recyclerView;
 
@@ -31,7 +35,7 @@ public class NotificationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notification);
         ButterKnife.bind(this);
-
+        setupToolbar();
         mAdapter = new NotificationAdapter(this, notificationList);
 
         recyclerView.setHasFixedSize(true);
@@ -42,8 +46,20 @@ public class NotificationActivity extends AppCompatActivity {
 
     }
 
+    private void setupToolbar() {
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        final ActionBar ab = getSupportActionBar();
+        //ab.setHomeAsUpIndicator(R.drawable.ic_menu);
+        ab.setDisplayHomeAsUpEnabled(true);
+    }
+
     private void prepareNotifications() {
         NotificationModel obj = new NotificationModel("Announcement", "This is message. This is message. This is message. This is message. Fighting", "12/5/2020/ 05:54PM");
         notificationList.add(obj); notificationList.add(obj); notificationList.add(obj);
+        notificationList.add(obj); notificationList.add(obj); notificationList.add(obj);
+        notificationList.add(obj); notificationList.add(obj); notificationList.add(obj);
+
     }
 }

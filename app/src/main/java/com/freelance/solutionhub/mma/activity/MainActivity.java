@@ -1,6 +1,7 @@
 package com.freelance.solutionhub.mma.activity;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -171,11 +172,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         switch (id) {
 
-            case android.R.id.home:
-                mDrawerLayout.openDrawer(GravityCompat.START);
-                return true;
-
-            case R.id.action_settings:
+            case R.id.action_notifications:
+                Intent intent = new Intent(this, NotificationActivity.class);
+                startActivity(intent);
                 return true;
         }
 
