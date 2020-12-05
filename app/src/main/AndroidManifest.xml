@@ -13,6 +13,7 @@
         <activity android:name=".activity.PMCompletionActivity" />
         <activity android:name=".activity.CMCompletionActivity" />
         <activity android:name=".activity.AssetInformationActivity" />
+        <activity android:name=".activity.CMActivity"/>
         <activity android:name=".activity.PMActivity" />
         <activity android:name=".activity.LoadingActivity" />
         <activity android:name=".activity.NFCReadingActivity" />
