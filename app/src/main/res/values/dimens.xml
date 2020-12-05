@@ -30,7 +30,7 @@
 
     <dimen name="edittext_height">46dp</dimen>
 
-    <dimen name="chat_edittxt_height">43dp</dimen>
+    <dimen name="chat_edittxt_height">46dp</dimen>
 
     <dimen name="card_corner_small_radius">5dp</dimen>
     <dimen name="card_corner_radius">8dp</dimen>

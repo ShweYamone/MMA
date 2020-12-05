@@ -127,6 +127,9 @@
     <string name="remark">Remark:</string>
     <string name="attach_post_maintenance_photo">Attach Post-Maintenance Photo:</string>
 
+    <!-- Others -->
+    <string name="action_taken_by_contractor">Action Taken By Contractor</string>
+
     <!-- Button -->
     <string name="save">SAVE</string>
     <string name="job_done">Job Done</string>

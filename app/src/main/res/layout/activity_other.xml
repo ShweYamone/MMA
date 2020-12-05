@@ -1,9 +1,173 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.OtherActivity">
+    tools:context=".activity.OtherActivity"
+    android:orientation="vertical">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" >
+            <TextView
+                android:id="@+id/toolbar_title"
+                android:text="MMA"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
+                android:layout_gravity="center" />
+        </androidx.appcompat.widget.Toolbar>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/margin_normal"
+        android:layout_marginRight="@dimen/margin_normal"
+        android:orientation="vertical">
+        <TextView
+            android:layout_marginTop="@dimen/margin_normal"
+            android:gravity="center"
+            android:text="@string/others"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/txt_size_large"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:text="@string/refer_date_time"
+            android:textColor="@color/color_blue"
+            android:layout_marginTop="@dimen/margin_large"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <EditText
+            android:background="@drawable/bg_et_border_login"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/edittext_height"/>
+
+        <TextView
+            android:text="@string/expected_completion_date_time"
+            android:layout_marginTop="@dimen/margin_large"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <EditText
+            android:background="@drawable/bg_et_border_login"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/edittext_height"/>
+
+        <TextView
+            android:text="@string/clearance_date_time"
+            android:layout_marginTop="@dimen/margin_large"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <EditText
+            android:background="@drawable/bg_et_border_login"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/edittext_height"/>
+
+        <TextView
+            android:text="@string/clearance_date_time"
+            android:layout_marginTop="@dimen/margin_large"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <EditText
+            android:background="@drawable/bg_et_border_login"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/edittext_height"/>
+
+        <TextView
+            android:text="@string/clearance_date_time"
+            android:layout_marginTop="@dimen/margin_large"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <EditText
+            android:background="@drawable/bg_et_border_login"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/edittext_height"/>
+        <TextView
+            android:text="@string/clearance_date_time"
+            android:layout_marginTop="@dimen/margin_large"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <EditText
+            android:background="@drawable/bg_et_border_login"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/edittext_height"/>
+        <TextView
+            android:text="@string/clearance_date_time"
+            android:layout_marginTop="@dimen/margin_large"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <EditText
+            android:background="@drawable/bg_et_border_login"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/edittext_height"/>
+        <TextView
+            android:text="@string/clearance_date_time"
+            android:layout_marginTop="@dimen/margin_large"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <EditText
+            android:background="@drawable/bg_et_border_login"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/edittext_height"/>
+
+        <TextView
+            android:text="@string/clearance_date_time"
+            android:layout_marginTop="@dimen/margin_large"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <EditText
+            android:background="@drawable/bg_et_border_login"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/edittext_height"/>
+
+        <TextView
+            android:text="@string/clearance_date_time"
+            android:layout_marginTop="@dimen/margin_large"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <EditText
+            android:background="@drawable/bg_et_border_login"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/edittext_height"/>
+
+        <TextView
+            android:text="@string/clearance_date_time"
+            android:layout_marginTop="@dimen/margin_large"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <EditText
+            android:background="@drawable/bg_et_border_login"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/edittext_height"/>
+
+    </LinearLayout>
+
+
+
+</LinearLayout>
