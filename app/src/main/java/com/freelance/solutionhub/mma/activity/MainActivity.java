@@ -6,7 +6,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -20,7 +19,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.freelance.solutionhub.mma.R;
-import com.freelance.solutionhub.mma.fragment.Completion_PMFragment;
 import com.freelance.solutionhub.mma.fragment.HomeFragment;
 import com.google.android.material.navigation.NavigationView;
 
