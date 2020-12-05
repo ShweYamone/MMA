@@ -107,12 +107,10 @@
     <string name="third_party_contractor_no">3rd Party Contractor No:</string>
 
     <!-- CM value for step-3 -->
-    <array name="weather">
-        <item name="sunny">Sunny</item>
-        <item name="cloudy">Cloudy</item>
-        <item name="raining">Raining</item>
-        <item name="heavy_rain">Heavy Rain</item>
-    </array>
+    <string name="sunny">Sunny</string>
+    <string name="cloudy">Cloudy</string>
+    <string name="raining">Raining</string>
+    <string name="heavy_rain">Heavy Rain</string>
 
     <!-- PM value for step-1 -->
     <string name="basic_information">Basic Information:</string>

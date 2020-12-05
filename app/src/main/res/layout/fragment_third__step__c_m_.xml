@@ -6,9 +6,93 @@
     tools:context=".fragment.Third_Step_CM_Fragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="fill_parent"
+        android:scrollbarAlwaysDrawVerticalTrack="true"
+        android:layout_margin="@dimen/activity_vertical_margin">
+        <TextView
+            android:id="@+id/tv_remarks"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorBlack"
+            android:text="@string/remarks"
+            android:fontFamily="@font/crimson_text_bold"
+            android:textSize="@dimen/txt_size_large"/>
+        <LinearLayout
+            android:id="@+id/ll_input_text"
+            android:layout_below="@+id/tv_remarks"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/round_rect_shape_line">
+
+            <EditText
+                android:id="@+id/edit_text"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:textSize="@dimen/txt_size_normal"
+                android:inputType="text|textMultiLine"
+                android:layout_margin="@dimen/margin_small"
+                android:background="@color/white_trans"
+                android:hint="@string/input_text"
+                android:gravity="top"/>
+        </LinearLayout>
+        <RadioGroup
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_normal"
+            android:layout_centerHorizontal="true"
+            android:orientation="horizontal"
+            android:showDividers="beginning|middle|end"
+            android:layout_below="@id/ll_input_text"
+            android:id="@+id/radioGroup">
+            <RadioButton
+                android:id="@+id/rb1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/sunny"
+                android:textSize="@dimen/txt_size_large"
+                android:fontFamily="@font/crimson_text_regular"
+                android:checked="true" />
+
+            <RadioButton
+                android:id="@+id/rb2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/cloudy"
+                android:textSize="@dimen/txt_size_large"
+                android:fontFamily="@font/crimson_text_regular"
+                android:checked="false" />
+
+            <RadioButton
+                android:id="@+id/rb3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/raining"
+                android:textSize="@dimen/txt_size_large"
+                android:fontFamily="@font/crimson_text_regular"
+                android:checked="false" />
+
+            <RadioButton
+                android:id="@+id/rb4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/heavy_rain"
+                android:textSize="@dimen/txt_size_large"
+                android:fontFamily="@font/crimson_text_regular"
+                android:checked="false" />
+        </RadioGroup>
+
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:textColor="@color/colorWhite"
+            android:background="@drawable/round_rect_shape_button"
+            android:layout_margin="@dimen/margin_small"
+            android:textAllCaps="false"
+            android:text="@string/job_done"/>
+    </RelativeLayout>
 
 </FrameLayout>
