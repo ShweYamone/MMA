@@ -29,7 +29,7 @@
     <string name="checking_with_backend">Checking with backend.</string>
     <string name="wait">Please wait....</string>
 
-    <!-- MMA value for step-1 -->
+    <!-- CM value for step-1 -->
     <string name="mso_information">MSO Information</string>
     <string name="mso_number">MSO Number:</string>
     <string name="panel_id">Panel ID:</string>
@@ -43,7 +43,7 @@
     <string name="location">Location:</string>
     <string name="attach_pre_maintenance_photo">Attach Pre-Maintenance Photo:</string>
 
-    <!-- MMA value for step-2 -->
+    <!-- CM value for step-2 -->
     <string name="maintenance_work_information">Maintenance Work Information</string>
     <string name="acknowledged_by">Acknowledged By:</string>
     <string name="acknowledge_date_time">Acknowledge Date/Time</string>
@@ -60,7 +60,7 @@
     <string name="scan_faulty_parts">Scan Faulty Parts:</string>
     <string name="component_id">Component ID:</string>
 
-    <!-- MMA value for step-2 (third party information) Telco -->
+    <!-- CM value for step-2 (third party information) Telco -->
     <string name="telco">Telco</string>
     <string name="telco_no">Telco No:</string>
     <string name="docker_no">Docker No:</string>
@@ -73,14 +73,14 @@
     <string name="action_date_time">Action Date/Time:</string>
     <string name="action_taken_by_telco">Action Taken By Telco:</string>
 
-    <!-- MMA value for step-2 (third party information) Power Grid -->
+    <!-- CM value for step-2 (third party information) Power Grid -->
     <string name="power_grid">Power Grid</string>
     <string name="power_grid_no">Power Grid No:</string>
     <string name="power_grid_fault_status">Power Grid Fault Status:</string>
     <string name="remarks_on_telco_fault">Remarks on Telco Fault:</string>
     <string name="power_grid_officer">Power Grid Officer</string>
 
-    <!-- MMA value for step-2 (third party information) Power Grid -->
+    <!-- CM value for step-2 (third party information) Power Grid -->
     <string name="others">Others</string>
     <string name="fault_status">Fault Status:</string>
     <string name="remarks">Remarks:</string>
@@ -88,7 +88,7 @@
     <string name="third_party_contractor_name">3rd Party Contractor Name:</string>
     <string name="third_party_contractor_no">3rd Party Contractor No:</string>
 
-    <!-- MMA value for step-3 -->
+    <!-- CM value for step-3 -->
     <array name="weather">
         <item name="sunny">Sunny</item>
         <item name="cloudy">Cloudy</item>
