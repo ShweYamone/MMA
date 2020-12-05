@@ -9,8 +9,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
-        <activity android:name=".activity.PMCompletionActivity"></activity>
+        <activity android:name=".activity.NotificationActivity"></activity>
+        <activity android:name=".activity.PMCompletionActivity" />
         <activity android:name=".activity.CMCompletionActivity" />
         <activity android:name=".activity.AssetInformationActivity" />
         <activity android:name=".activity.CMActivity"/>
@@ -25,7 +25,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
     </application>
 
 </manifest>

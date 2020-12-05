@@ -15,6 +15,9 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
+    <!-- Notification Activity -->
+    <string name="noti_empty">You do not have any notifications yet.</string>
+
     <!-- Login Activity-->
     <string name="username">Username</string>
     <string name="password">Password</string>
