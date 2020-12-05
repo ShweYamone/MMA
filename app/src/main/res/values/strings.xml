@@ -28,6 +28,7 @@
     <!-- Loading -->
     <string name="checking_with_backend">Checking with backend.</string>
     <string name="wait">Please wait....</string>
+
     <!-- MMA value for step-1 -->
     <string name="mso_information">MSO Information</string>
     <string name="mso_number">MSO Number:</string>
@@ -94,6 +95,16 @@
         <item name="raining">Raining</item>
         <item name="heavy_rain">Heavy Rain</item>
     </array>
+
+    <!-- PM value for step-1 -->
+    <string name="basic_information">Basic Information:</string>
+    <string name="mso_status">MSO Status:</string>
+    <string name="check_list">Check List:</string>
+    <string name="visual_inspection">Visual Inspection</string>
+    <string name="desc_visual_inspection">Check for external damages and / or vandalism such as graffiti, posters. Report to Authority immediately if found any and to remove and clean.</string>
+    <string name="fault_found">Fault Found:</string>
+    <string name="fault_found_remarks">Fault Found Remarks:</string>
+    <string name="attach_post_maintenance_photo">Attach Post-Maintenance Photo:</string>
 
     <!-- Button -->
     <string name="save">SAVE</string>
