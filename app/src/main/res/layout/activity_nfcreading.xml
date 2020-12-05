@@ -20,11 +20,11 @@
         android:gravity="center"/>
 
     <ImageView
-        android:src="@drawable/home_pm"
+        android:src="@drawable/nfc_picture"
         android:tint="@color/colorWhite"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:layout_weight="1.3"/>
+        android:layout_weight="1.7"/>
 
     <TextView
         android:gravity="center"

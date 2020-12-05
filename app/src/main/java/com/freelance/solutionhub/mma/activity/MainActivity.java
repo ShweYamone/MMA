@@ -20,6 +20,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.freelance.solutionhub.mma.R;
+import com.freelance.solutionhub.mma.fragment.Completion_PMFragment;
 import com.freelance.solutionhub.mma.fragment.HomeFragment;
 import com.google.android.material.navigation.NavigationView;
 
@@ -124,6 +125,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_home:
                 fragment = new HomeFragment();
                 title = getString(R.string.nav_home);
+                break;
+            case R.id.nav_lastsync:
+                fragment = new Completion_PMFragment();
                 break;
             default:
                 break;
