@@ -6,9 +6,525 @@
     tools:context=".fragment.Second_Step_CM_Fragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="fill_parent"
+        android:fillViewport="true"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_margin="@dimen/activity_vertical_margin">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorBlack"
+                android:text="@string/maintenance_work_information"
+                android:fontFamily="@font/crimson_text_bold"
+                android:textSize="@dimen/txt_size_large"/>
+
+            <!-- the whole card design -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/margin_normal"
+                android:background="@drawable/round_rect_shape">
+
+                <!-- 1st row design -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:weightSum="4"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="2"
+                            android:textColor="@color/colorPrimary"
+                            android:text="@string/acknowledged_by"
+                            android:fontFamily="@font/crimson_text_regular"
+                            android:textSize="@dimen/txt_size_normal"/>
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="2"
+                            android:textColor="@color/colorPrimary"
+                            android:text="@string/acknowledge_date_time"
+                            android:fontFamily="@font/crimson_text_regular"
+                            android:textSize="@dimen/txt_size_normal"/>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:weightSum="4"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="2"
+                            android:textColor="@color/colorBlack"
+                            android:text="John"
+                            android:fontFamily="@font/crimson_text_regular"
+                            android:textSize="@dimen/txt_size_normal"/>
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="2"
+                            android:textColor="@color/colorBlack"
+                            android:text="23.06.2019 / 12.00.14"
+                            android:fontFamily="@font/crimson_text_regular"
+                            android:textSize="@dimen/txt_size_normal"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- 2nd row design -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_normal"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/colorPrimary"
+                        android:text="@string/first_respond_date_time"
+                        android:fontFamily="@font/crimson_text_regular"
+                        android:textSize="@dimen/txt_size_normal"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/colorBlack"
+                        android:text="24.06.2019 / 11.00.18"
+                        android:fontFamily="@font/crimson_text_regular"
+                        android:textSize="@dimen/txt_size_normal"/>
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- Reported problem code Design -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/reported_problem_code"
+                android:textColor="@color/colorBlack"
+                android:layout_marginTop="@dimen/margin_normal"
+                android:fontFamily="@font/crimson_text_regular"
+                android:textSize="@dimen/txt_size_large"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_small"
+                android:orientation="vertical"
+                android:background="@drawable/round_rect_shape_line">
+                <Spinner
+                    android:layout_margin="@dimen/margin_small"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+            <!-- Actual Problem Code Design -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/actual_problem_code"
+                android:textColor="@color/colorBlack"
+                android:layout_marginTop="@dimen/margin_normal"
+                android:fontFamily="@font/crimson_text_regular"
+                android:textSize="@dimen/txt_size_large"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_small"
+                android:orientation="vertical"
+                android:background="@drawable/round_rect_shape_line">
+                <Spinner
+                    android:layout_margin="@dimen/margin_small"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+            <!-- Cause Code Design -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/cause_code"
+                android:textColor="@color/colorBlack"
+                android:layout_marginTop="@dimen/margin_normal"
+                android:fontFamily="@font/crimson_text_regular"
+                android:textSize="@dimen/txt_size_large"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_small"
+                android:orientation="vertical"
+                android:background="@drawable/round_rect_shape_line">
+                <Spinner
+                    android:layout_margin="@dimen/margin_small"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+            <!-- Remedy Code Design -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/remedy_code"
+                android:textColor="@color/colorBlack"
+                android:layout_marginTop="@dimen/margin_normal"
+                android:fontFamily="@font/crimson_text_regular"
+                android:textSize="@dimen/txt_size_large"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_small"
+                android:orientation="vertical"
+                android:background="@drawable/round_rect_shape_line">
+                <Spinner
+                    android:layout_margin="@dimen/margin_small"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+            <!-- Other Fault Design -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/other_fault"
+                android:textColor="@color/colorBlack"
+                android:layout_marginTop="@dimen/margin_large"
+                android:fontFamily="@font/crimson_text_regular"
+                android:textSize="@dimen/txt_size_large"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="@dimen/margin_small"
+                android:background="@drawable/round_rect_shape_line">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_small"
+                    android:weightSum="4"
+                    android:orientation="horizontal">
+                   <TextView
+                       android:layout_width="0dp"
+                       android:layout_height="wrap_content"
+                       android:text="@string/third_party_fault"
+                       android:textColor="@color/colorBlack"
+                       android:textSize="@dimen/txt_size_large"
+                       android:fontFamily="@font/crimson_text_bold"
+                       android:layout_margin="@dimen/margin_small"
+                       android:layout_weight="3.5" />
+                    <ImageView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.5"
+                        android:src="@drawable/check_blank"
+                        android:layout_margin="@dimen/margin_small"/>
+
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/margin_small"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/third_party_fault_comments"
+                        android:textColor="@color/colorPrimary"
+                        android:fontFamily="@font/crimson_text_regular"
+                        android:textSize="@dimen/txt_size_large"/>
+
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/crimson_text_regular"
+                        android:textSize="@dimen/txt_size_large"
+                        android:hint="@string/comment_here"/>
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/add_third_party_information"
+                        android:fontFamily="@font/crimson_text_regular"
+                        android:textSize="@dimen/txt_size_large"/>
+
+                    <!-- Telco Design -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="32dp"
+                        android:layout_marginTop="@dimen/margin_small"
+                        android:orientation="horizontal"
+                        android:weightSum="4">
+                        <ImageView
+                            android:layout_width="0dp"
+                            android:layout_gravity="center"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5"
+                            android:src="@drawable/icon_add_circle"/>
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="3.5"
+                            android:text="@string/telco"
+                            android:textSize="@dimen/txt_size_small"
+                            android:textColor="@color/colorPrimary"
+                            android:layout_gravity="center"/>
+                    </LinearLayout>
+
+                    <!-- Power Grid Design -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="32dp"
+                        android:orientation="horizontal"
+                        android:weightSum="4">
+                        <ImageView
+                            android:layout_width="0dp"
+                            android:layout_gravity="center"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5"
+                            android:src="@drawable/icon_add_circle"/>
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="3.5"
+                            android:text="@string/power_grid"
+                            android:textSize="@dimen/txt_size_small"
+                            android:textColor="@color/colorPrimary"
+                            android:layout_gravity="center"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="32dp"
+                        android:orientation="horizontal"
+                        android:weightSum="4">
+                        <ImageView
+                            android:layout_width="0dp"
+                            android:layout_gravity="center"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5"
+                            android:src="@drawable/icon_add_circle"/>
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="3.5"
+                            android:text="@string/others"
+                            android:textSize="@dimen/txt_size_small"
+                            android:textColor="@color/colorPrimary"
+                            android:layout_gravity="center"/>
+                    </LinearLayout>
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Part Replacement Design -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/part_replacement"
+                android:textColor="@color/colorBlack"
+                android:layout_marginTop="@dimen/margin_large"
+                android:fontFamily="@font/crimson_text_regular"
+                android:textSize="@dimen/txt_size_large"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="@dimen/margin_small"
+                android:background="@drawable/round_rect_shape_line">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_small"
+                    android:weightSum="4"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/required_part_placement"
+                        android:textColor="@color/colorBlack"
+                        android:textSize="@dimen/txt_size_large"
+                        android:fontFamily="@font/crimson_text_bold"
+                        android:layout_margin="@dimen/margin_small"
+                        android:layout_weight="3.5" />
+                    <ImageView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.5"
+                        android:src="@drawable/check_blank"
+                        android:layout_margin="@dimen/margin_small"/>
+
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/margin_small"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/scan_faulty_parts"
+                        android:textColor="@color/colorBlack"
+                        android:fontFamily="@font/crimson_text_regular"
+                        android:textSize="@dimen/txt_size_large"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/component_id"
+                        android:textColor="@color/colorPrimary"
+                        android:fontFamily="@font/crimson_text_regular"
+                        android:textSize="@dimen/txt_size_normal"/>
+
+                    <!-- Telco Design -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/margin_small"
+                        android:orientation="horizontal"
+                        android:weightSum="5">
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="3"
+                            android:layout_gravity="center"
+                            android:background="@drawable/round_rect_shape">
+
+                            <EditText
+                                android:id="@+id/edit_text"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="C3434343434"
+                                android:textSize="@dimen/txt_size_normal"/>
+                        </LinearLayout>
+
+                        <Button
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="2"
+                            android:layout_marginStart="@dimen/txt_size_normal"
+                            android:textColor="@color/colorWhite"
+                            android:text="@string/qr_scan"
+                            android:layout_gravity="center"
+                            android:drawableLeft="@drawable/assect_white"
+                            android:background="@drawable/round_rect_shape_button"/>
+
+
+                    </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/txt_size_normal"
+                        android:text="@string/scan_faulty_parts"
+                        android:textColor="@color/colorBlack"
+                        android:fontFamily="@font/crimson_text_regular"
+                        android:textSize="@dimen/txt_size_large"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/component_id"
+                        android:textColor="@color/colorPrimary"
+                        android:fontFamily="@font/crimson_text_regular"
+                        android:textSize="@dimen/txt_size_normal"/>
+
+                    <!-- Telco Design -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/margin_small"
+                        android:orientation="horizontal"
+                        android:weightSum="5">
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="3"
+                            android:layout_gravity="center"
+                            android:background="@drawable/round_rect_shape">
+
+                            <EditText
+                                android:id="@+id/et_scan_replacement_parts"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="C3434343434"
+                                android:textSize="@dimen/txt_size_normal"/>
+                        </LinearLayout>
+
+                        <Button
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="2"
+                            android:layout_marginStart="@dimen/txt_size_normal"
+                            android:textColor="@color/colorWhite"
+                            android:text="@string/qr_scan"
+                            android:layout_gravity="center"
+                            android:drawableLeft="@drawable/assect_white"
+                            android:background="@drawable/round_rect_shape_button"/>
+
+
+                    </LinearLayout>
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/attach_pre_maintenance_photo"
+                android:textColor="@color/colorBlack"
+                android:layout_marginTop="@dimen/margin_normal"
+                android:fontFamily="@font/crimson_text_bold"
+                android:textSize="@dimen/txt_size_large"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_small"
+                android:weightSum="4">
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:src="@drawable/add_photo"/>
+            </LinearLayout>
+
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorWhite"
+                android:background="@drawable/round_rect_shape_button"
+                android:layout_margin="@dimen/margin_large"
+                android:text="@string/save"/>
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
 </FrameLayout>

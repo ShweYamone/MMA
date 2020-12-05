@@ -71,6 +71,7 @@
     <string name="cause_code">Cause Code:</string>
     <string name="remedy_code">Remedy Code:</string>
     <string name="other_fault">Other Fault:</string>
+    <string name="third_party_fault">3rd Party Fault</string>
     <string name="third_party_fault_comments">3rd Party Fault Comments:</string>
     <string name="add_third_party_information">Add 3rd Party Information</string>
     <string name="part_replacement">Part Replacement:</string>
@@ -131,5 +132,6 @@
     <!-- edit text message -->
     <string name="text_here">Text here</string>
     <string name="input_text">Input text</string>
+    <string name="comment_here">Comment here</string>
 
 </resources>
