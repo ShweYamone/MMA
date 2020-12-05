@@ -110,11 +110,15 @@
     <string name="desc_visual_inspection">Check for external damages and / or vandalism such as graffiti, posters. Report to Authority immediately if found any and to remove and clean.</string>
     <string name="fault_found">Fault Found:</string>
     <string name="fault_found_remarks">Fault Found Remarks:</string>
+    <string name="remark">Remark:</string>
     <string name="attach_post_maintenance_photo">Attach Post-Maintenance Photo:</string>
 
     <!-- Button -->
     <string name="save">SAVE</string>
     <string name="job_done">Job Done</string>
     <string name="qr_scan">QR SCAN</string>
+
+    <!-- edit text message -->
+    <string name="text_here">Text here</string>
 
 </resources>

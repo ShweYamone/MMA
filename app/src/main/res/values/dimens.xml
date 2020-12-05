@@ -81,7 +81,4 @@
     <dimen name="text_size">16sp</dimen>
     <dimen name="normal_padding">16dp</dimen>
 
-    <!-- font size for PM -->
-    <dimen name="pm_outer_font_size">16sp</dimen>
-    <dimen name="pm_inner_font_size">12sp</dimen>
 </resources>
