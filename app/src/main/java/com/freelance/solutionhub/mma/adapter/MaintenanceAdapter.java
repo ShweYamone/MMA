@@ -1,15 +1,18 @@
 package com.freelance.solutionhub.mma.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.transition.Slide;
 
 import com.freelance.solutionhub.mma.R;
+import com.freelance.solutionhub.mma.activity.PMActivity;
 import com.freelance.solutionhub.mma.model.MaintenanceInfoModel;
 
 import java.util.List;
@@ -35,6 +38,9 @@ public class MaintenanceAdapter extends RecyclerView.Adapter<MaintenanceAdapter.
         @BindView(R.id.tvLocation)
         TextView tvLocation;
 
+        @BindView(R.id.ivPMLanding)
+        ImageView ivPMLanding;
+
         private MaintenanceInfoModel maintenance;
 
         public MyViewHolder(View view) {
@@ -56,6 +62,14 @@ public class MaintenanceAdapter extends RecyclerView.Adapter<MaintenanceAdapter.
             tvStatus.setText(maintenance.getStatus());
             tvPanelHealthStatus.setText(maintenance.getPanelHealthStatus());
             tvLocation.setText(maintenance.getLocation());
+
+            ivPMLanding.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(mContext, PMActivity.class);
+                    mContext.startActivity(intent);
+                }
+            });
         }
     }
 

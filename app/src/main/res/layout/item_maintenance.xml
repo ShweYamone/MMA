@@ -28,6 +28,8 @@
                     android:id="@+id/tvMSONumber"
                     android:text="xxxxxx"
                     android:textColor="@color/colorBlack"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/crimson_text_regular"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
             </LinearLayout>
@@ -47,16 +49,17 @@
                     android:text="APPR"
                     android:textColor="@color/colorBlack"
                     android:textStyle="bold"
+                    android:fontFamily="@font/crimson_text_regular"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
             </LinearLayout>
             <ImageView
+                android:id="@+id/ivPMLanding"
                 android:layout_margin="@dimen/margin_small"
-                android:src="@drawable/ic_menu"
-                android:tint="@color/colorPrimary"
+                android:src="@drawable/landing_pm"
                 android:layout_weight="1"
                 android:layout_width="0dp"
-                android:layout_height="33dp"/>
+                android:layout_height="@dimen/edittext_height"/>
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
@@ -76,6 +79,8 @@
                     android:id="@+id/tvPanelHealthStatus"
                     android:text="Faculty"
                     android:textColor="@color/colorBlack"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/crimson_text_regular"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
             </LinearLayout>
@@ -94,10 +99,13 @@
                     android:id="@+id/tvLocation"
                     android:text="Rochar Rd Canter Ader Lly"
                     android:textColor="@color/colorBlack"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/crimson_text_regular"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
             </LinearLayout>
             <ImageView
+                android:visibility="invisible"
                 android:layout_margin="@dimen/margin_small"
                 android:tint="@color/colorBlack"
                 android:src="@drawable/ic_menu"
@@ -112,7 +120,7 @@
         android:paddingLeft="@dimen/padding_4"
         android:paddingRight="@dimen/padding_4"
         android:layout_marginTop="@dimen/margin_small"
-        android:layout_marginRight="@dimen/margin_xxlarge"
+        android:layout_marginRight="48dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"

@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" >
+            <TextView
+                android:id="@+id/toolbar_title"
+                android:text="MMA"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
+                android:layout_gravity="center" />
+        </androidx.appcompat.widget.Toolbar>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_margin="@dimen/margin_xlarge">
+        <RelativeLayout
+            android:layout_marginTop="@dimen/margin_xxlarge"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:layout_marginTop="@dimen/margin_xlarge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardElevation="10dp"
+                    app:cardCornerRadius="@dimen/card_corner_radius">
+
+                    <LinearLayout
+                        android:layout_marginTop="@dimen/margin_xlarge"
+                        android:layout_marginLeft="@dimen/margin_large"
+                        android:layout_marginRight="@dimen/margin_large"
+                        android:layout_marginBottom="@dimen/margin_xlarge"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+                        <TextView
+                            android:gravity="center"
+                            android:layout_margin="@dimen/margin_small"
+                            android:text="@string/work_complete"
+                            android:textColor="@color/colorLightBlack"
+                            android:fontFamily="@font/crimson_text_regular"
+                            android:textStyle="bold"
+                            android:textSize="@dimen/txt_size_ex_large"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="5dp"
+                            android:src="@drawable/dotted"
+                            android:layerType="software" />
+                        <TextView
+                            android:layout_marginTop="@dimen/margin_large"
+                            android:layout_marginBottom="@dimen/margin_xxsmall"
+                            android:gravity="center"
+                            android:text="@string/start_datetime"
+                            android:textSize="@dimen/txt_size_small"
+                            android:textColor="@color/color_blue"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+                        <TextView
+                            android:id="@+id/tvStartDateTime"
+                            android:gravity="center"
+                            android:text="12/05/2019/ 12:00:34"
+                            android:textColor="@color/colorLightBlack"
+                            android:fontFamily="@font/crimson_text_regular"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+
+                        <TextView
+                            android:layout_marginTop="@dimen/margin_large"
+                            android:layout_marginBottom="@dimen/margin_xxsmall"
+                            android:gravity="center"
+                            android:text="@string/end_datetime"
+                            android:textSize="@dimen/txt_size_small"
+                            android:textColor="@color/color_blue"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+                        <TextView
+                            android:id="@+id/tvEndDateTime"
+                            android:gravity="center"
+                            android:text="12/05/2019/ 12:00:34"
+                            android:textColor="@color/colorLightBlack"
+                            android:fontFamily="@font/crimson_text_regular"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+
+                        <TextView
+                            android:layout_marginTop="@dimen/margin_xlarge"
+                            android:layout_marginBottom="@dimen/margin_xsmall"
+                            android:gravity="center"
+                            android:text="@string/remarks"
+                            android:textStyle="bold"
+                            android:textColor="@color/colorLightBlack"
+                            android:textSize="@dimen/txt_size_large"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+                        <TextView
+                            android:id="@+id/tvRemarks"
+                            android:text="@string/temp_text"
+                            android:textAlignment="viewStart"
+                            android:textColor="@color/colorLightBlack"
+                            android:fontFamily="@font/crimson_text_regular"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+            </LinearLayout>
+
+            <ImageView
+                android:src="@drawable/complete"
+                android:layout_centerHorizontal="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </RelativeLayout>
+
+        <Button
+            android:id="@+id/btnClose"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="@dimen/margin_normal"
+            android:background="@drawable/bg_btn_login"
+            android:text="@string/close"
+            android:textAllCaps="false"
+            android:textColor="@color/colorWhite"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </RelativeLayout>
+
+</LinearLayout>
