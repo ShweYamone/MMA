@@ -29,12 +29,15 @@
     <string name="checking_with_backend">Checking with backend.</string>
     <string name="wait">Please wait....</string>
 
-    <!--CM Work order completion -->
+    <!--PM Work order completion -->
     <string name="work_complete">Work Order Completion</string>
     <string name="start_datetime">Start Date/Time</string>
     <string name="end_datetime">End Date/Time</string>
     <string name="close">Close</string>
     <string name="temp_text">Lorem ipsum dolor sit amet, consectetur elit Quisque a quam ut enim maximus </string>
+    <!-- CM Work orde completion -->
+    <string name="arrival_date_time">Arrival Date/Time</string>
+    <string name="job_completion_date_time">Job Completion Date/Time</string>
     <!-- CM value for step-1 -->
     <string name="mso_information">MSO Information</string>
     <string name="mso_number">MSO Number:</string>

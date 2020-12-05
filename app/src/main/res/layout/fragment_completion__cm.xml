@@ -51,13 +51,13 @@
                         android:layout_marginTop="@dimen/margin_large"
                         android:layout_marginBottom="@dimen/margin_xxsmall"
                         android:gravity="center"
-                        android:text="@string/start_datetime"
+                        android:text="@string/acknowledge_date_time"
                         android:textSize="@dimen/txt_size_small"
                         android:textColor="@color/color_blue"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"/>
                     <TextView
-                        android:id="@+id/tvStartDateTime"
+                        android:id="@+id/tvAcknowledgeDateTime"
                         android:gravity="center"
                         android:text="12/05/2019/ 12:00:34"
                         android:textColor="@color/colorLightBlack"
@@ -69,13 +69,31 @@
                         android:layout_marginTop="@dimen/margin_large"
                         android:layout_marginBottom="@dimen/margin_xxsmall"
                         android:gravity="center"
-                        android:text="@string/end_datetime"
+                        android:text="@string/arrival_date_time"
                         android:textSize="@dimen/txt_size_small"
                         android:textColor="@color/color_blue"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"/>
                     <TextView
-                        android:id="@+id/tvEndDateTime"
+                        android:id="@+id/tvArrivalDateTime"
+                        android:gravity="center"
+                        android:text="12/05/2019/ 12:00:34"
+                        android:textColor="@color/colorLightBlack"
+                        android:fontFamily="@font/crimson_text_regular"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:layout_marginTop="@dimen/margin_large"
+                        android:layout_marginBottom="@dimen/margin_xxsmall"
+                        android:gravity="center"
+                        android:text="@string/job_completion_date_time"
+                        android:textSize="@dimen/txt_size_small"
+                        android:textColor="@color/color_blue"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+                    <TextView
+                        android:id="@+id/tvJobCompletionDateTime"
                         android:gravity="center"
                         android:text="12/05/2019/ 12:00:34"
                         android:textColor="@color/colorLightBlack"
