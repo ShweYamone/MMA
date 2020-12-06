@@ -54,7 +54,6 @@
             <TextView
                 android:text="@string/refer_date_time"
                 android:textColor="@color/color_blue"
-                android:textStyle="bold"
                 android:fontFamily="@font/crimson_text_regular"
                 android:layout_marginTop="@dimen/margin_large"
                 android:layout_width="match_parent"
@@ -73,7 +72,6 @@
             <TextView
                 android:text="@string/expected_completion_date_time"
                 android:textColor="@color/color_blue"
-                android:textStyle="bold"
                 android:fontFamily="@font/crimson_text_regular"
                 android:layout_marginTop="@dimen/margin_large"
                 android:layout_width="match_parent"
@@ -92,7 +90,6 @@
             <TextView
                 android:text="@string/clearance_date_time"
                 android:textColor="@color/color_blue"
-                android:textStyle="bold"
                 android:fontFamily="@font/crimson_text_regular"
                 android:layout_marginTop="@dimen/margin_large"
                 android:layout_width="match_parent"
@@ -111,7 +108,6 @@
             <TextView
                 android:text="@string/fault_status"
                 android:textColor="@color/color_blue"
-                android:textStyle="bold"
                 android:fontFamily="@font/crimson_text_regular"
                 android:layout_marginTop="@dimen/margin_large"
                 android:layout_width="match_parent"
@@ -130,7 +126,6 @@
             <TextView
                 android:text="@string/remarks"
                 android:textColor="@color/color_blue"
-                android:textStyle="bold"
                 android:fontFamily="@font/crimson_text_regular"
                 android:layout_marginTop="@dimen/margin_large"
                 android:layout_width="match_parent"
@@ -148,7 +143,6 @@
             <TextView
                 android:text="@string/third_party_company_name"
                 android:textColor="@color/color_blue"
-                android:textStyle="bold"
                 android:fontFamily="@font/crimson_text_regular"
                 android:layout_marginTop="@dimen/margin_large"
                 android:layout_width="match_parent"
@@ -167,7 +161,6 @@
             <TextView
                 android:text="@string/third_party_contractor_name"
                 android:textColor="@color/color_blue"
-                android:textStyle="bold"
                 android:fontFamily="@font/crimson_text_regular"
                 android:layout_marginTop="@dimen/margin_large"
                 android:layout_width="match_parent"
@@ -186,7 +179,6 @@
             <TextView
                 android:text="@string/third_party_contractor_no"
                 android:textColor="@color/color_blue"
-                android:textStyle="bold"
                 android:fontFamily="@font/crimson_text_regular"
                 android:layout_marginTop="@dimen/margin_large"
                 android:layout_width="match_parent"
@@ -205,7 +197,6 @@
             <TextView
                 android:text="@string/fault_detected_date_time"
                 android:textColor="@color/color_blue"
-                android:textStyle="bold"
                 android:fontFamily="@font/crimson_text_regular"
                 android:layout_marginTop="@dimen/margin_large"
                 android:layout_width="match_parent"
@@ -224,7 +215,6 @@
             <TextView
                 android:text="@string/action_date_time"
                 android:textColor="@color/color_blue"
-                android:textStyle="bold"
                 android:fontFamily="@font/crimson_text_regular"
                 android:layout_marginTop="@dimen/margin_large"
                 android:layout_width="match_parent"
@@ -243,7 +233,6 @@
             <TextView
                 android:text="@string/action_taken_by_contractor"
                 android:textColor="@color/color_blue"
-                android:textStyle="bold"
                 android:fontFamily="@font/crimson_text_regular"
                 android:layout_marginTop="@dimen/margin_large"
                 android:layout_width="match_parent"

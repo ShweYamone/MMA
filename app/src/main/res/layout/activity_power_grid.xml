@@ -1,9 +1,302 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.PowerGridActivity">
+    tools:context=".activity.PowerGridActivity"
+    android:orientation="vertical">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" >
+            <TextView
+                android:id="@+id/toolbar_title"
+                android:text="MMA"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
+                android:layout_gravity="center" />
+        </androidx.appcompat.widget.Toolbar>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/margin_normal"
+            android:layout_marginRight="@dimen/margin_normal"
+            android:orientation="vertical">
+
+            <!-- Power Grid (Title)-->
+            <TextView
+                android:layout_marginTop="@dimen/margin_normal"
+                android:gravity="center"
+                android:text="@string/power_grid"
+                android:textColor="@color/colorBlack"
+                android:textStyle="bold"
+                android:fontFamily="@font/crimson_text_regular"
+                android:textSize="@dimen/txt_size_large"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <!-- Power Grid No: (TextView)-->
+            <TextView
+                android:text="@string/power_grid_no"
+                android:textColor="@color/color_blue"
+                android:fontFamily="@font/crimson_text_regular"
+                android:layout_marginTop="@dimen/margin_large"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <!-- Power Grid No:(EditText)-->
+            <EditText
+                android:paddingLeft="@dimen/margin_normal"
+                android:paddingRight="@dimen/margin_normal"
+                android:maxLines="1"
+                android:textColor="@color/colorBlack"
+                android:fontFamily="@font/crimson_text_regular"
+                android:background="@drawable/round_rect_shape_line"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/edittext_height"/>
+
+
+            <!-- CT Personnel: (TextView) -->
+            <TextView
+                android:text="@string/ct_personnel"
+                android:textColor="@color/color_blue"
+                android:fontFamily="@font/crimson_text_regular"
+                android:layout_marginTop="@dimen/margin_large"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <!-- CT Personnel: (EditText) -->
+            <EditText
+                android:paddingLeft="@dimen/margin_normal"
+                android:paddingRight="@dimen/margin_normal"
+                android:maxLines="1"
+                android:textColor="@color/colorBlack"
+                android:fontFamily="@font/crimson_text_regular"
+                android:background="@drawable/round_rect_shape_line"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/edittext_height"/>
+
+            <!-- Refer Date / Time (TextView) -->
+            <TextView
+                android:text="@string/refer_date_time"
+                android:textColor="@color/color_blue"
+                android:fontFamily="@font/crimson_text_regular"
+                android:layout_marginTop="@dimen/margin_large"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <!-- Refer Date / Time (Button) -->
+            <Button
+                android:paddingLeft="@dimen/margin_normal"
+                android:paddingRight="@dimen/margin_normal"
+                android:textColor="@color/colorBlack"
+                android:fontFamily="@font/crimson_text_regular"
+                android:drawableRight="@drawable/date_time"
+                android:background="@drawable/round_rect_shape_line"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/edittext_height"/>
+
+            <!-- Expected Completion Date / Time (TextView) -->
+            <TextView
+                android:text="@string/expected_completion_date_time"
+                android:textColor="@color/color_blue"
+                android:fontFamily="@font/crimson_text_regular"
+                android:layout_marginTop="@dimen/margin_large"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <!-- Expected Completion Date / Time (Button) -->
+            <Button
+                android:paddingLeft="@dimen/margin_normal"
+                android:paddingRight="@dimen/margin_normal"
+                android:textColor="@color/colorBlack"
+                android:fontFamily="@font/crimson_text_regular"
+                android:drawableRight="@drawable/date_time"
+                android:background="@drawable/round_rect_shape_line"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/edittext_height"/>
+
+            <!-- Clearance Date / Time (TextView) -->
+            <TextView
+                android:text="@string/clearance_date_time"
+                android:textColor="@color/color_blue"
+                android:fontFamily="@font/crimson_text_regular"
+                android:layout_marginTop="@dimen/margin_large"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <!-- Clearance Date/ Time (Button) -->
+            <Button
+                android:paddingLeft="@dimen/margin_normal"
+                android:paddingRight="@dimen/margin_normal"
+                android:textColor="@color/colorBlack"
+                android:fontFamily="@font/crimson_text_regular"
+                android:drawableRight="@drawable/date_time"
+                android:background="@drawable/round_rect_shape_line"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/edittext_height"/>
+
+            <!-- Power Grid Fault Status: (TextView) -->
+            <TextView
+                android:text="@string/power_grid_fault_status"
+                android:textColor="@color/color_blue"
+                android:fontFamily="@font/crimson_text_regular"
+                android:layout_marginTop="@dimen/margin_large"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <!-- Power Grid Fault Status: (EditText) -->
+            <EditText
+                android:paddingLeft="@dimen/margin_normal"
+                android:paddingRight="@dimen/margin_normal"
+                android:maxLines="1"
+                android:textColor="@color/colorBlack"
+                android:fontFamily="@font/crimson_text_regular"
+                android:background="@drawable/round_rect_shape_line"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/edittext_height"/>
+
+            <!-- Remarks on Telco Fault: (TextView) -->
+            <TextView
+                android:text="@string/remarks_on_telco_fault"
+                android:textColor="@color/color_blue"
+                android:fontFamily="@font/crimson_text_regular"
+                android:layout_marginTop="@dimen/margin_large"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <!-- Remarks on Telco Fault: (EditText) -->
+            <EditText
+                android:paddingLeft="@dimen/margin_normal"
+                android:paddingRight="@dimen/margin_normal"
+                android:maxLines="1"
+                android:textColor="@color/colorBlack"
+                android:fontFamily="@font/crimson_text_regular"
+                android:background="@drawable/round_rect_shape_line"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/edittext_height"/>
+
+            <!-- Power Grid Officer (TextView) -->
+            <TextView
+                android:text="@string/power_grid_officer"
+                android:textColor="@color/color_blue"
+                android:fontFamily="@font/crimson_text_regular"
+                android:layout_marginTop="@dimen/margin_large"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <!-- Power Grid Officer (TextView) -->
+            <EditText
+                android:paddingLeft="@dimen/margin_normal"
+                android:paddingRight="@dimen/margin_normal"
+                android:maxLines="1"
+                android:textColor="@color/colorBlack"
+                android:fontFamily="@font/crimson_text_regular"
+                android:background="@drawable/round_rect_shape_line"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/edittext_height"/>
+
+            <!-- Fault Detected Date / Time (TextView) -->
+            <TextView
+                android:text="@string/fault_detected_date_time"
+                android:textColor="@color/color_blue"
+                android:fontFamily="@font/crimson_text_regular"
+                android:layout_marginTop="@dimen/margin_large"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <!-- Fault Detected Date / Time (Button) -->
+            <Button
+                android:paddingLeft="@dimen/margin_normal"
+                android:paddingRight="@dimen/margin_normal"
+                android:drawableRight="@drawable/date_time"
+                android:textColor="@color/colorBlack"
+                android:fontFamily="@font/crimson_text_regular"
+                android:background="@drawable/round_rect_shape_line"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/edittext_height"/>
+
+            <!-- Action Date / Time (TextView) -->
+            <TextView
+                android:text="@string/action_date_time"
+                android:textColor="@color/color_blue"
+                android:fontFamily="@font/crimson_text_regular"
+                android:layout_marginTop="@dimen/margin_large"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <!-- Action Date / Time (Button) -->
+            <Button
+                android:paddingLeft="@dimen/margin_normal"
+                android:paddingRight="@dimen/margin_normal"
+                android:drawableRight="@drawable/date_time"
+                android:textColor="@color/colorBlack"
+                android:fontFamily="@font/crimson_text_regular"
+                android:background="@drawable/round_rect_shape_line"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/edittext_height"/>
+
+            <!-- Action taken by power grid (TextView) -->
+            <TextView
+                android:text="@string/action_taken_by_power_grid"
+                android:textColor="@color/color_blue"
+                android:fontFamily="@font/crimson_text_regular"
+                android:layout_marginTop="@dimen/margin_large"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <!-- Action taken by power grid (LinearLayout) -->
+            <LinearLayout
+                android:layout_below="@+id/tv_remarks"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/round_rect_shape_line">
+
+                <EditText
+                    android:id="@+id/et_action_taken"
+                    android:layout_width="match_parent"
+                    android:layout_height="64dp"
+                    android:textSize="@dimen/txt_size_normal"
+                    android:fontFamily="@font/crimson_text_regular"
+                    android:inputType="text|textMultiLine"
+                    android:layout_margin="@dimen/margin_small"
+                    android:background="@color/white_trans"
+                    android:hint="@string/input_text"
+                    android:gravity="top"/>
+            </LinearLayout>
+
+            <Button
+                android:layout_marginTop="@dimen/margin_large"
+                android:layout_marginBottom="@dimen/margin_large"
+                android:text="@string/save"
+                android:textColor="@color/colorWhite"
+                android:background="@drawable/bg_btn_login"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+    </ScrollView>
+
+
+
+
+
+</LinearLayout>
