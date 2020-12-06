@@ -1,7 +1,7 @@
 package com.freelance.solutionhub.mma.util;
 
+import com.freelance.solutionhub.mma.model.FilterModel;
 import com.freelance.solutionhub.mma.model.PMServiceListModel;
-import com.freelance.solutionhub.mma.model.PaginationParam;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -11,8 +11,10 @@ import retrofit2.http.POST;
 
 
 public interface ApiInterface {
-    @Headers({ "Content-Type: application/json"})
+
+    @Headers({"Content-Type: application/json"})
     @POST("dev/service-orders")
-    Call<PMServiceListModel> getPMServiceOrders(@Header("Authorization") String auth);
+    Call<PMServiceListModel> getPMServiceOrders(@Header("Authorization") String auth, @Body FilterModel param);
+
 }
 

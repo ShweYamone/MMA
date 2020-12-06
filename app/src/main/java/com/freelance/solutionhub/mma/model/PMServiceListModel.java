@@ -2,7 +2,6 @@ package com.freelance.solutionhub.mma.model;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.io.Serializable;
 import java.util.List;
 
 public class PMServiceListModel{

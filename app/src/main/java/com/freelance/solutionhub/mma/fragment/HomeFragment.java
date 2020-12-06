@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.freelance.solutionhub.mma.R;
 import com.freelance.solutionhub.mma.adapter.MaintenanceAdapter;
+import com.freelance.solutionhub.mma.model.FilterModel;
 import com.freelance.solutionhub.mma.model.MaintenanceInfoModel;
 import com.freelance.solutionhub.mma.model.PMServiceInfoModel;
 import com.freelance.solutionhub.mma.model.PMServiceListModel;
@@ -112,8 +113,31 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
     }
 
     private void test() {
+        FilterModel filterModel = new FilterModel(new PaginationParam(1));
+        Call<PMServiceListModel> call = apiInterface.getPMServiceOrders(token , filterModel);
+        call.enqueue(new Callback<PMServiceListModel>() {
+            @Override
+            public void onResponse(Call<PMServiceListModel> call, Response<PMServiceListModel> response) {
+                PMServiceListModel pmList = response.body();
+
+                if (response.isSuccessful()) {
+                    Toast.makeText(getContext(), pmList.getPageNumber() + ", " + pmList.getNumberOfElements(), Toast.LENGTH_LONG).show();
+                }
+                else {
+                    Toast.makeText(getContext(), response.code()+"f", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<PMServiceListModel> call, Throwable t) {
+                Toast.makeText(getContext(), "connection failure", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        /*
+
         PaginationParam p = new PaginationParam(1,1);
-        Call<PMServiceListModel> call = apiInterface.getPMServiceOrders("Barer " + token);
+        Call<PMServiceListModel> call = apiInterface.getPMServiceOrders("Barer " + token, p);
         call.enqueue(new Callback<PMServiceListModel>() {
             @Override
             public void onResponse(Call<PMServiceListModel> call, Response<PMServiceListModel> response) {
@@ -131,7 +155,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
             public void onFailure(Call<PMServiceListModel> call, Throwable t) {
                 Toast.makeText(getContext(), "response fail", Toast.LENGTH_SHORT).show();
             }
-        });
+        });*/
     }
 
     @Override
