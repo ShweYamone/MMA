@@ -4,96 +4,54 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
-public class PMServiceInfoModel{
+public class PMServiceInfoModel {
     @SerializedName("id")
-    String id;
+    public String id;
 
     @SerializedName("priorityLevel")
-    String priorityLevel;
+    public Object priorityLevel;
 
     @SerializedName("busStopId")
-    String busStopId;
+    public Object busStopId;
 
     @SerializedName("busStopLocation")
-    String busStopLocation;
+    public Object busStopLocation;
 
     @SerializedName("panelId")
-    String panelId;
+    public String panelId;
 
     @SerializedName("reportedProblem")
-    String reportedProblem;
+    public Object reportedProblem;
 
     @SerializedName("cause")
-    String cause;
+    public Object cause;
 
     @SerializedName("actualProblem")
-    String actualProblem;
+    public Object actualProblem;
 
     @SerializedName("remedy")
-    String remedy;
+    public Object remedy;
 
     @SerializedName("serviceOrderStatus")
-    String serviceOrderStatus;
+    public String serviceOrderStatus;
 
     @SerializedName("responseTime")
-    String responseTime;
+    public Object responseTime;
 
     @SerializedName("resolutionTime")
-    String resolutionTime;
+    public Object resolutionTime;
 
     @SerializedName("creationDate")
-    String creationDate;
+    public String creationDate;
 
     @SerializedName("notificationDate")
-    String notificationDate;
+    public String notificationDate;
 
     @SerializedName("jobCompletionDate")
-    String jobCompletionDate;
+    public Object jobCompletionDate;
 
     @SerializedName("acknowledgementDate")
-    String acknowledgementDate;
-
-    /*
-
-        {
-            "id": "PM20202C9F3AE6",
-            "priorityLevel": null,
-            "busStopId": null,
-            "busStopLocation": null,
-            "panelId": "pie0108",
-            "reportedProblem": null,
-            "cause": null,
-            "actualProblem": null,
-            "remedy": null,
-            "serviceOrderStatus": "INPRG",
-            "responseTime": "153:06",
-            "resolutionTime": null,
-            "creationDate": "2020-11-25 01:53:49",
-            "notificationDate": "2020-11-25 01:53:49",
-            "jobCompletionDate": null,
-            "acknowledgementDate": "2020-01-01 09:00:00"
-        }
-    ]
-     */
-
-    public PMServiceInfoModel(String id, String priorityLevel, String busStopId, String busStopLocation, String panelId, String reportedProblem, String cause, String actualProblem, String remedy, String serviceOrderStatus, String responseTime, String resolutionTime, String creationDate, String notificationDate, String jobCompletionDate, String acknowledgementDate) {
-        this.id = id;
-        this.priorityLevel = priorityLevel;
-        this.busStopId = busStopId;
-        this.busStopLocation = busStopLocation;
-        this.panelId = panelId;
-        this.reportedProblem = reportedProblem;
-        this.cause = cause;
-        this.actualProblem = actualProblem;
-        this.remedy = remedy;
-        this.serviceOrderStatus = serviceOrderStatus;
-        this.responseTime = responseTime;
-        this.resolutionTime = resolutionTime;
-        this.creationDate = creationDate;
-        this.notificationDate = notificationDate;
-        this.jobCompletionDate = jobCompletionDate;
-        this.acknowledgementDate = acknowledgementDate;
-    }
+    public Object acknowledgementDate;
 
     public String getId() {
         return id;
@@ -103,27 +61,27 @@ public class PMServiceInfoModel{
         this.id = id;
     }
 
-    public String getPriorityLevel() {
+    public Object getPriorityLevel() {
         return priorityLevel;
     }
 
-    public void setPriorityLevel(String priorityLevel) {
+    public void setPriorityLevel(Object priorityLevel) {
         this.priorityLevel = priorityLevel;
     }
 
-    public String getBusStopId() {
+    public Object getBusStopId() {
         return busStopId;
     }
 
-    public void setBusStopId(String busStopId) {
+    public void setBusStopId(Object busStopId) {
         this.busStopId = busStopId;
     }
 
-    public String getBusStopLocation() {
+    public Object getBusStopLocation() {
         return busStopLocation;
     }
 
-    public void setBusStopLocation(String busStopLocation) {
+    public void setBusStopLocation(Object busStopLocation) {
         this.busStopLocation = busStopLocation;
     }
 
@@ -135,35 +93,35 @@ public class PMServiceInfoModel{
         this.panelId = panelId;
     }
 
-    public String getReportedProblem() {
+    public Object getReportedProblem() {
         return reportedProblem;
     }
 
-    public void setReportedProblem(String reportedProblem) {
+    public void setReportedProblem(Object reportedProblem) {
         this.reportedProblem = reportedProblem;
     }
 
-    public String getCause() {
+    public Object getCause() {
         return cause;
     }
 
-    public void setCause(String cause) {
+    public void setCause(Object cause) {
         this.cause = cause;
     }
 
-    public String getActualProblem() {
+    public Object getActualProblem() {
         return actualProblem;
     }
 
-    public void setActualProblem(String actualProblem) {
+    public void setActualProblem(Object actualProblem) {
         this.actualProblem = actualProblem;
     }
 
-    public String getRemedy() {
+    public Object getRemedy() {
         return remedy;
     }
 
-    public void setRemedy(String remedy) {
+    public void setRemedy(Object remedy) {
         this.remedy = remedy;
     }
 
@@ -175,19 +133,19 @@ public class PMServiceInfoModel{
         this.serviceOrderStatus = serviceOrderStatus;
     }
 
-    public String getResponseTime() {
+    public Object getResponseTime() {
         return responseTime;
     }
 
-    public void setResponseTime(String responseTime) {
+    public void setResponseTime(Object responseTime) {
         this.responseTime = responseTime;
     }
 
-    public String getResolutionTime() {
+    public Object getResolutionTime() {
         return resolutionTime;
     }
 
-    public void setResolutionTime(String resolutionTime) {
+    public void setResolutionTime(Object resolutionTime) {
         this.resolutionTime = resolutionTime;
     }
 
@@ -207,19 +165,19 @@ public class PMServiceInfoModel{
         this.notificationDate = notificationDate;
     }
 
-    public String getJobCompletionDate() {
+    public Object getJobCompletionDate() {
         return jobCompletionDate;
     }
 
-    public void setJobCompletionDate(String jobCompletionDate) {
+    public void setJobCompletionDate(Object jobCompletionDate) {
         this.jobCompletionDate = jobCompletionDate;
     }
 
-    public String getAcknowledgementDate() {
+    public Object getAcknowledgementDate() {
         return acknowledgementDate;
     }
 
-    public void setAcknowledgementDate(String acknowledgementDate) {
+    public void setAcknowledgementDate(Object acknowledgementDate) {
         this.acknowledgementDate = acknowledgementDate;
     }
 }

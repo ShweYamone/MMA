@@ -1,16 +1,13 @@
 package com.freelance.solutionhub.mma.model;
 
-import com.google.gson.annotations.SerializedName;
+import java.io.Serializable;
 
-public class PaginationParam {
-    @SerializedName("pageNumber")
-    int pageNumber;
-
-    @SerializedName("pageSize")
-    int pageSize;
+public class PaginationParam implements Serializable {
+    public int pageNumber;
+    public int pageSize;
 
     public PaginationParam(int pageNumber) {
-        this.pageNumber = pageNumber;
+        this.pageNumber = 1;
         this.pageSize = 10;
     }
 }

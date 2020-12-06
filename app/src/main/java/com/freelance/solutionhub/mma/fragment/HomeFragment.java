@@ -23,7 +23,6 @@ import com.freelance.solutionhub.mma.R;
 import com.freelance.solutionhub.mma.adapter.MaintenanceAdapter;
 import com.freelance.solutionhub.mma.model.FilterModel;
 import com.freelance.solutionhub.mma.model.MaintenanceInfoModel;
-import com.freelance.solutionhub.mma.model.PMServiceInfoModel;
 import com.freelance.solutionhub.mma.model.PMServiceListModel;
 import com.freelance.solutionhub.mma.model.PaginationParam;
 import com.freelance.solutionhub.mma.util.ApiClient;
@@ -96,6 +95,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
         cvPreventive.setOnClickListener(this);
 
         apiInterface = ApiClient.getClient(this.getContext());
+
         mAdapter = new MaintenanceAdapter(view.getContext(), maintenanceList);
 
         recyclerViewMaintenance.setHasFixedSize(true);
@@ -113,13 +113,17 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
     }
 
     private void test() {
+        Toast.makeText(getContext(), "connection start", Toast.LENGTH_SHORT).show();
         FilterModel filterModel = new FilterModel(new PaginationParam(1));
-        Call<PMServiceListModel> call = apiInterface.getPMServiceOrders(token , filterModel);
+       // ApiClient.removeFromCache("");
+        Call<PMServiceListModel> call = apiInterface.getPMServiceOrders("Bearer " + token, filterModel);
+
         call.enqueue(new Callback<PMServiceListModel>() {
+
             @Override
             public void onResponse(Call<PMServiceListModel> call, Response<PMServiceListModel> response) {
                 PMServiceListModel pmList = response.body();
-
+                Toast.makeText(getContext(), "connection start1", Toast.LENGTH_SHORT).show();
                 if (response.isSuccessful()) {
                     Toast.makeText(getContext(), pmList.getPageNumber() + ", " + pmList.getNumberOfElements(), Toast.LENGTH_LONG).show();
                 }

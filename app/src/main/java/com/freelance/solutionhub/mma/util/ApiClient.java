@@ -20,6 +20,19 @@ import static com.freelance.solutionhub.mma.util.AppConstant.BASE_URL;
 
 public class ApiClient {
 
+    /*
+    private static Retrofit retrofit = null;
+
+    public static Retrofit getClient() {
+        if (retrofit == null) {
+            retrofit = new Retrofit.Builder()
+                    .baseUrl(BASE_URL)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+        }
+        return retrofit;
+    }
+*/
     private static ApiInterface apiService;
     private static Cache cache;
 

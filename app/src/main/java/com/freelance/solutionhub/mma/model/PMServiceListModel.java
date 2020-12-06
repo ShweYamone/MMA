@@ -1,27 +1,21 @@
 package com.freelance.solutionhub.mma.model;
 
-import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class PMServiceListModel{
+public class PMServiceListModel implements Serializable {
 
-    @SerializedName("pageNumber")
     int pageNumber;
 
-    @SerializedName("pageSize")
     int pageSize;
 
-    @SerializedName("totalPages")
     int totalPages;
 
-    @SerializedName("numberOfElements")
     int numberOfElements;
 
-    @SerializedName("totalElements")
     int totalElements;
 
-    @SerializedName("items")
     List<PMServiceInfoModel> items;
 
 
