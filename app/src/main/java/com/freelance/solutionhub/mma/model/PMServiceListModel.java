@@ -18,7 +18,6 @@ public class PMServiceListModel implements Serializable {
 
     List<PMServiceInfoModel> items;
 
-
     /*
     "pageNumber": 1,
             "pageSize": 2,

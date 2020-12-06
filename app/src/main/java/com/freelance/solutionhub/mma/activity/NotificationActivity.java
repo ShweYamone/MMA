@@ -9,9 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.os.Bundle;
 
 import com.freelance.solutionhub.mma.R;
-import com.freelance.solutionhub.mma.adapter.MaintenanceAdapter;
 import com.freelance.solutionhub.mma.adapter.NotificationAdapter;
-import com.freelance.solutionhub.mma.model.MaintenanceInfoModel;
 import com.freelance.solutionhub.mma.model.NotificationModel;
 
 import java.util.ArrayList;

@@ -1,57 +1,27 @@
 package com.freelance.solutionhub.mma.model;
 
+import com.freelance.solutionhub.mma.common.Pageable;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
-public class PMServiceInfoModel {
-    @SerializedName("id")
+public class PMServiceInfoModel implements Serializable{
     public String id;
-
-    @SerializedName("priorityLevel")
-    public Object priorityLevel;
-
-    @SerializedName("busStopId")
-    public Object busStopId;
-
-    @SerializedName("busStopLocation")
-    public Object busStopLocation;
-
-    @SerializedName("panelId")
+    public String priorityLevel;
+    public String busStopId;
+    public String busStopLocation;
     public String panelId;
-
-    @SerializedName("reportedProblem")
-    public Object reportedProblem;
-
-    @SerializedName("cause")
-    public Object cause;
-
-    @SerializedName("actualProblem")
-    public Object actualProblem;
-
-    @SerializedName("remedy")
-    public Object remedy;
-
-    @SerializedName("serviceOrderStatus")
+    public String reportedProblem;
+    public String cause;
+    public String actualProblem;
+    public String remedy;
     public String serviceOrderStatus;
-
-    @SerializedName("responseTime")
-    public Object responseTime;
-
-    @SerializedName("resolutionTime")
-    public Object resolutionTime;
-
-    @SerializedName("creationDate")
+    public String responseTime;
+    public String resolutionTime;
     public String creationDate;
-
-    @SerializedName("notificationDate")
     public String notificationDate;
-
-    @SerializedName("jobCompletionDate")
-    public Object jobCompletionDate;
-
-    @SerializedName("acknowledgementDate")
-    public Object acknowledgementDate;
+    public String jobCompletionDate;
+    public String acknowledgementDate;
 
     public String getId() {
         return id;
@@ -61,27 +31,27 @@ public class PMServiceInfoModel {
         this.id = id;
     }
 
-    public Object getPriorityLevel() {
+    public String getPriorityLevel() {
         return priorityLevel;
     }
 
-    public void setPriorityLevel(Object priorityLevel) {
+    public void setPriorityLevel(String priorityLevel) {
         this.priorityLevel = priorityLevel;
     }
 
-    public Object getBusStopId() {
+    public String getBusStopId() {
         return busStopId;
     }
 
-    public void setBusStopId(Object busStopId) {
+    public void setBusStopId(String busStopId) {
         this.busStopId = busStopId;
     }
 
-    public Object getBusStopLocation() {
+    public String getBusStopLocation() {
         return busStopLocation;
     }
 
-    public void setBusStopLocation(Object busStopLocation) {
+    public void setBusStopLocation(String busStopLocation) {
         this.busStopLocation = busStopLocation;
     }
 
@@ -93,35 +63,35 @@ public class PMServiceInfoModel {
         this.panelId = panelId;
     }
 
-    public Object getReportedProblem() {
+    public String getReportedProblem() {
         return reportedProblem;
     }
 
-    public void setReportedProblem(Object reportedProblem) {
+    public void setReportedProblem(String reportedProblem) {
         this.reportedProblem = reportedProblem;
     }
 
-    public Object getCause() {
+    public String getCause() {
         return cause;
     }
 
-    public void setCause(Object cause) {
+    public void setCause(String cause) {
         this.cause = cause;
     }
 
-    public Object getActualProblem() {
+    public String getActualProblem() {
         return actualProblem;
     }
 
-    public void setActualProblem(Object actualProblem) {
+    public void setActualProblem(String actualProblem) {
         this.actualProblem = actualProblem;
     }
 
-    public Object getRemedy() {
+    public String getRemedy() {
         return remedy;
     }
 
-    public void setRemedy(Object remedy) {
+    public void setRemedy(String remedy) {
         this.remedy = remedy;
     }
 
@@ -133,19 +103,19 @@ public class PMServiceInfoModel {
         this.serviceOrderStatus = serviceOrderStatus;
     }
 
-    public Object getResponseTime() {
+    public String getResponseTime() {
         return responseTime;
     }
 
-    public void setResponseTime(Object responseTime) {
+    public void setResponseTime(String responseTime) {
         this.responseTime = responseTime;
     }
 
-    public Object getResolutionTime() {
+    public String getResolutionTime() {
         return resolutionTime;
     }
 
-    public void setResolutionTime(Object resolutionTime) {
+    public void setResolutionTime(String resolutionTime) {
         this.resolutionTime = resolutionTime;
     }
 
@@ -165,19 +135,19 @@ public class PMServiceInfoModel {
         this.notificationDate = notificationDate;
     }
 
-    public Object getJobCompletionDate() {
+    public String getJobCompletionDate() {
         return jobCompletionDate;
     }
 
-    public void setJobCompletionDate(Object jobCompletionDate) {
+    public void setJobCompletionDate(String jobCompletionDate) {
         this.jobCompletionDate = jobCompletionDate;
     }
 
-    public Object getAcknowledgementDate() {
+    public String getAcknowledgementDate() {
         return acknowledgementDate;
     }
 
-    public void setAcknowledgementDate(Object acknowledgementDate) {
+    public void setAcknowledgementDate(String acknowledgementDate) {
         this.acknowledgementDate = acknowledgementDate;
     }
 }

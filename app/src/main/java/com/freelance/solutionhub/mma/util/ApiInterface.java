@@ -17,8 +17,7 @@ import retrofit2.http.POST;
 
 public interface ApiInterface {
 
-    @Headers({"Content-Type: application/json"})
-    @POST("dev/service-orders")
+    @POST("service-orders")
     Call<PMServiceListModel> getPMServiceOrders(@Header("Authorization") String auth, @Body FilterModel param);
 
     @POST("https://7gs3iv1pt0.execute-api.ap-southeast-1.amazonaws.com/auth/login")
