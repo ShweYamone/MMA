@@ -17,16 +17,27 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.freelance.solutionhub.mma.R;
 import com.freelance.solutionhub.mma.adapter.MaintenanceAdapter;
 import com.freelance.solutionhub.mma.model.MaintenanceInfoModel;
+import com.freelance.solutionhub.mma.model.PMServiceInfoModel;
+import com.freelance.solutionhub.mma.model.PMServiceListModel;
+import com.freelance.solutionhub.mma.model.PaginationParam;
+import com.freelance.solutionhub.mma.util.ApiClient;
+import com.freelance.solutionhub.mma.util.ApiInterface;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+import static com.freelance.solutionhub.mma.util.AppConstant.token;
 
 public class HomeFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemSelectedListener {
 
@@ -70,6 +81,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
     private ArrayAdapter spinnerArrAdaper;
     private MaintenanceAdapter mAdapter;
     private List<MaintenanceInfoModel> maintenanceList = new ArrayList<>();
+    private ApiInterface apiInterface;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -82,6 +94,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
         cvCorrective.setOnClickListener(this);
         cvPreventive.setOnClickListener(this);
 
+        apiInterface = ApiClient.getClient(this.getContext());
         mAdapter = new MaintenanceAdapter(view.getContext(), maintenanceList);
 
         recyclerViewMaintenance.setHasFixedSize(true);
@@ -89,7 +102,36 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
         recyclerViewMaintenance.setLayoutManager(mLayoutManager);
         recyclerViewMaintenance.setAdapter(mAdapter);
         prepareMaintenaceList();
+
+
+        /*********testing**********/
+        test();
+
+
         return view;
+    }
+
+    private void test() {
+        PaginationParam p = new PaginationParam(1,1);
+        Call<PMServiceListModel> call = apiInterface.getPMServiceOrders("Barer " + token);
+        call.enqueue(new Callback<PMServiceListModel>() {
+            @Override
+            public void onResponse(Call<PMServiceListModel> call, Response<PMServiceListModel> response) {
+                PMServiceListModel pmList = response.body();
+                if (response.isSuccessful() ) {
+                    Toast.makeText(getContext(), pmList.getPageNumber() +", " + pmList.getPageSize(),Toast.LENGTH_LONG).show();
+                }
+                else {
+                    Toast.makeText(getContext(), "response didn't go well", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<PMServiceListModel> call, Throwable t) {
+                Toast.makeText(getContext(), "response fail", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override

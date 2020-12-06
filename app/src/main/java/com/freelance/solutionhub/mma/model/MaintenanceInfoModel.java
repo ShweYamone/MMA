@@ -1,6 +1,7 @@
 package com.freelance.solutionhub.mma.model;
 
 public class MaintenanceInfoModel {
+
     String msoNumber;
     String status;
     String panelHealthStatus;
