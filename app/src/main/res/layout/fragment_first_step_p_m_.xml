@@ -200,7 +200,6 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="2.5"
                             android:textColor="@color/colorBlack"
-                            android:text="Disconnect"
                             android:fontFamily="@font/crimson_text_regular"
                             android:textSize="@dimen/txt_size_normal"/>
 
@@ -210,7 +209,6 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1.5"
                             android:textColor="@color/colorBlack"
-                            android:text="Critical"
                             android:fontFamily="@font/crimson_text_regular"
                             android:textSize="@dimen/txt_size_normal"/>
                     </LinearLayout>
