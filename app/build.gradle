@@ -63,5 +63,8 @@ dependencies {
     // Okhttp
     implementation 'com.squareup.okhttp3:okhttp:3.11.0'
 
+    //Google Collect
+    implementation 'com.google.guava:guava:19.0';
+
 
 }

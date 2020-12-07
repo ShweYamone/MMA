@@ -32,9 +32,6 @@ public class MaintenanceAdapter extends RecyclerView.Adapter<MaintenanceAdapter.
         @BindView(R.id.tvStatus)
         TextView tvStatus;
 
-        @BindView(R.id.tvPanelHealthStatus)
-        TextView tvPanelHealthStatus;
-
         @BindView(R.id.tvLocation)
         TextView tvLocation;
 
@@ -60,7 +57,7 @@ public class MaintenanceAdapter extends RecyclerView.Adapter<MaintenanceAdapter.
             this.maintenance = maintenance;
             tvMsoNumber.setText(maintenance.getMsoNumber());
             tvStatus.setText(maintenance.getStatus());
-            tvPanelHealthStatus.setText(maintenance.getPanelHealthStatus());
+            //tvPanelHealthStatus.setText(maintenance.getPanelHealthStatus());
             tvLocation.setText(maintenance.getLocation());
 
             ivPMLanding.setOnClickListener(new View.OnClickListener() {

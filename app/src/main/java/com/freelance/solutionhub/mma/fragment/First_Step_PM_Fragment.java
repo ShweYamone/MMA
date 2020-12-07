@@ -111,8 +111,10 @@ public class First_Step_PM_Fragment extends Fragment {
                 if(response.isSuccessful()){
                     tvPanelID1.setText(infoModel.getPanelId());
                     tvPanelID.setText(infoModel.getPanelId());
-                 //   tvLocation.setText(infoModel.getBusStopLocation().toString);
-//                    tvBustStopNumber.setText(infoModel.getBusStopId().toString());
+                    if(infoModel.getBusStopLocation() != null)
+                        tvLocation.setText(infoModel.getBusStopLocation().toString());
+                    if(infoModel.getBusStopId() != null)
+                        tvBustStopNumber.setText(infoModel.getBusStopId().toString());
                     tvScheduleStartDateTime.setText(infoModel.getTargetResponseDate());
                     tvScheduleEndDateTime.setText(infoModel.getTargetEndDate());
 
