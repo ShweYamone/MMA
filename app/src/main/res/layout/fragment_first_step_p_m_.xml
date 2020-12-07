@@ -55,30 +55,251 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/ll_general_design"
                 android:layout_width="match_parent"
-                android:layout_height="32dp"
+                android:layout_height="wrap_content"
                 android:weightSum="4"
                 android:orientation="horizontal"
                 android:background="@drawable/round_rect_shape">
-                <TextView
-                    android:layout_width="0dp"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:textColor="@color/colorPrimary"
-                    android:text="@string/panel_id"
-                    android:fontFamily="@font/crimson_text_regular"
-                    android:textSize="@dimen/txt_size_normal"/>
+                    android:layout_margin="@dimen/margin_normal"
+                    android:weightSum="5"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textColor="@color/colorPrimary"
+                        android:text="@string/panel_id"
+                        android:fontFamily="@font/crimson_text_regular"
+                        android:textSize="@dimen/txt_size_normal"/>
 
-                <Spinner
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_weight="3"
-                    tools:ignore="Suspicious0dp" />
+                    <TextView
+                        android:id="@+id/tv_panel_id1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3.5"
+                        android:textColor="@color/colorBlack"
+                        android:text="4609"
+                        android:fontFamily="@font/crimson_text_regular"
+                        android:textSize="@dimen/txt_size_normal"/>
+                    <ImageView
+                        android:id="@+id/iv_arrow_drop_down"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.5"
+                        android:src="@drawable/ic_baseline_arrow_drop_down_24"/>
+                </LinearLayout>
 
             </LinearLayout>
+
+            <!-- the whole card design -->
+            <LinearLayout
+                android:id="@+id/ll_whole_card_design"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                android:padding="@dimen/margin_normal"
+                android:background="@drawable/round_rect_shape">
+
+                <!-- 1st row design -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:weightSum="4"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="2.5"
+                            android:textColor="@color/colorPrimary"
+                            android:text="@string/panel_id"
+                            android:fontFamily="@font/crimson_text_regular"
+                            android:textSize="@dimen/txt_size_normal"/>
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1.5"
+                            android:textColor="@color/colorPrimary"
+                            android:text="@string/performed_by"
+                            android:fontFamily="@font/crimson_text_regular"
+                            android:textSize="@dimen/txt_size_normal"/>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:weightSum="4"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:id="@+id/tv_panel_id"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="2.5"
+                            android:textColor="@color/colorBlack"
+                            android:text="PGS/18/100000307"
+                            android:fontFamily="@font/crimson_text_regular"
+                            android:textSize="@dimen/txt_size_normal"/>
+
+                        <TextView
+                            android:id="@+id/tv_performed_by"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1.5"
+                            android:textColor="@color/colorBlack"
+                            android:text="VMS1 002"
+                            android:fontFamily="@font/crimson_text_regular"
+                            android:textSize="@dimen/txt_size_normal"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- 2nd row design -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_normal"
+                    android:orientation="vertical">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:weightSum="4"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="2.5"
+                            android:textColor="@color/colorPrimary"
+                            android:text="@string/location"
+                            android:fontFamily="@font/crimson_text_regular"
+                            android:textSize="@dimen/txt_size_normal"/>
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1.5"
+                            android:textColor="@color/colorPrimary"
+                            android:text="@string/bust_stop_number"
+                            android:fontFamily="@font/crimson_text_regular"
+                            android:textSize="@dimen/txt_size_normal"/>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:weightSum="4"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:id="@+id/tv_location"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="2.5"
+                            android:textColor="@color/colorBlack"
+                            android:text="Disconnect"
+                            android:fontFamily="@font/crimson_text_regular"
+                            android:textSize="@dimen/txt_size_normal"/>
+
+                        <TextView
+                            android:id="@+id/tv_bust_stop_number"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1.5"
+                            android:textColor="@color/colorBlack"
+                            android:text="Critical"
+                            android:fontFamily="@font/crimson_text_regular"
+                            android:textSize="@dimen/txt_size_normal"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- 3rd row design -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_normal"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/colorPrimary"
+                        android:text="@string/schedule_start_date_time"
+                        android:fontFamily="@font/crimson_text_regular"
+                        android:textSize="@dimen/txt_size_normal"/>
+                    <TextView
+                        android:id="@+id/tv_schedule_start_date_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/colorBlack"
+                        android:text="24.06.2019 / 11.00.18"
+                        android:fontFamily="@font/crimson_text_regular"
+                        android:textSize="@dimen/txt_size_normal"/>
+                </LinearLayout>
+
+                <!-- 4th row design -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_normal"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/colorPrimary"
+                        android:text="@string/schedule_end_date_time"
+                        android:fontFamily="@font/crimson_text_regular"
+                        android:textSize="@dimen/txt_size_normal"/>
+                    <TextView
+                        android:id="@+id/tv_schedule_end_date_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/colorBlack"
+                        android:text="23.06.2019 / 11.00.18"
+                        android:fontFamily="@font/crimson_text_regular"
+                        android:textSize="@dimen/txt_size_normal"/>
+                </LinearLayout>
+
+                <!-- 5th row design -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_normal"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/colorPrimary"
+                        android:text="@string/actual_start_date_time"
+                        android:fontFamily="@font/crimson_text_regular"
+                        android:textSize="@dimen/txt_size_normal"/>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:weightSum="5"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:id="@+id/tv_actual_start_date_time"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="4.5"
+                            android:textColor="@color/colorBlack"
+                            android:text="23.06.2019 / 11.00.18"
+                            android:fontFamily="@font/crimson_text_regular"
+                            android:textSize="@dimen/txt_size_normal"/>
+                        <ImageView
+                            android:id="@+id/iv_arrow_drop_up"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5"
+                            android:src="@drawable/ic_baseline_arrow_drop_up_24"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+            </LinearLayout>
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

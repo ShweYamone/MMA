@@ -127,6 +127,10 @@
     <string name="fault_found_remarks">Fault Found Remarks:</string>
     <string name="remark">Remark:</string>
     <string name="attach_post_maintenance_photo">Attach Post-Maintenance Photo:</string>
+    <string name="performed_by">Performed by:</string>
+    <string name="schedule_start_date_time">Schedule Start Date/Time:</string>
+    <string name="schedule_end_date_time">Schedule End Date/Time:</string>
+    <string name="actual_start_date_time">Actual Start Date Time:</string>
 
     <!-- Others -->
     <string name="action_taken_by_contractor">Action Taken By Contractor</string>
