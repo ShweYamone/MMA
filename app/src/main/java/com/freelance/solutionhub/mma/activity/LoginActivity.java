@@ -16,6 +16,7 @@ import com.freelance.solutionhub.mma.model.LoginModel;
 import com.freelance.solutionhub.mma.model.UserModel;
 import com.freelance.solutionhub.mma.util.ApiClient;
 import com.freelance.solutionhub.mma.util.ApiInterface;
+import com.freelance.solutionhub.mma.util.SharePreferenceHelper;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -38,13 +39,17 @@ public class LoginActivity extends AppCompatActivity {
 
     Toolbar toolbar;
     private ApiInterface apiInterface;
+
+    private SharePreferenceHelper mSharedPreferance;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        mSharedPreferance = new SharePreferenceHelper(this);
+
+
         ButterKnife.bind(this);
         setupToolbar();
-
 
         apiInterface = ApiClient.getClient(this);
 
