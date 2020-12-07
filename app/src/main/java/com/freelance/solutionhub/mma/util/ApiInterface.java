@@ -31,5 +31,7 @@ public interface ApiInterface {
     @POST("https://7gs3iv1pt0.execute-api.ap-southeast-1.amazonaws.com/auth/login")
     Call<LoginModel> getToken(@Body UserModel userModel);
 
+
+
 }
 

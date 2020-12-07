@@ -1,5 +1,6 @@
 package com.freelance.solutionhub.mma.fragment;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.cardview.widget.CardView;
@@ -26,7 +27,6 @@ import com.freelance.solutionhub.mma.model.EnumValue;
 import com.freelance.solutionhub.mma.model.Filter;
 import com.freelance.solutionhub.mma.model.FilterModel;
 import com.freelance.solutionhub.mma.model.FilterParam;
-import com.freelance.solutionhub.mma.model.MaintenanceInfoModel;
 import com.freelance.solutionhub.mma.model.PMServiceInfoModel;
 import com.freelance.solutionhub.mma.model.PMServiceListModel;
 import com.freelance.solutionhub.mma.model.PaginationParam;
@@ -34,6 +34,7 @@ import com.freelance.solutionhub.mma.model.SortingParam;
 import com.freelance.solutionhub.mma.model.TextValue;
 import com.freelance.solutionhub.mma.util.ApiClient;
 import com.freelance.solutionhub.mma.util.ApiInterface;
+import com.freelance.solutionhub.mma.util.SharePreferenceHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -95,11 +96,15 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
     private String maintenace;
     private String CM = "CM"; private String PM = "PM";
 
+    private SharePreferenceHelper mSharePreference;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_home, container, false);
+        mSharePreference = new SharePreferenceHelper(getContext());
+
         ButterKnife.bind(this, view);
         cvCorrectiveMaintenance.setOnClickListener(this);
         cvPreventiveMainennance.setOnClickListener(this);
@@ -146,7 +151,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
     private void getServiceOrders(String filterExpression, String textValue) {
         FilterModel filterModel = createFilterModel(filterExpression, textValue);
 
-        Call<PMServiceListModel> call = apiInterface.getPMServiceOrders("Bearer " + token, filterModel);
+        Call<PMServiceListModel> call = apiInterface.getPMServiceOrders("Bearer " + mSharePreference.getToken(), filterModel);
 
         call.enqueue(new Callback<PMServiceListModel>() {
 
