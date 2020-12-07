@@ -46,6 +46,7 @@
     <color name="colorLightViolet">#F5E6FE</color>
     <color name="colorLightBlue">#E1E2FE</color>
     <color name="colorGold">#FFAA00</color>
+    <color name="colorOrange">#FFA500</color>
 
     <color name="colorRecyclerBgLight">#F0F6F8</color>
     <color name="colorTransparent">#00000000</color>

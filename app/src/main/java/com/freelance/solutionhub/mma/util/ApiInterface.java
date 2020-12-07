@@ -21,8 +21,7 @@ import retrofit2.http.Path;
 
 public interface ApiInterface {
 
-    @Headers({"Content-Type: application/json"})
-    @POST("dev/service-orders")
+    @POST("service-orders")
     Call<PMServiceListModel> getPMServiceOrders(@Header("Authorization") String auth, @Body FilterModel param);
 
     @Headers({"Content-Type: application/json"})

@@ -20,11 +20,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.freelance.solutionhub.mma.R;
-import com.freelance.solutionhub.mma.adapter.MaintenanceAdapter;
+import com.freelance.solutionhub.mma.adapter.ServiceOrderAdapter;
+import com.freelance.solutionhub.mma.common.SmartScrollListener;
+import com.freelance.solutionhub.mma.model.EnumValue;
+import com.freelance.solutionhub.mma.model.Filter;
 import com.freelance.solutionhub.mma.model.FilterModel;
+import com.freelance.solutionhub.mma.model.FilterParam;
 import com.freelance.solutionhub.mma.model.MaintenanceInfoModel;
+import com.freelance.solutionhub.mma.model.PMServiceInfoModel;
 import com.freelance.solutionhub.mma.model.PMServiceListModel;
 import com.freelance.solutionhub.mma.model.PaginationParam;
+import com.freelance.solutionhub.mma.model.SortingParam;
+import com.freelance.solutionhub.mma.model.TextValue;
 import com.freelance.solutionhub.mma.util.ApiClient;
 import com.freelance.solutionhub.mma.util.ApiInterface;
 
@@ -79,9 +86,14 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
 
     private String[] list;
     private ArrayAdapter spinnerArrAdaper;
-    private MaintenanceAdapter mAdapter;
-    private List<MaintenanceInfoModel> maintenanceList = new ArrayList<>();
+    private ServiceOrderAdapter mAdapter;
+    private List<PMServiceInfoModel> serviceInfoModelList = new ArrayList<>();
     private ApiInterface apiInterface;
+    private SmartScrollListener mSmartScrollListener;
+    private int page = 1;
+    private int totalPages = 0;
+    private String maintenace;
+    private String CM = "CM"; private String PM = "PM";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -96,36 +108,57 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
 
         apiInterface = ApiClient.getClient(this.getContext());
 
-        mAdapter = new MaintenanceAdapter(view.getContext(), maintenanceList);
+        mSmartScrollListener = new SmartScrollListener(new SmartScrollListener.OnSmartScrollListener() {
+            @Override
+            public void onListEndReach() {
+                page++;
+               // if (page <= totalPages)
+                    //getServiceOrders("ne", "JOBDONE");
+            }
+        });
+
+        mAdapter = new ServiceOrderAdapter(this.getContext().getApplicationContext(), serviceInfoModelList);
 
         recyclerViewMaintenance.setHasFixedSize(true);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(view.getContext());
         recyclerViewMaintenance.setLayoutManager(mLayoutManager);
         recyclerViewMaintenance.setAdapter(mAdapter);
-        prepareMaintenaceList();
-
-
-        /*********testing**********/
-        test();
-
+        recyclerViewMaintenance.addOnScrollListener(mSmartScrollListener);
+        recyclerViewMaintenance.setAdapter(mAdapter);
 
         return view;
     }
 
-    private void test() {
-        Toast.makeText(getContext(), "connection start", Toast.LENGTH_SHORT).show();
-        FilterModel filterModel = new FilterModel(new PaginationParam(1));
-       // ApiClient.removeFromCache("");
+    private FilterModel createFilterModel(String filterExpression, String textValue) {
+        List<FilterParam> filterParamList = new ArrayList<>();
+        filterParamList.add(new FilterParam("equals", "enum", "serviceOrderType", 0, new EnumValue("PREVENTATIVE")));
+        filterParamList.add(new FilterParam(filterExpression, "text", "serviceOrderStatus", 0, new TextValue(textValue)));
+
+        Filter filter = new Filter("FILTER_LOGIC_AND", filterParamList);
+        PaginationParam paginationParam = new PaginationParam(1);
+        List<SortingParam> sortingParamList = new ArrayList<>();
+        sortingParamList.add(new SortingParam("creationDate", 0, "desc"));
+        FilterModel filterModel = new FilterModel(filter, paginationParam, sortingParamList );
+
+        return filterModel;
+    }
+
+    private void getServiceOrders(String filterExpression, String textValue) {
+        FilterModel filterModel = createFilterModel(filterExpression, textValue);
+
         Call<PMServiceListModel> call = apiInterface.getPMServiceOrders("Bearer " + token, filterModel);
 
         call.enqueue(new Callback<PMServiceListModel>() {
 
             @Override
             public void onResponse(Call<PMServiceListModel> call, Response<PMServiceListModel> response) {
-                PMServiceListModel pmList = response.body();
-                Toast.makeText(getContext(), "connection start1", Toast.LENGTH_SHORT).show();
+
                 if (response.isSuccessful()) {
-                    Toast.makeText(getContext(), pmList.getPageNumber() + ", " + pmList.getNumberOfElements(), Toast.LENGTH_LONG).show();
+                    PMServiceListModel pmList = response.body();
+                    totalPages = pmList.getTotalPages();
+                    Toast.makeText(getContext(), "totalPages : " + totalPages + ", " + pmList.getItems().size(),Toast.LENGTH_SHORT).show();
+                    serviceInfoModelList.addAll(pmList.getItems());
+                    mAdapter.notifyDataSetChanged();
                 }
                 else {
                     Toast.makeText(getContext(), response.code()+"f", Toast.LENGTH_SHORT).show();
@@ -138,33 +171,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
             }
         });
 
-        /*
-
-        PaginationParam p = new PaginationParam(1,1);
-        Call<PMServiceListModel> call = apiInterface.getPMServiceOrders("Barer " + token, p);
-        call.enqueue(new Callback<PMServiceListModel>() {
-            @Override
-            public void onResponse(Call<PMServiceListModel> call, Response<PMServiceListModel> response) {
-                PMServiceListModel pmList = response.body();
-                if (response.isSuccessful() ) {
-                    Toast.makeText(getContext(), pmList.getPageNumber() +", " + pmList.getPageSize(),Toast.LENGTH_LONG).show();
-                }
-                else {
-                    Toast.makeText(getContext(), "response didn't go well", Toast.LENGTH_SHORT).show();
-                }
-
-            }
-
-            @Override
-            public void onFailure(Call<PMServiceListModel> call, Throwable t) {
-                Toast.makeText(getContext(), "response fail", Toast.LENGTH_SHORT).show();
-            }
-        });*/
     }
 
     @Override
     public void onClick(View view) {
-
         switch (view.getId()) {
             case R.id.cvCorrectiveMaintenance:
                 layoutMaintenaceCV.setVisibility(View.GONE);
@@ -175,7 +185,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
                 layoutMaintenaceCV.setVisibility(View.GONE);
                 layoutMaintenanceList.setVisibility(View.VISIBLE);
                 showPreventiveMaintenance();
-
                 break;
             case R.id.cvCorrective:
                 showCorrectiveMaintenance();
@@ -189,9 +198,11 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
         spinnerArrAdaper.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerStatus.setAdapter(spinnerArrAdaper);
         spinnerStatus.setOnItemSelectedListener(this);
+
     }
 
     private void showCorrectiveMaintenance() {
+        maintenace = "CM";
         ivCorrective.setColorFilter(ContextCompat.getColor(this.getContext(), R.color.colorPrimary));
         tvCorrective.setTextColor(getResources().getColor(R.color.colorBlack));
 
@@ -199,9 +210,11 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
         tvPreventive.setTextColor(getResources().getColor(R.color.color_grey_stroke_dark));
         list = new String[]{"ALL", "New", "ACK", "INPRG"};
 
+
     }
 
     private void showPreventiveMaintenance() {
+        maintenace = "PM";
         ivPreventive.setColorFilter(ContextCompat.getColor(this.getContext(), R.color.colorPrimary));
         tvPreventive.setTextColor(getResources().getColor(R.color.colorBlack));
 
@@ -211,18 +224,15 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
     }
 
 
-    private void prepareMaintenaceList() {
-        MaintenanceInfoModel obj = new MaintenanceInfoModel("xxxx", "APPR", "Faculty", "Rochr Do Ladier Go", "12/4/2020 7:03PM");
-        maintenanceList.add(obj);
-        maintenanceList.add(obj); maintenanceList.add(obj);
-        maintenanceList.add(obj); maintenanceList.add(obj); maintenanceList.add(obj);
-        mAdapter.notifyDataSetChanged();
-
-    }
-
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-
+        serviceInfoModelList.clear();
+        mAdapter.notifyDataSetChanged();
+        switch (list[i]) {
+            case "ALL" : getServiceOrders("ne", "JOBDONE");break;
+            case "New" : getServiceOrders("equalsIgnoreCase", "APPR");break;
+            case "INPRG" : getServiceOrders("equalsIgnoreCase", "INPRG");break;
+        }
     }
 
     @Override
