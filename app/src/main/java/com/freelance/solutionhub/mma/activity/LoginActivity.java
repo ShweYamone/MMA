@@ -4,6 +4,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -44,10 +45,9 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_login);
         mSharedPreferance = new SharePreferenceHelper(this);
-
-
         ButterKnife.bind(this);
         setupToolbar();
 
@@ -65,7 +65,14 @@ public class LoginActivity extends AppCompatActivity {
                     public void onResponse(Call<LoginModel> call, Response<LoginModel> response) {
                         LoginModel loginModel = response.body();
                         if(response.isSuccessful()){
-                            Toast.makeText(getApplicationContext(), loginModel.getUsername() +", " ,Toast.LENGTH_LONG).show();
+                            mSharedPreferance.setLogin(loginModel.getUsername(), loginModel.getRefreshToken());
+                            if (mSharedPreferance.isLogin()) {
+                                Toast.makeText(getApplicationContext(), loginModel.getUsername() + "", Toast.LENGTH_SHORT).show();
+                                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                                finish();
+                            }
+                        } else {
+                            Toast.makeText(getApplicationContext(), response.code() + "", Toast.LENGTH_SHORT).show();
                         }
                     }
 

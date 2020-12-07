@@ -51,7 +51,7 @@
         app:menu="@menu/drawer_view" >
 
         <TextView
-            android:id="@+id/logout"
+            android:id="@+id/tvLogout"
             android:background="@color/colorPrimary"
             android:drawableLeft="@drawable/logout_exit"
             android:paddingLeft="@dimen/margin_normal"

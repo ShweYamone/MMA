@@ -2,11 +2,14 @@ package com.freelance.solutionhub.mma.activity;
 
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -21,44 +24,71 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.freelance.solutionhub.mma.R;
 import com.freelance.solutionhub.mma.fragment.HomeFragment;
+import com.freelance.solutionhub.mma.util.SharePreferenceHelper;
 import com.google.android.material.navigation.NavigationView;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
+
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+
+    @BindView(R.id.drawer_layout)
+    DrawerLayout mDrawerLayout;
+
+    @BindView(R.id.navigation_view)
+    NavigationView mNavigationView;
+
+    @BindView(R.id.tvLogout)
+    TextView tvLogout;
 
     protected ActionBarDrawerToggle mDrawerToggle;
-    private DrawerLayout mDrawerLayout;
-    private NavigationView mNavigationView;
+    private SharePreferenceHelper mSharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mSharedPreferences = new SharePreferenceHelper(this);
 
+        ButterKnife.bind(this);
         setupToolbar();
         initNavigationDrawer();
 
         displayView(R.id.nav_home);
+
+        // lotout txtview is here
+        tvLogout.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View view) {
+        mSharedPreferences.logoutSharePreference();
+        Intent intent = new Intent(this, LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
     }
 
     private void setupToolbar() {
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
+        setSupportActionBar(toolbar);
         final ActionBar ab = getSupportActionBar();
+        ab.setDisplayShowTitleEnabled(false);
         //ab.setHomeAsUpIndicator(R.drawable.ic_menu);
         ab.setDisplayHomeAsUpEnabled(true);
     }
 
     private void initNavigationDrawer() {
 
-        mDrawerLayout = findViewById(R.id.drawer_layout);
-        mNavigationView = findViewById(R.id.navigation_view);
-
         mDrawerLayout.setScrimColor(ContextCompat.getColor(getApplicationContext(), android.R.color.transparent));
         setupActionBarDrawerToogle();
         if (mNavigationView != null) {
             setupDrawerContent(mNavigationView);
+            Menu menu = mNavigationView.getMenu();
+            MenuItem menuItem = menu.findItem(R.id.nav_home);
+            menuItem.setTitle(mSharedPreferences.getUserName());
         }
 
         mDrawerLayout.post(new Runnable() {
