@@ -40,18 +40,15 @@ public class LoginActivity extends AppCompatActivity {
 
     Toolbar toolbar;
     private ApiInterface apiInterface;
-    SharePreferenceHelper mSharedPreferance;
-
+    private SharePreferenceHelper mSharedPreferance;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_login);
         mSharedPreferance = new SharePreferenceHelper(this);
-
         ButterKnife.bind(this);
         setupToolbar();
-
 
         apiInterface = ApiClient.getClient(this);
 

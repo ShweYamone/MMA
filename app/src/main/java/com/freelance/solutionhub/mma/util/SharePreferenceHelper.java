@@ -1,7 +1,6 @@
 package com.freelance.solutionhub.mma.util;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 
 public class SharePreferenceHelper {
@@ -10,16 +9,20 @@ public class SharePreferenceHelper {
 
 	private static String SHARE_PREFRENCE = "showtimePref";
 
+
 	private static String USER_NAME_KEY = "username";
 	private static String USER_PWD = "pwd";
  	private static String TOKEN = "refreshToken";
+
 
 	public SharePreferenceHelper(Context context)
 	{
 		sharedPreference = context.getSharedPreferences(SHARE_PREFRENCE, Context.MODE_PRIVATE);
 	}
 
+
 	public void setLogin(String name, String pwd, String token)
+
 	{
 		SharedPreferences.Editor editor = sharedPreference.edit();
 		editor.putString(USER_NAME_KEY, name);

@@ -2,11 +2,8 @@ package com.freelance.solutionhub.mma.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-
-import com.freelance.solutionhub.mma.R;
+import android.content.Intent;
 import com.freelance.solutionhub.mma.util.SharePreferenceHelper;
 
 public class LauncherActivity extends AppCompatActivity {
