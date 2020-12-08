@@ -41,6 +41,15 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.freelance.solutionhub.mma.util.AppConstant.ACK;
+import static com.freelance.solutionhub.mma.util.AppConstant.ALL;
+import static com.freelance.solutionhub.mma.util.AppConstant.APPR;
+import static com.freelance.solutionhub.mma.util.AppConstant.CM;
+import static com.freelance.solutionhub.mma.util.AppConstant.INPRG;
+import static com.freelance.solutionhub.mma.util.AppConstant.JOBDONE;
+import static com.freelance.solutionhub.mma.util.AppConstant.PM;
+import static com.freelance.solutionhub.mma.util.AppConstant.WSCH;
+
 public class HomeFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemSelectedListener {
 
     @BindView(R.id.cvCorrectiveMaintenance)
@@ -101,13 +110,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
     private String textValue;
     private String filterExpression;
 
-    private static final String PM = "PREVENTATIVE"; private static final String CM = "CORRECTIVE";
-    private static final String ALL = "ALL";
-    private static final String WSCH = "WSCH";
-    private static final String INPRG = "INPRG";
-    private static final String ACK = "ACK";
-    private static final String APPR = "APPR";
-    private static final String JOBDONE = "JOBDONE";
 
 
     @Override

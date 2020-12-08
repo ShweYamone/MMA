@@ -27,6 +27,13 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.freelance.solutionhub.mma.util.AppConstant.ACK;
+import static com.freelance.solutionhub.mma.util.AppConstant.APPR;
+import static com.freelance.solutionhub.mma.util.AppConstant.CM;
+import static com.freelance.solutionhub.mma.util.AppConstant.INPRG;
+import static com.freelance.solutionhub.mma.util.AppConstant.WSCH;
+import static com.freelance.solutionhub.mma.util.AppConstant.cm;
+
 public class ServiceOrderAdapter extends RecyclerView.Adapter<ServiceOrderAdapter.MyViewHolder> {
 
     private Context mContext;
@@ -48,9 +55,6 @@ public class ServiceOrderAdapter extends RecyclerView.Adapter<ServiceOrderAdapte
         @BindView(R.id.ivLanding)
         ImageView ivLanding;
 
-        @BindView(R.id.ivACK)
-        ImageView ivACK;
-
         private PMServiceInfoModel service;
 
         public MyViewHolder(View view) {
@@ -70,36 +74,28 @@ public class ServiceOrderAdapter extends RecyclerView.Adapter<ServiceOrderAdapte
             tvTime.setText(service.getCreationDate());
             tvMsoNumber.setText(service.getId());
             String status = service.getServiceOrderStatus();
-            if (status.equals("APPR"))
-                tvStatus.setTextColor(mContext.getResources().getColor(R.color.colorRed));
-            else if (status.equals("INPRG"))
-                tvStatus.setTextColor(mContext.getResources().getColor(R.color.colorOrange));
-            else if (status.equals("ACK"))
-                tvStatus.setTextColor(mContext.getResources().getColor(R.color.color_blue));
-            else if (status.equals("WSCH"))
-                tvStatus.setTextColor(mContext.getResources().getColor(R.color.color_green_text));
-
-            Log.i("CM or PM", "bindView: " + service.getId());
-            if (service.getId().startsWith("CM")) {
-                Log.i("CM or PM", "It STARTS WITH CM" + service.getId());
-                Glide.with(mContext)
-                        .load(R.drawable.landing_cm)
-                        .into(ivLanding);
-                if (service.getServiceOrderStatus().equals("ACK")) {
-                    ivACK.setVisibility(View.VISIBLE);
-                } else
-                    ivACK.setVisibility(View.INVISIBLE);
-
-            }
-            else {
-                Glide.with(mContext)
-                        .load(R.drawable.landing_pm)
-                        .into(ivLanding);
-                ivACK.setVisibility(View.INVISIBLE);
-            }
             tvStatus.setText(status);
             tvLocation.setText(service.getBusStopLocation());
-            
+
+            if (service.getId().startsWith(cm)) {
+                if (status.equals(ACK)){
+                    Glide.with(mContext).load(R.drawable.ack).into(ivLanding);
+                } else {
+                    Glide.with(mContext).load(R.drawable.landing_cm).into(ivLanding);
+                }
+            } else {
+                Glide.with(mContext).load(R.drawable.landing_pm).into(ivLanding);
+            }
+
+            if (status.equals(APPR))
+                tvStatus.setTextColor(mContext.getResources().getColor(R.color.colorRed));
+            else if (status.equals(INPRG))
+                tvStatus.setTextColor(mContext.getResources().getColor(R.color.colorOrange));
+            else if (status.equals(WSCH))
+                tvStatus.setTextColor(mContext.getResources().getColor(R.color.color_green_text));
+            else if (status.equals(ACK)) {
+                tvStatus.setTextColor(mContext.getResources().getColor(R.color.color_blue));
+            }
 
         }
     }
