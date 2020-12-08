@@ -35,8 +35,10 @@ public interface ApiInterface {
     Call<LoginModel> getToken(@Body UserModel userModel);
 
     @PUT("service-order-details")
-    Call<ReturnStatus> updateEvent(@Header("Athorization") String auth, @Body PMUpdateEventBody pmUpdateEventBody);
+    Call<ReturnStatus> updateEvent(@Header("Authorization") String auth, @Body PMUpdateEventBody pmUpdateEventBody);
 
+    @PUT("service-order-status")
+    Call<ReturnStatus> updateJOBDONEEvent(@Header("Authorization") String auth, @Body PMUpdateEventBody pmUpdateEventBody);
 
 
 }

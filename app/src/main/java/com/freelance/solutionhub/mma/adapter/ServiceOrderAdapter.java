@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,6 +18,7 @@ import androidx.transition.Slide;
 
 import com.bumptech.glide.Glide;
 import com.freelance.solutionhub.mma.R;
+import com.freelance.solutionhub.mma.activity.CMActivity;
 import com.freelance.solutionhub.mma.activity.PMActivity;
 import com.freelance.solutionhub.mma.model.MaintenanceInfoModel;
 import com.freelance.solutionhub.mma.model.NotificationModel;
@@ -80,11 +82,44 @@ public class ServiceOrderAdapter extends RecyclerView.Adapter<ServiceOrderAdapte
             if (service.getId().startsWith(cm)) {
                 if (status.equals(ACK)){
                     Glide.with(mContext).load(R.drawable.ack).into(ivLanding);
+                    ivLanding.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Glide.with(mContext).load(R.drawable.landing_cm).into(ivLanding);
+                            ivLanding.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    Intent intent = new Intent(mContext, CMActivity.class);
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    intent.putExtra("id", service.getId());
+                                    mContext.startActivity(intent);
+                                }
+                            });
+                        }
+                    });
                 } else {
                     Glide.with(mContext).load(R.drawable.landing_cm).into(ivLanding);
+                    ivLanding.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent intent = new Intent(mContext, CMActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            intent.putExtra("id", service.getId());
+                            mContext.startActivity(intent);
+                        }
+                    });
                 }
             } else {
                 Glide.with(mContext).load(R.drawable.landing_pm).into(ivLanding);
+                ivLanding.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(mContext, PMActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        intent.putExtra("id", service.getId());
+                        mContext.startActivity(intent);
+                    }
+                });
             }
 
             if (status.equals(APPR))
