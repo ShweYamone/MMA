@@ -1,6 +1,6 @@
 package com.freelance.solutionhub.mma.fragment;
 
-import android.content.SharedPreferences;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.cardview.widget.CardView;
@@ -21,18 +21,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.freelance.solutionhub.mma.R;
+import com.freelance.solutionhub.mma.activity.LoginActivity;
 import com.freelance.solutionhub.mma.adapter.ServiceOrderAdapter;
 import com.freelance.solutionhub.mma.common.SmartScrollListener;
-import com.freelance.solutionhub.mma.model.EnumValue;
-import com.freelance.solutionhub.mma.model.Filter;
-import com.freelance.solutionhub.mma.model.FilterModel;
-import com.freelance.solutionhub.mma.model.FilterParam;
+import com.freelance.solutionhub.mma.model.FilterModelBody;
 import com.freelance.solutionhub.mma.model.PMServiceInfoModel;
 import com.freelance.solutionhub.mma.model.PMServiceListModel;
-import com.freelance.solutionhub.mma.model.PaginationParam;
-import com.freelance.solutionhub.mma.model.SortingParam;
-import com.freelance.solutionhub.mma.model.TextValue;
-import com.freelance.solutionhub.mma.model.UserModel;
 import com.freelance.solutionhub.mma.util.ApiClient;
 import com.freelance.solutionhub.mma.util.ApiInterface;
 import com.freelance.solutionhub.mma.util.SharePreferenceHelper;
@@ -46,8 +40,6 @@ import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-import static com.freelance.solutionhub.mma.util.AppConstant.token;
 
 public class HomeFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemSelectedListener {
 
@@ -101,7 +93,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
     private SmartScrollListener mSmartScrollListener;
     private TokenManager tokenManager;
     private SharePreferenceHelper mSharePreference;
-    private FilterModel filterModel;
+    private FilterModelBody filterModelBody;
 
     private int page = 1;
     private int totalPages = 0;
@@ -155,8 +147,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
     }
 
     private void setServiceOrderCount() {
-        filterModel = FilterModel.createFilterModel("ne", CM, JOBDONE, 1);
-        Call<PMServiceListModel> call = apiInterface.getPMServiceOrders("Bearer " + mSharePreference.getToken(), filterModel);
+        filterModelBody = FilterModelBody.createFilterModel("ne", CM, JOBDONE, 1);
+        Call<PMServiceListModel> call = apiInterface.getPMServiceOrders("Bearer " + mSharePreference.getToken(), filterModelBody);
         call.enqueue(new Callback<PMServiceListModel>() {
             @Override
             public void onResponse(Call<PMServiceListModel> call, Response<PMServiceListModel> response) {
@@ -172,8 +164,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
             }
         });
 
-        filterModel = FilterModel.createFilterModel("ne", PM, JOBDONE, 1);
-        call = apiInterface.getPMServiceOrders("Bearer " + mSharePreference.getToken(), filterModel);
+        filterModelBody = FilterModelBody.createFilterModel("ne", PM, JOBDONE, 1);
+        call = apiInterface.getPMServiceOrders("Bearer " + mSharePreference.getToken(), filterModelBody);
         call.enqueue(new Callback<PMServiceListModel>() {
             @Override
             public void onResponse(Call<PMServiceListModel> call, Response<PMServiceListModel> response) {
@@ -191,9 +183,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
     }
 
     private void getServiceOrders() {
-        filterModel = FilterModel.createFilterModel(filterExpression, enumValue, textValue, page);
+        filterModelBody = FilterModelBody.createFilterModel(filterExpression, enumValue, textValue, page);
 
-        Call<PMServiceListModel> call = apiInterface.getPMServiceOrders("Bearer " + mSharePreference.getToken(), filterModel);
+        Call<PMServiceListModel> call = apiInterface.getPMServiceOrders("Bearer " + mSharePreference.getToken(), filterModelBody);
 
         call.enqueue(new Callback<PMServiceListModel>() {
 
@@ -208,9 +200,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
                     mAdapter.notifyDataSetChanged();
                 }
                 else if (response.code()==401){
-                    Toast.makeText(getContext(), "Set Token Again", Toast.LENGTH_SHORT).show();
-                    tokenManager.setTokenAgain();
-                    getServiceOrders();
+                    startActivity(new Intent(getContext().getApplicationContext(), LoginActivity.class));
                 }
             }
 

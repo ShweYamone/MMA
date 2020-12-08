@@ -99,6 +99,7 @@ public class ServiceOrderAdapter extends RecyclerView.Adapter<ServiceOrderAdapte
             }
             tvStatus.setText(status);
             tvLocation.setText(service.getBusStopLocation());
+            
 
         }
     }
