@@ -7,7 +7,7 @@ public class PaginationParam implements Serializable {
     public int pageSize;
 
     public PaginationParam(int pageNumber) {
-        this.pageNumber = 1;
+        this.pageNumber = pageNumber;
         this.pageSize = 10;
     }
 }

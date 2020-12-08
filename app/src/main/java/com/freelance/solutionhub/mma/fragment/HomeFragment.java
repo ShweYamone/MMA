@@ -32,9 +32,11 @@ import com.freelance.solutionhub.mma.model.PMServiceListModel;
 import com.freelance.solutionhub.mma.model.PaginationParam;
 import com.freelance.solutionhub.mma.model.SortingParam;
 import com.freelance.solutionhub.mma.model.TextValue;
+import com.freelance.solutionhub.mma.model.UserModel;
 import com.freelance.solutionhub.mma.util.ApiClient;
 import com.freelance.solutionhub.mma.util.ApiInterface;
 import com.freelance.solutionhub.mma.util.SharePreferenceHelper;
+import com.freelance.solutionhub.mma.util.TokenManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,18 +87,36 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
     @BindView(R.id.spinnerStatus)
     Spinner spinnerStatus;
 
+    @BindView(R.id.tvPMCount)
+    TextView tvPMCount;
+
+    @BindView(R.id.tvCMCount)
+    TextView tvCMCount;
+
     private String[] list;
     private ArrayAdapter spinnerArrAdaper;
     private ServiceOrderAdapter mAdapter;
     private List<PMServiceInfoModel> serviceInfoModelList = new ArrayList<>();
     private ApiInterface apiInterface;
     private SmartScrollListener mSmartScrollListener;
+    private TokenManager tokenManager;
+    private SharePreferenceHelper mSharePreference;
+    private FilterModel filterModel;
+
     private int page = 1;
     private int totalPages = 0;
-    private String maintenace;
-    private String CM = "CM"; private String PM = "PM";
+    private String enumValue;
+    private String textValue;
+    private String filterExpression;
 
-    private SharePreferenceHelper mSharePreference;
+    private static final String PM = "PREVENTATIVE"; private static final String CM = "CORRECTIVE";
+    private static final String ALL = "ALL";
+    private static final String WSCH = "WSCH";
+    private static final String INPRG = "INPRG";
+    private static final String ACK = "ACK";
+    private static final String APPR = "APPR";
+    private static final String JOBDONE = "JOBDONE";
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -104,6 +124,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_home, container, false);
         mSharePreference = new SharePreferenceHelper(getContext());
+        apiInterface = ApiClient.getClient(this.getContext());
+        tokenManager = new TokenManager(this.getContext(), apiInterface, mSharePreference);
 
         ButterKnife.bind(this, view);
         cvCorrectiveMaintenance.setOnClickListener(this);
@@ -111,14 +133,12 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
         cvCorrective.setOnClickListener(this);
         cvPreventive.setOnClickListener(this);
 
-        apiInterface = ApiClient.getClient(this.getContext());
-
         mSmartScrollListener = new SmartScrollListener(new SmartScrollListener.OnSmartScrollListener() {
             @Override
             public void onListEndReach() {
                 page++;
-               // if (page <= totalPages)
-                    //getServiceOrders("ne", "JOBDONE");
+                if (page <= totalPages)
+                    getServiceOrders();
             }
         });
 
@@ -130,26 +150,48 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
         recyclerViewMaintenance.setAdapter(mAdapter);
         recyclerViewMaintenance.addOnScrollListener(mSmartScrollListener);
         recyclerViewMaintenance.setAdapter(mAdapter);
-
+        setServiceOrderCount();
         return view;
     }
 
-    private FilterModel createFilterModel(String filterExpression, String textValue) {
-        List<FilterParam> filterParamList = new ArrayList<>();
-        filterParamList.add(new FilterParam("equals", "enum", "serviceOrderType", 0, new EnumValue("PREVENTATIVE")));
-        filterParamList.add(new FilterParam(filterExpression, "text", "serviceOrderStatus", 0, new TextValue(textValue)));
+    private void setServiceOrderCount() {
+        filterModel = FilterModel.createFilterModel("ne", CM, JOBDONE, 1);
+        Call<PMServiceListModel> call = apiInterface.getPMServiceOrders("Bearer " + mSharePreference.getToken(), filterModel);
+        call.enqueue(new Callback<PMServiceListModel>() {
+            @Override
+            public void onResponse(Call<PMServiceListModel> call, Response<PMServiceListModel> response) {
 
-        Filter filter = new Filter("FILTER_LOGIC_AND", filterParamList);
-        PaginationParam paginationParam = new PaginationParam(1);
-        List<SortingParam> sortingParamList = new ArrayList<>();
-        sortingParamList.add(new SortingParam("creationDate", 0, "desc"));
-        FilterModel filterModel = new FilterModel(filter, paginationParam, sortingParamList );
+                if (response.isSuccessful()) {
+                    PMServiceListModel pmServiceListModel = response.body();
+                    tvCMCount.setText(pmServiceListModel.getTotalElements()+"");
+                }
+            }
 
-        return filterModel;
+            @Override
+            public void onFailure(Call<PMServiceListModel> call, Throwable t) {
+            }
+        });
+
+        filterModel = FilterModel.createFilterModel("ne", PM, JOBDONE, 1);
+        call = apiInterface.getPMServiceOrders("Bearer " + mSharePreference.getToken(), filterModel);
+        call.enqueue(new Callback<PMServiceListModel>() {
+            @Override
+            public void onResponse(Call<PMServiceListModel> call, Response<PMServiceListModel> response) {
+
+                if (response.isSuccessful()) {
+                    PMServiceListModel pmServiceListModel = response.body();
+                    tvPMCount.setText(pmServiceListModel.getTotalElements()+"");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<PMServiceListModel> call, Throwable t) {
+            }
+        });
     }
 
-    private void getServiceOrders(String filterExpression, String textValue) {
-        FilterModel filterModel = createFilterModel(filterExpression, textValue);
+    private void getServiceOrders() {
+        filterModel = FilterModel.createFilterModel(filterExpression, enumValue, textValue, page);
 
         Call<PMServiceListModel> call = apiInterface.getPMServiceOrders("Bearer " + mSharePreference.getToken(), filterModel);
 
@@ -161,12 +203,14 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
                 if (response.isSuccessful()) {
                     PMServiceListModel pmList = response.body();
                     totalPages = pmList.getTotalPages();
-                    Toast.makeText(getContext(), "totalPages : " + totalPages + ", " + pmList.getItems().size(),Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "totalPages : " + totalPages + ", Current Page:" + page + "->" + pmList.getItems().size(),Toast.LENGTH_SHORT).show();
                     serviceInfoModelList.addAll(pmList.getItems());
                     mAdapter.notifyDataSetChanged();
                 }
-                else {
-                    Toast.makeText(getContext(), response.code()+"f", Toast.LENGTH_SHORT).show();
+                else if (response.code()==401){
+                    Toast.makeText(getContext(), "Set Token Again", Toast.LENGTH_SHORT).show();
+                    tokenManager.setTokenAgain();
+                    getServiceOrders();
                 }
             }
 
@@ -180,6 +224,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
 
     @Override
     public void onClick(View view) {
+        serviceInfoModelList.clear();
+        mAdapter.notifyDataSetChanged();
+        page = 1;
         switch (view.getId()) {
             case R.id.cvCorrectiveMaintenance:
                 layoutMaintenaceCV.setVisibility(View.GONE);
@@ -199,6 +246,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
                 break;
         }
 
+        filterExpression = "ne"; textValue = JOBDONE;
         spinnerArrAdaper = new ArrayAdapter(this.getContext(), android.R.layout.simple_spinner_item, list);
         spinnerArrAdaper.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerStatus.setAdapter(spinnerArrAdaper);
@@ -207,25 +255,25 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
     }
 
     private void showCorrectiveMaintenance() {
-        maintenace = "CM";
+        enumValue = CM;
         ivCorrective.setColorFilter(ContextCompat.getColor(this.getContext(), R.color.colorPrimary));
         tvCorrective.setTextColor(getResources().getColor(R.color.colorBlack));
 
         ivPreventive.setColorFilter(ContextCompat.getColor(this.getContext(), R.color.color_grey_stroke_dark));
         tvPreventive.setTextColor(getResources().getColor(R.color.color_grey_stroke_dark));
-        list = new String[]{"ALL", "New", "ACK", "INPRG"};
+        list = new String[]{ALL, APPR, ACK, INPRG};
 
 
     }
 
     private void showPreventiveMaintenance() {
-        maintenace = "PM";
+        enumValue = PM;
         ivPreventive.setColorFilter(ContextCompat.getColor(this.getContext(), R.color.colorPrimary));
         tvPreventive.setTextColor(getResources().getColor(R.color.colorBlack));
 
         ivCorrective.setColorFilter(ContextCompat.getColor(this.getContext(), R.color.color_grey_stroke_dark));
         tvCorrective.setTextColor(getResources().getColor(R.color.color_grey_stroke_dark));
-        list = new String[]{"ALL", "New", "INPRG"};
+        list = new String[]{ALL, WSCH, INPRG};
     }
 
 
@@ -233,11 +281,25 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
         serviceInfoModelList.clear();
         mAdapter.notifyDataSetChanged();
+        page = 1;
         switch (list[i]) {
-            case "ALL" : getServiceOrders("ne", "JOBDONE");break;
-            case "New" : getServiceOrders("equalsIgnoreCase", "APPR");break;
-            case "INPRG" : getServiceOrders("equalsIgnoreCase", "INPRG");break;
+            case ALL :
+                filterExpression = "ne"; textValue = JOBDONE;
+                break;
+            case WSCH :
+                filterExpression = "equalsIgnoreCase"; textValue = WSCH;
+                break;
+            case INPRG :
+                filterExpression = "equalsIgnoreCase"; textValue = INPRG;
+                break;
+            case ACK :
+                filterExpression = "equalsIgnoreCase"; textValue = ACK;
+                break;
+            case APPR:
+                filterExpression = "equalsIgnoreCase"; textValue = APPR;
         }
+
+        getServiceOrders();
     }
 
     @Override

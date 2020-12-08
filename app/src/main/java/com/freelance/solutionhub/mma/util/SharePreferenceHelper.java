@@ -11,33 +11,37 @@ public class SharePreferenceHelper {
 	private static String SHARE_PREFRENCE = "showtimePref";
 
 	private static String USER_NAME_KEY = "username";
-	private static String REFRESH_TOKEN = "refreshToken";
+	private static String USER_PWD = "pwd";
+ 	private static String TOKEN = "refreshToken";
 
 	public SharePreferenceHelper(Context context)
 	{
 		sharedPreference = context.getSharedPreferences(SHARE_PREFRENCE, Context.MODE_PRIVATE);
 	}
 
-	public void setLogin(String name, String token)
+	public void setLogin(String name, String pwd, String token)
 	{
 		SharedPreferences.Editor editor = sharedPreference.edit();
 		editor.putString(USER_NAME_KEY, name);
-		editor.putString(REFRESH_TOKEN, token);
+		editor.putString(USER_PWD, pwd);
+		editor.putString(TOKEN, token);
 		editor.commit();
 	}
 
-	public void setRefreshToken(String token) {
+	public void setToken(String token) {
 		SharedPreferences.Editor editor = sharedPreference.edit();
-		editor.putString(REFRESH_TOKEN, token);
-		editor.commit();
+		editor.putString(TOKEN, token);
 	}
 
 	public String getUserName() {
 		return sharedPreference.getString(USER_NAME_KEY,"");
 	}
 
+	public String getUserPwd() {
+		return sharedPreference.getString(USER_PWD, "");
+	}
 	public String getToken() {
-		return sharedPreference.getString(REFRESH_TOKEN, "");
+		return sharedPreference.getString(TOKEN, "");
 	}
 
 	public void logoutSharePreference()
@@ -49,7 +53,7 @@ public class SharePreferenceHelper {
 
 	public boolean isLogin()
 	{
-		if(sharedPreference.contains(REFRESH_TOKEN) && sharedPreference.contains(USER_NAME_KEY))
+		if(sharedPreference.contains(TOKEN) && sharedPreference.contains(USER_NAME_KEY))
 		{
 			return true;
 		}

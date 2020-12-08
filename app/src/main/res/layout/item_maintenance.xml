@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
+
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
     <LinearLayout
+        android:paddingLeft="@dimen/padding_4"
+        android:paddingRight="@dimen/padding_4"
+        android:paddingBottom="@dimen/padding_4"
         android:layout_marginTop="@dimen/margin_normal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -14,60 +18,69 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <LinearLayout
-                android:layout_margin="@dimen/margin_small"
-                android:layout_weight="3.5"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
-                <TextView
-                    android:text="MSO Number:"
-                    android:textSize="@dimen/txt_size_small"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-                <TextView
-                    android:id="@+id/tvMSONumber"
-                    android:text="xxxxxx"
-                    android:textColor="@color/colorBlack"
-                    android:textStyle="bold"
-                    android:fontFamily="@font/crimson_text_regular"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                android:layout_weight="7">
+                <LinearLayout
+                    android:layout_margin="@dimen/margin_small"
+                    android:layout_weight="3.7"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <TextView
+                        android:text="MSO Number:"
+                        android:textSize="@dimen/txt_size_small"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                    <TextView
+                        android:id="@+id/tvMSONumber"
+                        android:text="xxxxxx"
+                        android:textColor="@color/colorBlack"
+                        android:textStyle="bold"
+                        android:fontFamily="@font/crimson_text_regular"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_margin="@dimen/margin_small"
+                    android:layout_weight="4"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <TextView
+                        android:text="Status:"
+                        android:textSize="@dimen/txt_size_small"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                    <TextView
+                        android:id="@+id/tvStatus"
+                        android:text="APPR"
+                        android:textColor="@color/colorBlack"
+                        android:textStyle="bold"
+                        android:fontFamily="@font/crimson_text_regular"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
             </LinearLayout>
-            <LinearLayout
-                android:layout_margin="@dimen/margin_small"
-                android:layout_weight="4"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-                <TextView
-                    android:text="Status:"
-                    android:textSize="@dimen/txt_size_small"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-                <TextView
-                    android:id="@+id/tvStatus"
-                    android:text="APPR"
-                    android:textColor="@color/colorBlack"
-                    android:textStyle="bold"
-                    android:fontFamily="@font/crimson_text_regular"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-            </LinearLayout>
+
+
             <ImageView
-                android:id="@+id/ivPMLanding"
-                android:layout_margin="@dimen/margin_small"
+                android:id="@+id/ivLanding"
+                android:layout_marginRight="@dimen/margin_small"
+                android:layout_marginLeft="@dimen/margin_small"
                 android:src="@drawable/landing_pm"
                 android:layout_weight="1"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/edittext_height"/>
         </LinearLayout>
         <LinearLayout
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <LinearLayout
                 android:layout_margin="@dimen/margin_small"
-                android:layout_weight="5"
+                android:layout_weight="7"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
@@ -86,13 +99,14 @@
                     android:layout_height="wrap_content"/>
             </LinearLayout>
             <ImageView
-                android:visibility="invisible"
-                android:layout_margin="@dimen/margin_small"
-                android:tint="@color/colorBlack"
-                android:src="@drawable/ic_menu"
+                android:id="@+id/ivACK"
+                android:src="@drawable/ack"
+                android:visibility="visible"
+                android:layout_marginLeft="@dimen/margin_small"
+                android:layout_marginRight="@dimen/margin_small"
                 android:layout_weight="1"
                 android:layout_width="0dp"
-                android:layout_height="33dp"/>
+                android:layout_height="@dimen/edittext_height"/>
         </LinearLayout>
     </LinearLayout>
 
