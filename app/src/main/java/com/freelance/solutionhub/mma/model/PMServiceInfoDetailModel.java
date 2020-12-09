@@ -1,6 +1,10 @@
 package com.freelance.solutionhub.mma.model;
 
-public class PMServiceInfoDetailModel {
+import com.google.gson.annotations.SerializedName;
+
+import java.io.Serializable;
+
+public class PMServiceInfoDetailModel implements Serializable {
     public String id;
     public String serviceOrderType;
     public String serviceOrderStatus;
