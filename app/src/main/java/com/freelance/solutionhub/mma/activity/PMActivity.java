@@ -13,6 +13,7 @@ import android.view.View;
 import com.freelance.solutionhub.mma.R;
 import com.freelance.solutionhub.mma.fragment.First_Step_PM_Fragment;
 import com.freelance.solutionhub.mma.fragment.Second_Step_PM_Fragment;
+import com.freelance.solutionhub.mma.model.PMServiceInfoDetailModel;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
@@ -22,6 +23,8 @@ public class PMActivity extends AppCompatActivity {
 
     private TabLayout tabLayout;
     private ViewPager viewPager;
+    private First_Step_PM_Fragment first_step_pm_fragment;
+    private Second_Step_PM_Fragment second_step_pm_fragment;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,6 +32,11 @@ public class PMActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
+        first_step_pm_fragment = new First_Step_PM_Fragment();
+        second_step_pm_fragment = new Second_Step_PM_Fragment();
+
+        PMServiceInfoDetailModel pmServiceInfoDetailModel = (PMServiceInfoDetailModel)(getIntent().getSerializableExtra("object"));
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
@@ -37,6 +45,12 @@ public class PMActivity extends AppCompatActivity {
 
         tabLayout = findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
+
+        ///pass id(data) from activity to fragments
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("object",  pmServiceInfoDetailModel);
+        first_step_pm_fragment.setArguments(bundle);
+        second_step_pm_fragment.setArguments(bundle);
 
     }
 

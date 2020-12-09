@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.freelance.solutionhub.mma.R;
 import com.freelance.solutionhub.mma.activity.PMActivity;
+import com.freelance.solutionhub.mma.delegate.FirstStepPMFragmentCallback;
 import com.freelance.solutionhub.mma.model.PhotoModel;
 
 import java.util.ArrayList;
@@ -25,10 +26,12 @@ import java.util.ArrayList;
 public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.MyViewHolder>{
     Context context;
     ArrayList<PhotoModel> singleRowArrayList;
+    private FirstStepPMFragmentCallback callback;
     SQLiteDatabase db;
-    public PhotoAdapter(Context context, ArrayList<PhotoModel> singleRowArrayList) {
+    public PhotoAdapter(Context context, ArrayList<PhotoModel> singleRowArrayList, FirstStepPMFragmentCallback callback) {
         this.context = context;
         this.singleRowArrayList = singleRowArrayList;
+        this.callback =callback;
 
     }
 
@@ -72,6 +75,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.MyViewHolder
 
 
     public void deletedata(final int position, final ArrayList<PhotoModel> singleRowArrayList){
+        callback.getPosition(position,singleRowArrayList.get(position).getUid());
         new AlertDialog.Builder(context)
                 .setIcon(R.drawable.defaultimage)
                 .setTitle("Delete result")
