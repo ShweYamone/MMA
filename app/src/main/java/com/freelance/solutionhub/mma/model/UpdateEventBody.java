@@ -2,7 +2,7 @@ package com.freelance.solutionhub.mma.model;
 
 import java.util.List;
 
-public class PMUpdateEventBody {
+public class UpdateEventBody {
     public String actor;
     public String actorId;
     public String date;
@@ -11,7 +11,8 @@ public class PMUpdateEventBody {
     public String remark;
     public List<Event> events;
 
-    public PMUpdateEventBody(String actor, String actorId, String date, String serviceOrderId, List<Event> events) {
+
+    public UpdateEventBody(String actor, String actorId, String date, String serviceOrderId, List<Event> events) {
         this.actor = actor;
         this.actorId = actorId;
         this.date = date;
@@ -19,7 +20,8 @@ public class PMUpdateEventBody {
         this.events = events;
     }
 
-    public PMUpdateEventBody(String actor, String actorId, String date, String serviceOrderId, String serviceOrderStatus, String remark) {
+    /*****PM JOBDONE*******/
+    public UpdateEventBody(String actor, String actorId, String date, String serviceOrderId, String serviceOrderStatus, String remark) {
         this.actor = actor;
         this.actorId = actorId;
         this.date = date;
@@ -28,4 +30,12 @@ public class PMUpdateEventBody {
         this.remark = remark;
     }
 
+    /*****CM_ACK_To_APPR****/
+    public UpdateEventBody(String actor, String actorId, String date, String serviceOrderId, String serviceOrderStatus) {
+        this.actor = actor;
+        this.actorId = actorId;
+        this.date = date;
+        this.serviceOrderId = serviceOrderId;
+        this.serviceOrderStatus = serviceOrderStatus;
+    }
 }

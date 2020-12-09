@@ -9,6 +9,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,9 +26,14 @@ import com.freelance.solutionhub.mma.R;
 import com.freelance.solutionhub.mma.activity.LoginActivity;
 import com.freelance.solutionhub.mma.adapter.ServiceOrderAdapter;
 import com.freelance.solutionhub.mma.common.SmartScrollListener;
+import com.freelance.solutionhub.mma.delegate.HomeFragmentCallback;
+import com.freelance.solutionhub.mma.model.Data;
 import com.freelance.solutionhub.mma.model.FilterModelBody;
 import com.freelance.solutionhub.mma.model.PMServiceInfoModel;
 import com.freelance.solutionhub.mma.model.PMServiceListModel;
+import com.freelance.solutionhub.mma.model.ReturnStatus;
+import com.freelance.solutionhub.mma.model.UpdateEventBody;
+import com.freelance.solutionhub.mma.model.UserProfile;
 import com.freelance.solutionhub.mma.util.ApiClient;
 import com.freelance.solutionhub.mma.util.ApiInterface;
 import com.freelance.solutionhub.mma.util.SharePreferenceHelper;
@@ -50,7 +57,7 @@ import static com.freelance.solutionhub.mma.util.AppConstant.JOBDONE;
 import static com.freelance.solutionhub.mma.util.AppConstant.PM;
 import static com.freelance.solutionhub.mma.util.AppConstant.WSCH;
 
-public class HomeFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemSelectedListener {
+public class HomeFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemSelectedListener, HomeFragmentCallback {
 
     @BindView(R.id.cvCorrectiveMaintenance)
     CardView cvCorrectiveMaintenance;
@@ -100,7 +107,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
     private List<PMServiceInfoModel> serviceInfoModelList = new ArrayList<>();
     private ApiInterface apiInterface;
     private SmartScrollListener mSmartScrollListener;
-    private TokenManager tokenManager;
     private SharePreferenceHelper mSharePreference;
     private FilterModelBody filterModelBody;
 
@@ -109,8 +115,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
     private String enumValue;
     private String textValue;
     private String filterExpression;
-
-
+    PMServiceListModel pmServiceListModel;
+    List<PMServiceInfoModel> pmServiceInfoModels;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -119,7 +125,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
         View view =  inflater.inflate(R.layout.fragment_home, container, false);
         mSharePreference = new SharePreferenceHelper(getContext());
         apiInterface = ApiClient.getClient(this.getContext());
-        tokenManager = new TokenManager(this.getContext(), apiInterface, mSharePreference);
 
         ButterKnife.bind(this, view);
         cvCorrectiveMaintenance.setOnClickListener(this);
@@ -136,7 +141,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
             }
         });
 
-        mAdapter = new ServiceOrderAdapter(this.getContext().getApplicationContext(), serviceInfoModelList);
+        mAdapter = new ServiceOrderAdapter(this.getContext().getApplicationContext(), serviceInfoModelList, this);
 
         recyclerViewMaintenance.setHasFixedSize(true);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(view.getContext());
@@ -144,8 +149,77 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
         recyclerViewMaintenance.setAdapter(mAdapter);
         recyclerViewMaintenance.addOnScrollListener(mSmartScrollListener);
         recyclerViewMaintenance.setAdapter(mAdapter);
+
+        if (mSharePreference.getUserId().equals("")) {
+            getUserIdAndUserDisplayName();
+        }
+
         setServiceOrderCount();
         return view;
+    }
+
+    private void getUserIdAndUserDisplayName() {
+        Call<UserProfile> call1 = apiInterface.getUserProfile("Bearer " + mSharePreference.getToken());
+        call1.enqueue(new Callback<UserProfile>() {
+            @Override
+            public void onResponse(Call<UserProfile> call, Response<UserProfile> response) {
+
+                if (response.isSuccessful()) {
+                    Data userData = response.body().getData();
+                    mSharePreference.setUserIdAndDisplayName(userData.getUserId(), userData.getDisplayName());
+                  //  Toast.makeText(getContext().getApplicationContext(), mSharePreference.getUserId() + ", " + mSharePreference.getDisplayName(), Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getContext().getApplicationContext(), response.code() + ", ", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UserProfile> call, Throwable t) {
+                Toast.makeText(getContext().getApplicationContext(), "failure", Toast.LENGTH_SHORT).show();
+
+            }
+        });
+
+    }
+
+
+    @Override
+    public boolean hasUserId() {
+        return !(mSharePreference.getUserId().equals(""));
+    }
+
+
+    public  void update_ARRP_To_ACK(String date, String serviceOrderId, int position) {
+        UpdateEventBody updateEventBody = new UpdateEventBody(mSharePreference.getUserName(), mSharePreference.getUserId(),
+                date,
+                serviceOrderId,ACK
+        );
+
+       // String
+        update_APPR_To_ACK_UI(position);
+        Call<ReturnStatus> call = apiInterface.updateStatusEvent("Bearer " + mSharePreference.getToken(), updateEventBody);
+        call.enqueue(new Callback<ReturnStatus>() {
+            @Override
+            public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
+                if (response.isSuccessful()) {
+                    ReturnStatus returnStatus = response.body();
+                    Toast.makeText(getContext().getApplicationContext(), returnStatus.getStatus()+"APPRtoACK", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getContext().getApplicationContext(), response.code()+"APPRtoACK", Toast.LENGTH_SHORT).show();
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ReturnStatus> call, Throwable t) {
+
+            }
+        });
+    }
+
+    public void update_APPR_To_ACK_UI(int position){
+        pmServiceInfoModels.get(position).setServiceOrderStatus(ACK);
+        mAdapter.notifyItemChanged(position);
     }
 
     private void setServiceOrderCount() {
@@ -156,7 +230,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
             public void onResponse(Call<PMServiceListModel> call, Response<PMServiceListModel> response) {
 
                 if (response.isSuccessful()) {
-                    PMServiceListModel pmServiceListModel = response.body();
+                    pmServiceListModel = response.body();
                     tvCMCount.setText(pmServiceListModel.getTotalElements()+"");
                 }
             }
@@ -173,7 +247,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
             public void onResponse(Call<PMServiceListModel> call, Response<PMServiceListModel> response) {
 
                 if (response.isSuccessful()) {
-                    PMServiceListModel pmServiceListModel = response.body();
+                    pmServiceListModel = response.body();
                     tvPMCount.setText(pmServiceListModel.getTotalElements()+"");
                 }
             }
@@ -198,7 +272,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
                     PMServiceListModel pmList = response.body();
                     totalPages = pmList.getTotalPages();
                     Toast.makeText(getContext(), "totalPages : " + totalPages + ", Current Page:" + page + "->" + pmList.getItems().size(),Toast.LENGTH_SHORT).show();
-                    serviceInfoModelList.addAll(pmList.getItems());
+                    pmServiceInfoModels = pmList.getItems();
+                    serviceInfoModelList.addAll(pmServiceInfoModels);
                     mAdapter.notifyDataSetChanged();
                 }
                 else if (response.code()==401){
@@ -208,7 +283,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
 
             @Override
             public void onFailure(Call<PMServiceListModel> call, Throwable t) {
-                Toast.makeText(getContext(), "connection failure", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext().getApplicationContext(), "connection failure", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -298,4 +373,5 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
     public void onNothingSelected(AdapterView<?> adapterView) {
 
     }
+
 }

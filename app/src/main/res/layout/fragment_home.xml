@@ -270,13 +270,26 @@
                 android:layout_height="1dp"
                 android:background="@android:color/darker_gray"/>
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerviewMaintenaceList"
-                android:layout_marginLeft="@dimen/margin_normal"
-                android:layout_marginRight="@dimen/margin_normal"
-                android:layout_marginBottom="@dimen/margin_normal"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content">
+                <View
+                    android:id="@+id/transparentView"
+                    android:clickable="true"
+                    android:background="@color/transparent"
+                    android:foreground="@color/transparent"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerviewMaintenaceList"
+                    android:layout_marginLeft="@dimen/margin_normal"
+                    android:layout_marginRight="@dimen/margin_normal"
+                    android:layout_marginBottom="@dimen/margin_normal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+            </RelativeLayout>
+
+
 
         </LinearLayout>
 

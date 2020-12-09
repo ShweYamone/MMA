@@ -13,8 +13,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.freelance.solutionhub.mma.R;
+import com.freelance.solutionhub.mma.model.Data;
 import com.freelance.solutionhub.mma.model.LoginModel;
 import com.freelance.solutionhub.mma.model.UserModel;
+import com.freelance.solutionhub.mma.model.UserProfile;
 import com.freelance.solutionhub.mma.util.ApiClient;
 import com.freelance.solutionhub.mma.util.ApiInterface;
 import com.freelance.solutionhub.mma.util.SharePreferenceHelper;
@@ -64,7 +66,7 @@ public class LoginActivity extends AppCompatActivity {
                     public void onResponse(Call<LoginModel> call, Response<LoginModel> response) {
                         LoginModel loginModel = response.body();
                         if(response.isSuccessful()){
-                            mSharedPreferance.setLogin(loginModel.getUsername(), password,  loginModel.getRefreshToken());
+                            mSharedPreferance.setLogin(loginModel.getUsername(), loginModel.getRefreshToken());
                             if (mSharedPreferance.isLogin()) {
                                 Toast.makeText(getApplicationContext(), loginModel.getUsername() + "", Toast.LENGTH_SHORT).show();
                                 startActivity(new Intent(getApplicationContext(), MainActivity.class));
