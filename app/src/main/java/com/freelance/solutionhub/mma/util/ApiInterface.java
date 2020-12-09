@@ -1,6 +1,7 @@
 package com.freelance.solutionhub.mma.util;
 
 
+import com.freelance.solutionhub.mma.model.ErrorModelForPhoto;
 import com.freelance.solutionhub.mma.model.FilterModelBody;
 import com.freelance.solutionhub.mma.model.PMServiceInfoDetailModel;
 import com.freelance.solutionhub.mma.model.PMServiceListModel;
@@ -12,13 +13,19 @@ import com.freelance.solutionhub.mma.model.UserModel;
 import com.freelance.solutionhub.mma.model.UserProfile;
 
 
+import java.io.File;
+
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
+import retrofit2.http.Part;
 import retrofit2.http.Path;
 
 
@@ -44,6 +51,10 @@ public interface ApiInterface {
     //APPR to ACK
     @PUT("service-order-status")
     Call<ReturnStatus> updateStatusEvent(@Header("Authorization") String auth, @Body UpdateEventBody updateEventBody);
+
+    //Upload Photo
+    @POST("https://ufqzjtxo67.execute-api.ap-southeast-1.amazonaws.com/dev/upload/{bucketName}")
+    Call<ReturnStatus> uploadPhoto(@Path("bucketName") String bucketName, @Body RequestBody file);
 
 
 }

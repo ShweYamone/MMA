@@ -1,19 +1,19 @@
 package com.freelance.solutionhub.mma.model;
 
 public class ReturnStatus {
-    public Object data;
+    public DataForPhoto data;
     public String status;
 
-    public ReturnStatus(Object data, String status) {
+    public ReturnStatus(DataForPhoto data, String status) {
         this.data = data;
         this.status = status;
     }
 
-    public Object getData() {
+    public DataForPhoto getData() {
         return data;
     }
 
-    public void setData(Object data) {
+    public void setData(DataForPhoto data) {
         this.data = data;
     }
 
@@ -24,4 +24,6 @@ public class ReturnStatus {
     public void setStatus(String status) {
         this.status = status;
     }
+
+
 }
