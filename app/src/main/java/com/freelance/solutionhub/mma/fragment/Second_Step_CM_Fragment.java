@@ -139,7 +139,7 @@ public class Second_Step_CM_Fragment extends Fragment {
      //   spinnerCauseCode.setOnItemClickListener(this);
     //    spinnerRemedyCode.setOnItemClickListener(this);
         displayMaintenanceWorkInformation();
-        
+
          */
         return view;
     }

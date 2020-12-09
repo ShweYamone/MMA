@@ -531,10 +531,20 @@
                 android:weightSum="4">
 
                 <ImageView
+                    android:id="@+id/iv_attach_pre_maintenance_photo"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:src="@drawable/add_photo"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerview_pre_photo"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:padding="3dp"
+                    android:scrollbars="none"/>
+
             </LinearLayout>
 
             <TextView
@@ -553,10 +563,19 @@
                 android:weightSum="4">
 
                 <ImageView
+                    android:id="@+id/iv_attach_post_maintenance_photo"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:src="@drawable/add_photo"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerview_post_photo"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:padding="3dp"
+                    android:scrollbars="none"/>
             </LinearLayout>
 
             <!-- Button Design -->
@@ -567,21 +586,14 @@
                 android:weightSum="4">
 
                 <Button
+                    android:id="@+id/btn_pm_step1"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:textColor="@color/colorWhite"
                     android:background="@drawable/round_rect_shape_button"
                     android:layout_margin="@dimen/margin_small"
-                    android:layout_weight="2"
+                    android:layout_weight="4"
                     android:text="@string/save"/>
-                <Button
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/colorWhite"
-                    android:background="@drawable/round_rect_shape_button"
-                    android:layout_margin="@dimen/margin_small"
-                    android:layout_weight="2"
-                    android:text="@string/job_done"/>
             </LinearLayout>
 
         </LinearLayout>
