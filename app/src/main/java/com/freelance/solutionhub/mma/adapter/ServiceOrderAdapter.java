@@ -3,6 +3,7 @@ package com.freelance.solutionhub.mma.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,10 +21,10 @@ import androidx.transition.Slide;
 import com.bumptech.glide.Glide;
 import com.freelance.solutionhub.mma.R;
 import com.freelance.solutionhub.mma.activity.CMActivity;
+import com.freelance.solutionhub.mma.activity.LoadingActivity;
 import com.freelance.solutionhub.mma.activity.PMActivity;
 import com.freelance.solutionhub.mma.delegate.HomeFragmentCallback;
-import com.freelance.solutionhub.mma.model.MaintenanceInfoModel;
-import com.freelance.solutionhub.mma.model.NotificationModel;
+import com.freelance.solutionhub.mma.fragment.First_Step_CM_Fragment;
 import com.freelance.solutionhub.mma.model.PMServiceInfoModel;
 
 import java.util.List;
@@ -95,10 +96,12 @@ public class ServiceOrderAdapter extends RecyclerView.Adapter<ServiceOrderAdapte
                                     @Override
                                     public void onClick(View view) {
 
-                                        Intent intent = new Intent(mContext, CMActivity.class);
+                                        Intent intent = new Intent(mContext, LoadingActivity.class);
                                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                         intent.putExtra("id", service.getId());
+
                                         mContext.startActivity(intent);
+
                                     }
                                 });
                             }
@@ -111,7 +114,7 @@ public class ServiceOrderAdapter extends RecyclerView.Adapter<ServiceOrderAdapte
                         @Override
                         public void onClick(View view) {
                             if (callback.hasUserId()) {
-                                Intent intent = new Intent(mContext, CMActivity.class);
+                                Intent intent = new Intent(mContext, LoadingActivity.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 intent.putExtra("id", service.getId());
                                 mContext.startActivity(intent);

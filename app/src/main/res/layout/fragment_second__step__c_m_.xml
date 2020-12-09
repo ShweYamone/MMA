@@ -67,6 +67,7 @@
                         android:weightSum="4"
                         android:orientation="horizontal">
                         <TextView
+                            android:id="@+id/tv_acknowledged_by"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="2"
@@ -76,6 +77,7 @@
                             android:textSize="@dimen/txt_size_normal"/>
 
                         <TextView
+                            android:id="@+id/tv_acknowledge_datetime"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="2"
@@ -100,6 +102,7 @@
                         android:fontFamily="@font/crimson_text_regular"
                         android:textSize="@dimen/txt_size_normal"/>
                     <TextView
+                        android:id="@+id/tv_response_datetime"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="@color/colorBlack"
@@ -126,7 +129,8 @@
                 android:layout_marginTop="@dimen/margin_small"
                 android:orientation="vertical"
                 android:background="@drawable/round_rect_shape_line">
-                <Spinner
+                <TextView
+                    android:id="@+id/tvReportedProblemCode"
                     android:layout_margin="@dimen/margin_small"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
@@ -150,6 +154,7 @@
                 android:orientation="vertical"
                 android:background="@drawable/round_rect_shape_line">
                 <Spinner
+                    android:id="@+id/spinnerActualProblemCode"
                     android:layout_margin="@dimen/margin_small"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
@@ -173,6 +178,7 @@
                 android:orientation="vertical"
                 android:background="@drawable/round_rect_shape_line">
                 <Spinner
+                    android:id="@+id/spinnerCauseCode"
                     android:layout_margin="@dimen/margin_small"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
@@ -196,6 +202,7 @@
                 android:orientation="vertical"
                 android:background="@drawable/round_rect_shape_line">
                 <Spinner
+                    android:id="@+id/spinnerRemedyCode"
                     android:layout_margin="@dimen/margin_small"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
@@ -225,6 +232,7 @@
                     android:weightSum="4"
                     android:orientation="horizontal">
                    <TextView
+                       android:id="@+id/tv_third_party_fault"
                        android:layout_width="0dp"
                        android:layout_height="wrap_content"
                        android:text="@string/third_party_fault"
@@ -234,6 +242,7 @@
                        android:layout_margin="@dimen/margin_small"
                        android:layout_weight="3.5" />
                     <ImageView
+                        android:id="@+id/iv_add_third_party"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="0.5"
@@ -264,6 +273,7 @@
 
 
                     <TextView
+                        android:id="@+id/tv_third_party_fault_desc"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/add_third_party_information"
@@ -371,6 +381,7 @@
                         android:layout_margin="@dimen/margin_small"
                         android:layout_weight="3.5" />
                     <ImageView
+                        android:id="@+id/iv_required_part_placement"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="0.5"
@@ -386,11 +397,11 @@
 
                     <TextView
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="37dp"
+                        android:fontFamily="@font/crimson_text_regular"
                         android:text="@string/scan_faulty_parts"
                         android:textColor="@color/colorBlack"
-                        android:fontFamily="@font/crimson_text_regular"
-                        android:textSize="@dimen/txt_size_large"/>
+                        android:textSize="@dimen/txt_size_large" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -414,8 +425,8 @@
                             android:layout_gravity="center"
                             android:background="@drawable/round_rect_shape">
 
-                            <EditText
-                                android:id="@+id/edit_text"
+                            <TextView
+                                android:id="@+id/tv_scan_fault"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="C3434343434"
@@ -423,6 +434,7 @@
                         </LinearLayout>
 
                         <Button
+                            android:id="@+id/btn_scan_fault"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="2"
@@ -466,8 +478,8 @@
                             android:layout_gravity="center"
                             android:background="@drawable/round_rect_shape">
 
-                            <EditText
-                                android:id="@+id/et_scan_replacement_parts"
+                            <TextView
+                                android:id="@+id/tv_scan_replacement"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="C3434343434"
@@ -475,6 +487,7 @@
                         </LinearLayout>
 
                         <Button
+                            android:id="@+id/btn_scan_replacement"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="2"

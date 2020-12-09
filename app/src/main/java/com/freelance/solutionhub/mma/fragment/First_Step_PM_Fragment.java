@@ -14,7 +14,6 @@ import android.widget.Toast;
 
 import com.freelance.solutionhub.mma.R;
 import com.freelance.solutionhub.mma.model.PMServiceInfoDetailModel;
-import com.freelance.solutionhub.mma.model.PMServiceInfoModel;
 import com.freelance.solutionhub.mma.util.ApiClient;
 import com.freelance.solutionhub.mma.util.ApiInterface;
 
@@ -128,4 +127,5 @@ public class First_Step_PM_Fragment extends Fragment {
             }
         });
     }
+
 }

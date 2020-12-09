@@ -11,8 +11,6 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.freelance.solutionhub.mma.R;
-import com.freelance.solutionhub.mma.activity.PMActivity;
-import com.freelance.solutionhub.mma.model.MaintenanceInfoModel;
 import com.freelance.solutionhub.mma.model.NotificationModel;
 
 import java.util.List;

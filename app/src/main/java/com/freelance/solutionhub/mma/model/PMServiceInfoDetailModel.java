@@ -1,24 +1,73 @@
 package com.freelance.solutionhub.mma.model;
 
-public class PMServiceInfoDetailModel {
+import java.io.Serializable;
+
+public class PMServiceInfoDetailModel implements Serializable {
     public String id;
     public String serviceOrderType;
     public String serviceOrderStatus;
-    public Object priorityLevel;
+    public String priorityLevel;
     public String panelId;
-    public Object busStopId;
-    public Object busStopLocation;
-    public Object weatherCondition;
-    public Object thirdPartyFault;
-    public Object thirdPartyFaultDescription;
-    public Object reportedProblem;
-    public Object actualProblem;
-    public Object cause;
-    public Object remedy;
+    public String busStopId;
+    public String busStopLocation;
+    public String weatherCondition;
+    public String thirdPartyFault;
+    public String thirdPartyFaultDescription;
+    public String reportedProblem;
+    public String actualProblem;
+    public String cause;
+    public String remedy;
+    public double totalResponseTime;
+    public double totalDownTime;
+    public String faultDetectedDate;
+    public String acknowledgedBy;
+    public String acknowledgementDate;
+    public String firstResponseDate;
+    public String creationDate;
+    public String notificationDate;
+    public String jobCompletionDate;
     public String targetResponseDate;
     public String targetEndDate;
-    public double totalResponseTime;
-    public Object totalDownTime;
+    public boolean isPartReplacement;
+    public PartReplacement partReplacement;
+
+    public class PartReplacement implements Serializable{
+        public int id;
+        public String replacedDate;
+        public String faultPartCode;
+        public String replacementPartCode;
+        public String replacedBy;
+    }
+
+    public PMServiceInfoDetailModel(String id, String serviceOrderType, String serviceOrderStatus, String priorityLevel, String panelId, String busStopId, String busStopLocation, String weatherCondition, String thirdPartyFault, String thirdPartyFaultDescription, String reportedProblem, String actualProblem, String cause, String remedy, double totalResponseTime, double totalDownTime, String faultDetectedDate, String acknowledgedBy, String acknowledgementDate, String firstResponseDate, String creationDate, String notificationDate, String jobCompletionDate, String targetResponseDate, String targetEndDate, boolean isPartReplacement, PartReplacement partReplacement) {
+        this.id = id;
+        this.serviceOrderType = serviceOrderType;
+        this.serviceOrderStatus = serviceOrderStatus;
+        this.priorityLevel = priorityLevel;
+        this.panelId = panelId;
+        this.busStopId = busStopId;
+        this.busStopLocation = busStopLocation;
+        this.weatherCondition = weatherCondition;
+        this.thirdPartyFault = thirdPartyFault;
+        this.thirdPartyFaultDescription = thirdPartyFaultDescription;
+        this.reportedProblem = reportedProblem;
+        this.actualProblem = actualProblem;
+        this.cause = cause;
+        this.remedy = remedy;
+        this.totalResponseTime = totalResponseTime;
+        this.totalDownTime = totalDownTime;
+        this.faultDetectedDate = faultDetectedDate;
+        this.acknowledgedBy = acknowledgedBy;
+        this.acknowledgementDate = acknowledgementDate;
+        this.firstResponseDate = firstResponseDate;
+        this.creationDate = creationDate;
+        this.notificationDate = notificationDate;
+        this.jobCompletionDate = jobCompletionDate;
+        this.targetResponseDate = targetResponseDate;
+        this.targetEndDate = targetEndDate;
+        this.isPartReplacement = isPartReplacement;
+        this.partReplacement = partReplacement;
+    }
 
     public String getId() {
         return id;
@@ -44,11 +93,11 @@ public class PMServiceInfoDetailModel {
         this.serviceOrderStatus = serviceOrderStatus;
     }
 
-    public Object getPriorityLevel() {
+    public String getPriorityLevel() {
         return priorityLevel;
     }
 
-    public void setPriorityLevel(Object priorityLevel) {
+    public void setPriorityLevel(String priorityLevel) {
         this.priorityLevel = priorityLevel;
     }
 
@@ -60,92 +109,76 @@ public class PMServiceInfoDetailModel {
         this.panelId = panelId;
     }
 
-    public Object getBusStopId() {
+    public String getBusStopId() {
         return busStopId;
     }
 
-    public void setBusStopId(Object busStopId) {
+    public void setBusStopId(String busStopId) {
         this.busStopId = busStopId;
     }
 
-    public Object getBusStopLocation() {
+    public String getBusStopLocation() {
         return busStopLocation;
     }
 
-    public void setBusStopLocation(Object busStopLocation) {
+    public void setBusStopLocation(String busStopLocation) {
         this.busStopLocation = busStopLocation;
     }
 
-    public Object getWeatherCondition() {
+    public String getWeatherCondition() {
         return weatherCondition;
     }
 
-    public void setWeatherCondition(Object weatherCondition) {
+    public void setWeatherCondition(String weatherCondition) {
         this.weatherCondition = weatherCondition;
     }
 
-    public Object getThirdPartyFault() {
+    public String getThirdPartyFault() {
         return thirdPartyFault;
     }
 
-    public void setThirdPartyFault(Object thirdPartyFault) {
+    public void setThirdPartyFault(String thirdPartyFault) {
         this.thirdPartyFault = thirdPartyFault;
     }
 
-    public Object getThirdPartyFaultDescription() {
+    public String getThirdPartyFaultDescription() {
         return thirdPartyFaultDescription;
     }
 
-    public void setThirdPartyFaultDescription(Object thirdPartyFaultDescription) {
+    public void setThirdPartyFaultDescription(String thirdPartyFaultDescription) {
         this.thirdPartyFaultDescription = thirdPartyFaultDescription;
     }
 
-    public Object getReportedProblem() {
+    public String getReportedProblem() {
         return reportedProblem;
     }
 
-    public void setReportedProblem(Object reportedProblem) {
+    public void setReportedProblem(String reportedProblem) {
         this.reportedProblem = reportedProblem;
     }
 
-    public Object getActualProblem() {
+    public String getActualProblem() {
         return actualProblem;
     }
 
-    public void setActualProblem(Object actualProblem) {
+    public void setActualProblem(String actualProblem) {
         this.actualProblem = actualProblem;
     }
 
-    public Object getCause() {
+    public String getCause() {
         return cause;
     }
 
-    public void setCause(Object cause) {
+    public void setCause(String cause) {
         this.cause = cause;
     }
 
-    public Object getRemedy() {
+    public String getRemedy() {
         return remedy;
     }
 
-    public void setRemedy(Object remedy) {
+    public void setRemedy(String remedy) {
         this.remedy = remedy;
-    }
-
-    public String getTargetResponseDate() {
-        return targetResponseDate;
-    }
-
-    public void setTargetResponseDate(String targetResponseDate) {
-        this.targetResponseDate = targetResponseDate;
-    }
-
-    public String getTargetEndDate() {
-        return targetEndDate;
-    }
-
-    public void setTargetEndDate(String targetEndDate) {
-        this.targetEndDate = targetEndDate;
     }
 
     public double getTotalResponseTime() {
@@ -156,20 +189,20 @@ public class PMServiceInfoDetailModel {
         this.totalResponseTime = totalResponseTime;
     }
 
-    public Object getTotalDownTime() {
+    public double getTotalDownTime() {
         return totalDownTime;
     }
 
-    public void setTotalDownTime(Object totalDownTime) {
+    public void setTotalDownTime(double totalDownTime) {
         this.totalDownTime = totalDownTime;
     }
 
-    public String getAcknowledgementDate() {
-        return acknowledgementDate;
+    public String getFaultDetectedDate() {
+        return faultDetectedDate;
     }
 
-    public void setAcknowledgementDate(String acknowledgementDate) {
-        this.acknowledgementDate = acknowledgementDate;
+    public void setFaultDetectedDate(String faultDetectedDate) {
+        this.faultDetectedDate = faultDetectedDate;
     }
 
     public String getAcknowledgedBy() {
@@ -178,6 +211,14 @@ public class PMServiceInfoDetailModel {
 
     public void setAcknowledgedBy(String acknowledgedBy) {
         this.acknowledgedBy = acknowledgedBy;
+    }
+
+    public String getAcknowledgementDate() {
+        return acknowledgementDate;
+    }
+
+    public void setAcknowledgementDate(String acknowledgementDate) {
+        this.acknowledgementDate = acknowledgementDate;
     }
 
     public String getFirstResponseDate() {
@@ -196,22 +237,6 @@ public class PMServiceInfoDetailModel {
         this.creationDate = creationDate;
     }
 
-    public Object getJobCompletionDate() {
-        return jobCompletionDate;
-    }
-
-    public void setJobCompletionDate(Object jobCompletionDate) {
-        this.jobCompletionDate = jobCompletionDate;
-    }
-
-    public Object getFaultDetectedDate() {
-        return faultDetectedDate;
-    }
-
-    public void setFaultDetectedDate(Object faultDetectedDate) {
-        this.faultDetectedDate = faultDetectedDate;
-    }
-
     public String getNotificationDate() {
         return notificationDate;
     }
@@ -220,29 +245,43 @@ public class PMServiceInfoDetailModel {
         this.notificationDate = notificationDate;
     }
 
-    public Object getIsPartReplacement() {
+    public String getJobCompletionDate() {
+        return jobCompletionDate;
+    }
+
+    public void setJobCompletionDate(String jobCompletionDate) {
+        this.jobCompletionDate = jobCompletionDate;
+    }
+
+    public String getTargetResponseDate() {
+        return targetResponseDate;
+    }
+
+    public void setTargetResponseDate(String targetResponseDate) {
+        this.targetResponseDate = targetResponseDate;
+    }
+
+    public String getTargetEndDate() {
+        return targetEndDate;
+    }
+
+    public void setTargetEndDate(String targetEndDate) {
+        this.targetEndDate = targetEndDate;
+    }
+
+    public boolean isPartReplacement() {
         return isPartReplacement;
     }
 
-    public void setIsPartReplacement(Object isPartReplacement) {
-        this.isPartReplacement = isPartReplacement;
+    public void setPartReplacement(boolean partReplacement) {
+        isPartReplacement = partReplacement;
     }
 
-    public Object getPartReplacement() {
+    public PartReplacement getPartReplacement() {
         return partReplacement;
     }
 
-    public void setPartReplacement(Object partReplacement) {
+    public void setPartReplacement(PartReplacement partReplacement) {
         this.partReplacement = partReplacement;
     }
-
-    public String acknowledgementDate;
-    public String acknowledgedBy;
-    public String firstResponseDate;
-    public String creationDate;
-    public Object jobCompletionDate;
-    public Object faultDetectedDate;
-    public String notificationDate;
-    public Object isPartReplacement;
-    public Object partReplacement;
 }

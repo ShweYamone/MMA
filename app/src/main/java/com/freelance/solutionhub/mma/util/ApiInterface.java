@@ -1,6 +1,7 @@
 package com.freelance.solutionhub.mma.util;
 
 
+import com.freelance.solutionhub.mma.model.FaultMapping;
 import com.freelance.solutionhub.mma.model.FilterModelBody;
 import com.freelance.solutionhub.mma.model.PMServiceInfoDetailModel;
 import com.freelance.solutionhub.mma.model.PMServiceListModel;
@@ -10,10 +11,15 @@ import com.freelance.solutionhub.mma.model.UpdateEventBody;
 import com.freelance.solutionhub.mma.model.ReturnStatus;
 import com.freelance.solutionhub.mma.model.UserModel;
 import com.freelance.solutionhub.mma.model.UserProfile;
+import com.google.gson.JsonObject;
 
 
+import org.json.JSONObject;
+
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
@@ -28,9 +34,8 @@ public interface ApiInterface {
     @POST("service-orders")
     Call<PMServiceListModel> getPMServiceOrders(@Header("Authorization") String auth, @Body FilterModelBody param);
 
-    @Headers({"Content-Type: application/json"})
-    @GET("dev/service-orders/{pm_id}")
-    Call<PMServiceInfoDetailModel> getPMServiceOrderByID(@Path ("pm_id") String pmID , @Header("Authorization") String auth);
+    @GET("service-orders/{pm_id}")
+    Call<PMServiceInfoDetailModel> getPMServiceOrderByID(@Header("Authorization") String auth, @Path("pm_id") String pmID);
 
     @POST("https://7gs3iv1pt0.execute-api.ap-southeast-1.amazonaws.com/auth/login")
     Call<LoginModel> getToken(@Body UserModel userModel);
@@ -45,6 +50,8 @@ public interface ApiInterface {
     @PUT("service-order-status")
     Call<ReturnStatus> updateStatusEvent(@Header("Authorization") String auth, @Body UpdateEventBody updateEventBody);
 
+    @GET("https://ufqzjtxo67.execute-api.ap-southeast-1.amazonaws.com/dev/fault-mappings")
+    Call<ResponseBody> getFaultMappings(@Header("Authorization") String auth);
 
 }
 

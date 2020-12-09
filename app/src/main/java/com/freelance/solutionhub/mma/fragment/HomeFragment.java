@@ -271,7 +271,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
                 if (response.isSuccessful()) {
                     PMServiceListModel pmList = response.body();
                     totalPages = pmList.getTotalPages();
-                    Toast.makeText(getContext(), "totalPages : " + totalPages + ", Current Page:" + page + "->" + pmList.getItems().size(),Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext().getApplicationContext(), "totalPages : " + totalPages + ", Current Page:" + page + "->" + pmList.getItems().size(),Toast.LENGTH_SHORT).show();
                     pmServiceInfoModels = pmList.getItems();
                     serviceInfoModelList.addAll(pmServiceInfoModels);
                     mAdapter.notifyDataSetChanged();
