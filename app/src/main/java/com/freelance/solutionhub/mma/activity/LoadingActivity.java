@@ -55,7 +55,12 @@ public class LoadingActivity extends AppCompatActivity {
             public void onResponse(Call<PMServiceInfoDetailModel> call, Response<PMServiceInfoDetailModel> response) {
 
                 if (response.isSuccessful()) {
-                    Intent intent = new Intent(LoadingActivity.this, CMActivity.class);
+                    Intent intent;
+                    if (id.startsWith("CM")) {
+                        intent = new Intent(LoadingActivity.this, CMActivity.class);
+                    } else {
+                        intent = new Intent(LoadingActivity.this, PMActivity.class);
+                    }
                     intent.putExtra("object", response.body());
                     startActivity(intent);
                     finish();

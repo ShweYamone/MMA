@@ -57,8 +57,8 @@ public class PMActivity extends AppCompatActivity {
     // Add steps' fragment to view pager
     private void addTabs(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFrag(new First_Step_PM_Fragment(), "STEP 1");
-        adapter.addFrag(new Second_Step_PM_Fragment(), "STEP 2");
+        adapter.addFrag(first_step_pm_fragment, "STEP 1");
+        adapter.addFrag(second_step_pm_fragment, "STEP 2");
         viewPager.setAdapter(adapter);
     }
 

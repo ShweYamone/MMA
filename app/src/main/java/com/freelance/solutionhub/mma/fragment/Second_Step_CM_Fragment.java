@@ -93,7 +93,7 @@ public class Second_Step_CM_Fragment extends Fragment {
     Map<String,List<Code_Description>> causeRemedyMap = new HashMap<>();
 
     String[] problemArr = new String[0]; String[] actualProblemCode = new String[0];
-    String[] causeArr = new String[0];
+    String[] causeArr = new String[0]; String[] causeProblemCode = new String[0];
     String[] remedyArr = new String[0];
 
     public Second_Step_CM_Fragment() {
@@ -124,11 +124,11 @@ public class Second_Step_CM_Fragment extends Fragment {
         spinnerActualProbleCode.setAdapter(actualProblemArrAdapter);
         spinnerCauseCode.setAdapter(causeProblemArrAdapter);
         spinnerRemedyCode.setAdapter(remedyArrAdapter);
-        /*
+/*
         spinnerActualProbleCode.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                int l = problemCauseMap.get(actualProblemCode[i]).;
+                 = problemCauseMap.get(actualProblemCode[i]).size();
                 for (int k = 0; k < problemCauseMap.get(actualProblemCode[i]))
             }
 
@@ -136,11 +136,11 @@ public class Second_Step_CM_Fragment extends Fragment {
             public void onNothingSelected(AdapterView<?> adapterView) {
             }
         });
-     //   spinnerCauseCode.setOnItemClickListener(this);
-    //    spinnerRemedyCode.setOnItemClickListener(this);
+        spinnerCauseCode.setOnItemClickListener(this);
+        spinnerRemedyCode.setOnItemClickListener(this);*/
         displayMaintenanceWorkInformation();
 
-         */
+
         return view;
     }
 
