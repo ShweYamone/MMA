@@ -143,6 +143,8 @@ public class First_Step_PM_Fragment extends Fragment implements FirstStepPMFragm
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        pmServiceInfoDetailModel = (PMServiceInfoDetailModel)(getArguments().getSerializable("object"));
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_first_step_p_m_, container, false);
         ButterKnife.bind(this, view);
@@ -152,7 +154,6 @@ public class First_Step_PM_Fragment extends Fragment implements FirstStepPMFragm
         postPhotoModels = new ArrayList<>();
         preEventList = new ArrayList<>();
         postEventList = new ArrayList<>();
-        pmServiceInfoDetailModel = (PMServiceInfoDetailModel)(getArguments().getSerializable("object"));
 
         date = new Date();
         ts=new Timestamp(date.getTime());
