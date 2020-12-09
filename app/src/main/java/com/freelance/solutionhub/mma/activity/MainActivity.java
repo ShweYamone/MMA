@@ -80,6 +80,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         ab.setDisplayHomeAsUpEnabled(true);
     }
 
+
     private void initNavigationDrawer() {
 
         mDrawerLayout.setScrimColor(ContextCompat.getColor(getApplicationContext(), android.R.color.transparent));

@@ -24,6 +24,7 @@ public class TokenManager {
         this.mSharedPreference = mSharedPreference;
     }
 
+    /*
     public void setTokenAgain() {
         Call<LoginModel> call = apiInterface.getToken(new UserModel(mSharedPreference.getUserName(), mSharedPreference.getUserPwd()));
         call.enqueue(new Callback<LoginModel>() {
@@ -43,7 +44,7 @@ public class TokenManager {
             }
         });
     }
-
+*/
 
 
 }

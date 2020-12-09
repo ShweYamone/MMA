@@ -11,7 +11,8 @@ public class SharePreferenceHelper {
 
 
 	private static String USER_NAME_KEY = "username";
-	private static String USER_PWD = "pwd";
+	private static String USER_DISPLAY_NAME_KEY = "userdisplayname";
+	private static String USER_ID = "userid";
  	private static String TOKEN = "refreshToken";
 
 
@@ -21,30 +22,41 @@ public class SharePreferenceHelper {
 	}
 
 
-	public void setLogin(String name, String pwd, String token)
-
+	public void setLogin(String name, String token)
 	{
 		SharedPreferences.Editor editor = sharedPreference.edit();
 		editor.putString(USER_NAME_KEY, name);
-		editor.putString(USER_PWD, pwd);
 		editor.putString(TOKEN, token);
+		editor.commit();
+	}
+
+	public void setUserIdAndDisplayName(String userId, String displayName) {
+		SharedPreferences.Editor editor = sharedPreference.edit();
+		editor.putString(USER_ID, userId);
+		editor.putString(USER_DISPLAY_NAME_KEY, displayName);
 		editor.commit();
 	}
 
 	public void setToken(String token) {
 		SharedPreferences.Editor editor = sharedPreference.edit();
 		editor.putString(TOKEN, token);
+		editor.commit();
 	}
 
 	public String getUserName() {
 		return sharedPreference.getString(USER_NAME_KEY,"");
 	}
 
-	public String getUserPwd() {
-		return sharedPreference.getString(USER_PWD, "");
-	}
 	public String getToken() {
 		return sharedPreference.getString(TOKEN, "");
+	}
+
+	public String getDisplayName() {
+		return sharedPreference.getString(USER_DISPLAY_NAME_KEY, "");
+	}
+
+	public String getUserId() {
+		return sharedPreference.getString(USER_ID, "");
 	}
 
 	public void logoutSharePreference()

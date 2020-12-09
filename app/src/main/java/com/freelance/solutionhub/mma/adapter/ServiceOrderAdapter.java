@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.transition.Slide;
 
@@ -20,6 +21,7 @@ import com.bumptech.glide.Glide;
 import com.freelance.solutionhub.mma.R;
 import com.freelance.solutionhub.mma.activity.CMActivity;
 import com.freelance.solutionhub.mma.activity.PMActivity;
+import com.freelance.solutionhub.mma.delegate.HomeFragmentCallback;
 import com.freelance.solutionhub.mma.model.MaintenanceInfoModel;
 import com.freelance.solutionhub.mma.model.NotificationModel;
 import com.freelance.solutionhub.mma.model.PMServiceInfoModel;
@@ -40,6 +42,7 @@ public class ServiceOrderAdapter extends RecyclerView.Adapter<ServiceOrderAdapte
 
     private Context mContext;
     private List<PMServiceInfoModel> serviceInfoModelList;
+    private HomeFragmentCallback callback;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.tvMSONumber)
@@ -65,13 +68,13 @@ public class ServiceOrderAdapter extends RecyclerView.Adapter<ServiceOrderAdapte
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                 //   Toast.makeText(v.getContext(), "click", Toast.LENGTH_SHORT).show();
                 }
             });
 
         }
 
-        public void bindView(PMServiceInfoModel service){
+        public void bindView(PMServiceInfoModel service, int position){
             this.service = service;
             tvTime.setText(service.getCreationDate());
             tvMsoNumber.setText(service.getId());
@@ -80,21 +83,26 @@ public class ServiceOrderAdapter extends RecyclerView.Adapter<ServiceOrderAdapte
             tvLocation.setText(service.getBusStopLocation());
 
             if (service.getId().startsWith(cm)) {
-                if (status.equals(ACK)){
+                if (status.equals(APPR)){
                     Glide.with(mContext).load(R.drawable.ack).into(ivLanding);
                     ivLanding.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            Glide.with(mContext).load(R.drawable.landing_cm).into(ivLanding);
-                            ivLanding.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    Intent intent = new Intent(mContext, CMActivity.class);
-                                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                    intent.putExtra("id", service.getId());
-                                    mContext.startActivity(intent);
-                                }
-                            });
+                            if (callback.hasUserId()) {
+                                callback.update_ARRP_To_ACK(service.getCreationDate(), service.getId(), position);
+                              //  Glide.with(mContext).load(R.drawable.landing_cm).into(ivLanding);
+                                ivLanding.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+
+                                        Intent intent = new Intent(mContext, CMActivity.class);
+                                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                        intent.putExtra("id", service.getId());
+                                        mContext.startActivity(intent);
+                                    }
+                                });
+                            }
+
                         }
                     });
                 } else {
@@ -102,10 +110,13 @@ public class ServiceOrderAdapter extends RecyclerView.Adapter<ServiceOrderAdapte
                     ivLanding.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            Intent intent = new Intent(mContext, CMActivity.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            intent.putExtra("id", service.getId());
-                            mContext.startActivity(intent);
+                            if (callback.hasUserId()) {
+                                Intent intent = new Intent(mContext, CMActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                intent.putExtra("id", service.getId());
+                                mContext.startActivity(intent);
+                            }
+
                         }
                     });
                 }
@@ -114,10 +125,12 @@ public class ServiceOrderAdapter extends RecyclerView.Adapter<ServiceOrderAdapte
                 ivLanding.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Intent intent = new Intent(mContext, PMActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        intent.putExtra("id", service.getId());
-                        mContext.startActivity(intent);
+                        if (callback.hasUserId()) {
+                            Intent intent = new Intent(mContext, PMActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            intent.putExtra("id", service.getId());
+                            mContext.startActivity(intent);
+                        }
                     }
                 });
             }
@@ -135,9 +148,10 @@ public class ServiceOrderAdapter extends RecyclerView.Adapter<ServiceOrderAdapte
         }
     }
 
-    public ServiceOrderAdapter(Context mContext, List<PMServiceInfoModel> serviceInfoModelList) {
+    public ServiceOrderAdapter(Context mContext, List<PMServiceInfoModel> serviceInfoModelList, HomeFragmentCallback callback) {
         this.mContext = mContext;
         this.serviceInfoModelList = serviceInfoModelList;
+        this.callback = callback;
     }
 
     @Override
@@ -151,7 +165,7 @@ public class ServiceOrderAdapter extends RecyclerView.Adapter<ServiceOrderAdapte
     @Override
     public void onBindViewHolder(ServiceOrderAdapter.MyViewHolder holder, int position) {
         PMServiceInfoModel service = serviceInfoModelList.get(position);
-        holder.bindView(service);
+        holder.bindView(service, position);
     }
 
     @Override

@@ -6,9 +6,10 @@ import com.freelance.solutionhub.mma.model.PMServiceInfoDetailModel;
 import com.freelance.solutionhub.mma.model.PMServiceListModel;
 
 import com.freelance.solutionhub.mma.model.LoginModel;
-import com.freelance.solutionhub.mma.model.PMUpdateEventBody;
+import com.freelance.solutionhub.mma.model.UpdateEventBody;
 import com.freelance.solutionhub.mma.model.ReturnStatus;
 import com.freelance.solutionhub.mma.model.UserModel;
+import com.freelance.solutionhub.mma.model.UserProfile;
 
 
 import retrofit2.Call;
@@ -34,11 +35,15 @@ public interface ApiInterface {
     @POST("https://7gs3iv1pt0.execute-api.ap-southeast-1.amazonaws.com/auth/login")
     Call<LoginModel> getToken(@Body UserModel userModel);
 
-    @PUT("service-order-details")
-    Call<ReturnStatus> updateEvent(@Header("Authorization") String auth, @Body PMUpdateEventBody pmUpdateEventBody);
+    @GET("https://nj3qiw3gn5.execute-api.ap-southeast-1.amazonaws.com/dev/profile")
+    Call<UserProfile> getUserProfile(@Header("Authorization") String auth);
 
+    @PUT("service-order-details")
+    Call<ReturnStatus> updateEvent(@Header("Authorization") String auth, @Body UpdateEventBody updateEventBody);
+
+    //APPR to ACK
     @PUT("service-order-status")
-    Call<ReturnStatus> updateJOBDONEEvent(@Header("Authorization") String auth, @Body PMUpdateEventBody pmUpdateEventBody);
+    Call<ReturnStatus> updateStatusEvent(@Header("Authorization") String auth, @Body UpdateEventBody updateEventBody);
 
 
 }
