@@ -122,7 +122,6 @@ public class First_Step_CM_Fragment extends Fragment implements FirstStepPMFragm
     private Date date;
     private PMServiceInfoDetailModel pmServiceInfoModel;
     private ApiInterface apiInterface;
-    private ProgressDialog pd;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -135,7 +134,6 @@ public class First_Step_CM_Fragment extends Fragment implements FirstStepPMFragm
         apiInterface = ApiClient.getClient(this.getContext());
         preEventList = new ArrayList<>();
         prePhotoModels = new ArrayList<>();
-        pd = new ProgressDialog(this.getContext());
         mSharePerferenceHelper = new SharePreferenceHelper(this.getContext());
         ButterKnife.bind(this, view);
         displayMSOInformation();
@@ -185,19 +183,12 @@ public class First_Step_CM_Fragment extends Fragment implements FirstStepPMFragm
                     pmServiceInfoModel.getId(),
                     preEventList);
 
-            pd.setTitle("Uploading...");
-            pd.setMessage("Please wait, data is sending");
-            pd.setCancelable(false);
-            pd.setIndeterminate(true);
-            pd.show();
-
             Call<ReturnStatus> returnStatusCallEvent = apiInterface.updateEvent("Bearer " + mSharePerferenceHelper.getToken(), updateEventBody);
             returnStatusCallEvent.enqueue(new Callback<ReturnStatus>() {
                 @Override
                 public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
                     ReturnStatus returnStatus = response.body();
                     if (response.isSuccessful()) {
-                        pd.dismiss();
                         Toast.makeText(getContext(), returnStatus.getStatus() + "", Toast.LENGTH_LONG).show();
 
                     }
@@ -359,11 +350,6 @@ public class First_Step_CM_Fragment extends Fragment implements FirstStepPMFragm
 
         String bucketName ="pids-pre-maintenance-photo";
 
-        pd.setTitle("Uploading...");
-        pd.setMessage("Please wait, data is sending");
-        pd.setCancelable(false);
-        pd.setIndeterminate(true);
-        pd.show();
         Call<ReturnStatus> returnStatusCall = apiInterface.uploadPhoto(bucketName,  requestBody);
         returnStatusCall.enqueue(new Callback<ReturnStatus>() {
             @Override
@@ -371,11 +357,10 @@ public class First_Step_CM_Fragment extends Fragment implements FirstStepPMFragm
                 ReturnStatus returnStatus = response.body();
                 if(response.isSuccessful()){
                     Log.v("PRE_EVENT","Added pre event");
-                    pd.dismiss();
                     preEventList.add(new Event("PRE_MAINTENANCE_PHOTO_UPDATE","preMaintenancePhotoUpdate",returnStatus.getData().getFileUrl()));
                     Toast.makeText(getContext(),returnStatus.getStatus()+"",Toast.LENGTH_SHORT).show();
                 }else {
-                    Toast.makeText(getContext(),";",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(),";",Toast.LENGTH_LONG).show();
                 }
             }
 
