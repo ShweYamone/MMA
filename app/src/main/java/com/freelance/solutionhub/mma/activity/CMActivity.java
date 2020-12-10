@@ -72,7 +72,7 @@ public class CMActivity extends AppCompatActivity {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFrag(first_step_cm_fragment, "STEP 1");
         adapter.addFrag(second_step_cm_fragment, "STEP 2");
-        adapter.addFrag(new Third_Step_CM_Fragment(), "STEP 3");
+        adapter.addFrag(third_step_cm_fragment, "STEP 3");
         viewPager.setAdapter(adapter);
     }
 
