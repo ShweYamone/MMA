@@ -26,6 +26,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -136,6 +137,9 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
 
     @BindView(R.id.recyclerview_post_photo)
     RecyclerView postRecyclerView;
+
+    @BindView(R.id.etThirdPartyComment)
+    EditText etThridPartyComment;
 
     @BindView(R.id.btnSave)
     Button btnSave;

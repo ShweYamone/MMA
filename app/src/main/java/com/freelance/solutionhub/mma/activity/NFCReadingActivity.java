@@ -13,6 +13,7 @@ import android.nfc.tech.MifareUltralight;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.provider.Settings;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.freelance.solutionhub.mma.R;
@@ -54,9 +55,25 @@ public class NFCReadingActivity extends AppCompatActivity {
         apiInterface = ApiClient.getClient(this);
 
         serviceOrderId = getIntent().getStringExtra("id");
-        /****To Delete*********/
-        perFormTagInEvent();
+
+
+        ////////////////////////////////
+        date = new Date();
+        ts=new Timestamp(date.getTime());
+        String currentDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(ts);
+        List<Event> events = new ArrayList<>();
+        if (getIntent().getBooleanExtra("TAG_OUT", false)) {
+            events.add(new Event("TAG_OUT", "tagOut", "tagOut"));
+        } else {
+            events.add(new Event("TAG_IN", "tagIn", "tagIn"));
+        }
+        UpdateEventBody eventBody = new UpdateEventBody(
+                mSharedPreference.getUserName(), mSharedPreference.getUserId(), currentDateTime, serviceOrderId, events
+        );
+        /****To Fix when NFC can read*********/
+        perFormTagInEvent(eventBody);
         /*********************/
+        /////////////////////////////////////
 
         if(nfcAdapter == null){
             Toast.makeText(this, "No NFC", Toast.LENGTH_SHORT).show();
@@ -64,28 +81,19 @@ public class NFCReadingActivity extends AppCompatActivity {
             return;
         }
 
-
         pendingIntent = PendingIntent.getActivity(this, 0,
                 new Intent(this, this.getClass())
                         .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
+
     }
 
-    private void perFormTagInEvent() {
-        date = new Date();
-        ts=new Timestamp(date.getTime());
-        String currentDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(ts);
-        List<Event> events = new ArrayList<>();
-        events.add(new Event("TAG_IN", "tagIn", "tagIn"));
-        UpdateEventBody eventBody = new UpdateEventBody(
-            mSharedPreference.getUserName(), mSharedPreference.getUserId(), currentDateTime, serviceOrderId, events
-        );
-
+    private void perFormTagInEvent(UpdateEventBody eventBody) {
         Call<ReturnStatus> call = apiInterface.updateEvent("Bearer " + mSharedPreference.getToken(), eventBody);
         call.enqueue(new Callback<ReturnStatus>() {
             @Override
             public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
                 if (response.isSuccessful()) {
-                    Toast.makeText(getApplicationContext(), "TAG_IN" +  response.body().getStatus(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "TAG_SUCCESS" +  response.body().getStatus(), Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(NFCReadingActivity.this, LoadingActivity.class);
                     intent.putExtra("id", serviceOrderId);
                     startActivity(intent);

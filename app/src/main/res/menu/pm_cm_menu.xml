@@ -1,0 +1,11 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".activity.CMActivity">
+    <item
+        android:id="@+id/action_tagout"
+        android:icon="@drawable/logout_exit"
+        android:title="notifications"
+        android:orderInCategory="100"
+        app:showAsAction="ifRoom" />
+</menu>

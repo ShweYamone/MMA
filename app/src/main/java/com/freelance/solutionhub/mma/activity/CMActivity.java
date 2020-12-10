@@ -1,5 +1,6 @@
 package com.freelance.solutionhub.mma.activity;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
@@ -10,6 +11,8 @@ import androidx.viewpager.widget.ViewPager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -37,10 +40,12 @@ public class CMActivity extends AppCompatActivity {
     private Second_Step_CM_Fragment second_step_cm_fragment;
     private Third_Step_CM_Fragment third_step_cm_fragment;
 
+    private PMServiceInfoDetailModel pmServiceInfoDetailModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        PMServiceInfoDetailModel pmServiceInfoDetailModel = (PMServiceInfoDetailModel)(getIntent().getSerializableExtra("object"));
+        pmServiceInfoDetailModel = (PMServiceInfoDetailModel)(getIntent().getSerializableExtra("object"));
         setContentView(R.layout.activity_c_m);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -106,17 +111,29 @@ public class CMActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                return true;
 
-            default:
-                return super.onOptionsItemSelected(item);
-        }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.pm_cm_menu, menu);
+        return true;
     }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_tagout:
+                Intent intent = new Intent(CMActivity.this, NFCReadingActivity.class);
+                intent.putExtra("id", pmServiceInfoDetailModel.getId());
+                intent.putExtra("TAG_OUT", true);
+                startActivity(intent);
+                finish();
+        }
+
+
+        return super.onOptionsItemSelected(item);
+    }
+
     //Getting the scan results
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
