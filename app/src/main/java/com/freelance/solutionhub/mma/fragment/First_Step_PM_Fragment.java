@@ -61,8 +61,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static com.freelance.solutionhub.mma.util.AppConstant.token;
-import static com.freelance.solutionhub.mma.util.AppConstant.pmID;
 
 public class First_Step_PM_Fragment extends Fragment implements FirstStepPMFragmentCallback {
 
@@ -116,6 +114,9 @@ public class First_Step_PM_Fragment extends Fragment implements FirstStepPMFragm
 
     @BindView(R.id.btn_pm_step1)
     Button pmStep1;
+
+    @BindView(R.id.tvMSOStatus)
+    TextView tvMSOStatus;
 
     private ApiInterface apiInterface;
 
@@ -293,30 +294,15 @@ public class First_Step_PM_Fragment extends Fragment implements FirstStepPMFragm
      * Set Data to Card View
      */
     public void setDataToView(){
-        Call<PMServiceInfoDetailModel> call = apiInterface.getPMServiceOrderByID("Bearer "+mSharePerferenceHelper.getToken(),pmServiceInfoDetailModel.getId());
-        call.enqueue(new Callback<PMServiceInfoDetailModel>() {
-            @Override
-            public void onResponse(Call<PMServiceInfoDetailModel> call, Response<PMServiceInfoDetailModel> response) {
-                PMServiceInfoDetailModel infoModel = response.body();
-                if(response.isSuccessful()){
-                    tvPanelID1.setText(infoModel.getPanelId());
-                    tvPanelID.setText(infoModel.getPanelId());
-                    if(infoModel.getBusStopLocation() != null)
-                        tvLocation.setText(infoModel.getBusStopLocation().toString());
-                    if(infoModel.getBusStopId() != null)
-                        tvBustStopNumber.setText(infoModel.getBusStopId().toString());
-                    tvScheduleStartDateTime.setText(infoModel.getTargetResponseDate());
-                    tvScheduleEndDateTime.setText(infoModel.getTargetEndDate());
+        tvPanelID1.setText(pmServiceInfoDetailModel.getPanelId());
 
-                    Toast.makeText(getContext(), infoModel.getPanelId() + ", " + infoModel.getServiceOrderStatus(), Toast.LENGTH_LONG).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<PMServiceInfoDetailModel> call, Throwable t) {
-
-            }
-        });
+        tvPanelID.setText(pmServiceInfoDetailModel.getPanelId());
+        tvLocation.setText(pmServiceInfoDetailModel.getBusStopLocation());
+        tvBustStopNumber.setText(pmServiceInfoDetailModel.getBusStopId());
+        tvScheduleStartDateTime.setText(pmServiceInfoDetailModel.getTargetResponseDate());
+        tvScheduleEndDateTime.setText(pmServiceInfoDetailModel.getTargetEndDate());
+        tvPerformedBy.setText(mSharePerferenceHelper.getDisplayName());
+        tvMSOStatus.setText(pmServiceInfoDetailModel.getServiceOrderStatus());
     }
 
     /**

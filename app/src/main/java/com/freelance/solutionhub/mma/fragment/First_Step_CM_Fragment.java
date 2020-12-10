@@ -231,7 +231,8 @@ public class First_Step_CM_Fragment extends Fragment implements FirstStepPMFragm
         tvMsoNumber.setText(pmServiceInfoModel.getId());
         tvPanelId.setText(pmServiceInfoModel.getPanelId());
         tvFaultType.setText(pmServiceInfoModel.getReportedProblem());
-        tvMsoPriority.setText("to fill");
+        tvMsoPriority.setText(pmServiceInfoModel.getPriorityLevel());
+
 
         tvAllowableResolutionDT.setText(pmServiceInfoModel.getTargetEndDate());
         tvAllowableRespondDT.setText(pmServiceInfoModel.getTargetResponseDate());

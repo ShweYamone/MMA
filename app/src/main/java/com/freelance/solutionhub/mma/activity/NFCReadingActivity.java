@@ -54,14 +54,12 @@ public class NFCReadingActivity extends AppCompatActivity {
         apiInterface = ApiClient.getClient(this);
 
         serviceOrderId = getIntent().getStringExtra("id");
+        /****To Delete*********/
+        perFormTagInEvent();
+        /*********************/
+
         if(nfcAdapter == null){
             Toast.makeText(this, "No NFC", Toast.LENGTH_SHORT).show();
-
-            /****To Delete*********/
-            perFormTagInEvent();
-            /*********************/
-
-
             //finish();
             return;
         }
