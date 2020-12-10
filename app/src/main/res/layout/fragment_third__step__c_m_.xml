@@ -27,7 +27,7 @@
             android:background="@drawable/round_rect_shape_line">
 
             <EditText
-                android:id="@+id/edit_text"
+                android:id="@+id/et_remarks"
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
                 android:textSize="@dimen/txt_size_normal"
@@ -85,6 +85,7 @@
 
 
         <Button
+            android:id="@+id/btn_job_done"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"

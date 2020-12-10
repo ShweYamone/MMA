@@ -2,6 +2,7 @@ package com.freelance.solutionhub.mma.fragment;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -11,6 +12,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,6 +22,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,6 +35,7 @@ import com.freelance.solutionhub.mma.model.PMServiceInfoDetailModel;
 import com.freelance.solutionhub.mma.model.PMServiceInfoModel;
 import com.freelance.solutionhub.mma.model.PhotoModel;
 import com.freelance.solutionhub.mma.model.ReturnStatus;
+import com.freelance.solutionhub.mma.model.UpdateEventBody;
 import com.freelance.solutionhub.mma.util.ApiClient;
 import com.freelance.solutionhub.mma.util.ApiInterface;
 import com.freelance.solutionhub.mma.util.SharePreferenceHelper;
@@ -40,8 +44,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -97,6 +104,9 @@ public class First_Step_CM_Fragment extends Fragment implements FirstStepPMFragm
     @BindView(R.id.iv_attach_pre_maintenance_photo)
     ImageView preMaintenancePhoto;
 
+    @BindView(R.id.btn_cm_step1)
+    Button save;
+
 
     private static final int CAMERA_REQUEST = 1888;
     private static final int MY_CAMERA_PERMISSION_CODE = 100;
@@ -107,6 +117,8 @@ public class First_Step_CM_Fragment extends Fragment implements FirstStepPMFragm
     SharePreferenceHelper mSharePerferenceHelper;
     Bitmap theImage;
     String photo;
+    Date date;
+    Timestamp timestamp;
     private PMServiceInfoDetailModel pmServiceInfoModel;
     private ApiInterface apiInterface;
     private SharePreferenceHelper mSharePreference;
@@ -144,8 +156,59 @@ public class First_Step_CM_Fragment extends Fragment implements FirstStepPMFragm
             }
         });
 
+        save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                save();
+            }
+        });
         setDataAdapter();
         return view;
+    }
+    /**
+     * Update event for all photos
+     */
+    public void save(){
+        //Maintenance photos attached ( max - 10 and min 2 )
+        if(preEventList.size() > 1 && preEventList.size() <5) {
+            Log.v("BEFORE_JOIN", "Before joining");
+            Log.v("JOIN", preEventList.size() + "");
+
+            date = new Date();
+            Timestamp timestamp = new Timestamp(date.getTime());
+            String actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
+            UpdateEventBody updateEventBody = new UpdateEventBody(mSharePerferenceHelper.getUserName(), mSharePerferenceHelper.getUserId(), actualDateTime, pmServiceInfoModel.getId(), preEventList);
+            Call<ReturnStatus> returnStatusCallEvent = apiInterface.updateEvent("Bearer " + mSharePerferenceHelper.getToken(), updateEventBody);
+            returnStatusCallEvent.enqueue(new Callback<ReturnStatus>() {
+                @Override
+                public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
+                    ReturnStatus returnStatus = response.body();
+                    if (response.isSuccessful()) {
+                        Toast.makeText(getContext(), returnStatus.getStatus() + ":Ok", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ReturnStatus> call, Throwable t) {
+                    Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+        }else {
+            new AlertDialog.Builder(this.getContext())
+                    .setIcon(R.drawable.warning)
+                    .setTitle("Photo")
+                    .setMessage("Your photos must be minimum 2 and maximum 5.")
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+
+                        }
+
+                    })
+                    .show();
+        }
+
     }
 
     private void displayMSOInformation() {
@@ -214,7 +277,7 @@ public class First_Step_CM_Fragment extends Fragment implements FirstStepPMFragm
             theImage = (Bitmap) data.getExtras().get("data");
             // Check whether request message is pre or post
                 LocalDateTime d = LocalDateTime.now();
-               // uploadPhoto(theImage, "pre-maintenance-photo" + mSharePerferenceHelper.getUserId() +d.toString());
+                uploadPhoto(theImage, "pre-maintenance-photo" + mSharePerferenceHelper.getUserId() +d.toString());
                 photo = getEncodedString(theImage);
                 prePhotoModels.add(new PhotoModel(photo, 1));
                 prePhotoAdapter.notifyDataSetChanged();

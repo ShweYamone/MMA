@@ -3,6 +3,7 @@ package com.freelance.solutionhub.mma.fragment;
 import android.Manifest;
 import android.app.Activity;
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -12,6 +13,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -252,7 +254,7 @@ public class First_Step_PM_Fragment extends Fragment implements FirstStepPMFragm
 
             date = new Date();
             Timestamp timestamp = new Timestamp(date.getTime());
-            String actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(ts);
+            String actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
             UpdateEventBody updateEventBody = new UpdateEventBody(mSharePerferenceHelper.getUserName(), mSharePerferenceHelper.getUserId(), actualDateTime, pmServiceInfoDetailModel.getId(), preEventList);
             Call<ReturnStatus> returnStatusCallEvent = apiInterface.updateEvent("Bearer " + mSharePerferenceHelper.getToken(), updateEventBody);
             returnStatusCallEvent.enqueue(new Callback<ReturnStatus>() {
@@ -269,6 +271,20 @@ public class First_Step_PM_Fragment extends Fragment implements FirstStepPMFragm
                     Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
+        }else {
+            new AlertDialog.Builder(this.getContext())
+                    .setIcon(R.drawable.warning)
+                    .setTitle("Photo")
+                    .setMessage("Your photos must be minimum 2 and maximum 10.")
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+
+                        }
+
+                    })
+                    .show();
         }
 
     }

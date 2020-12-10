@@ -9,6 +9,7 @@ public class UpdateEventBody {
     public String serviceOrderId;
     public String serviceOrderStatus;
     public String remark;
+    public String weatherCondition;
     public List<Event> events;
 
 
@@ -28,6 +29,17 @@ public class UpdateEventBody {
         this.serviceOrderId = serviceOrderId;
         this.serviceOrderStatus = serviceOrderStatus;
         this.remark = remark;
+    }
+
+    /**** CM JOBDONE *****/
+    public UpdateEventBody(String actor, String actorId, String date, String serviceOrderId, String serviceOrderStatus,String remark,String weatherCondition){
+        this.actor = actor;
+        this.actorId = actorId;
+        this.date = date;
+        this.serviceOrderId = serviceOrderId;
+        this.serviceOrderStatus = serviceOrderStatus;
+        this.remark = remark;
+        this.weatherCondition = weatherCondition;
     }
 
     /*****CM_ACK_To_APPR****/
