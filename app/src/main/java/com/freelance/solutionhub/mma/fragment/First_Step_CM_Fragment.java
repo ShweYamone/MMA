@@ -115,10 +115,9 @@ public class First_Step_CM_Fragment extends Fragment implements FirstStepPMFragm
     ArrayList<PhotoModel> prePhotoModels;
     PhotoAdapter prePhotoAdapter;
     SharePreferenceHelper mSharePerferenceHelper;
-    Bitmap theImage;
-    String photo;
-    Date date;
-    Timestamp timestamp;
+    private Bitmap theImage;
+    private String photo;
+    private Date date;
     private PMServiceInfoDetailModel pmServiceInfoModel;
     private ApiInterface apiInterface;
     private SharePreferenceHelper mSharePreference;

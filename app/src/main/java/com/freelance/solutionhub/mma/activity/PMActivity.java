@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.freelance.solutionhub.mma.R;
@@ -53,6 +54,17 @@ public class PMActivity extends AppCompatActivity {
         second_step_pm_fragment.setArguments(bundle);
 
     }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
     // Add steps' fragment to view pager
     private void addTabs(ViewPager viewPager) {
@@ -84,6 +96,7 @@ public class PMActivity extends AppCompatActivity {
             mFragmentList.add(fragment);
             mFragmentTitleList.add(title);
         }
+
 
         @Override
         public CharSequence getPageTitle(int position) {
