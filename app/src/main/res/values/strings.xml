@@ -70,7 +70,7 @@
     <string name="acknowledge_date_time">Acknowledge Date/Time</string>
     <string name="first_respond_date_time">1st Respond Date/Time</string>
     <string name="reported_problem_code">Reported Problem Code:</string>
-    <string name="actual_problem_code">Actual Problem Code:</string>
+    <string name="actual_problem_code">Choose Actual Problem Code:</string>
     <string name="cause_code">Cause Code:</string>
     <string name="remedy_code">Remedy Code:</string>
     <string name="other_fault">Other Fault:</string>
