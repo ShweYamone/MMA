@@ -162,7 +162,6 @@ public class First_Step_PM_Fragment extends Fragment implements FirstStepPMFragm
         tvPerformedBy.setText(mSharePerferenceHelper.getUserId());
         tvActualStartDateTime.setText(actualDateTime);
 
-
         ivArrowDropDown.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -234,8 +233,10 @@ public class First_Step_PM_Fragment extends Fragment implements FirstStepPMFragm
     public void getPosition( int position , int preOrPost){
         if(preOrPost == 1){
             preEventList.remove(position);
+            Log.v("PRE_PHOTO", "Removed pre photo");
         }else {
             postEventList.remove(position);
+            Log.v("POST_PHOTO", "Removed post photo");
         }
 
     }
@@ -243,27 +244,29 @@ public class First_Step_PM_Fragment extends Fragment implements FirstStepPMFragm
     /**
      * Update event for all photos
      */
-    void save(){
+    public void save(){
+        Log.v("BEFORE_JOIN", "Before joining");
         preEventList.addAll(postEventList);
+        Log.v("JOIN",preEventList.size()+"");
         date = new Date();
         Timestamp timestamp = new Timestamp(date.getTime());
         String actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(ts);
         UpdateEventBody updateEventBody = new UpdateEventBody(mSharePerferenceHelper.getUserName(),mSharePerferenceHelper.getUserId(), actualDateTime,pmServiceInfoDetailModel.getId(),preEventList);
         Call<ReturnStatus> returnStatusCallEvent = apiInterface.updateEvent("Bearer "+mSharePerferenceHelper.getToken(),updateEventBody);
-        returnStatusCallEvent.enqueue(new Callback<ReturnStatus>() {
-            @Override
-            public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
-                ReturnStatus returnStatus = response.body();
-                if(response.isSuccessful()){
-                    Toast.makeText(getContext(),returnStatus.getData().getFileUrl()+":Ok",Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ReturnStatus> call, Throwable t) {
-
-            }
-        });
+//        returnStatusCallEvent.enqueue(new Callback<ReturnStatus>() {
+//            @Override
+//            public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
+//                ReturnStatus returnStatus = response.body();
+//                if(response.isSuccessful()){
+//                    Toast.makeText(getContext(),returnStatus.getData().getFileUrl()+":Ok",Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<ReturnStatus> call, Throwable t) {
+//                Toast.makeText(getContext(),t.getMessage(),Toast.LENGTH_SHORT).show();
+//            }
+//        });
 
     }
 
@@ -271,7 +274,7 @@ public class First_Step_PM_Fragment extends Fragment implements FirstStepPMFragm
      * Set Data to Card View
      */
     public void setDataToView(){
-        Call<PMServiceInfoDetailModel> call = apiInterface.getPMServiceOrderByID(pmID,"Bearer "+token);
+        Call<PMServiceInfoDetailModel> call = apiInterface.getPMServiceOrderByID("Bearer "+mSharePerferenceHelper.getToken(),pmServiceInfoDetailModel.getId());
         call.enqueue(new Callback<PMServiceInfoDetailModel>() {
             @Override
             public void onResponse(Call<PMServiceInfoDetailModel> call, Response<PMServiceInfoDetailModel> response) {
@@ -425,7 +428,8 @@ public class First_Step_PM_Fragment extends Fragment implements FirstStepPMFragm
                 ReturnStatus returnStatus = response.body();
                 if(response.isSuccessful()){
                     if(preOrPost){
-                        preEventList.add(new Event("PRE_MAINTENANCE_PHOTO_UPDATE","postMaintenancePhotoUpdate",returnStatus.getData().getFileUrl()));
+                        Log.v("PRE_EVENT","Added pre event");
+                        preEventList.add(new Event("PRE_MAINTENANCE_PHOTO_UPDATE","preMaintenancePhotoUpdate",returnStatus.getData().getFileUrl()));
                     }else {
                         postEventList.add(new Event("POST_MAINTENANCE_PHOTO_UPDATE","postMaintenancePhotoUpdate",returnStatus.getData().getFileUrl()));
                     }

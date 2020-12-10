@@ -42,6 +42,7 @@ public interface ApiInterface {
     Call<UserProfile> getUserProfile(@Header("Authorization") String auth);
 
     //Add event
+    @Headers({"Content-Type: application/json"})
     @PUT("service-order-details")
     Call<ReturnStatus> updateEvent(@Header("Authorization") String auth, @Body UpdateEventBody updateEventBody);
 
