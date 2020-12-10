@@ -48,7 +48,6 @@
                     android:fontFamily="@font/crimson_text_bold"
                     android:textSize="@dimen/txt_size_small"
                     android:textColor="@color/colorPrimary"
-                    android:text="INPRG"
                     android:background="@drawable/round_rect_shape_progress"
                     android:gravity="center"/>
 

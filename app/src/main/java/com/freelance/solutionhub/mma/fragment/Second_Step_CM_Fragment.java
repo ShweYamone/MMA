@@ -184,8 +184,8 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
                 } else {
                     causeProblemCode = new String[1];
                 }
-                causeProblemCode[0] = "Choose Cause Code";
-                causeArr.add(0, "Choose Cause Code");
+                causeProblemCode[0] = "Select Cause Code";
+                causeArr.add(0, "Select Cause Code");
                 causeProblemArrAdapter.notifyDataSetChanged();
 
                 actualProblem = problemArr.get(i);
@@ -205,7 +205,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
                         remedyArr.add(temp.getDescription());
                     }
                 }
-                remedyArr.add(0, "Choose Remedy Code");
+                remedyArr.add(0, "Select Remedy Code");
                 remedyArrAdapter.notifyDataSetChanged();
 
                 causeCode = causeArr.get(i);
