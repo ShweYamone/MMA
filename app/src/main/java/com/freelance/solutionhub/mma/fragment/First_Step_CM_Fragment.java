@@ -1,24 +1,53 @@
 package com.freelance.solutionhub.mma.fragment;
 
+import android.Manifest;
+import android.app.Activity;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.os.Build;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.freelance.solutionhub.mma.R;
+import com.freelance.solutionhub.mma.adapter.PhotoAdapter;
+import com.freelance.solutionhub.mma.delegate.FirstStepPMFragmentCallback;
+import com.freelance.solutionhub.mma.model.Event;
 import com.freelance.solutionhub.mma.model.PMServiceInfoDetailModel;
 import com.freelance.solutionhub.mma.model.PMServiceInfoModel;
+import com.freelance.solutionhub.mma.model.PhotoModel;
+import com.freelance.solutionhub.mma.model.ReturnStatus;
 import com.freelance.solutionhub.mma.util.ApiClient;
 import com.freelance.solutionhub.mma.util.ApiInterface;
 import com.freelance.solutionhub.mma.util.SharePreferenceHelper;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -27,7 +56,7 @@ import static com.freelance.solutionhub.mma.util.AppConstant.pm;
 import static com.freelance.solutionhub.mma.util.AppConstant.pmID;
 import static com.freelance.solutionhub.mma.util.AppConstant.token;
 
-public class First_Step_CM_Fragment extends Fragment {
+public class First_Step_CM_Fragment extends Fragment implements FirstStepPMFragmentCallback {
 
     @BindView(R.id.tv_mso_status)
     TextView tvMsoStatus;
@@ -62,7 +91,22 @@ public class First_Step_CM_Fragment extends Fragment {
     @BindView(R.id.tv_mso_priority)
     TextView tvMsoPriority;
 
+    @BindView(R.id.recyclerview_pre_photo)
+    RecyclerView prePhoto;
+
+    @BindView(R.id.iv_attach_pre_maintenance_photo)
+    ImageView preMaintenancePhoto;
+
+
+    private static final int CAMERA_REQUEST = 1888;
+    private static final int MY_CAMERA_PERMISSION_CODE = 100;
     private String id;
+    ArrayList<Event> preEventList;
+    ArrayList<PhotoModel> prePhotoModels;
+    PhotoAdapter prePhotoAdapter;
+    SharePreferenceHelper mSharePerferenceHelper;
+    Bitmap theImage;
+    String photo;
     private PMServiceInfoDetailModel pmServiceInfoModel;
     private ApiInterface apiInterface;
     private SharePreferenceHelper mSharePreference;
@@ -77,10 +121,30 @@ public class First_Step_CM_Fragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_first__step__c_m_, container, false);
         mSharePreference = new SharePreferenceHelper(getContext());
         apiInterface = ApiClient.getClient(this.getContext());
-
+        preEventList = new ArrayList<>();
+        prePhotoModels = new ArrayList<>();
+        mSharePerferenceHelper = new SharePreferenceHelper(this.getContext());
         ButterKnife.bind(this, view);
         displayMSOInformation();
 
+        preMaintenancePhoto.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.M)
+            @Override
+            public void onClick(View v) {
+                if (getActivity().checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
+                {
+                    requestPermissions(new String[]{Manifest.permission.CAMERA}, MY_CAMERA_PERMISSION_CODE);
+                }
+                else
+                {
+                    Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                    startActivityForResult(cameraIntent, CAMERA_REQUEST);
+
+                }
+            }
+        });
+
+        setDataAdapter();
         return view;
     }
 
@@ -99,6 +163,142 @@ public class First_Step_CM_Fragment extends Fragment {
         tvLocation.setText(pmServiceInfoModel.getBusStopLocation());
 
 
+    }
+
+
+    public void getPosition( int position , int preOrPost){
+
+        preEventList.remove(position);
+        Log.v("PRE_PHOTO", "Removed pre photo");
+
+
+    }
+
+    /**
+     * Reuqesting for premissons
+     * @param requestCode
+     * @param permissions
+     * @param grantResults
+     */
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == MY_CAMERA_PERMISSION_CODE)
+        {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
+            {
+                Toast.makeText(getActivity(), "camera permission granted", Toast.LENGTH_LONG).show();
+                Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(cameraIntent, CAMERA_REQUEST);
+            }
+            else
+            {
+                Toast.makeText(getActivity(), "camera permission denied", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    /**
+     * Start an activity for result
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK)
+        {
+            theImage = (Bitmap) data.getExtras().get("data");
+            // Check whether request message is pre or post
+                LocalDateTime d = LocalDateTime.now();
+               // uploadPhoto(theImage, "pre-maintenance-photo" + mSharePerferenceHelper.getUserId() +d.toString());
+                photo = getEncodedString(theImage);
+                prePhotoModels.add(new PhotoModel(photo, 1));
+                prePhotoAdapter.notifyDataSetChanged();
+
+        }
+    }
+
+    /**
+     * Set two recycler view with adapter
+     */
+    private void setDataAdapter() {
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getContext(),3  );
+        //Pre Maintenance Photo Adapter Setup
+        prePhoto.setLayoutManager(layoutManager);
+        prePhotoAdapter = new PhotoAdapter(getContext(), prePhotoModels, this);
+        prePhoto.setAdapter(prePhotoAdapter);
+
+    }
+
+    /**
+     * Conver bitmap image to string
+     * @param bitmap
+     * @return
+     */
+    private String getEncodedString(Bitmap bitmap){
+
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+
+        bitmap.compress(Bitmap.CompressFormat.JPEG,100, os);
+
+       /* or use below if you want 32 bit images
+
+        bitmap.compress(Bitmap.CompressFormat.PNG, (0–100 compression), os);*/
+        byte[] imageArr = os.toByteArray();
+
+        return Base64.encodeToString(imageArr, Base64.URL_SAFE);
+
+    }
+
+    /**
+     *Upload one photo to server and get url id
+     * @param bitmap
+     * @param name
+     */
+    private void uploadPhoto(Bitmap bitmap, String name) {
+        File filesDir = getContext().getFilesDir();
+        File fileName = new File(filesDir, name + ".jpg");
+
+        OutputStream os;
+        try {
+            os = new FileOutputStream(fileName);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
+            os.flush();
+            os.close();
+        } catch (Exception e) {
+            Log.e("PHOTO", "Error writing bitmap", e);
+        }
+
+        MultipartBody.Builder builder = new MultipartBody.Builder();
+        builder.setType(MultipartBody.FORM);
+        builder.addFormDataPart("file",fileName.getName(), RequestBody.create(MediaType.parse("multipart/form-data"),fileName));
+        MultipartBody requestBody = builder.build();
+
+        String bucketName ="pids-pre-maintenance-photo";
+
+        Call<ReturnStatus> returnStatusCall = apiInterface.uploadPhoto(bucketName,  requestBody);
+        returnStatusCall.enqueue(new Callback<ReturnStatus>() {
+            @Override
+            public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
+                ReturnStatus returnStatus = response.body();
+                if(response.isSuccessful()){
+                    Log.v("PRE_EVENT","Added pre event");
+                    preEventList.add(new Event("PRE_MAINTENANCE_PHOTO_UPDATE","preMaintenancePhotoUpdate",returnStatus.getData().getFileUrl()));
+                    Toast.makeText(getContext(),returnStatus.getData().getFileUrl()+":Ok",Toast.LENGTH_SHORT).show();
+                }else {
+                    Toast.makeText(getContext(),";",Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ReturnStatus> call, Throwable t) {
+
+            }
+        });
     }
 
 }

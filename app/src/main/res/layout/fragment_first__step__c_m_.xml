@@ -330,10 +330,19 @@
                 android:weightSum="4">
 
                 <ImageView
+                    android:id="@+id/iv_attach_pre_maintenance_photo"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:src="@drawable/add_photo"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerview_pre_photo"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:padding="3dp"
+                    android:scrollbars="none"/>
             </LinearLayout>
 
 

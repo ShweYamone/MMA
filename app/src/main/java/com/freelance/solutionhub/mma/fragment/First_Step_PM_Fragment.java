@@ -120,7 +120,6 @@ public class First_Step_PM_Fragment extends Fragment implements FirstStepPMFragm
 
     private boolean isPreMaintenance = true;
     private static final int CAMERA_REQUEST = 1888;
-    TextView text,text1;
     private static final int MY_CAMERA_PERMISSION_CODE = 100;
     //Bitmap photo;
     SharePreferenceHelper mSharePerferenceHelper;
@@ -245,28 +244,32 @@ public class First_Step_PM_Fragment extends Fragment implements FirstStepPMFragm
      * Update event for all photos
      */
     public void save(){
-        Log.v("BEFORE_JOIN", "Before joining");
-        preEventList.addAll(postEventList);
-        Log.v("JOIN",preEventList.size()+"");
-        date = new Date();
-        Timestamp timestamp = new Timestamp(date.getTime());
-        String actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(ts);
-        UpdateEventBody updateEventBody = new UpdateEventBody(mSharePerferenceHelper.getUserName(),mSharePerferenceHelper.getUserId(), actualDateTime,pmServiceInfoDetailModel.getId(),preEventList);
-        Call<ReturnStatus> returnStatusCallEvent = apiInterface.updateEvent("Bearer "+mSharePerferenceHelper.getToken(),updateEventBody);
-//        returnStatusCallEvent.enqueue(new Callback<ReturnStatus>() {
-//            @Override
-//            public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
-//                ReturnStatus returnStatus = response.body();
-//                if(response.isSuccessful()){
-//                    Toast.makeText(getContext(),returnStatus.getData().getFileUrl()+":Ok",Toast.LENGTH_SHORT).show();
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<ReturnStatus> call, Throwable t) {
-//                Toast.makeText(getContext(),t.getMessage(),Toast.LENGTH_SHORT).show();
-//            }
-//        });
+        //Maintenance photos attached ( max - 10 and min 2 )
+        if(preEventList.size() > 1 && preEventList.size() <11 && postEventList.size() >1 && postEventList.size() < 11) {
+            Log.v("BEFORE_JOIN", "Before joining");
+            preEventList.addAll(postEventList);
+            Log.v("JOIN", preEventList.size() + "");
+
+            date = new Date();
+            Timestamp timestamp = new Timestamp(date.getTime());
+            String actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(ts);
+            UpdateEventBody updateEventBody = new UpdateEventBody(mSharePerferenceHelper.getUserName(), mSharePerferenceHelper.getUserId(), actualDateTime, pmServiceInfoDetailModel.getId(), preEventList);
+            Call<ReturnStatus> returnStatusCallEvent = apiInterface.updateEvent("Bearer " + mSharePerferenceHelper.getToken(), updateEventBody);
+            returnStatusCallEvent.enqueue(new Callback<ReturnStatus>() {
+                @Override
+                public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
+                    ReturnStatus returnStatus = response.body();
+                    if (response.isSuccessful()) {
+                        Toast.makeText(getContext(), returnStatus.getStatus() + ":Ok", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ReturnStatus> call, Throwable t) {
+                    Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
 
     }
 
