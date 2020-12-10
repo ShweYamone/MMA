@@ -157,6 +157,7 @@
                 <Spinner
                     android:id="@+id/spinnerActualProblemCode"
                     android:layout_margin="@dimen/margin_small"
+                    android:spinnerMode="dropdown"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
@@ -180,6 +181,7 @@
                 android:background="@drawable/round_rect_shape_line">
                 <Spinner
                     android:id="@+id/spinnerCauseCode"
+                    android:spinnerMode="dropdown"
                     android:layout_margin="@dimen/margin_small"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
@@ -205,6 +207,7 @@
                 <Spinner
                     android:id="@+id/spinnerRemedyCode"
                     android:layout_margin="@dimen/margin_small"
+                    android:spinnerMode="dropdown"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 

@@ -170,40 +170,26 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
         spinnerActualProbleCode.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                causeProblemCode = new String[problemCauseMap.get(actualProblemCode[i]).size()];
                 causeArr.clear();
+                if (problemCauseMap.containsKey(actualProblemCode[i])) {
+                    causeProblemCode = new String[problemCauseMap.get(actualProblemCode[i]).size() + 1];
 
-                Code_Description temp;
-                for (int k = 0; k < causeProblemCode.length; k++) {
-                    temp = problemCauseMap.get(actualProblemCode[i]).get(k);
-                    causeProblemCode[k] = temp.getCode();
-                    causeArr.add(temp.getDescription());
+                    Code_Description temp;
+                    causeProblemCode[0] = "";
+                    for (int k = 0; k < causeProblemCode.length-1; k++) {
+                        temp = problemCauseMap.get(actualProblemCode[i]).get(k);
+                        causeProblemCode[k + 1] = temp.getCode();
+                        causeArr.add(temp.getDescription());
+                    }
+                } else {
+                    causeProblemCode = new String[1];
                 }
+                causeProblemCode[0] = "Choose Cause Code";
+                causeArr.add(0, "Choose Cause Code");
                 causeProblemArrAdapter.notifyDataSetChanged();
 
-                remedyArr.clear();
-                for (int k = 0; k < causeRemedyMap.get(causeProblemCode[0]).size(); k++) {
-                    temp = causeRemedyMap.get(causeProblemCode[0]).get(k);
-                    remedyArr.add(temp.getDescription());
-                }
-                remedyArrAdapter.notifyDataSetChanged();
-
                 actualProblem = problemArr.get(i);
-
-                if (!causeArr.isEmpty()) {
-                    causeCode = causeArr.get(0);
-                } else {
-                    causeCode = "";
-                }
-                if (!remedyArr.isEmpty()) {
-                    remedyCode = remedyArr.get(0);
-                } else {
-                    remedyCode = "";
-                }
-                Log.i("FaultMappingJSONEx", actualProblem + ", " + causeCode + ", " + remedyCode);
-
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
             }
@@ -212,20 +198,17 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 remedyArr.clear();
-                Code_Description temp;
-                for (int k = 0; k < causeRemedyMap.get(causeProblemCode[0]).size(); k++) {
-                    temp = causeRemedyMap.get(causeProblemCode[0]).get(k);
-                    remedyArr.add(temp.getDescription());
+                if (causeRemedyMap.containsKey(causeProblemCode[i])) {
+                    Code_Description temp;
+                    for (int k = 0; k < causeRemedyMap.get(causeProblemCode[i]).size(); k++) {
+                        temp = causeRemedyMap.get(causeProblemCode[i]).get(k);
+                        remedyArr.add(temp.getDescription());
+                    }
                 }
+                remedyArr.add(0, "Choose Remedy Code");
                 remedyArrAdapter.notifyDataSetChanged();
 
                 causeCode = causeArr.get(i);
-
-                if (!remedyArr.isEmpty()) {
-                    remedyCode = remedyArr.get(0);
-                } else {
-                    remedyCode = "";
-                }
             }
 
             @Override
@@ -332,13 +315,15 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
             }
 
             problemArr.clear();
-            actualProblemCode = new String[problemList.size()];
+            actualProblemCode = new String[problemList.size() + 1];
+            actualProblemCode[0] = "";
             for (int i = 0; i < problemList.size(); i++) {
-                actualProblemCode[i] = problemList.get(i).getCode();
+                actualProblemCode[i+1] = problemList.get(i).getCode();
                 problemArr.add(problemList.get(i).getDescription());
             }
+            problemArr.add(0, "Select Actual Problem Code");
             actualProblemArrAdapter.notifyDataSetChanged();
-            actualProblem = problemArr.get(0);
+
 
         } catch (JSONException e) {
             Log.i("FaultMappingJSONEx", "setFaultMappingSpinner: " + e.getMessage());
@@ -434,7 +419,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
                 "reportedProblem",
                 mSharePreference.getUserId() + " - " + pmServiceInfoModel.getReportedProblemDescription()
         ));
-        if (spinnerActualProbleCode.getSelectedItemPosition() >= 0) {
+        if (spinnerActualProbleCode.getSelectedItemPosition() > 0) {
             hasEventToUpdate = true;
             events.add(new Event(
                     "SERVICE_ORDER_UPDATE",
@@ -442,7 +427,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
                     mSharePreference.getUserId() + " - " + actualProblem));
             Log.i("EventHappenend", "getProblemCodeEvent: " + actualProblem);
         }
-        if (spinnerCauseCode.getSelectedItemPosition() >= 0) {
+        if (spinnerCauseCode.getSelectedItemPosition() > 0) {
             hasEventToUpdate = true;
             events.add(new Event(
                     "SERVICE_ORDER_UPDATE",
@@ -450,7 +435,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
                     mSharePreference.getUserId() + " - " + causeCode));
             Log.i("EventHappenend", "getProblemCodeEvent: " + causeCode);
         }
-        if (spinnerRemedyCode.getSelectedItemPosition() >= 0) {
+        if (spinnerRemedyCode.getSelectedItemPosition() > 0) {
             hasEventToUpdate = true;
             events.add(new Event(
                     "SERVICE_ORDER_UPDATE",
