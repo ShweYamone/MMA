@@ -5,6 +5,8 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,8 +46,9 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
     @BindView(R.id.radioGroup)
     RadioGroup radioGroup;
 
-    private Date date;
     private RadioButton radioButton;
+    private String weather;
+    private Date date;
     private SharePreferenceHelper mSharePreferenceHelper;
     private ApiInterface apiInterface;
     private PMServiceInfoDetailModel pmServiceInfoDetailModel;
@@ -72,6 +75,21 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
         apiInterface = ApiClient.getClient(this.getContext());
         jobDone.setOnClickListener(this);
 
+        // get selected radio button from radioGroup
+        int selectedId = radioGroup.getCheckedRadioButtonId();
+        radioButton = view.findViewById(selectedId);
+        weather = radioButton.getText().toString();
+
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                                                  @Override
+                                                  public void onCheckedChanged(RadioGroup group, int checkedId)
+                                                  {
+                                                      radioButton = (RadioButton) view.findViewById(checkedId);
+                                                      weather = radioButton.getText().toString();
+                                                  }
+                                              }
+        );
+
         return view;
     }
     @Override
@@ -81,17 +99,15 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
                 updateEvent(view);
                 Intent intent = new Intent(this.getContext(), PMCompletionActivity.class);
                 startActivity(intent);
+                getActivity().finish();
         }
     }
 
 
     public void updateEvent(View view){
-        // get selected radio button from radioGroup
-        int selectedId = radioGroup.getCheckedRadioButtonId();
-
-        // find the radiobutton by returned id
-        radioButton = view.findViewById(selectedId);
-        String remarksString = remarks.getText().toString();
+        String remarksString = "";
+        if(remarks.getText() != null)
+            remarksString = remarks.getText().toString();
         date = new Date();
         Timestamp timestamp = new Timestamp(date.getTime());
         String actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
@@ -102,7 +118,7 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
                 pmServiceInfoDetailModel.getId(),
                 "JOBDONE",
                 remarksString,
-                radioButton.getText().toString());
+                weather);
         Call<ReturnStatus> jobDoneCall = apiInterface.updateStatusEvent("Bearer "+mSharePreferenceHelper.getToken(), updateEventBody);
         jobDoneCall.enqueue(new Callback<ReturnStatus>() {
             @Override

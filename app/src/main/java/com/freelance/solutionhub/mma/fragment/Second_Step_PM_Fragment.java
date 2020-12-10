@@ -73,12 +73,15 @@ public class Second_Step_PM_Fragment extends Fragment implements View.OnClickLis
                 updateEvent();
                 Intent intent = new Intent(this.getContext(), PMCompletionActivity.class);
                 startActivity(intent);
+                getActivity().finish();
         }
     }
 
     public void updateEvent(){
-        String remarksString = remarks.getText().toString();
-        date = new Date();
+        String remarksString = "";
+        if(remarks.getText() != null)
+            remarksString = remarks.getText().toString();
+            date = new Date();
         Timestamp timestamp = new Timestamp(date.getTime());
         String actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
         UpdateEventBody updateEventBody = new
