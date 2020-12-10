@@ -23,7 +23,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.freelance.solutionhub.mma.R;
+import com.freelance.solutionhub.mma.activity.LoadingActivity;
 import com.freelance.solutionhub.mma.activity.LoginActivity;
+import com.freelance.solutionhub.mma.activity.MainActivity;
 import com.freelance.solutionhub.mma.adapter.ServiceOrderAdapter;
 import com.freelance.solutionhub.mma.common.SmartScrollListener;
 import com.freelance.solutionhub.mma.delegate.HomeFragmentCallback;
@@ -277,7 +279,11 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
                     mAdapter.notifyDataSetChanged();
                 }
                 else if (response.code()==401){
-                    startActivity(new Intent(getContext().getApplicationContext(), LoginActivity.class));
+                    Intent intent = new Intent(getContext(), LoadingActivity.class);
+                 //   intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(new Intent(getContext(), LoginActivity.class));
+                    mSharePreference.logoutSharePreference();
+                    getActivity().finish();
                 }
             }
 
@@ -374,4 +380,12 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
 
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        serviceInfoModelList.clear();
+        mAdapter.notifyDataSetChanged();
+        page = 1;
+        getServiceOrders();
+    }
 }

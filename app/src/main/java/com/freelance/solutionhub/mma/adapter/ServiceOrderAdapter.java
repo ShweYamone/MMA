@@ -22,6 +22,7 @@ import com.bumptech.glide.Glide;
 import com.freelance.solutionhub.mma.R;
 import com.freelance.solutionhub.mma.activity.CMActivity;
 import com.freelance.solutionhub.mma.activity.LoadingActivity;
+import com.freelance.solutionhub.mma.activity.NFCReadingActivity;
 import com.freelance.solutionhub.mma.activity.PMActivity;
 import com.freelance.solutionhub.mma.delegate.HomeFragmentCallback;
 import com.freelance.solutionhub.mma.fragment.First_Step_CM_Fragment;
@@ -96,7 +97,7 @@ public class ServiceOrderAdapter extends RecyclerView.Adapter<ServiceOrderAdapte
                                     @Override
                                     public void onClick(View view) {
 
-                                        Intent intent = new Intent(mContext, LoadingActivity.class);
+                                        Intent intent = new Intent(mContext, NFCReadingActivity.class);
                                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                         intent.putExtra("id", service.getId());
 
@@ -114,7 +115,7 @@ public class ServiceOrderAdapter extends RecyclerView.Adapter<ServiceOrderAdapte
                         @Override
                         public void onClick(View view) {
                             if (callback.hasUserId()) {
-                                Intent intent = new Intent(mContext, LoadingActivity.class);
+                                Intent intent = new Intent(mContext, NFCReadingActivity.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 intent.putExtra("id", service.getId());
                                 mContext.startActivity(intent);
@@ -146,6 +147,8 @@ public class ServiceOrderAdapter extends RecyclerView.Adapter<ServiceOrderAdapte
                 tvStatus.setTextColor(mContext.getResources().getColor(R.color.color_green_text));
             else if (status.equals(ACK)) {
                 tvStatus.setTextColor(mContext.getResources().getColor(R.color.color_blue));
+            } else {
+                tvStatus.setTextColor(mContext.getResources().getColor(R.color.colorBlack));
             }
 
         }

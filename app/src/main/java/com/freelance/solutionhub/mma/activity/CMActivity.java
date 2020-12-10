@@ -7,14 +7,23 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.Toast;
 
 import com.freelance.solutionhub.mma.R;
 import com.freelance.solutionhub.mma.fragment.First_Step_CM_Fragment;
 import com.freelance.solutionhub.mma.fragment.Second_Step_CM_Fragment;
 import com.freelance.solutionhub.mma.fragment.Third_Step_CM_Fragment;
 import com.freelance.solutionhub.mma.model.PMServiceInfoDetailModel;
+import com.freelance.solutionhub.mma.util.AppConstant;
 import com.google.android.material.tabs.TabLayout;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -95,4 +104,24 @@ public class CMActivity extends AppCompatActivity {
             return mFragmentTitleList.get(position);
         }
     }
+
+    //Getting the scan results
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if (result != null) {
+            //if qrcode has nothing in it
+            if (result.getContents() == null) {
+                Toast.makeText(this, "Result Not Found", Toast.LENGTH_LONG).show();
+            } else {
+                second_step_cm_fragment.updateQRCode(result.getContents());
+                Toast.makeText(this, result.getContents(), Toast.LENGTH_LONG).show();
+
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+
 }

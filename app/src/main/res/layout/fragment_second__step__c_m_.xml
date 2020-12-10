@@ -131,6 +131,7 @@
                 android:background="@drawable/round_rect_shape_line">
                 <TextView
                     android:id="@+id/tvReportedProblemCode"
+                    android:textColor="@color/color_blue"
                     android:layout_margin="@dimen/margin_small"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
@@ -251,6 +252,8 @@
 
                 </LinearLayout>
                 <LinearLayout
+                    android:id="@+id/layoutThirdParty"
+                    android:visibility="gone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="@dimen/margin_small"
@@ -380,16 +383,19 @@
                         android:fontFamily="@font/crimson_text_bold"
                         android:layout_margin="@dimen/margin_small"
                         android:layout_weight="3.5" />
+
                     <ImageView
                         android:id="@+id/iv_required_part_placement"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/margin_small"
                         android:layout_weight="0.5"
-                        android:src="@drawable/check_blank"
-                        android:layout_margin="@dimen/margin_small"/>
+                        android:src="@drawable/check_blank" />
 
                 </LinearLayout>
                 <LinearLayout
+                    android:id="@+id/layourPartReplacement"
+                    android:visibility="gone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="@dimen/margin_small"
@@ -427,9 +433,10 @@
 
                             <TextView
                                 android:id="@+id/tv_scan_fault"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="C3434343434"
+                                android:gravity="center"
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/edittext_height"
+                                android:textAlignment="center"
                                 android:textSize="@dimen/txt_size_normal"/>
                         </LinearLayout>
 
@@ -443,6 +450,7 @@
                             android:text="@string/qr_scan"
                             android:layout_gravity="center"
                             android:drawableLeft="@drawable/assect_white"
+                            android:paddingLeft="@dimen/margin_small"
                             android:background="@drawable/round_rect_shape_button"/>
 
 
@@ -480,10 +488,11 @@
 
                             <TextView
                                 android:id="@+id/tv_scan_replacement"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="C3434343434"
-                                android:textSize="@dimen/txt_size_normal"/>
+                                android:gravity="center"
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/edittext_height"
+                                android:textSize="@dimen/txt_size_normal"
+                                android:textAlignment="center"/>
                         </LinearLayout>
 
                         <Button
@@ -496,6 +505,7 @@
                             android:text="@string/qr_scan"
                             android:layout_gravity="center"
                             android:drawableLeft="@drawable/assect_white"
+                            android:paddingLeft="@dimen/margin_small"
                             android:background="@drawable/round_rect_shape_button"/>
 
 
@@ -530,6 +540,7 @@
 
 
             <Button
+                android:id="@+id/btnSave"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/colorWhite"

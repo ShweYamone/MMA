@@ -11,7 +11,7 @@ public class UpdateEventBody {
     public String remark;
     public List<Event> events;
 
-
+    /******TagIn, *****/
     public UpdateEventBody(String actor, String actorId, String date, String serviceOrderId, List<Event> events) {
         this.actor = actor;
         this.actorId = actorId;

@@ -16,24 +16,53 @@ import android.provider.Settings;
 import android.widget.Toast;
 
 import com.freelance.solutionhub.mma.R;
+import com.freelance.solutionhub.mma.model.Event;
+import com.freelance.solutionhub.mma.model.ReturnStatus;
+import com.freelance.solutionhub.mma.model.UpdateEventBody;
 import com.freelance.solutionhub.mma.nfc.NdefMessageParser;
 import com.freelance.solutionhub.mma.nfc.ParsedNdefRecord;
+import com.freelance.solutionhub.mma.util.ApiClient;
+import com.freelance.solutionhub.mma.util.ApiInterface;
+import com.freelance.solutionhub.mma.util.SharePreferenceHelper;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class NFCReadingActivity extends AppCompatActivity {
 
-    NfcAdapter nfcAdapter;
-    PendingIntent pendingIntent;
+    private NfcAdapter nfcAdapter;
+    private PendingIntent pendingIntent;
+    private String serviceOrderId;
+    private SharePreferenceHelper mSharedPreference;
+    private ApiInterface apiInterface;
+    private Date date;
+    private Timestamp ts;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nfcreading);
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);
+        mSharedPreference = new SharePreferenceHelper(this);
+        apiInterface = ApiClient.getClient(this);
 
+        serviceOrderId = getIntent().getStringExtra("id");
         if(nfcAdapter == null){
             Toast.makeText(this, "No NFC", Toast.LENGTH_SHORT).show();
-            finish();
+
+            /****To Delete*********/
+            perFormTagInEvent();
+            /*********************/
+
+
+            //finish();
             return;
         }
 
@@ -41,6 +70,38 @@ public class NFCReadingActivity extends AppCompatActivity {
         pendingIntent = PendingIntent.getActivity(this, 0,
                 new Intent(this, this.getClass())
                         .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
+    }
+
+    private void perFormTagInEvent() {
+        date = new Date();
+        ts=new Timestamp(date.getTime());
+        String currentDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(ts);
+        List<Event> events = new ArrayList<>();
+        events.add(new Event("TAG_IN", "tagIn", "tagIn"));
+        UpdateEventBody eventBody = new UpdateEventBody(
+            mSharedPreference.getUserName(), mSharedPreference.getUserId(), currentDateTime, serviceOrderId, events
+        );
+
+        Call<ReturnStatus> call = apiInterface.updateEvent("Bearer " + mSharedPreference.getToken(), eventBody);
+        call.enqueue(new Callback<ReturnStatus>() {
+            @Override
+            public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(getApplicationContext(), "TAG_IN" +  response.body().getStatus(), Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(NFCReadingActivity.this, LoadingActivity.class);
+                    intent.putExtra("id", serviceOrderId);
+                    startActivity(intent);
+                    finish();
+                } else {
+                    Toast.makeText(getApplicationContext(), "response code " + response.code(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ReturnStatus> call, Throwable t) {
+
+            }
+        });
     }
 
     @Override

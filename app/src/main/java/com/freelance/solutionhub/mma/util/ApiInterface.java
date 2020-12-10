@@ -41,7 +41,7 @@ public interface ApiInterface {
     @GET("https://nj3qiw3gn5.execute-api.ap-southeast-1.amazonaws.com/dev/profile")
     Call<UserProfile> getUserProfile(@Header("Authorization") String auth);
 
-    //Add event
+    //TAG IN, TAG OUT, Problem Update,
     @Headers({"Content-Type: application/json"})
     @PUT("service-order-details")
     Call<ReturnStatus> updateEvent(@Header("Authorization") String auth, @Body UpdateEventBody updateEventBody);
