@@ -2,6 +2,7 @@ package com.freelance.solutionhub.mma.fragment;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -27,6 +28,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -153,6 +155,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
     private ArrayAdapter causeProblemArrAdapter;
     private ArrayAdapter remedyArrAdapter;
     private Date date;private Timestamp ts;
+    private ProgressDialog pd;
     String currentDateTime;
 
     //qr code scanner object
@@ -192,6 +195,13 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
         View view =  inflater.inflate(R.layout.fragment_second__step__c_m_, container, false);
         mSharePreference = new SharePreferenceHelper(getContext());
         apiInterface = ApiClient.getClient(this.getContext());
+
+        //Progress Dialog
+        pd = new ProgressDialog(this.getContext());
+        pd.setTitle("Uploading...");
+        pd.setMessage("Please wait, data is sending");
+        pd.setCancelable(false);
+        pd.setIndeterminate(true);
         ButterKnife.bind(this, view);
         postEventList = new ArrayList<>();
         postModelList = new ArrayList<>();
@@ -420,7 +430,8 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
                 getProblemCodeEvent();
                 getQREvent();
                 updateEvents();
-                save();
+                if(postModelList.size() != 0)
+                    save();
                 break;
             case R.id.iv_attach_post_maintenance_photo:
                 if (getActivity().checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
@@ -513,12 +524,14 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
                 events
         );
 
+        pd.show();
         Call<ReturnStatus> call = apiInterface.updateEvent("Bearer " + mSharePreference.getToken(),
                 eventBody);
         call.enqueue(new Callback<ReturnStatus>() {
             @Override
             public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
                 if (response.isSuccessful()) {
+                    pd.dismiss();
                     Toast.makeText(getContext(), "ProblemUpdateEvent" + response.body().getStatus() , Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(getContext(), "response " + response.code(), Toast.LENGTH_SHORT).show();
@@ -543,14 +556,20 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
             date = new Date();
             Timestamp timestamp = new Timestamp(date.getTime());
             String actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
-            UpdateEventBody updateEventBody = new UpdateEventBody(mSharePreference.getUserName(), mSharePreference.getUserId(), actualDateTime, pmServiceInfoModel.getId(), postEventList);
+            UpdateEventBody updateEventBody = new UpdateEventBody(mSharePreference.getUserName(),
+                    mSharePreference.getUserId(),
+                    actualDateTime,
+                    pmServiceInfoModel.getId(),
+                    postEventList);
+            pd.show();
             Call<ReturnStatus> returnStatusCallEvent = apiInterface.updateEvent("Bearer " + mSharePreference.getToken(), updateEventBody);
             returnStatusCallEvent.enqueue(new Callback<ReturnStatus>() {
                 @Override
                 public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
                     ReturnStatus returnStatus = response.body();
                     if (response.isSuccessful()) {
-                        Toast.makeText(getContext(), returnStatus.getStatus() + ":Ok", Toast.LENGTH_SHORT).show();
+                        pd.dismiss();
+                        Toast.makeText(getContext(), returnStatus.getStatus() + "", Toast.LENGTH_SHORT).show();
                     }
                 }
 
@@ -692,6 +711,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
 
         String bucketName ="pids-pre-maintenance-photo";
 
+        pd.show();
         Call<ReturnStatus> returnStatusCall = apiInterface.uploadPhoto(bucketName,  requestBody);
         returnStatusCall.enqueue(new Callback<ReturnStatus>() {
             @Override
@@ -699,8 +719,9 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
                 ReturnStatus returnStatus = response.body();
                 if(response.isSuccessful()){
                     Log.v("PRE_EVENT","Added pre event");
+                    pd.dismiss();
                     postEventList.add(new Event("POST_MAINTENANCE_PHOTO_UPDATE","postMaintenancePhotoUpdate",returnStatus.getData().getFileUrl()));
-                    Toast.makeText(getContext(),returnStatus.getData().getFileUrl()+":Ok",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(),returnStatus.getStatus()+"",Toast.LENGTH_SHORT).show();
                 }else {
                     Toast.makeText(getContext(),";",Toast.LENGTH_SHORT).show();
                 }

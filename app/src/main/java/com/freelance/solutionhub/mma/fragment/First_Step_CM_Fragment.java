@@ -2,10 +2,12 @@ package com.freelance.solutionhub.mma.fragment;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -120,7 +122,7 @@ public class First_Step_CM_Fragment extends Fragment implements FirstStepPMFragm
     private Date date;
     private PMServiceInfoDetailModel pmServiceInfoModel;
     private ApiInterface apiInterface;
-    private SharePreferenceHelper mSharePreference;
+    private ProgressDialog pd;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -130,10 +132,10 @@ public class First_Step_CM_Fragment extends Fragment implements FirstStepPMFragm
 
 
         View view = inflater.inflate(R.layout.fragment_first__step__c_m_, container, false);
-        mSharePreference = new SharePreferenceHelper(getContext());
         apiInterface = ApiClient.getClient(this.getContext());
         preEventList = new ArrayList<>();
         prePhotoModels = new ArrayList<>();
+        pd = new ProgressDialog(this.getContext());
         mSharePerferenceHelper = new SharePreferenceHelper(this.getContext());
         ButterKnife.bind(this, view);
         displayMSOInformation();
@@ -158,7 +160,8 @@ public class First_Step_CM_Fragment extends Fragment implements FirstStepPMFragm
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                save();
+                if(preEventList.size() != 0)
+                    save();
             }
         });
         setDataAdapter();
@@ -176,14 +179,27 @@ public class First_Step_CM_Fragment extends Fragment implements FirstStepPMFragm
             date = new Date();
             Timestamp timestamp = new Timestamp(date.getTime());
             String actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
-            UpdateEventBody updateEventBody = new UpdateEventBody(mSharePerferenceHelper.getUserName(), mSharePerferenceHelper.getUserId(), actualDateTime, pmServiceInfoModel.getId(), preEventList);
+            UpdateEventBody updateEventBody = new UpdateEventBody(mSharePerferenceHelper.getUserName(),
+                    mSharePerferenceHelper.getUserId(),
+                    actualDateTime,
+                    pmServiceInfoModel.getId(),
+                    preEventList);
+
+            pd.setTitle("Uploading...");
+            pd.setMessage("Please wait, data is sending");
+            pd.setCancelable(false);
+            pd.setIndeterminate(true);
+            pd.show();
+
             Call<ReturnStatus> returnStatusCallEvent = apiInterface.updateEvent("Bearer " + mSharePerferenceHelper.getToken(), updateEventBody);
             returnStatusCallEvent.enqueue(new Callback<ReturnStatus>() {
                 @Override
                 public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
                     ReturnStatus returnStatus = response.body();
                     if (response.isSuccessful()) {
-                        Toast.makeText(getContext(), returnStatus.getStatus() + ":Ok", Toast.LENGTH_SHORT).show();
+                        pd.dismiss();
+                        Toast.makeText(getContext(), returnStatus.getStatus() + "", Toast.LENGTH_LONG).show();
+
                     }
                 }
 
@@ -342,6 +358,11 @@ public class First_Step_CM_Fragment extends Fragment implements FirstStepPMFragm
 
         String bucketName ="pids-pre-maintenance-photo";
 
+        pd.setTitle("Uploading...");
+        pd.setMessage("Please wait, data is sending");
+        pd.setCancelable(false);
+        pd.setIndeterminate(true);
+        pd.show();
         Call<ReturnStatus> returnStatusCall = apiInterface.uploadPhoto(bucketName,  requestBody);
         returnStatusCall.enqueue(new Callback<ReturnStatus>() {
             @Override
@@ -349,8 +370,9 @@ public class First_Step_CM_Fragment extends Fragment implements FirstStepPMFragm
                 ReturnStatus returnStatus = response.body();
                 if(response.isSuccessful()){
                     Log.v("PRE_EVENT","Added pre event");
+                    pd.dismiss();
                     preEventList.add(new Event("PRE_MAINTENANCE_PHOTO_UPDATE","preMaintenancePhotoUpdate",returnStatus.getData().getFileUrl()));
-                    Toast.makeText(getContext(),returnStatus.getData().getFileUrl()+":Ok",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(),returnStatus.getStatus()+"",Toast.LENGTH_SHORT).show();
                 }else {
                     Toast.makeText(getContext(),";",Toast.LENGTH_SHORT).show();
                 }
