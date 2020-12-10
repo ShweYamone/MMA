@@ -48,7 +48,6 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
     RadioGroup radioGroup;
 
     private RadioButton radioButton;
-    private ProgressDialog pd;
     private String weather;
     private Date date;
     private SharePreferenceHelper mSharePreferenceHelper;
@@ -76,11 +75,6 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
         mSharePreferenceHelper = new SharePreferenceHelper(this.getContext());
         apiInterface = ApiClient.getClient(this.getContext());
         jobDone.setOnClickListener(this);
-        pd = new ProgressDialog(this.getContext());
-        pd.setTitle("Uploading...");
-        pd.setMessage("Please wait, data is sending");
-        pd.setCancelable(false);
-        pd.setIndeterminate(true);
 
         // get selected radio button from radioGroup
         int selectedId = radioGroup.getCheckedRadioButtonId();
@@ -126,15 +120,13 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
                 "JOBDONE",
                 remarksString,
                 weather);
-        pd.show();
         Call<ReturnStatus> jobDoneCall = apiInterface.updateStatusEvent("Bearer "+mSharePreferenceHelper.getToken(), updateEventBody);
         jobDoneCall.enqueue(new Callback<ReturnStatus>() {
             @Override
             public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
                 ReturnStatus returnStatus = response.body();
                 if(response.isSuccessful()) {
-                    pd.dismiss();
-                    Toast.makeText(getContext(), returnStatus.getStatus(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), returnStatus.getStatus(), Toast.LENGTH_LONG).show();
                 }
             }
 
