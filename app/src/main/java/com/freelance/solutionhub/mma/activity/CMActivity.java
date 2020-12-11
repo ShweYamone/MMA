@@ -128,6 +128,10 @@ public class CMActivity extends AppCompatActivity {
                 intent.putExtra("TAG_OUT", true);
                 startActivity(intent);
                 finish();
+                break;
+            case android.R.id.home:
+                finish();
+                return true;
         }
 
 

@@ -38,6 +38,8 @@ import com.bumptech.glide.Glide;
 import com.freelance.solutionhub.mma.R;
 import com.freelance.solutionhub.mma.activity.CaptureActivityPotrait;
 import com.freelance.solutionhub.mma.activity.Code_Description;
+import com.freelance.solutionhub.mma.activity.NFCReadingActivity;
+import com.freelance.solutionhub.mma.activity.TelcoActivity;
 import com.freelance.solutionhub.mma.adapter.PhotoAdapter;
 import com.freelance.solutionhub.mma.delegate.FirstStepPMFragmentCallback;
 import com.freelance.solutionhub.mma.model.Event;
@@ -140,6 +142,15 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
 
     @BindView(R.id.etThirdPartyComment)
     EditText etThridPartyComment;
+
+    @BindView(R.id.ll_telco)
+    LinearLayout telco;
+
+    @BindView(R.id.ll_power_grid)
+    LinearLayout powerGrid;
+
+    @BindView(R.id.ll_other)
+    LinearLayout other;
 
     @BindView(R.id.btnSave)
     Button btnSave;
@@ -285,6 +296,9 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
         btnScanReplacement.setOnClickListener(this);
         btnSave.setOnClickListener(this);
         postPhotoBtn.setOnClickListener(this);
+        telco.setOnClickListener(this);
+        powerGrid.setOnClickListener(this);
+        other.setOnClickListener(this);
 
         //intializing scan object
         qrScan = new IntentIntegrator(this.getActivity());
@@ -440,6 +454,17 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
                     startActivityForResult(cameraIntent, CAMERA_REQUEST);
 
                 }
+                break;
+            case R.id.ll_telco:
+                Intent intent = new Intent(getContext(), TelcoActivity.class);
+                intent.putExtra("id", pmServiceInfoModel.getId());
+                getContext().startActivity(intent);
+                break;
+            case R.id.ll_power_grid:
+
+                break;
+            case R.id.ll_other:
+
                 break;
 
         }

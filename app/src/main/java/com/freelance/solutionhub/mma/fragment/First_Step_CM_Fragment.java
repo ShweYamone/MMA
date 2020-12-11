@@ -165,7 +165,7 @@ public class First_Step_CM_Fragment extends Fragment implements FirstStepPMFragm
         return view;
     }
     /**
-     * Update event for all photos
+     * Update event for all
      */
     public void save(){
         //Maintenance photos attached ( max - 10 and min 2 )
