@@ -79,7 +79,7 @@ public class Second_Step_PM_Fragment extends Fragment implements View.OnClickLis
 
     public void updateEvent(){
         String remarksString = "";
-        if(remarks.getText() != null)
+        if(!remarks.getText().equals("") || remarks.getText() != null)
             remarksString = remarks.getText().toString();
             date = new Date();
         Timestamp timestamp = new Timestamp(date.getTime());
@@ -96,8 +96,11 @@ public class Second_Step_PM_Fragment extends Fragment implements View.OnClickLis
             @Override
             public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
                 ReturnStatus returnStatus = response.body();
-                if(response.isSuccessful())
+                if(response.isSuccessful()) {
                     Toast.makeText(getContext(),returnStatus.getStatus(),Toast.LENGTH_SHORT).show();
+                  //  remarks.setText("");
+                }
+
             }
 
             @Override

@@ -49,6 +49,7 @@
         <EditText
             android:id="@+id/etPassword"
             android:layout_marginTop="@dimen/margin_normal"
+            android:inputType="textPassword"
             android:background="@drawable/bg_et_border_login"
             android:hint="@string/password"
             android:layout_width="match_parent"

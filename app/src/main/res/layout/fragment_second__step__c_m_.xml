@@ -271,6 +271,7 @@
                         android:textSize="@dimen/txt_size_large"/>
 
                     <EditText
+                        android:id="@+id/etThirdPartyComment"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/crimson_text_regular"
