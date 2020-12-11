@@ -1,18 +1,60 @@
 package com.freelance.solutionhub.mma.model;
 
+import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
+
+import java.io.Serializable;
+import java.lang.annotation.Native;
 import java.util.List;
 
-public class UpdateEventBody {
-    public String actor;
-    public String actorId;
-    public String date;
-    public String serviceOrderId;
-    public String serviceOrderStatus;
-    public String remark;
-    public String weatherCondition;
-    public List<Event> events;
+@Entity(tableName = "UpdateEventBody")
+public class UpdateEventBody implements Serializable {
+
+    @PrimaryKey
+    @ColumnInfo(name = "id")
+    @NonNull
+    private String id; //userid + "-" + service_order_id
+
+    @ColumnInfo(name = "actor")
+    private String actor;
+
+    @ColumnInfo(name = "actorId")
+    private String actorId;
+
+    @ColumnInfo(name = "date")
+    private String date;
+
+    @ColumnInfo(name = "serviceOrderId")
+    private String serviceOrderId;
+
+    @ColumnInfo(name = "serviceOrderStatus")
+    private String serviceOrderStatus;
+
+    @ColumnInfo(name = "remark")
+    private String remark;
+
+    @ColumnInfo(name = "weatherCondition")
+    private String weatherCondition;
+
+    @Ignore
+    private List<Event> events;
+
+    public UpdateEventBody(String  id, String actor, String actorId, String date, String serviceOrderId, String serviceOrderStatus, String remark, String weatherCondition) {
+        this.id = id;
+        this.actor = actor;
+        this.actorId = actorId;
+        this.date = date;
+        this.serviceOrderId = serviceOrderId;
+        this.serviceOrderStatus = serviceOrderStatus;
+        this.remark = remark;
+        this.weatherCondition = weatherCondition;
+    }
 
     /******TagIn, *****/
+    @Ignore
     public UpdateEventBody(String actor, String actorId, String date, String serviceOrderId, List<Event> events) {
         this.actor = actor;
         this.actorId = actorId;
@@ -22,6 +64,7 @@ public class UpdateEventBody {
     }
 
     /*****PM JOBDONE*******/
+    @Ignore
     public UpdateEventBody(String actor, String actorId, String date, String serviceOrderId, String serviceOrderStatus, String remark) {
         this.actor = actor;
         this.actorId = actorId;
@@ -32,6 +75,7 @@ public class UpdateEventBody {
     }
 
     /**** CM JOBDONE *****/
+    @Ignore
     public UpdateEventBody(String actor, String actorId, String date, String serviceOrderId, String serviceOrderStatus,String remark,String weatherCondition){
         this.actor = actor;
         this.actorId = actorId;
@@ -43,11 +87,84 @@ public class UpdateEventBody {
     }
 
     /*****CM_ACK_To_APPR****/
+    @Ignore
     public UpdateEventBody(String actor, String actorId, String date, String serviceOrderId, String serviceOrderStatus) {
         this.actor = actor;
         this.actorId = actorId;
         this.date = date;
         this.serviceOrderId = serviceOrderId;
         this.serviceOrderStatus = serviceOrderStatus;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getActor() {
+        return actor;
+    }
+
+    public void setActor(String actor) {
+        this.actor = actor;
+    }
+
+    public String getActorId() {
+        return actorId;
+    }
+
+    public void setActorId(String actorId) {
+        this.actorId = actorId;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public String getServiceOrderId() {
+        return serviceOrderId;
+    }
+
+    public void setServiceOrderId(String serviceOrderId) {
+        this.serviceOrderId = serviceOrderId;
+    }
+
+    public String getServiceOrderStatus() {
+        return serviceOrderStatus;
+    }
+
+    public void setServiceOrderStatus(String serviceOrderStatus) {
+        this.serviceOrderStatus = serviceOrderStatus;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+
+    public String getWeatherCondition() {
+        return weatherCondition;
+    }
+
+    public void setWeatherCondition(String weatherCondition) {
+        this.weatherCondition = weatherCondition;
+    }
+
+    public List<Event> getEvents() {
+        return events;
+    }
+
+    public void setEvents(List<Event> events) {
+        this.events = events;
     }
 }

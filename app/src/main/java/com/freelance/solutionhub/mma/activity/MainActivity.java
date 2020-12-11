@@ -61,6 +61,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         // lotout txtview is here
         tvLogout.setOnClickListener(this);
+
+
+
+        ///////*********WebSocket*************//////////
+
     }
 
     @Override

@@ -1,14 +1,57 @@
 package com.freelance.solutionhub.mma.model;
 
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.ForeignKey;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
+
+import static androidx.room.ForeignKey.CASCADE;
+
+@Entity(tableName = "Event",
+        foreignKeys = @ForeignKey(entity = UpdateEventBody.class,
+        parentColumns = "id",
+        childColumns = "updateEventBodyKey",
+        onDelete =CASCADE))
 public class Event {
+
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "event_id")
+    public int event_id;
+
+    @ColumnInfo(name = "updateEventBodyKey")
+    public String updateEventBodyKey;
+
+    @ColumnInfo(name = "eventType")
     public String eventType;
+
+    @ColumnInfo(name = "key")
     public String key;
+
+    @ColumnInfo(name = "value")
     public String value;
 
+    public Event(int event_id, String updateEventBodyKey, String eventType, String key, String value) {
+        this.event_id = event_id;
+        this.updateEventBodyKey = updateEventBodyKey;
+        this.eventType = eventType;
+        this.key = key;
+        this.value = value;
+    }
+
+    @Ignore
     public Event(String eventType, String key, String value) {
         this.eventType = eventType;
         this.key = key;
         this.value = value;
+    }
+
+    public String getUpdateEventBodyKey() {
+        return updateEventBodyKey;
+    }
+
+    public void setUpdateEventBodyKey(String updateEventBodyKey) {
+        this.updateEventBodyKey = updateEventBodyKey;
     }
 
     public String getEventType() {

@@ -115,7 +115,7 @@ public class ServiceOrderAdapter extends RecyclerView.Adapter<ServiceOrderAdapte
                         @Override
                         public void onClick(View view) {
                             if (callback.hasUserId()) {
-                                Intent intent = new Intent(mContext, LoadingActivity.class);
+                                Intent intent = new Intent(mContext, NFCReadingActivity.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 intent.putExtra("id", service.getId());
                                 mContext.startActivity(intent);

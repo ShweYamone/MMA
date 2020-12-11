@@ -17,8 +17,12 @@ buildscript {
 allprojects {
     repositories {
         google()
+        mavenLocal()
+        maven {
+            url  "http://dl.bintray.com/javaphoenixchannels/java-phoenix-channels"
+        }
         jcenter()
-        
+        mavenCentral()
     }
 }
 
