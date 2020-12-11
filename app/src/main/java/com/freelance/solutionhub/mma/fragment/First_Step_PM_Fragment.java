@@ -336,8 +336,6 @@ public class First_Step_PM_Fragment extends Fragment implements FirstStepPMFragm
      * @param resultCode
      * @param data
      */
-
-    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK)
@@ -345,14 +343,18 @@ public class First_Step_PM_Fragment extends Fragment implements FirstStepPMFragm
             theImage = (Bitmap) data.getExtras().get("data");
             // Check whether request message is pre or post
             if(isPreMaintenance) {
-                LocalDateTime d = LocalDateTime.now();
-                uploadPhoto(theImage, "pre-maintenance-photo" + mSharePerferenceHelper.getUserId() +d.toString(), isPreMaintenance);
+                date = new Date();
+                Timestamp timestamp = new Timestamp(date.getTime());
+                String actualDateTime = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss").format(timestamp);
+                uploadPhoto(theImage, "pre-maintenance-photo" + mSharePerferenceHelper.getUserId() +actualDateTime, isPreMaintenance);
                 photo = getEncodedString(theImage);
                 prePhotoModels.add(new PhotoModel(photo, 1));
                 prePhotoAdapter.notifyDataSetChanged();
             }else {
-                LocalDateTime d = LocalDateTime.now();
-                uploadPhoto(theImage, "post-maintenance-photo" + mSharePerferenceHelper.getUserId()+d.toString(), isPreMaintenance);
+                date = new Date();
+                Timestamp timestamp = new Timestamp(date.getTime());
+                String actualDateTime = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss").format(timestamp);
+                uploadPhoto(theImage, "post-maintenance-photo" + mSharePerferenceHelper.getUserId()+actualDateTime, isPreMaintenance);
                 photo = getEncodedString(theImage);
                 postPhotoModels.add(new PhotoModel(photo,2));
                 postPhotoAdapter.notifyDataSetChanged();

@@ -139,10 +139,9 @@ public class First_Step_CM_Fragment extends Fragment implements FirstStepPMFragm
         displayMSOInformation();
 
         preMaintenancePhoto.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onClick(View v) {
-                if (getActivity().checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
+                if (getActivity().checkPermission(Manifest.permission.CAMERA,1,1) != PackageManager.PERMISSION_GRANTED)
                 {
                     requestPermissions(new String[]{Manifest.permission.CAMERA}, MY_CAMERA_PERMISSION_CODE);
                 }
@@ -166,7 +165,7 @@ public class First_Step_CM_Fragment extends Fragment implements FirstStepPMFragm
         return view;
     }
     /**
-     * Update event for all photos
+     * Update event for all
      */
     public void save(){
         //Maintenance photos attached ( max - 10 and min 2 )
@@ -276,15 +275,16 @@ public class First_Step_CM_Fragment extends Fragment implements FirstStepPMFragm
      * @param data
      */
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK)
         {
             theImage = (Bitmap) data.getExtras().get("data");
             // Check whether request message is pre or post
-                LocalDateTime d = LocalDateTime.now();
-                uploadPhoto(theImage, "pre-maintenance-photo" + mSharePerferenceHelper.getUserId() +d.toString());
+                date = new Date();
+                Timestamp timestamp = new Timestamp(date.getTime());
+                String actualDateTime = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss").format(timestamp);
+                uploadPhoto(theImage, "pre-maintenance-photo" + mSharePerferenceHelper.getUserId() +actualDateTime);
                 photo = getEncodedString(theImage);
                 prePhotoModels.add(new PhotoModel(photo, 1));
                 prePhotoAdapter.notifyDataSetChanged();

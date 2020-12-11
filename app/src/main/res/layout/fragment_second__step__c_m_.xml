@@ -289,6 +289,7 @@
 
                     <!-- Telco Design -->
                     <LinearLayout
+                        android:id="@+id/ll_telco"
                         android:layout_width="match_parent"
                         android:layout_height="32dp"
                         android:layout_marginTop="@dimen/margin_small"
@@ -312,6 +313,7 @@
 
                     <!-- Power Grid Design -->
                     <LinearLayout
+                        android:id="@+id/ll_power_grid"
                         android:layout_width="match_parent"
                         android:layout_height="32dp"
                         android:orientation="horizontal"
@@ -333,6 +335,7 @@
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/ll_other"
                         android:layout_width="match_parent"
                         android:layout_height="32dp"
                         android:orientation="horizontal"

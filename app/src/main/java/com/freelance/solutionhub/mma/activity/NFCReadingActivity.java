@@ -1,15 +1,20 @@
 package com.freelance.solutionhub.mma.activity;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.Manifest;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.nfc.tech.MifareClassic;
 import android.nfc.tech.MifareUltralight;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.provider.Settings;
@@ -45,7 +50,9 @@ public class NFCReadingActivity extends AppCompatActivity {
     private ApiInterface apiInterface;
     private Date date;
     private Timestamp ts;
+    private final int NFC_PERMISSION_CODE = 1002;
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,6 +86,9 @@ public class NFCReadingActivity extends AppCompatActivity {
             Toast.makeText(this, "No NFC", Toast.LENGTH_SHORT).show();
             //finish();
             return;
+        }else {
+            if (!nfcAdapter.isEnabled())
+                requestPermissions(new String[]{Manifest.permission.NFC}, NFC_PERMISSION_CODE);
         }
 
         pendingIntent = PendingIntent.getActivity(this, 0,
@@ -109,14 +119,28 @@ public class NFCReadingActivity extends AppCompatActivity {
             }
         });
     }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == NFC_PERMISSION_CODE)
+        {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
+            {
+                Toast.makeText(this, "camera permission granted", Toast.LENGTH_LONG).show();
+                //showWirelessSettings();
+            }
+            else
+            {
+                Toast.makeText(this, "camera permission denied", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
 
     @Override
     protected void onResume() {
         super.onResume();
 
         if (nfcAdapter != null) {
-            if (!nfcAdapter.isEnabled())
-                showWirelessSettings();
 
             nfcAdapter.enableForegroundDispatch(this, pendingIntent, null, null);
         }
@@ -178,7 +202,7 @@ public class NFCReadingActivity extends AppCompatActivity {
 
     private void showWirelessSettings() {
         Toast.makeText(this, "You need to enable NFC", Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(Settings.ACTION_WIRELESS_SETTINGS);
+        Intent intent = new Intent(Settings.ACTION_NFC_SETTINGS);
         startActivity(intent);
     }
 

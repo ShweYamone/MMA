@@ -48,7 +48,6 @@
                 android:text="@string/telco"
                 android:textColor="@color/colorBlack"
                 android:textStyle="bold"
-                android:fontFamily="@font/crimson_text_regular"
                 android:textSize="@dimen/txt_size_large"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
@@ -57,18 +56,17 @@
             <TextView
                 android:text="@string/telco_no"
                 android:textColor="@color/color_blue"
-                android:fontFamily="@font/crimson_text_regular"
                 android:layout_marginTop="@dimen/margin_large"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
             <!-- Telco No: (EditText)-->
             <EditText
+                android:id="@+id/et_telco_no"
                 android:paddingLeft="@dimen/margin_normal"
                 android:paddingRight="@dimen/margin_normal"
                 android:maxLines="1"
                 android:textColor="@color/colorBlack"
-                android:fontFamily="@font/crimson_text_regular"
                 android:background="@drawable/round_rect_shape_line"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/edittext_height"/>
@@ -77,18 +75,17 @@
             <TextView
                 android:text="@string/docker_no"
                 android:textColor="@color/color_blue"
-                android:fontFamily="@font/crimson_text_regular"
                 android:layout_marginTop="@dimen/margin_large"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
             <!-- Docker No: (EditText) -->
             <EditText
+                android:id="@+id/et_docker_no"
                 android:paddingLeft="@dimen/margin_normal"
                 android:paddingRight="@dimen/margin_normal"
                 android:maxLines="1"
                 android:textColor="@color/colorBlack"
-                android:fontFamily="@font/crimson_text_regular"
                 android:background="@drawable/round_rect_shape_line"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/edittext_height"/>
@@ -97,18 +94,17 @@
             <TextView
                 android:text="@string/ct_personnel"
                 android:textColor="@color/color_blue"
-                android:fontFamily="@font/crimson_text_regular"
                 android:layout_marginTop="@dimen/margin_large"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
             <!-- CT Personnel: (EditText) -->
             <EditText
+                android:id="@+id/et_ct_personnel"
                 android:paddingLeft="@dimen/margin_normal"
                 android:paddingRight="@dimen/margin_normal"
                 android:maxLines="1"
                 android:textColor="@color/colorBlack"
-                android:fontFamily="@font/crimson_text_regular"
                 android:background="@drawable/round_rect_shape_line"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/edittext_height"/>
@@ -117,17 +113,18 @@
             <TextView
                 android:text="@string/refer_date_time"
                 android:textColor="@color/color_blue"
-                android:fontFamily="@font/crimson_text_regular"
                 android:layout_marginTop="@dimen/margin_large"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
             <!-- Refer Date / Time (Button) -->
             <Button
+                android:id="@+id/btn_refer_date_time"
                 android:paddingLeft="@dimen/margin_normal"
                 android:paddingRight="@dimen/margin_normal"
+                android:text="2383838"
+                android:textAlignment="textStart"
                 android:textColor="@color/colorBlack"
-                android:fontFamily="@font/crimson_text_regular"
                 android:drawableRight="@drawable/date_time"
                 android:background="@drawable/round_rect_shape_line"
                 android:layout_width="match_parent"
@@ -137,17 +134,17 @@
             <TextView
                 android:text="@string/expected_completion_date_time"
                 android:textColor="@color/color_blue"
-                android:fontFamily="@font/crimson_text_regular"
                 android:layout_marginTop="@dimen/margin_large"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
             <!-- Expected Completion Date / Time (Button) -->
             <Button
+                android:id="@+id/btn_expected_completion_date_time"
                 android:paddingLeft="@dimen/margin_normal"
                 android:paddingRight="@dimen/margin_normal"
                 android:textColor="@color/colorBlack"
-                android:fontFamily="@font/crimson_text_regular"
+                android:textAlignment="textStart"
                 android:drawableRight="@drawable/date_time"
                 android:background="@drawable/round_rect_shape_line"
                 android:layout_width="match_parent"
@@ -157,17 +154,17 @@
             <TextView
                 android:text="@string/clearance_date_time"
                 android:textColor="@color/color_blue"
-                android:fontFamily="@font/crimson_text_regular"
                 android:layout_marginTop="@dimen/margin_large"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
             <!-- Clearance Date/ Time (Button) -->
             <Button
+                android:id="@+id/btn_clearance_date_time"
                 android:paddingLeft="@dimen/margin_normal"
                 android:paddingRight="@dimen/margin_normal"
                 android:textColor="@color/colorBlack"
-                android:fontFamily="@font/crimson_text_regular"
+                android:textAlignment="textStart"
                 android:drawableRight="@drawable/date_time"
                 android:background="@drawable/round_rect_shape_line"
                 android:layout_width="match_parent"
@@ -177,18 +174,17 @@
             <TextView
                 android:text="@string/telco_fault_status"
                 android:textColor="@color/color_blue"
-                android:fontFamily="@font/crimson_text_regular"
                 android:layout_marginTop="@dimen/margin_large"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
             <!-- Telco Fault Status: (EditText) -->
             <EditText
+                android:id="@+id/et_telco_fault_status"
                 android:paddingLeft="@dimen/margin_normal"
                 android:paddingRight="@dimen/margin_normal"
                 android:maxLines="1"
                 android:textColor="@color/colorBlack"
-                android:fontFamily="@font/crimson_text_regular"
                 android:background="@drawable/round_rect_shape_line"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/edittext_height"/>
@@ -197,18 +193,18 @@
             <TextView
                 android:text="@string/telco_officer"
                 android:textColor="@color/color_blue"
-                android:fontFamily="@font/crimson_text_regular"
                 android:layout_marginTop="@dimen/margin_large"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
             <!-- Telco Officer (TextView) -->
             <EditText
+                android:id="@+id/et_telco_officer"
                 android:paddingLeft="@dimen/margin_normal"
                 android:paddingRight="@dimen/margin_normal"
                 android:maxLines="1"
                 android:textColor="@color/colorBlack"
-                android:fontFamily="@font/crimson_text_regular"
+                android:textAlignment="textStart"
                 android:background="@drawable/round_rect_shape_line"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/edittext_height"/>
@@ -217,18 +213,18 @@
             <TextView
                 android:text="@string/fault_detected_date_time"
                 android:textColor="@color/color_blue"
-                android:fontFamily="@font/crimson_text_regular"
                 android:layout_marginTop="@dimen/margin_large"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
             <!-- Fault Detected Date / Time (Button) -->
             <Button
+                android:id="@+id/btn_fault_detected_date_time"
                 android:paddingLeft="@dimen/margin_normal"
                 android:paddingRight="@dimen/margin_normal"
                 android:drawableRight="@drawable/date_time"
                 android:textColor="@color/colorBlack"
-                android:fontFamily="@font/crimson_text_regular"
+                android:textAlignment="textStart"
                 android:background="@drawable/round_rect_shape_line"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/edittext_height"/>
@@ -237,18 +233,18 @@
             <TextView
                 android:text="@string/action_date_time"
                 android:textColor="@color/color_blue"
-                android:fontFamily="@font/crimson_text_regular"
                 android:layout_marginTop="@dimen/margin_large"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
             <!-- Action Date / Time (Button) -->
             <Button
+                android:id="@+id/btn_action_date_time"
                 android:paddingLeft="@dimen/margin_normal"
                 android:paddingRight="@dimen/margin_normal"
                 android:drawableRight="@drawable/date_time"
                 android:textColor="@color/colorBlack"
-                android:fontFamily="@font/crimson_text_regular"
+                android:textAlignment="textStart"
                 android:background="@drawable/round_rect_shape_line"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/edittext_height"/>
@@ -257,7 +253,6 @@
             <TextView
                 android:text="@string/action_taken_by_telco"
                 android:textColor="@color/color_blue"
-                android:fontFamily="@font/crimson_text_regular"
                 android:layout_marginTop="@dimen/margin_large"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
@@ -274,7 +269,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="64dp"
                     android:textSize="@dimen/txt_size_normal"
-                    android:fontFamily="@font/crimson_text_regular"
                     android:inputType="text|textMultiLine"
                     android:layout_margin="@dimen/margin_small"
                     android:background="@color/white_trans"
@@ -283,6 +277,7 @@
             </LinearLayout>
 
             <Button
+                android:id="@+id/btn_save"
                 android:layout_marginTop="@dimen/margin_large"
                 android:layout_marginBottom="@dimen/margin_large"
                 android:text="@string/save"
