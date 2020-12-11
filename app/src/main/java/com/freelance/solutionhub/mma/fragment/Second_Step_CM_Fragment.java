@@ -625,15 +625,16 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
      * @param data
      */
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK)
         {
             bitmap = (Bitmap) data.getExtras().get("data");
             // Check whether request message is pre or post
-            LocalDateTime d = LocalDateTime.now();
-            uploadPhoto(bitmap, "pre-maintenance-photo" + mSharePreference.getUserId() +d.toString());
+            date = new Date();
+            Timestamp timestamp = new Timestamp(date.getTime());
+            String actualDateTime = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss").format(timestamp);
+            uploadPhoto(bitmap, "pre-maintenance-photo" + mSharePreference.getUserId() +actualDateTime);
             photo = getEncodedString(bitmap);
             postModelList.add(new PhotoModel(photo, 1));
             postPhotoAdapter.notifyDataSetChanged();
