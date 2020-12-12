@@ -32,14 +32,13 @@ public class AssetInformationActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ButterKnife.bind(this);
 
         setContentView(R.layout.activity_asset_information);
+        ButterKnife.bind(this);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         //intializing scan object
         qrScan = new IntentIntegrator(this);
@@ -48,7 +47,7 @@ public class AssetInformationActivity extends AppCompatActivity {
         qrScan.setOrientationLocked(true);
         qrScan.setBeepEnabled(true);
         qrScan.setCaptureActivity(CaptureActivityPotrait.class);
-
+        qrScan.initiateScan();
 
     }
 }
