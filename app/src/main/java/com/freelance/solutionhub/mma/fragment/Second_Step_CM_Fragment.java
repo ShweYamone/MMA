@@ -247,7 +247,11 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
                 causeProblemCode[0] = "Select Cause Code";
                 causeArr.add(0, "Select Cause Code");
                 causeProblemArrAdapter.notifyDataSetChanged();
-
+                remedyArr.clear();
+                remedyArr.add(0, "Select Remedy Code");
+                remedyArrAdapter.notifyDataSetChanged();
+                spinnerCauseCode.setSelection(0, true);
+                spinnerRemedyCode.setSelection(0,true);
                 actualProblem = problemArr.get(i);
             }
             @Override
@@ -267,7 +271,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
                 }
                 remedyArr.add(0, "Select Remedy Code");
                 remedyArrAdapter.notifyDataSetChanged();
-
+                spinnerRemedyCode.setSelection(0);
                 causeCode = causeArr.get(i);
             }
 
@@ -538,7 +542,6 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
                     mSharePreference.getUserId() + " - " + remedyCode));
             Log.i("EventHappenend", "getProblemCodeEvent: " + remedyCode);
         }
-
 
     }
 
