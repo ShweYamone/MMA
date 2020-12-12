@@ -21,6 +21,7 @@ import android.provider.Settings;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.freelance.solutionhub.mma.DB.InitializeDatabase;
 import com.freelance.solutionhub.mma.R;
 import com.freelance.solutionhub.mma.model.Event;
 import com.freelance.solutionhub.mma.model.ReturnStatus;
@@ -29,6 +30,7 @@ import com.freelance.solutionhub.mma.nfc.NdefMessageParser;
 import com.freelance.solutionhub.mma.nfc.ParsedNdefRecord;
 import com.freelance.solutionhub.mma.util.ApiClient;
 import com.freelance.solutionhub.mma.util.ApiInterface;
+import com.freelance.solutionhub.mma.util.Network;
 import com.freelance.solutionhub.mma.util.SharePreferenceHelper;
 
 import java.sql.Timestamp;
@@ -47,10 +49,13 @@ public class NFCReadingActivity extends AppCompatActivity {
     private PendingIntent pendingIntent;
     private String serviceOrderId;
     private SharePreferenceHelper mSharedPreference;
+    private Network network;
+    private InitializeDatabase dbHelper;
     private ApiInterface apiInterface;
     private Date date;
     private Timestamp ts;
     private final int NFC_PERMISSION_CODE = 1002;
+    List<Event> events = new ArrayList<>();
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -60,25 +65,21 @@ public class NFCReadingActivity extends AppCompatActivity {
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);
         mSharedPreference = new SharePreferenceHelper(this);
         apiInterface = ApiClient.getClient(this);
-
+        network = new Network(this);
+        dbHelper = InitializeDatabase.getInstance(this);
         serviceOrderId = getIntent().getStringExtra("id");
 
 
         ////////////////////////////////
-        date = new Date();
-        ts=new Timestamp(date.getTime());
-        String currentDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(ts);
-        List<Event> events = new ArrayList<>();
+
         if (getIntent().getBooleanExtra("TAG_OUT", false)) {
             events.add(new Event("TAG_OUT", "tagOut", "tagOut"));
         } else {
             events.add(new Event("TAG_IN", "tagIn", "tagIn"));
         }
-        UpdateEventBody eventBody = new UpdateEventBody(
-                mSharedPreference.getUserName(), mSharedPreference.getUserId(), currentDateTime, serviceOrderId, events
-        );
+
         /****To Fix when NFC can read*********/
-        perFormTagInEvent(eventBody);
+        perFormTagEvent();
         /*********************/
         /////////////////////////////////////
 
@@ -97,27 +98,70 @@ public class NFCReadingActivity extends AppCompatActivity {
 
     }
 
-    private void perFormTagInEvent(UpdateEventBody eventBody) {
-        Call<ReturnStatus> call = apiInterface.updateEvent("Bearer " + mSharedPreference.getToken(), eventBody);
-        call.enqueue(new Callback<ReturnStatus>() {
-            @Override
-            public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
-                if (response.isSuccessful()) {
-                    Toast.makeText(getApplicationContext(), "TAG_SUCCESS" +  response.body().getStatus(), Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(NFCReadingActivity.this, LoadingActivity.class);
-                    intent.putExtra("id", serviceOrderId);
-                    startActivity(intent);
-                    finish();
-                } else {
-                    Toast.makeText(getApplicationContext(), "response code " + response.code(), Toast.LENGTH_SHORT).show();
+    private void perFormTagEvent() {
+
+        date = new Date();
+        ts=new Timestamp(date.getTime());
+        String currentDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(ts);
+
+        UpdateEventBody eventBody;
+        if (network.isNetworkAvailable()) {
+            eventBody = new UpdateEventBody(
+                    mSharedPreference.getUserName(), mSharedPreference.getUserId(), currentDateTime, serviceOrderId, events
+            );
+
+            Call<ReturnStatus> call = apiInterface.updateEvent("Bearer " + mSharedPreference.getToken(), eventBody);
+            call.enqueue(new Callback<ReturnStatus>() {
+                @Override
+                public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
+                    if (response.isSuccessful()) {
+                        Toast.makeText(getApplicationContext(), "TAG_SUCCESS" +  response.body().getStatus(), Toast.LENGTH_SHORT).show();
+                        if (getIntent().getBooleanExtra("TAG_OUT", false)) {
+                            Intent intent = new Intent(NFCReadingActivity.this, MainActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent);
+                        } else {
+                            Intent intent = new Intent(NFCReadingActivity.this, LoadingActivity.class);
+                            intent.putExtra("id", serviceOrderId);
+                            startActivity(intent);
+                            finish();
+                        }
+                    } else {
+                        Toast.makeText(getApplicationContext(), "response code " + response.code(), Toast.LENGTH_SHORT).show();
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<ReturnStatus> call, Throwable t) {
+                @Override
+                public void onFailure(Call<ReturnStatus> call, Throwable t) {
 
+                }
+            });
+        } else {//network unavailable, store data to local
+            eventBody = new UpdateEventBody(
+              mSharedPreference.getUserName(),
+              mSharedPreference.getUserId(),
+              currentDateTime,
+              serviceOrderId
+            );
+            String key = mSharedPreference.getUserId() + serviceOrderId + currentDateTime;
+            eventBody.setId(key);
+            dbHelper.updateEventBodyDAO().insert(eventBody);
+            for (Event event : events) {
+                event.setUpdateEventBodyKey(key);
             }
-        });
+            dbHelper.eventDAO().insertAll(events);
+            if (getIntent().getBooleanExtra("TAG_OUT", false)) {
+                Intent intent = new Intent(NFCReadingActivity.this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+            } else {
+                Intent intent = new Intent(NFCReadingActivity.this, LoadingActivity.class);
+                intent.putExtra("id", serviceOrderId);
+                startActivity(intent);
+                finish();
+            }
+        }
+
     }
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {

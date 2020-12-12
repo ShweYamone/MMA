@@ -17,6 +17,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.freelance.solutionhub.mma.DB.InitializeDatabase;
 import com.freelance.solutionhub.mma.R;
 import com.freelance.solutionhub.mma.activity.PMCompletionActivity;
 import com.freelance.solutionhub.mma.model.PMServiceInfoDetailModel;
@@ -24,6 +25,7 @@ import com.freelance.solutionhub.mma.model.ReturnStatus;
 import com.freelance.solutionhub.mma.model.UpdateEventBody;
 import com.freelance.solutionhub.mma.util.ApiClient;
 import com.freelance.solutionhub.mma.util.ApiInterface;
+import com.freelance.solutionhub.mma.util.Network;
 import com.freelance.solutionhub.mma.util.SharePreferenceHelper;
 
 import java.sql.Timestamp;
@@ -35,6 +37,8 @@ import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static com.freelance.solutionhub.mma.util.AppConstant.JOBDONE;
 
 public class Third_Step_CM_Fragment extends Fragment implements View.OnClickListener{
 
@@ -51,6 +55,8 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
     private String weather;
     private Date date;
     private SharePreferenceHelper mSharePreferenceHelper;
+    private Network network;
+    private InitializeDatabase dbHelper;
     private ApiInterface apiInterface;
     private PMServiceInfoDetailModel pmServiceInfoDetailModel;
 
@@ -72,8 +78,11 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
         View view = inflater.inflate(R.layout.fragment_third__step__c_m_, container, false);
         // Inflate the layout for this fragment
         ButterKnife.bind(this, view);
-        mSharePreferenceHelper = new SharePreferenceHelper(this.getContext());
-        apiInterface = ApiClient.getClient(this.getContext());
+        mSharePreferenceHelper = new SharePreferenceHelper(getContext());
+        dbHelper = InitializeDatabase.getInstance(getContext());
+        network = new Network(getContext());
+        apiInterface = ApiClient.getClient(getContext());
+
         jobDone.setOnClickListener(this);
 
         // get selected radio button from radioGroup
@@ -112,29 +121,44 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
         date = new Date();
         Timestamp timestamp = new Timestamp(date.getTime());
         String actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
-        UpdateEventBody updateEventBody = new
-                UpdateEventBody(mSharePreferenceHelper.getUserName(),
-                mSharePreferenceHelper.getUserId(),
-                actualDateTime,
-                pmServiceInfoDetailModel.getId(),
-                "JOBDONE",
-                remarksString,
-                weather);
-        Call<ReturnStatus> jobDoneCall = apiInterface.updateStatusEvent("Bearer "+mSharePreferenceHelper.getToken(), updateEventBody);
-        jobDoneCall.enqueue(new Callback<ReturnStatus>() {
-            @Override
-            public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
-                ReturnStatus returnStatus = response.body();
-                if(response.isSuccessful()) {
-                    Toast.makeText(getContext(), returnStatus.getStatus(), Toast.LENGTH_LONG).show();
+        UpdateEventBody updateEventBody;
+        if (network.isNetworkAvailable()) {
+            updateEventBody = new
+                    UpdateEventBody(mSharePreferenceHelper.getUserName(),
+                    mSharePreferenceHelper.getUserId(),
+                    actualDateTime,
+                    pmServiceInfoDetailModel.getId(),
+                    "JOBDONE",
+                    remarksString,
+                    weather);
+            Call<ReturnStatus> jobDoneCall = apiInterface.updateStatusEvent("Bearer "+mSharePreferenceHelper.getToken(), updateEventBody);
+            jobDoneCall.enqueue(new Callback<ReturnStatus>() {
+                @Override
+                public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
+                    ReturnStatus returnStatus = response.body();
+                    if(response.isSuccessful()) {
+                        Toast.makeText(getContext(), returnStatus.getStatus(), Toast.LENGTH_LONG).show();
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<ReturnStatus> call, Throwable t) {
+                @Override
+                public void onFailure(Call<ReturnStatus> call, Throwable t) {
 
-            }
-        });
+                }
+            });
+        } else {
+            updateEventBody = new UpdateEventBody(
+                    mSharePreferenceHelper.getUserName(),
+                    mSharePreferenceHelper.getUserId(),
+                    actualDateTime,
+                    pmServiceInfoDetailModel.getId()
+            );
+            updateEventBody.setServiceOrderStatus(JOBDONE);
+            updateEventBody.setRemark(remarksString);
+            updateEventBody.setWeatherCondition(weather);
+            updateEventBody.setId(mSharePreferenceHelper.getUserId() + pmServiceInfoDetailModel.getId() + actualDateTime);
+            dbHelper.updateEventBodyDAO().insert(updateEventBody);
+        }
 
     }
 

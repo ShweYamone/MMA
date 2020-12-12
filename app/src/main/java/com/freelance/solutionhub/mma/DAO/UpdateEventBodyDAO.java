@@ -28,6 +28,9 @@ public interface UpdateEventBodyDAO {
     @Query("Select * from UpdateEventBody")
     List<UpdateEventBody> getUpdateEventBodyList();
 
+    @Query("Select count(*) from UpdateEventBody")
+    int getNumberOfUpdateEventBody();
+
     @Query("Update UpdateEventBody Set date=:date where id=:id")
     void update(String date, int id);
 }

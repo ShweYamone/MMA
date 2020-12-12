@@ -8,11 +8,7 @@ import androidx.room.PrimaryKey;
 
 import static androidx.room.ForeignKey.CASCADE;
 
-@Entity(tableName = "Event",
-        foreignKeys = @ForeignKey(entity = UpdateEventBody.class,
-        parentColumns = "id",
-        childColumns = "updateEventBodyKey",
-        onDelete =CASCADE))
+@Entity(tableName = "Event")
 public class Event {
 
     @PrimaryKey(autoGenerate = true)
@@ -20,6 +16,7 @@ public class Event {
     public int event_id;
 
     @ColumnInfo(name = "updateEventBodyKey")
+    @ForeignKey(entity = UpdateEventBody.class, parentColumns = "id", childColumns = "updateEventBodyKey", onDelete = CASCADE)
     public String updateEventBodyKey;
 
     @ColumnInfo(name = "eventType")

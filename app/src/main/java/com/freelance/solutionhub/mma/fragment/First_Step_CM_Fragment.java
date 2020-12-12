@@ -18,6 +18,9 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.DatabaseConfiguration;
+import androidx.room.InvalidationTracker;
+import androidx.sqlite.db.SupportSQLiteOpenHelper;
 
 import android.util.Base64;
 import android.util.Log;
@@ -29,6 +32,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.freelance.solutionhub.mma.DB.InitializeDatabase;
 import com.freelance.solutionhub.mma.R;
 import com.freelance.solutionhub.mma.adapter.PhotoAdapter;
 import com.freelance.solutionhub.mma.delegate.FirstStepPMFragmentCallback;
@@ -40,6 +44,7 @@ import com.freelance.solutionhub.mma.model.ReturnStatus;
 import com.freelance.solutionhub.mma.model.UpdateEventBody;
 import com.freelance.solutionhub.mma.util.ApiClient;
 import com.freelance.solutionhub.mma.util.ApiInterface;
+import com.freelance.solutionhub.mma.util.Network;
 import com.freelance.solutionhub.mma.util.SharePreferenceHelper;
 
 import java.io.ByteArrayOutputStream;
@@ -122,6 +127,8 @@ public class First_Step_CM_Fragment extends Fragment implements FirstStepPMFragm
     private Date date;
     private PMServiceInfoDetailModel pmServiceInfoModel;
     private ApiInterface apiInterface;
+    private Network mNetwork;
+    public InitializeDatabase dbHelper;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -131,10 +138,12 @@ public class First_Step_CM_Fragment extends Fragment implements FirstStepPMFragm
 
 
         View view = inflater.inflate(R.layout.fragment_first__step__c_m_, container, false);
-        apiInterface = ApiClient.getClient(this.getContext());
+        apiInterface = ApiClient.getClient(getContext());
         preEventList = new ArrayList<>();
         prePhotoModels = new ArrayList<>();
-        mSharePerferenceHelper = new SharePreferenceHelper(this.getContext());
+        mSharePerferenceHelper = new SharePreferenceHelper(getContext());
+        mNetwork = new  Network(getContext());
+        dbHelper = InitializeDatabase.getInstance(getContext());
         ButterKnife.bind(this, view);
         displayMSOInformation();
 
@@ -176,28 +185,52 @@ public class First_Step_CM_Fragment extends Fragment implements FirstStepPMFragm
             date = new Date();
             Timestamp timestamp = new Timestamp(date.getTime());
             String actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
-            UpdateEventBody updateEventBody = new UpdateEventBody(mSharePerferenceHelper.getUserName(),
-                    mSharePerferenceHelper.getUserId(),
-                    actualDateTime,
-                    pmServiceInfoModel.getId(),
-                    preEventList);
 
-            Call<ReturnStatus> returnStatusCallEvent = apiInterface.updateEvent("Bearer " + mSharePerferenceHelper.getToken(), updateEventBody);
-            returnStatusCallEvent.enqueue(new Callback<ReturnStatus>() {
-                @Override
-                public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
-                    ReturnStatus returnStatus = response.body();
-                    if (response.isSuccessful()) {
-                        Toast.makeText(getContext(), returnStatus.getStatus() + "", Toast.LENGTH_LONG).show();
+            if (mNetwork.isNetworkAvailable()) {//network available
+                UpdateEventBody updateEventBody = new UpdateEventBody(mSharePerferenceHelper.getUserName(),
+                        mSharePerferenceHelper.getUserId(),
+                        actualDateTime,
+                        pmServiceInfoModel.getId(),
+                        preEventList);
 
+                Call<ReturnStatus> returnStatusCallEvent = apiInterface.updateEvent("Bearer " + mSharePerferenceHelper.getToken(), updateEventBody);
+                returnStatusCallEvent.enqueue(new Callback<ReturnStatus>() {
+                    @Override
+                    public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
+                        ReturnStatus returnStatus = response.body();
+                        if (response.isSuccessful()) {
+                            Toast.makeText(getContext(), returnStatus.getStatus() + "", Toast.LENGTH_LONG).show();
+
+                        }
                     }
-                }
 
-                @Override
-                public void onFailure(Call<ReturnStatus> call, Throwable t) {
-                    Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                    @Override
+                    public void onFailure(Call<ReturnStatus> call, Throwable t) {
+                        Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+            } else {// network unavailabel, store to local db
+                UpdateEventBody updateEventBody1 = new UpdateEventBody(
+                        mSharePerferenceHelper.getUserName(),
+                        mSharePerferenceHelper.getUserId(),
+                        actualDateTime,
+                        pmServiceInfoModel.getId()
+                );
+                String key = mSharePerferenceHelper.getUserId() + pmServiceInfoModel.getId() + actualDateTime;
+                updateEventBody1.setId(key);
+                dbHelper.updateEventBodyDAO().insert(updateEventBody1);
+
+                for (Event event: preEventList) {
+                    event.setUpdateEventBodyKey(key);
                 }
-            });
+                dbHelper.eventDAO().insertAll(preEventList);
+                Toast.makeText(getContext() ,
+                        "DATABASE" + dbHelper.updateEventBodyDAO().getNumberOfUpdateEventBody() + ", " +
+                                dbHelper.eventDAO().getNumberOfEvents()
+                        , Toast.LENGTH_SHORT).show();
+
+            }
+
         }else {
             new AlertDialog.Builder(this.getContext())
                     .setIcon(R.drawable.warning)
