@@ -13,6 +13,9 @@ public class FilterParam{
     public int order;
     @SerializedName("enumValue")
     public EnumValue enumValue;
+    @SerializedName("textArrayValue")
+    public TextValue textValueList;
+
     @SerializedName("textValue")
     public TextValue textValue;
 
@@ -29,6 +32,12 @@ public class FilterParam{
         this.filterType = filterType;
         this.key = key;
         this.order = order;
-        this.textValue = textValue;
+        if (textValue.islist)
+            this.textValueList = textValue;
+        else
+            this.textValue = textValue;
     }
+
+
+
 }

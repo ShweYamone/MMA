@@ -11,14 +11,6 @@
     <group
         android:id="@+id/middle_group" android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_nfc"
-            android:icon="@drawable/nfc"
-            android:title="@string/nav_nfc" />
-        <item
-            android:id="@+id/nav_camera"
-            android:icon="@drawable/camera"
-            android:title="@string/nav_camera" />
-        <item
             android:id="@+id/nav_asset_information"
             android:icon="@drawable/asset_scan"
             android:title="@string/nav_asset_information" />
@@ -28,15 +20,7 @@
         <item
             android:id="@+id/nav_setting"
             android:icon="@drawable/setting_menu"
-            android:title="@string/nav_setting" />
-        <item
-            android:id="@+id/nav_help"
-            android:icon="@drawable/help"
-            android:title="@string/nav_help" />
-        <item
-            android:id="@+id/nav_lastsync"
-            android:icon="@drawable/sync"
-            android:title="@string/nav_lastsync" />
+            android:title="About" />
     </group>
 
 </menu>

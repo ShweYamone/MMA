@@ -55,6 +55,7 @@ public class PMActivity extends AppCompatActivity {
         ///pass id(data) from activity to fragments
         Bundle bundle = new Bundle();
         bundle.putSerializable("object",  pmServiceInfoDetailModel);
+        bundle.putString("start_time", getIntent().getStringExtra("start_time"));
         first_step_pm_fragment.setArguments(bundle);
         second_step_pm_fragment.setArguments(bundle);
 

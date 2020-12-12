@@ -3,6 +3,7 @@ package com.freelance.solutionhub.mma.activity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.icu.text.RelativeDateTimeFormatter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -24,6 +25,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.freelance.solutionhub.mma.R;
+import com.freelance.solutionhub.mma.fragment.AboutFragment;
 import com.freelance.solutionhub.mma.fragment.HomeFragment;
 import com.freelance.solutionhub.mma.util.SharePreferenceHelper;
 import com.google.android.material.navigation.NavigationView;
@@ -182,6 +184,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_asset_information:
                 Intent intent = new Intent(MainActivity.this, AssetInformationActivity.class);
                 startActivity(intent);
+                break;
+            case R.id.nav_setting:
+                fragment = new AboutFragment();
             default:
                 break;
         }

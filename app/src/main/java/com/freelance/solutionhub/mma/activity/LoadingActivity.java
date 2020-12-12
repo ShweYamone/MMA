@@ -61,6 +61,7 @@ public class LoadingActivity extends AppCompatActivity {
                     } else {
                         intent = new Intent(LoadingActivity.this, PMActivity.class);
                     }
+                    intent.putExtra("start_time", getIntent().getStringExtra("start_time"));
                     intent.putExtra("object", response.body());
                     startActivity(intent);
                     finish();

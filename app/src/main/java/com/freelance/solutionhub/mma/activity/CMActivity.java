@@ -67,6 +67,7 @@ public class CMActivity extends AppCompatActivity {
         //////pass id(data) from activity to fragment
         Bundle bundle = new Bundle();
         bundle.putSerializable("object", pmServiceInfoDetailModel);
+        bundle.putString("start_time", getIntent().getStringExtra("start_time"));
 
         first_step_cm_fragment.setArguments(bundle);
         second_step_cm_fragment.setArguments(bundle);

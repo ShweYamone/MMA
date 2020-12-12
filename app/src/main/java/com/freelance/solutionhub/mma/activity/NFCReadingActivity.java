@@ -56,6 +56,7 @@ public class NFCReadingActivity extends AppCompatActivity {
     private Timestamp ts;
     private final int NFC_PERMISSION_CODE = 1002;
     List<Event> events = new ArrayList<>();
+    String currentDateTime;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -70,6 +71,10 @@ public class NFCReadingActivity extends AppCompatActivity {
         serviceOrderId = getIntent().getStringExtra("id");
 
 
+
+        date = new Date();
+        ts=new Timestamp(date.getTime());
+        currentDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(ts);
         ////////////////////////////////
 
         if (getIntent().getBooleanExtra("TAG_OUT", false)) {
@@ -100,10 +105,6 @@ public class NFCReadingActivity extends AppCompatActivity {
 
     private void perFormTagEvent() {
 
-        date = new Date();
-        ts=new Timestamp(date.getTime());
-        String currentDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(ts);
-
         UpdateEventBody eventBody;
         if (network.isNetworkAvailable()) {
             eventBody = new UpdateEventBody(
@@ -123,6 +124,7 @@ public class NFCReadingActivity extends AppCompatActivity {
                         } else {
                             Intent intent = new Intent(NFCReadingActivity.this, LoadingActivity.class);
                             intent.putExtra("id", serviceOrderId);
+                            intent.putExtra("start_time", currentDateTime);
                             startActivity(intent);
                             finish();
                         }
@@ -157,6 +159,7 @@ public class NFCReadingActivity extends AppCompatActivity {
             } else {
                 Intent intent = new Intent(NFCReadingActivity.this, LoadingActivity.class);
                 intent.putExtra("id", serviceOrderId);
+                intent.putExtra("start_time", currentDateTime);
                 startActivity(intent);
                 finish();
             }

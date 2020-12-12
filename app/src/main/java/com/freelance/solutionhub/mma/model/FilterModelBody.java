@@ -21,10 +21,28 @@ public class FilterModelBody implements Serializable {
         this.sortingParams = sortingParams;
     }
 
-    public static FilterModelBody createFilterModel(String filterExpression, String enumValue, String textValue, int pageNumber) {
+    public static FilterModelBody createFilterModel(String filterExpression, String enumValue, List<String> textValue, int pageNumber) {
         List<FilterParam> filterParamList = new ArrayList<>();
+        TextValue textValue1 = new TextValue(textValue);
+        textValue1.setIslist(true);
         filterParamList.add(new FilterParam("equals", "enum", "serviceOrderType", 0, new EnumValue(enumValue)));
-        filterParamList.add(new FilterParam(filterExpression, "text", "serviceOrderStatus", 0, new TextValue(textValue)));
+        filterParamList.add(new FilterParam(filterExpression, "textArray", "serviceOrderStatus", 0, textValue1));
+
+        Filter filter = new Filter("FILTER_LOGIC_AND", filterParamList);
+        PaginationParam paginationParam = new PaginationParam(pageNumber);
+        List<SortingParam> sortingParamList = new ArrayList<>();
+        sortingParamList.add(new SortingParam("creationDate", 0, "desc"));
+        FilterModelBody filterModelBody = new FilterModelBody(filter, paginationParam, sortingParamList );
+
+        return filterModelBody;
+    }
+
+    public static FilterModelBody creteFilterModelWithFilter(String filterExpression, String enumValue, String textValue, int pageNumber) {
+        List<FilterParam> filterParamList = new ArrayList<>();
+        TextValue textVal = new TextValue(textValue);
+        textVal.setIslist(false);
+        filterParamList.add(new FilterParam("equals", "enum", "serviceOrderType", 0, new EnumValue(enumValue)));
+        filterParamList.add(new FilterParam(filterExpression, "textArray", "serviceOrderStatus", 0, textVal));
 
         Filter filter = new Filter("FILTER_LOGIC_AND", filterParamList);
         PaginationParam paginationParam = new PaginationParam(pageNumber);

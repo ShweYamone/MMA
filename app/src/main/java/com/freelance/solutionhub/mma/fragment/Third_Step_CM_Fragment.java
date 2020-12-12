@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.freelance.solutionhub.mma.DB.InitializeDatabase;
 import com.freelance.solutionhub.mma.R;
+import com.freelance.solutionhub.mma.activity.CMCompletionActivity;
 import com.freelance.solutionhub.mma.activity.PMCompletionActivity;
 import com.freelance.solutionhub.mma.model.PMServiceInfoDetailModel;
 import com.freelance.solutionhub.mma.model.ReturnStatus;
@@ -59,6 +60,8 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
     private InitializeDatabase dbHelper;
     private ApiInterface apiInterface;
     private PMServiceInfoDetailModel pmServiceInfoDetailModel;
+    private String actualDateTime;
+    private String remarksString;
 
     public Third_Step_CM_Fragment() {
         // Required empty public constructor
@@ -106,21 +109,25 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_job_done :
-                updateEvent(view);
-                Intent intent = new Intent(this.getContext(), PMCompletionActivity.class);
+                updateEvent();
+                Intent intent = new Intent(this.getContext(), CMCompletionActivity.class);
+                intent.putExtra("start_time", getArguments().getString("start_time"));
+                intent.putExtra("end_time", actualDateTime);
+                intent.putExtra("acknowledge_time", pmServiceInfoDetailModel.getAcknowledgementDate());
+                intent.putExtra("remarks", remarksString);
                 startActivity(intent);
                 getActivity().finish();
         }
     }
 
 
-    public void updateEvent(View view){
-        String remarksString = "";
+    public void updateEvent(){
+        remarksString = "";
         if(remarks.getText() != null)
             remarksString = remarks.getText().toString();
         date = new Date();
         Timestamp timestamp = new Timestamp(date.getTime());
-        String actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
+        actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
         UpdateEventBody updateEventBody;
         if (network.isNetworkAvailable()) {
             updateEventBody = new

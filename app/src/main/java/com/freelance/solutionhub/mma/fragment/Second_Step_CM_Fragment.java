@@ -486,7 +486,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
     }
 
     private void getQREvent() {
-
+/*
         if (!etThridPartyComment.getText().equals("")) { //third party comment
             hasEventToUpdate = true;
             events.add(
@@ -495,7 +495,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
                             etThridPartyComment.getText().toString())
             );
             Log.i("EventHappenend", "getProblemCodeEvent: " + tvScanFault.getText().toString());
-        }
+        }*/
         if (!tvScanFault.getText().equals("")) {
             hasEventToUpdate = true;
             events.add(
@@ -580,7 +580,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
                     @Override
                     public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
                         if (response.isSuccessful()) {
-                            Toast.makeText(getContext(), "ProblemUpdateEvent" + response.body().getStatus() , Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "SUCCESS" + response.body().getStatus() , Toast.LENGTH_SHORT).show();
                         } else {
                             Toast.makeText(getContext(), "response " + response.code(), Toast.LENGTH_LONG).show();
                         }

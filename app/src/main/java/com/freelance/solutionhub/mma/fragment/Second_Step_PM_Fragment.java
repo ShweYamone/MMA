@@ -50,6 +50,8 @@ public class Second_Step_PM_Fragment extends Fragment implements View.OnClickLis
     private Date date;
     private Network network;
     private InitializeDatabase dbHelper;
+    private String actualDateTime;
+    private String remarksString;
 
     public Second_Step_PM_Fragment(){}
     @Override
@@ -82,18 +84,21 @@ public class Second_Step_PM_Fragment extends Fragment implements View.OnClickLis
             case R.id.btnJobDone :
                 updateEvent();
                 Intent intent = new Intent(this.getContext(), PMCompletionActivity.class);
+                intent.putExtra("start_time", getArguments().getString("start_time"));
+                intent.putExtra("end_time", actualDateTime);
+                intent.putExtra("remarks", remarksString);
                 startActivity(intent);
                 getActivity().finish();
         }
     }
 
     public void updateEvent(){
-        String remarksString = "";
+        remarksString = "";
         if(!remarks.getText().equals("") || remarks.getText() != null)
             remarksString = remarks.getText().toString();
         date = new Date();
         Timestamp timestamp = new Timestamp(date.getTime());
-        String actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
+        actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
 
         UpdateEventBody updateEventBody;
         if (network.isNetworkAvailable()) {
