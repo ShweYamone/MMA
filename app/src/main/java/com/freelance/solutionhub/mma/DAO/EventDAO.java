@@ -21,6 +21,9 @@ public interface EventDAO {
     @Query("SELECT * from Event where updateEventBodyKey=:key")
     List<Event> getEvents(int key);
 
+    @Query("Select count(*) from Event")
+    int getNumberOfEvents();
+
     @Query("Delete from Event where updateEventBodyKey=:key")
     void deleteByUpdateEventBodyKey(int key);
 

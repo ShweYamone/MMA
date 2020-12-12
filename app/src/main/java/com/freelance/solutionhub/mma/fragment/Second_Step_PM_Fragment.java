@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.freelance.solutionhub.mma.DB.InitializeDatabase;
 import com.freelance.solutionhub.mma.R;
 import com.freelance.solutionhub.mma.activity.PMCompletionActivity;
 import com.freelance.solutionhub.mma.model.PMServiceInfoDetailModel;
@@ -20,6 +21,7 @@ import com.freelance.solutionhub.mma.model.ReturnStatus;
 import com.freelance.solutionhub.mma.model.UpdateEventBody;
 import com.freelance.solutionhub.mma.util.ApiClient;
 import com.freelance.solutionhub.mma.util.ApiInterface;
+import com.freelance.solutionhub.mma.util.Network;
 import com.freelance.solutionhub.mma.util.SharePreferenceHelper;
 
 import java.sql.Timestamp;
@@ -31,6 +33,8 @@ import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static com.freelance.solutionhub.mma.util.AppConstant.JOBDONE;
 
 public class Second_Step_PM_Fragment extends Fragment implements View.OnClickListener {
 
@@ -44,6 +48,9 @@ public class Second_Step_PM_Fragment extends Fragment implements View.OnClickLis
     private SharePreferenceHelper mSharePreferenceHelper;
     private PMServiceInfoDetailModel pmServiceInfoDetailModel;
     private Date date;
+    private Network network;
+    private InitializeDatabase dbHelper;
+
     public Second_Step_PM_Fragment(){}
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -60,6 +67,9 @@ public class Second_Step_PM_Fragment extends Fragment implements View.OnClickLis
         ButterKnife.bind(this, view);
         apiInterface = ApiClient.getClient(this.getContext());
         mSharePreferenceHelper = new SharePreferenceHelper(this.getContext());
+        network = new Network(getContext());
+        dbHelper = InitializeDatabase.getInstance(getContext());
+
         btnJobDone.setOnClickListener(this);
 
 
@@ -81,33 +91,48 @@ public class Second_Step_PM_Fragment extends Fragment implements View.OnClickLis
         String remarksString = "";
         if(!remarks.getText().equals("") || remarks.getText() != null)
             remarksString = remarks.getText().toString();
-            date = new Date();
+        date = new Date();
         Timestamp timestamp = new Timestamp(date.getTime());
         String actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
-        UpdateEventBody updateEventBody = new
-                UpdateEventBody(mSharePreferenceHelper.getUserName(),
-                mSharePreferenceHelper.getUserId(),
-                actualDateTime,
-                pmServiceInfoDetailModel.getId(),
-                "JOBDONE",
-                remarksString);
-        Call<ReturnStatus> jobDoneCall = apiInterface.updateStatusEvent("Bearer "+mSharePreferenceHelper.getToken(), updateEventBody);
-        jobDoneCall.enqueue(new Callback<ReturnStatus>() {
-            @Override
-            public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
-                ReturnStatus returnStatus = response.body();
-                if(response.isSuccessful()) {
-                    Toast.makeText(getContext(),returnStatus.getStatus(),Toast.LENGTH_SHORT).show();
-                  //  remarks.setText("");
+
+        UpdateEventBody updateEventBody;
+        if (network.isNetworkAvailable()) {
+            updateEventBody = new
+                    UpdateEventBody(mSharePreferenceHelper.getUserName(),
+                    mSharePreferenceHelper.getUserId(),
+                    actualDateTime,
+                    pmServiceInfoDetailModel.getId(),
+                    JOBDONE,
+                    remarksString);
+
+
+            Call<ReturnStatus> jobDoneCall = apiInterface.updateStatusEvent("Bearer "+mSharePreferenceHelper.getToken(), updateEventBody);
+            jobDoneCall.enqueue(new Callback<ReturnStatus>() {
+                @Override
+                public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
+                    ReturnStatus returnStatus = response.body();
+                    if(response.isSuccessful()) {
+                        Toast.makeText(getContext(),returnStatus.getStatus(),Toast.LENGTH_SHORT).show();
+                    }
+
                 }
 
-            }
+                @Override
+                public void onFailure(Call<ReturnStatus> call, Throwable t) {
 
-            @Override
-            public void onFailure(Call<ReturnStatus> call, Throwable t) {
+                }
+            });
+        } else {
+            updateEventBody = new UpdateEventBody(
+              mSharePreferenceHelper.getUserName(), mSharePreferenceHelper.getUserId(), actualDateTime, pmServiceInfoDetailModel.getId()
+            );
+            updateEventBody.setServiceOrderStatus(JOBDONE);
+            updateEventBody.setRemark(remarksString);
+            updateEventBody.setId(mSharePreferenceHelper.getUserId() + pmServiceInfoDetailModel.getId() + actualDateTime);
+            dbHelper.updateEventBodyDAO().insert(updateEventBody);
+        }
 
-            }
-        });
+
 
     }
 }

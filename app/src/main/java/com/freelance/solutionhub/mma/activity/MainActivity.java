@@ -179,6 +179,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 fragment = new HomeFragment();
                 title = getString(R.string.nav_home);
                 break;
+            case R.id.nav_asset_information:
+                Intent intent = new Intent(MainActivity.this, AssetInformationActivity.class);
+                startActivity(intent);
             default:
                 break;
         }
@@ -233,6 +236,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Intent intent = new Intent(this, NotificationActivity.class);
                 startActivity(intent);
                 return true;
+
         }
 
         return super.onOptionsItemSelected(item);

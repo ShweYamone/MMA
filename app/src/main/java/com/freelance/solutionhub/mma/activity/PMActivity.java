@@ -1,5 +1,6 @@
 package com.freelance.solutionhub.mma.activity;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
@@ -7,8 +8,10 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -27,6 +30,7 @@ public class PMActivity extends AppCompatActivity {
     private ViewPager viewPager;
     private First_Step_PM_Fragment first_step_pm_fragment;
     private Second_Step_PM_Fragment second_step_pm_fragment;
+    private PMServiceInfoDetailModel pmServiceInfoDetailModel;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,7 +41,7 @@ public class PMActivity extends AppCompatActivity {
         first_step_pm_fragment = new First_Step_PM_Fragment();
         second_step_pm_fragment = new Second_Step_PM_Fragment();
 
-        PMServiceInfoDetailModel pmServiceInfoDetailModel = (PMServiceInfoDetailModel)(getIntent().getSerializableExtra("object"));
+        pmServiceInfoDetailModel = (PMServiceInfoDetailModel)(getIntent().getSerializableExtra("object"));
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -55,23 +59,31 @@ public class PMActivity extends AppCompatActivity {
         second_step_pm_fragment.setArguments(bundle);
 
     }
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                return true;
-
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.pm_cm_menu, menu);
         return true;
     }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_tagout:
+                Intent intent = new Intent(PMActivity.this, NFCReadingActivity.class);
+                intent.putExtra("id", pmServiceInfoDetailModel.getId());
+                intent.putExtra("TAG_OUT", true);
+                startActivity(intent);
+                finish();
+                break;
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 
     // Add steps' fragment to view pager
     private void addTabs(ViewPager viewPager) {

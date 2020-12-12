@@ -13,10 +13,10 @@ import java.util.List;
 @Entity(tableName = "UpdateEventBody")
 public class UpdateEventBody implements Serializable {
 
-    @PrimaryKey
+    @PrimaryKey()
     @ColumnInfo(name = "id")
     @NonNull
-    private String id; //userid + "-" + service_order_id
+    private String id; //userid + "-" + service_order_id + "-" + datetime
 
     @ColumnInfo(name = "actor")
     private String actor;
@@ -30,20 +30,29 @@ public class UpdateEventBody implements Serializable {
     @ColumnInfo(name = "serviceOrderId")
     private String serviceOrderId;
 
-    @ColumnInfo(name = "serviceOrderStatus")
+    @ColumnInfo(name = "serviceOrderStatus", defaultValue = "DEFAULT")
     private String serviceOrderStatus;
 
-    @ColumnInfo(name = "remark")
+    @ColumnInfo(name = "remark" , defaultValue = "DEFAULT")
     private String remark;
 
-    @ColumnInfo(name = "weatherCondition")
+    @ColumnInfo(name = "weatherCondition", defaultValue = "DEFAULT")
     private String weatherCondition;
 
     @Ignore
     private List<Event> events;
 
-    public UpdateEventBody(String  id, String actor, String actorId, String date, String serviceOrderId, String serviceOrderStatus, String remark, String weatherCondition) {
-        this.id = id;
+    //For Room DB store
+    public UpdateEventBody(String actor, String actorId, String date, String serviceOrderId) {
+        this.actor = actor;
+        this.actorId = actorId;
+        this.date = date;
+        this.serviceOrderId = serviceOrderId;
+    }
+
+    /**** CM JOBDONE *****/
+    @Ignore
+    public UpdateEventBody(String actor, String actorId, String date, String serviceOrderId, String serviceOrderStatus,String remark,String weatherCondition){
         this.actor = actor;
         this.actorId = actorId;
         this.date = date;
@@ -52,6 +61,7 @@ public class UpdateEventBody implements Serializable {
         this.remark = remark;
         this.weatherCondition = weatherCondition;
     }
+
 
     /******TagIn, *****/
     @Ignore
@@ -72,18 +82,6 @@ public class UpdateEventBody implements Serializable {
         this.serviceOrderId = serviceOrderId;
         this.serviceOrderStatus = serviceOrderStatus;
         this.remark = remark;
-    }
-
-    /**** CM JOBDONE *****/
-    @Ignore
-    public UpdateEventBody(String actor, String actorId, String date, String serviceOrderId, String serviceOrderStatus,String remark,String weatherCondition){
-        this.actor = actor;
-        this.actorId = actorId;
-        this.date = date;
-        this.serviceOrderId = serviceOrderId;
-        this.serviceOrderStatus = serviceOrderStatus;
-        this.remark = remark;
-        this.weatherCondition = weatherCondition;
     }
 
     /*****CM_ACK_To_APPR****/

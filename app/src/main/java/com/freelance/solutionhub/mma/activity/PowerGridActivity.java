@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.freelance.solutionhub.mma.DB.InitializeDatabase;
 import com.freelance.solutionhub.mma.R;
 import com.freelance.solutionhub.mma.adapter.DateTimePickerAdapter;
 import com.freelance.solutionhub.mma.model.Event;
@@ -18,6 +19,7 @@ import com.freelance.solutionhub.mma.model.ReturnStatus;
 import com.freelance.solutionhub.mma.model.UpdateEventBody;
 import com.freelance.solutionhub.mma.util.ApiClient;
 import com.freelance.solutionhub.mma.util.ApiInterface;
+import com.freelance.solutionhub.mma.util.Network;
 import com.freelance.solutionhub.mma.util.SharePreferenceHelper;
 
 import java.sql.Timestamp;
@@ -74,6 +76,9 @@ public class PowerGridActivity extends AppCompatActivity implements View.OnClick
 
     private SharePreferenceHelper mSharePreferenceHelper;
     private ApiInterface apiInterface;
+
+    private Network network;
+    private InitializeDatabase dbHelper;
     private ArrayList<Event> eventLists;
     private Date date;
     private String cmID;
@@ -94,6 +99,8 @@ public class PowerGridActivity extends AppCompatActivity implements View.OnClick
         eventLists = new ArrayList<>();
         apiInterface = ApiClient.getClient(this);
         mSharePreferenceHelper = new SharePreferenceHelper(this);
+        network = new Network(this);
+        dbHelper = InitializeDatabase.getInstance(this);
         date = new Date();
         setDateTimeButton();
         if(getIntent().hasExtra("id")){
@@ -160,30 +167,49 @@ public class PowerGridActivity extends AppCompatActivity implements View.OnClick
         date = new Date();
         Timestamp timestamp = new Timestamp(date.getTime());
         String actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
-        UpdateEventBody updateEventBody = new UpdateEventBody(mSharePreferenceHelper.getUserName(),
+        UpdateEventBody updateEventBody;
+
+        if (network.isNetworkAvailable()) {
+            updateEventBody = new UpdateEventBody(mSharePreferenceHelper.getUserName(),
+                    mSharePreferenceHelper.getUserId(),
+                    actualDateTime,
+                    cmID,
+                    eventLists);
+
+            Call<ReturnStatus> returnStatusCallEvent = apiInterface.updateEvent("Bearer " + mSharePreferenceHelper.getToken(), updateEventBody);
+            returnStatusCallEvent.enqueue(new Callback<ReturnStatus>() {
+                @Override
+                public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
+                    ReturnStatus returnStatus = response.body();
+                    Log.v("SUCCESS","error");
+                    if (response.isSuccessful()) {
+                        Log.v("SUCCESS","success");
+                        Toast.makeText(getApplicationContext(), returnStatus.getStatus() + "", Toast.LENGTH_LONG).show();
+
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ReturnStatus> call, Throwable t) {
+                    Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else {
+            updateEventBody = new UpdateEventBody(
+                mSharePreferenceHelper.getUserName(),
                 mSharePreferenceHelper.getUserId(),
                 actualDateTime,
-                cmID,
-                eventLists);
-
-        Call<ReturnStatus> returnStatusCallEvent = apiInterface.updateEvent("Bearer " + mSharePreferenceHelper.getToken(), updateEventBody);
-        returnStatusCallEvent.enqueue(new Callback<ReturnStatus>() {
-            @Override
-            public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
-                ReturnStatus returnStatus = response.body();
-                Log.v("SUCCESS","error");
-                if (response.isSuccessful()) {
-                    Log.v("SUCCESS","success");
-                    Toast.makeText(getApplicationContext(), returnStatus.getStatus() + "", Toast.LENGTH_LONG).show();
-
-                }
+                cmID
+            );
+            String key = mSharePreferenceHelper.getUserId() + cmID + actualDateTime;
+            updateEventBody.setId(key);
+            dbHelper.updateEventBodyDAO().insert(updateEventBody);
+            for (Event event: eventLists) {
+                event.setUpdateEventBodyKey(key);
             }
+            dbHelper.eventDAO().insertAll(eventLists);
+        }
 
-            @Override
-            public void onFailure(Call<ReturnStatus> call, Throwable t) {
-                Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
         eventLists.clear();
 
     }

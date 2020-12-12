@@ -35,6 +35,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.freelance.solutionhub.mma.DB.InitializeDatabase;
 import com.freelance.solutionhub.mma.R;
 import com.freelance.solutionhub.mma.activity.CaptureActivityPotrait;
 import com.freelance.solutionhub.mma.activity.Code_Description;
@@ -51,6 +52,7 @@ import com.freelance.solutionhub.mma.model.ReturnStatus;
 import com.freelance.solutionhub.mma.model.UpdateEventBody;
 import com.freelance.solutionhub.mma.util.ApiClient;
 import com.freelance.solutionhub.mma.util.ApiInterface;
+import com.freelance.solutionhub.mma.util.Network;
 import com.freelance.solutionhub.mma.util.SharePreferenceHelper;
 import com.google.zxing.integration.android.IntentIntegrator;
 
@@ -167,6 +169,8 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
     private PMServiceInfoDetailModel pmServiceInfoModel;
     private ApiInterface apiInterface;
     private SharePreferenceHelper mSharePreference;
+    private Network network;
+    private InitializeDatabase dbHelper;
 
     private ArrayAdapter actualProblemArrAdapter;
     private ArrayAdapter causeProblemArrAdapter;
@@ -210,7 +214,10 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
         pmServiceInfoModel = (PMServiceInfoDetailModel)(getArguments().getSerializable("object"));
         View view =  inflater.inflate(R.layout.fragment_second__step__c_m_, container, false);
         mSharePreference = new SharePreferenceHelper(getContext());
-        apiInterface = ApiClient.getClient(this.getContext());
+        apiInterface = ApiClient.getClient(getContext());
+        network = new Network(getContext());
+        dbHelper = InitializeDatabase.getInstance(getContext());
+
         ButterKnife.bind(this, view);
         postEventList = new ArrayList<>();
         postModelList = new ArrayList<>();
@@ -440,14 +447,12 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
                 qrScan.initiateScan();
                 break;
             case R.id.btnSave:
-                date = new Date();
-                ts=new Timestamp(date.getTime());
-                currentDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(ts);
                 getProblemCodeEvent();
                 getQREvent();
+                if(postModelList.size() != 0) {
+                    getPhotoEvents();
+                }
                 updateEvents();
-                if(postModelList.size() != 0)
-                    save();
                 break;
             case R.id.iv_attach_post_maintenance_photo:
                 if (getActivity().checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
@@ -481,7 +486,16 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
     }
 
     private void getQREvent() {
-        List<Event> events = new ArrayList<>();
+
+        if (!etThridPartyComment.getText().equals("")) { //third party comment
+            hasEventToUpdate = true;
+            events.add(
+                    new Event("THIRD_PARTY_COMMENT_UPDATE",
+                            "comment",
+                            etThridPartyComment.getText().toString())
+            );
+            Log.i("EventHappenend", "getProblemCodeEvent: " + tvScanFault.getText().toString());
+        }
         if (!tvScanFault.getText().equals("")) {
             hasEventToUpdate = true;
             events.add(
@@ -512,7 +526,6 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
     }
 
     public void getProblemCodeEvent() {
-        List<Event> events = new ArrayList<>();
         events.add(new Event(
                 "SERVICE_ORDER_UPDATE",
                 "reportedProblem",
@@ -546,64 +559,66 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
     }
 
     private void updateEvents() {
-        UpdateEventBody eventBody = new UpdateEventBody(
-                mSharePreference.getUserName(),
-                mSharePreference.getUserId(),
-                currentDateTime,
-                pmServiceInfoModel.getId(),
-                events
-        );
+        date = new Date();
+        Timestamp timestamp = new Timestamp(date.getTime());
+        String actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
 
-        Call<ReturnStatus> call = apiInterface.updateEvent("Bearer " + mSharePreference.getToken(),
-                eventBody);
-        call.enqueue(new Callback<ReturnStatus>() {
-            @Override
-            public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
-                if (response.isSuccessful()) {
-                    Toast.makeText(getContext(), "ProblemUpdateEvent" + response.body().getStatus() , Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getContext(), "response " + response.code(), Toast.LENGTH_LONG).show();
+        if (events.size() > 0) {
+            UpdateEventBody eventBody;
+            if (network.isNetworkAvailable()) {
+                eventBody = new UpdateEventBody(
+                        mSharePreference.getUserName(),
+                        mSharePreference.getUserId(),
+                        actualDateTime,
+                        pmServiceInfoModel.getId(),
+                        events
+                );
+
+                Call<ReturnStatus> call = apiInterface.updateEvent("Bearer " + mSharePreference.getToken(),
+                        eventBody);
+                call.enqueue(new Callback<ReturnStatus>() {
+                    @Override
+                    public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
+                        if (response.isSuccessful()) {
+                            Toast.makeText(getContext(), "ProblemUpdateEvent" + response.body().getStatus() , Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(getContext(), "response " + response.code(), Toast.LENGTH_LONG).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ReturnStatus> call, Throwable t) {
+
+                    }
+                });
+            } else { //network unavailable, store to local db
+                eventBody = new UpdateEventBody(
+                        mSharePreference.getUserName(),
+                        mSharePreference.getUserId(),
+                        actualDateTime,
+                        pmServiceInfoModel.getId()
+                );
+                String key = mSharePreference.getUserId() + pmServiceInfoModel.getId() + actualDateTime;
+                eventBody.setId(key);
+                dbHelper.updateEventBodyDAO().insert(eventBody);
+                for (Event event: events) {
+                    event.setUpdateEventBodyKey(key);
                 }
+                dbHelper.eventDAO().insertAll(events);
             }
 
-            @Override
-            public void onFailure(Call<ReturnStatus> call, Throwable t) {
+        }
 
-            }
-        });
     }
     /**
      * Update event for all photos
      */
-    public void save(){
+    public void getPhotoEvents(){
         //Maintenance photos attached ( max - 10 and min 2 )
         if(postEventList.size() > 1 && postEventList.size() <5) {
             Log.v("BEFORE_JOIN", "Before joining");
             Log.v("JOIN", postEventList.size() + "");
-
-            date = new Date();
-            Timestamp timestamp = new Timestamp(date.getTime());
-            String actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
-            UpdateEventBody updateEventBody = new UpdateEventBody(mSharePreference.getUserName(),
-                    mSharePreference.getUserId(),
-                    actualDateTime,
-                    pmServiceInfoModel.getId(),
-                    postEventList);
-            Call<ReturnStatus> returnStatusCallEvent = apiInterface.updateEvent("Bearer " + mSharePreference.getToken(), updateEventBody);
-            returnStatusCallEvent.enqueue(new Callback<ReturnStatus>() {
-                @Override
-                public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
-                    ReturnStatus returnStatus = response.body();
-                    if (response.isSuccessful()) {
-                        Toast.makeText(getContext(), returnStatus.getStatus() + "", Toast.LENGTH_LONG).show();
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<ReturnStatus> call, Throwable t) {
-                    Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            });
+            events.addAll(postEventList);
         }else {
             new AlertDialog.Builder(this.getContext())
                     .setIcon(R.drawable.warning)

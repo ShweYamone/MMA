@@ -29,6 +29,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.freelance.solutionhub.mma.DB.InitializeDatabase;
 import com.freelance.solutionhub.mma.R;
 import com.freelance.solutionhub.mma.adapter.PhotoAdapter;
 import com.freelance.solutionhub.mma.delegate.FirstStepPMFragmentCallback;
@@ -39,6 +40,7 @@ import com.freelance.solutionhub.mma.model.ReturnStatus;
 import com.freelance.solutionhub.mma.model.UpdateEventBody;
 import com.freelance.solutionhub.mma.util.ApiClient;
 import com.freelance.solutionhub.mma.util.ApiInterface;
+import com.freelance.solutionhub.mma.util.Network;
 import com.freelance.solutionhub.mma.util.SharePreferenceHelper;
 
 import java.io.ByteArrayOutputStream;
@@ -132,6 +134,8 @@ public class First_Step_PM_Fragment extends Fragment implements FirstStepPMFragm
     Bitmap theImage;
     PhotoAdapter prePhotoAdapter, postPhotoAdapter;
     private PMServiceInfoDetailModel pmServiceInfoDetailModel;
+    private Network network;
+    private InitializeDatabase dbHelper;
     private Date date;
     private Timestamp ts;
 
@@ -152,6 +156,9 @@ public class First_Step_PM_Fragment extends Fragment implements FirstStepPMFragm
         ButterKnife.bind(this, view);
         apiInterface = ApiClient.getClient(this.getContext());
         mSharePerferenceHelper = new SharePreferenceHelper(this.getContext());
+        network = new Network(getContext());
+        dbHelper = InitializeDatabase.getInstance(getContext());
+
         prePhotoModels = new ArrayList<>();
         postPhotoModels = new ArrayList<>();
         preEventList = new ArrayList<>();
@@ -256,22 +263,41 @@ public class First_Step_PM_Fragment extends Fragment implements FirstStepPMFragm
             date = new Date();
             Timestamp timestamp = new Timestamp(date.getTime());
             String actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
-            UpdateEventBody updateEventBody = new UpdateEventBody(mSharePerferenceHelper.getUserName(), mSharePerferenceHelper.getUserId(), actualDateTime, pmServiceInfoDetailModel.getId(), preEventList);
-            Call<ReturnStatus> returnStatusCallEvent = apiInterface.updateEvent("Bearer " + mSharePerferenceHelper.getToken(), updateEventBody);
-            returnStatusCallEvent.enqueue(new Callback<ReturnStatus>() {
-                @Override
-                public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
-                    ReturnStatus returnStatus = response.body();
-                    if (response.isSuccessful()) {
-                        Toast.makeText(getContext(), returnStatus.getStatus() + ":Ok", Toast.LENGTH_SHORT).show();
-                    }
-                }
 
-                @Override
-                public void onFailure(Call<ReturnStatus> call, Throwable t) {
-                    Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+            UpdateEventBody updateEventBody;
+            if (network.isNetworkAvailable()) { // Network available, send data to server
+                updateEventBody = new UpdateEventBody(mSharePerferenceHelper.getUserName(), mSharePerferenceHelper.getUserId(), actualDateTime, pmServiceInfoDetailModel.getId(), preEventList);
+                Call<ReturnStatus> returnStatusCallEvent = apiInterface.updateEvent("Bearer " + mSharePerferenceHelper.getToken(), updateEventBody);
+                returnStatusCallEvent.enqueue(new Callback<ReturnStatus>() {
+                    @Override
+                    public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
+                        ReturnStatus returnStatus = response.body();
+                        if (response.isSuccessful()) {
+                            Toast.makeText(getContext(), returnStatus.getStatus() + ":Ok", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ReturnStatus> call, Throwable t) {
+                        Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+            } else { // Network unavailabe, store data to local db
+                updateEventBody = new UpdateEventBody(
+                        mSharePerferenceHelper.getUserName(), mSharePerferenceHelper.getUserId(), actualDateTime, pmServiceInfoDetailModel.getId()
+                );
+                String key = mSharePerferenceHelper.getUserId() + pmServiceInfoDetailModel.getId() + actualDateTime;
+                updateEventBody.setId(key);
+                dbHelper.updateEventBodyDAO().insert(updateEventBody);
+                for (Event event : preEventList) {
+                    event.setUpdateEventBodyKey(key);
                 }
-            });
+                dbHelper.eventDAO().insertAll(preEventList);
+                Toast.makeText(getContext(), "DATABASE" + dbHelper.updateEventBodyDAO().getNumberOfUpdateEventBody() + ", " +
+                        dbHelper.eventDAO().getNumberOfEvents(), Toast.LENGTH_SHORT).show();
+            }
+
+
         }else {
             new AlertDialog.Builder(this.getContext())
                     .setIcon(R.drawable.warning)

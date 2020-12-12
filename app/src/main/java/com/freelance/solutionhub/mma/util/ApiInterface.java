@@ -5,6 +5,7 @@ import com.freelance.solutionhub.mma.model.PMServiceInfoDetailModel;
 import com.freelance.solutionhub.mma.model.PMServiceListModel;
 
 import com.freelance.solutionhub.mma.model.LoginModel;
+import com.freelance.solutionhub.mma.model.QRReturnBody;
 import com.freelance.solutionhub.mma.model.UpdateEventBody;
 import com.freelance.solutionhub.mma.model.ReturnStatus;
 import com.freelance.solutionhub.mma.model.UserModel;
@@ -56,6 +57,10 @@ public interface ApiInterface {
     //Upload Photo
     @POST("https://ufqzjtxo67.execute-api.ap-southeast-1.amazonaws.com/dev/upload/{bucketName}")
     Call<ReturnStatus> uploadPhoto(@Path("bucketName") String bucketName, @Body RequestBody file);
+
+    //GET Data with QRCode
+    @GET("https://hz35b2raaj.execute-api.ap-southeast-1.amazonaws.com/dev/component/{qrCode}")
+    Call<QRReturnBody> getAssetInformation(@Header("Authorization") String auth, @Path("qrCode") String qrCode);
 
 }
 
