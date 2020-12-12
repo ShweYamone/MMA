@@ -46,7 +46,6 @@
                 android:text="@string/others"
                 android:textColor="@color/colorBlack"
                 android:textStyle="bold"
-                android:fontFamily="@font/crimson_text_regular"
                 android:textSize="@dimen/txt_size_large"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
@@ -54,17 +53,17 @@
             <TextView
                 android:text="@string/refer_date_time"
                 android:textColor="@color/color_blue"
-                android:fontFamily="@font/crimson_text_regular"
                 android:layout_marginTop="@dimen/margin_large"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
-            <EditText
+            <Button
+                android:id="@+id/btn_refer_date_time"
                 android:paddingLeft="@dimen/margin_normal"
                 android:paddingRight="@dimen/margin_normal"
-                android:maxLines="1"
                 android:textColor="@color/colorBlack"
-                android:fontFamily="@font/crimson_text_regular"
+                android:textAlignment="textStart"
+                android:drawableRight="@drawable/date_time"
                 android:background="@drawable/round_rect_shape_line"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/edittext_height"/>
@@ -72,16 +71,16 @@
             <TextView
                 android:text="@string/expected_completion_date_time"
                 android:textColor="@color/color_blue"
-                android:fontFamily="@font/crimson_text_regular"
                 android:layout_marginTop="@dimen/margin_large"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
             <Button
+                android:id="@+id/btn_expected_completion_date_time"
                 android:paddingLeft="@dimen/margin_normal"
                 android:paddingRight="@dimen/margin_normal"
                 android:textColor="@color/colorBlack"
-                android:fontFamily="@font/crimson_text_regular"
+                android:textAlignment="textStart"
                 android:drawableRight="@drawable/date_time"
                 android:background="@drawable/round_rect_shape_line"
                 android:layout_width="match_parent"
@@ -90,16 +89,16 @@
             <TextView
                 android:text="@string/clearance_date_time"
                 android:textColor="@color/color_blue"
-                android:fontFamily="@font/crimson_text_regular"
                 android:layout_marginTop="@dimen/margin_large"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
             <Button
+                android:id="@+id/btn_clearance_date_time"
                 android:paddingLeft="@dimen/margin_normal"
                 android:paddingRight="@dimen/margin_normal"
                 android:textColor="@color/colorBlack"
-                android:fontFamily="@font/crimson_text_regular"
+                android:textAlignment="textStart"
                 android:drawableRight="@drawable/date_time"
                 android:background="@drawable/round_rect_shape_line"
                 android:layout_width="match_parent"
@@ -108,17 +107,16 @@
             <TextView
                 android:text="@string/fault_status"
                 android:textColor="@color/color_blue"
-                android:fontFamily="@font/crimson_text_regular"
                 android:layout_marginTop="@dimen/margin_large"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
             <EditText
+                android:id="@+id/et_fault_status"
                 android:paddingLeft="@dimen/margin_normal"
                 android:paddingRight="@dimen/margin_normal"
                 android:maxLines="1"
                 android:textColor="@color/colorBlack"
-                android:fontFamily="@font/crimson_text_regular"
                 android:background="@drawable/round_rect_shape_line"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/edittext_height"/>
@@ -126,34 +124,33 @@
             <TextView
                 android:text="@string/remarks"
                 android:textColor="@color/color_blue"
-                android:fontFamily="@font/crimson_text_regular"
                 android:layout_marginTop="@dimen/margin_large"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
             <EditText
+                android:id="@+id/et_remarks"
                 android:paddingLeft="@dimen/margin_normal"
                 android:paddingRight="@dimen/margin_normal"
                 android:maxLines="1"
                 android:textColor="@color/colorBlack"
-                android:fontFamily="@font/crimson_text_regular"
                 android:background="@drawable/round_rect_shape_line"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/edittext_height"/>
+
             <TextView
                 android:text="@string/third_party_company_name"
                 android:textColor="@color/color_blue"
-                android:fontFamily="@font/crimson_text_regular"
                 android:layout_marginTop="@dimen/margin_large"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
             <EditText
+                android:id="@+id/et_third_party_company_name"
                 android:paddingLeft="@dimen/margin_normal"
                 android:paddingRight="@dimen/margin_normal"
                 android:maxLines="1"
                 android:textColor="@color/colorBlack"
-                android:fontFamily="@font/crimson_text_regular"
                 android:background="@drawable/round_rect_shape_line"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/edittext_height"/>
@@ -161,17 +158,16 @@
             <TextView
                 android:text="@string/third_party_contractor_name"
                 android:textColor="@color/color_blue"
-                android:fontFamily="@font/crimson_text_regular"
                 android:layout_marginTop="@dimen/margin_large"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
             <EditText
+                android:id="@+id/et_third_party_contractor_name"
                 android:paddingLeft="@dimen/margin_normal"
                 android:paddingRight="@dimen/margin_normal"
                 android:maxLines="1"
                 android:textColor="@color/colorBlack"
-                android:fontFamily="@font/crimson_text_regular"
                 android:background="@drawable/round_rect_shape_line"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/edittext_height"/>
@@ -179,16 +175,15 @@
             <TextView
                 android:text="@string/third_party_contractor_no"
                 android:textColor="@color/color_blue"
-                android:fontFamily="@font/crimson_text_regular"
                 android:layout_marginTop="@dimen/margin_large"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
             <EditText
+                android:id="@+id/et_third_party_contractor_no"
                 android:paddingLeft="@dimen/margin_normal"
                 android:paddingRight="@dimen/margin_normal"
                 android:textColor="@color/colorBlack"
-                android:fontFamily="@font/crimson_text_regular"
                 android:maxLines="1"
                 android:background="@drawable/round_rect_shape_line"
                 android:layout_width="match_parent"
@@ -197,17 +192,17 @@
             <TextView
                 android:text="@string/fault_detected_date_time"
                 android:textColor="@color/color_blue"
-                android:fontFamily="@font/crimson_text_regular"
                 android:layout_marginTop="@dimen/margin_large"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
             <Button
+                android:id="@+id/btn_fault_detected_date_time"
                 android:paddingLeft="@dimen/margin_normal"
                 android:paddingRight="@dimen/margin_normal"
                 android:drawableRight="@drawable/date_time"
                 android:textColor="@color/colorBlack"
-                android:fontFamily="@font/crimson_text_regular"
+                android:textAlignment="textStart"
                 android:background="@drawable/round_rect_shape_line"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/edittext_height"/>
@@ -215,17 +210,17 @@
             <TextView
                 android:text="@string/action_date_time"
                 android:textColor="@color/color_blue"
-                android:fontFamily="@font/crimson_text_regular"
                 android:layout_marginTop="@dimen/margin_large"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
             <Button
+                android:id="@+id/btn_action_date_time"
                 android:paddingLeft="@dimen/margin_normal"
                 android:paddingRight="@dimen/margin_normal"
                 android:drawableRight="@drawable/date_time"
+                android:textAlignment="textStart"
                 android:textColor="@color/colorBlack"
-                android:fontFamily="@font/crimson_text_regular"
                 android:background="@drawable/round_rect_shape_line"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/edittext_height"/>
@@ -233,7 +228,6 @@
             <TextView
                 android:text="@string/action_taken_by_contractor"
                 android:textColor="@color/color_blue"
-                android:fontFamily="@font/crimson_text_regular"
                 android:layout_marginTop="@dimen/margin_large"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
@@ -249,7 +243,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="150dp"
                     android:textSize="@dimen/txt_size_normal"
-                    android:fontFamily="@font/crimson_text_regular"
                     android:inputType="text|textMultiLine"
                     android:layout_margin="@dimen/margin_small"
                     android:background="@color/white_trans"
@@ -258,6 +251,7 @@
             </LinearLayout>
 
             <Button
+                android:id="@+id/btn_save"
                 android:layout_marginTop="@dimen/margin_large"
                 android:layout_marginBottom="@dimen/margin_large"
                 android:text="@string/save"

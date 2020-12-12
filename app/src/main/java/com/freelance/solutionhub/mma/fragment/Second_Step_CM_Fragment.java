@@ -39,6 +39,8 @@ import com.freelance.solutionhub.mma.R;
 import com.freelance.solutionhub.mma.activity.CaptureActivityPotrait;
 import com.freelance.solutionhub.mma.activity.Code_Description;
 import com.freelance.solutionhub.mma.activity.NFCReadingActivity;
+import com.freelance.solutionhub.mma.activity.OtherActivity;
+import com.freelance.solutionhub.mma.activity.PowerGridActivity;
 import com.freelance.solutionhub.mma.activity.TelcoActivity;
 import com.freelance.solutionhub.mma.adapter.PhotoAdapter;
 import com.freelance.solutionhub.mma.delegate.FirstStepPMFragmentCallback;
@@ -192,7 +194,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
 
     private boolean qrScan1Click = true;
     private boolean hasEventToUpdate = false;
-
+    Intent intent;
     public Second_Step_CM_Fragment() {
         // Required empty public constructor
     }
@@ -456,15 +458,19 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
                 }
                 break;
             case R.id.ll_telco:
-                Intent intent = new Intent(getContext(), TelcoActivity.class);
+                intent = new Intent(getContext(), TelcoActivity.class);
                 intent.putExtra("id", pmServiceInfoModel.getId());
                 getContext().startActivity(intent);
                 break;
             case R.id.ll_power_grid:
-
+                intent = new Intent(getContext(), PowerGridActivity.class);
+                intent.putExtra("id", pmServiceInfoModel.getId());
+                getContext().startActivity(intent);
                 break;
             case R.id.ll_other:
-
+                intent = new Intent(getContext(), OtherActivity.class);
+                intent.putExtra("id", pmServiceInfoModel.getId());
+                getContext().startActivity(intent);
                 break;
 
         }
@@ -615,11 +621,10 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
 
 
     public void getPosition( int position , int preOrPost){
-
-        postEventList.remove(position);
-        Log.v("PRE_PHOTO", "Removed pre photo");
-
-
+        if(postEventList.size() != 0) {
+            postEventList.remove(position);
+            Log.v("PRE_PHOTO", "Removed pre photo");
+        }
     }
 
     /**

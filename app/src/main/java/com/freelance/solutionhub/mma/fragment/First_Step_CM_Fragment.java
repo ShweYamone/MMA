@@ -236,11 +236,10 @@ public class First_Step_CM_Fragment extends Fragment implements FirstStepPMFragm
 
 
     public void getPosition( int position , int preOrPost){
-
-        preEventList.remove(position);
-        Log.v("PRE_PHOTO", "Removed pre photo");
-
-
+        if(preEventList.size() != 0) {
+            preEventList.remove(position);
+            Log.v("PRE_PHOTO", "Removed pre photo");
+        }
     }
 
     /**
