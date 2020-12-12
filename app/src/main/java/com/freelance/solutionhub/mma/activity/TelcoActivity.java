@@ -104,7 +104,7 @@ public class TelcoActivity extends AppCompatActivity implements View.OnClickList
         }else {
             finish();
         }
-
+        Log.v("PMID",cmID);
         //Click
         referDateTime.setOnClickListener(this);
         expectedCompletionDateTime.setOnClickListener(this);
@@ -153,25 +153,7 @@ public class TelcoActivity extends AppCompatActivity implements View.OnClickList
      */
     public void save(){
 
-       // addEvents();
-//        if(telcoNo.getText() != null)
-//            eventLists.add(new Event("TELCO_UPDATE","expectedCompletionDate", telcoNo.getText().toString()));
-//        if(dockerNo.getText() != null)
-//            eventLists.add(new Event("TELCO_UPDATE", "expectedCompletionDate",dockerNo.getText().toString()));
-//        if(ctPersonnel.getText() != null)
-//            eventLists.add(new Event("TELCO_UPDATE", "expectedCompletionDate",ctPersonnel.getText().toString()));
-//        eventLists.add(new Event("TELCO_UPDATE", "expectedCompletionDate",referDateTime.getText().toString()));
-//        eventLists.add(new Event("TELCO_UPDATE", "expectedCompletionDate",expectedCompletionDateTime.getText().toString()));
-//        eventLists.add(new Event("TELCO_UPDATE", "expectedCompletionDate",clearanceDateTime.getText().toString()));
-//        if(telcoFaultStatus.getText() != null)
-//            eventLists.add(new Event("TELCO_UPDATE", "expectedCompletionDate",telcoFaultStatus.getText().toString()));
-//        if(telcoOfficer.getText() != null)
-//            eventLists.add(new Event("TELCO_UPDATE", "expectedCompletionDate",telcoOfficer.getText().toString()));
-//        eventLists.add(new Event("TELCO_UPDATE", "expectedCompletionDate",faultDetectedDateTime.getText().toString()));
-//        eventLists.add(new Event("TELCO_UPDATE", "expectedCompletionDate",actionDateTime.getText().toString()));
-        if(actionTaken.getText() != null)
-            eventLists.add(new Event("TELCO_UPDATE", "expectedCompletionDate","HELLO"));
-        Log.v("BEFORE_JOIN", "Before joining");
+        addEvents();
         Log.v("JOIN", eventLists.size() + "");
 
         date = new Date();
@@ -202,27 +184,28 @@ public class TelcoActivity extends AppCompatActivity implements View.OnClickList
             }
         });
 
-
+        eventLists.clear();
     }
 
     private void addEvents(){
-        if(telcoNo.getText() != null)
-            eventLists.add(new Event("TELCO_UPDATE","expectedCompletionDate", telcoNo.getText().toString()));
-        if(dockerNo.getText() != null)
-            eventLists.add(new Event("TELCO_UPDATE", "expectedCompletionDate",dockerNo.getText().toString()));
-        if(ctPersonnel.getText() != null)
-            eventLists.add(new Event("TELCO_UPDATE", "expectedCompletionDate",ctPersonnel.getText().toString()));
-        eventLists.add(new Event("TELCO_UPDATE", "expectedCompletionDate",referDateTime.getText().toString()));
+        Log.v("TELCO","H"+telcoNo.getText().toString()+"H");
+        if(!isEmpty(telcoNo))
+            eventLists.add(new Event("TELCO_UPDATE","thirdPartyNumber", telcoNo.getText().toString()));
+        if(!isEmpty(dockerNo))
+            eventLists.add(new Event("TELCO_UPDATE", "docketNumber",dockerNo.getText().toString()));
+        if(!isEmpty(ctPersonnel))
+            eventLists.add(new Event("TELCO_UPDATE", "ctPersonnel",ctPersonnel.getText().toString()));
+        eventLists.add(new Event("TELCO_UPDATE", "referDate",referDateTime.getText().toString()));
         eventLists.add(new Event("TELCO_UPDATE", "expectedCompletionDate",expectedCompletionDateTime.getText().toString()));
-        eventLists.add(new Event("TELCO_UPDATE", "expectedCompletionDate",clearanceDateTime.getText().toString()));
-        if(telcoFaultStatus.getText() != null)
-            eventLists.add(new Event("TELCO_UPDATE", "expectedCompletionDate",telcoFaultStatus.getText().toString()));
-        if(telcoOfficer.getText() != null)
-            eventLists.add(new Event("TELCO_UPDATE", "expectedCompletionDate",telcoOfficer.getText().toString()));
-        eventLists.add(new Event("TELCO_UPDATE", "expectedCompletionDate",faultDetectedDateTime.getText().toString()));
-        eventLists.add(new Event("TELCO_UPDATE", "expectedCompletionDate",actionDateTime.getText().toString()));
-        if(actionTaken.getText() != null)
-            eventLists.add(new Event("TELCO_UPDATE", "expectedCompletionDate",actionTaken.getText().toString()));
+        eventLists.add(new Event("TELCO_UPDATE", "clearanceDate",clearanceDateTime.getText().toString()));
+        if(!isEmpty(telcoFaultStatus))
+            eventLists.add(new Event("TELCO_UPDATE", "faultStatus",telcoFaultStatus.getText().toString()));
+        if(!isEmpty(telcoOfficer))
+            eventLists.add(new Event("TELCO_UPDATE", "officer",telcoOfficer.getText().toString()));
+        eventLists.add(new Event("TELCO_UPDATE", "faultDetectedDate",faultDetectedDateTime.getText().toString()));
+        eventLists.add(new Event("TELCO_UPDATE", "actionDate",actionDateTime.getText().toString()));
+        if(!isEmpty(actionTaken))
+            eventLists.add(new Event("TELCO_UPDATE", "actionTaken",actionTaken.getText().toString()));
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -234,5 +217,8 @@ public class TelcoActivity extends AppCompatActivity implements View.OnClickList
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+    private boolean isEmpty(EditText etText) {
+        return etText.getText().toString().trim().length() == 0;
     }
 }

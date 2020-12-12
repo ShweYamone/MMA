@@ -240,10 +240,10 @@ public class First_Step_PM_Fragment extends Fragment implements FirstStepPMFragm
     }
 
     public void getPosition( int position , int preOrPost){
-        if(preOrPost == 1){
+        if(preOrPost == 1 && preEventList.size() != 0){
             preEventList.remove(position);
             Log.v("PRE_PHOTO", "Removed pre photo");
-        }else {
+        }else if(postEventList.size() != 0){
             postEventList.remove(position);
             Log.v("POST_PHOTO", "Removed post photo");
         }

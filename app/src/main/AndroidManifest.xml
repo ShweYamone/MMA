@@ -25,14 +25,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
-        <activity android:name=".activity.CaptureActivityPotrait"
+        <activity android:name=".activity.PasscodeRegisterActivity"></activity>
+        <activity android:name=".activity.PasscodeActivity" />
+        <activity
+            android:name=".activity.CaptureActivityPotrait"
             android:screenOrientation="sensorPortrait"
             android:stateNotNeeded="true"
             android:theme="@style/zxing_CaptureTheme"
-            android:windowSoftInputMode="stateAlwaysHidden"></activity>
-
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <activity android:name=".activity.TelcoActivity" />
+        <activity android:name=".activity.PowerGridActivity" />
         <activity android:name=".activity.OtherActivity" />
         <activity android:name=".activity.NotificationActivity" />
         <activity android:name=".activity.PMCompletionActivity" />
