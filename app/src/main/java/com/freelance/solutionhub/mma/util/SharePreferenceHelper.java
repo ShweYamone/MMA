@@ -15,6 +15,8 @@ public class SharePreferenceHelper {
 	private static String USER_ID = "userid";
  	private static String TOKEN = "refreshToken";
 
+ 	private static String PIN_CODE = "pinCode";
+
 
 	public SharePreferenceHelper(Context context)
 	{
@@ -37,11 +39,19 @@ public class SharePreferenceHelper {
 		editor.commit();
 	}
 
+	public void setPinCode(String pinCode){
+		SharedPreferences.Editor editor = sharedPreference.edit();
+		editor.putString(PIN_CODE, pinCode);
+		editor.commit();
+	}
+
 	public void setToken(String token) {
 		SharedPreferences.Editor editor = sharedPreference.edit();
 		editor.putString(TOKEN, token);
 		editor.commit();
 	}
+
+	public String getPinCode(){return sharedPreference.getString(PIN_CODE,"");}
 
 	public String getUserName() {
 		return sharedPreference.getString(USER_NAME_KEY,"");
@@ -76,6 +86,11 @@ public class SharePreferenceHelper {
 		{
 			return false;
 		}
+	}
+
+	public boolean isPinCode(){
+		if(sharedPreference.contains(PIN_CODE)) return true;
+		return false;
 	}
 
 

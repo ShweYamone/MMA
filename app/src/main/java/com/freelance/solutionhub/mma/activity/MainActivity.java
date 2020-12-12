@@ -4,6 +4,7 @@ package com.freelance.solutionhub.mma.activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -46,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     protected ActionBarDrawerToggle mDrawerToggle;
     private SharePreferenceHelper mSharedPreferences;
+    private Runnable runnable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +60,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         initNavigationDrawer();
 
         displayView(R.id.nav_home);
-
         // lotout txtview is here
         tvLogout.setOnClickListener(this);
 
@@ -75,6 +76,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        final Handler handler = new Handler();
+        final int delay = 10000; // 1000 milliseconds == 1 second
+
+        handler.postDelayed( runnable = new Runnable() {
+            public void run() {
+
+                handler.postDelayed(runnable, delay);
+            }
+        }, delay); // so basically after your getHeroes(), from next time it will be 5 sec repeated
+    }
+
+
 
     private void setupToolbar() {
 

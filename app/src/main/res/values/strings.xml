@@ -22,6 +22,8 @@
 
     <!-- Notification Activity -->
     <string name="noti_empty">You do not have any notifications yet.</string>
+    <string name="passcode">Enter pin code</string>
+    <string name="re_match_passcode">Re-match your pin code</string>
 
     <!-- Login Activity-->
     <string name="username">Username</string>
