@@ -486,6 +486,16 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
     }
 
     private void getQREvent() {
+
+        if (!etThridPartyComment.getText().equals("")) { //third party comment
+            hasEventToUpdate = true;
+            events.add(
+                    new Event("THIRD_PARTY_COMMENT_UPDATE",
+                            "comment",
+                            etThridPartyComment.getText().toString())
+            );
+            Log.i("EventHappenend", "getProblemCodeEvent: " + tvScanFault.getText().toString());
+        }
         if (!tvScanFault.getText().equals("")) {
             hasEventToUpdate = true;
             events.add(
