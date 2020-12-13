@@ -68,7 +68,7 @@ public class PasscodeRegisterActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(String text) {
                 Log.i("Passcode", "text");
-                if(text.length() == 4){
+                if(text.length() == 6){
                     pinCodeStr = text;
                     pinCode.setVisibility(View.GONE);
                     reType.setVisibility(View.VISIBLE);
@@ -81,7 +81,7 @@ public class PasscodeRegisterActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(String text) {
                 Log.i("Passcode", "text");
-                if(text.length() == 4){
+                if(text.length() == 6){
                     if(text.equals(pinCodeStr)){
                         mSharePreferenceHelper.setPinCode(text);
                      //   mSharePreferenceHelper.setIsPinCodeActive(true);

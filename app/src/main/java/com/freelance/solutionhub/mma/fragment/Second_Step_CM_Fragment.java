@@ -594,6 +594,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
 
                     }
                 });
+                events.clear();
             } else { //network unavailable, store to local db
                 eventBody = new UpdateEventBody(
                         mSharePreference.getUserName(),
@@ -622,6 +623,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
             Log.v("BEFORE_JOIN", "Before joining");
             Log.v("JOIN", postEventList.size() + "");
             events.addAll(postEventList);
+            postEventList.clear();
         }else {
             new AlertDialog.Builder(this.getContext())
                     .setIcon(R.drawable.warning)

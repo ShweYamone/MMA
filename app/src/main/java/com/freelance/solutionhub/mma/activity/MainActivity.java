@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         handler.removeCallbacks(r);
     }
     public void startHandler() {
-        handler.postDelayed(r, 3 * 60 * 1000); //for 3 minutes
+        handler.postDelayed(r, 5* 60 * 1000); //for 3 minutes
     }
 
     @Override
