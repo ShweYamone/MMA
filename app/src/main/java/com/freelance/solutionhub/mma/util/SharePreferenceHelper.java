@@ -72,7 +72,10 @@ public class SharePreferenceHelper {
 	public void logoutSharePreference()
 	{
 		SharedPreferences.Editor editor = sharedPreference.edit();
-		editor.clear();
+		editor.remove(USER_NAME_KEY);
+		editor.remove(TOKEN);
+		editor.remove(USER_DISPLAY_NAME_KEY);
+		editor.remove(USER_ID);
 		editor.commit();
 	}
 

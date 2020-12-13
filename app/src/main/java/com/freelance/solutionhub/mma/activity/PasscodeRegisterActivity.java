@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 
 import com.freelance.solutionhub.mma.R;
@@ -28,7 +29,7 @@ public class PasscodeRegisterActivity extends AppCompatActivity implements View.
     EditText rePinCode;
 
     @BindView(R.id.btn_save)
-    EditText save;
+    Button save;
 
     private SharePreferenceHelper mSharePreferenceHelper;
     @Override
@@ -40,9 +41,10 @@ public class PasscodeRegisterActivity extends AppCompatActivity implements View.
 
         mSharePreferenceHelper = new SharePreferenceHelper(this);
         if(mSharePreferenceHelper.isPinCode()){
-            startActivity(new Intent(getApplicationContext(), LauncherActivity.class));
+            startActivity(new Intent(PasscodeRegisterActivity.this, LauncherActivity.class));
             finish();
         }
+        save.setOnClickListener(this);
     }
     @Override
     public void onClick(View v) {
@@ -57,24 +59,39 @@ public class PasscodeRegisterActivity extends AppCompatActivity implements View.
         if(!isEmpty(pinCode) && !isEmpty(rePinCode)){
             String pin1 = pinCode.getText().toString().trim();
             String pin2 = rePinCode.getText().toString().trim();
+            if(pin1.length()>3 && pin1.length() <11 && pin2.length()>3 && pin2.length()<11){
+                if(pin1.equals(pin2)){
+                    mSharePreferenceHelper.setPinCode(pin1);
+                    startActivity(new Intent(PasscodeRegisterActivity.this, LauncherActivity.class));
+                    finish();
+                }else {
+                    new AlertDialog.Builder(this)
+                            .setTitle("Pin Code")
+                            .setMessage("Pin codes must be same.")
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
 
-            if(pin1.equals(pin2)){
-                mSharePreferenceHelper.setPinCode(pin1);
-                startActivity(new Intent(getApplicationContext(), LauncherActivity.class));
-                finish();
+                                }
+
+                            })
+                            .show();
+                }
             }else {
                 new AlertDialog.Builder(this)
                         .setTitle("Pin Code")
-                        .setMessage("Pin codes must be same.")
+                        .setMessage("Pin code must be at least 4-digits and most 10-digits.")
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
+
 
                             }
 
                         })
                         .show();
             }
+
         }else {
             new AlertDialog.Builder(this)
                     .setTitle("Pin Code")

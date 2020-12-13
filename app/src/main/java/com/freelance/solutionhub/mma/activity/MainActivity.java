@@ -77,6 +77,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Intent intent = new Intent(this, LoginActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
+        finish();
     }
 
     @Override
@@ -84,11 +85,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onResume();
 
         final Handler handler = new Handler();
-        final int delay = 10000; // 1000 milliseconds == 1 second
+        final int delay = 20000; // 1000 milliseconds == 1 second
 
         handler.postDelayed( runnable = new Runnable() {
             public void run() {
-
+                startActivity(new Intent(MainActivity.this, PasscodeActivity.class));
                 handler.postDelayed(runnable, delay);
             }
         }, delay); // so basically after your getHeroes(), from next time it will be 5 sec repeated
