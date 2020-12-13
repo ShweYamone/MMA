@@ -254,66 +254,191 @@ public class First_Step_PM_Fragment extends Fragment implements FirstStepPMFragm
      * Update event for all photos
      */
     public void save(){
-        //Maintenance photos attached ( max - 10 and min 2 )
-        if(preEventList.size() > 1 && preEventList.size() <11 && postEventList.size() >1 && postEventList.size() < 11) {
-            Log.v("BEFORE_JOIN", "Before joining");
-            preEventList.addAll(postEventList);
-            Log.v("JOIN", preEventList.size() + "");
+        if(preEventList.size() == 0 && postEventList.size() != 0){
+            //Maintenance photos attached ( max - 10 and min 2 )
+            if( postEventList.size() >1 && postEventList.size() < 11) {
+                Log.v("BEFORE_JOIN", "Before joining");
+                preEventList.addAll(postEventList);
+                Log.v("JOIN", preEventList.size() + "");
 
-            date = new Date();
-            Timestamp timestamp = new Timestamp(date.getTime());
-            String actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
+                date = new Date();
+                Timestamp timestamp = new Timestamp(date.getTime());
+                String actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
 
-            UpdateEventBody updateEventBody;
-            if (network.isNetworkAvailable()) { // Network available, send data to server
-                updateEventBody = new UpdateEventBody(mSharePerferenceHelper.getUserName(), mSharePerferenceHelper.getUserId(), actualDateTime, pmServiceInfoDetailModel.getId(), preEventList);
-                Call<ReturnStatus> returnStatusCallEvent = apiInterface.updateEvent("Bearer " + mSharePerferenceHelper.getToken(), updateEventBody);
-                returnStatusCallEvent.enqueue(new Callback<ReturnStatus>() {
-                    @Override
-                    public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
-                        ReturnStatus returnStatus = response.body();
-                        if (response.isSuccessful()) {
-                            Toast.makeText(getContext(), returnStatus.getStatus() + ":Ok", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<ReturnStatus> call, Throwable t) {
-                        Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
-                preEventList.clear();
-            } else { // Network unavailabe, store data to local db
-                updateEventBody = new UpdateEventBody(
-                        mSharePerferenceHelper.getUserName(), mSharePerferenceHelper.getUserId(), actualDateTime, pmServiceInfoDetailModel.getId()
-                );
-                String key = mSharePerferenceHelper.getUserId() + pmServiceInfoDetailModel.getId() + actualDateTime;
-                updateEventBody.setId(key);
-                dbHelper.updateEventBodyDAO().insert(updateEventBody);
-                for (Event event : preEventList) {
-                    event.setUpdateEventBodyKey(key);
-                }
-                dbHelper.eventDAO().insertAll(preEventList);
-                Toast.makeText(getContext(), "DATABASE" + dbHelper.updateEventBodyDAO().getNumberOfUpdateEventBody() + ", " +
-                        dbHelper.eventDAO().getNumberOfEvents(), Toast.LENGTH_SHORT).show();
-                preEventList.clear();
-            }
-
-
-        }else {
-            new AlertDialog.Builder(this.getContext())
-                    .setIcon(R.drawable.warning)
-                    .setTitle("Photo")
-                    .setMessage("Your photos must be minimum 2 and maximum 10.")
-                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                UpdateEventBody updateEventBody;
+                if (network.isNetworkAvailable()) { // Network available, send data to server
+                    updateEventBody = new UpdateEventBody(mSharePerferenceHelper.getUserName(), mSharePerferenceHelper.getUserId(), actualDateTime, pmServiceInfoDetailModel.getId(), preEventList);
+                    Call<ReturnStatus> returnStatusCallEvent = apiInterface.updateEvent("Bearer " + mSharePerferenceHelper.getToken(), updateEventBody);
+                    returnStatusCallEvent.enqueue(new Callback<ReturnStatus>() {
                         @Override
-                        public void onClick(DialogInterface dialog, int which) {
-
-
+                        public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
+                            ReturnStatus returnStatus = response.body();
+                            if (response.isSuccessful()) {
+                                Toast.makeText(getContext(), returnStatus.getStatus() + ":Ok", Toast.LENGTH_SHORT).show();
+                            }
                         }
 
-                    })
-                    .show();
+                        @Override
+                        public void onFailure(Call<ReturnStatus> call, Throwable t) {
+                            Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    preEventList.clear();
+                } else{ // Network unavailabe, store data to local db
+                    updateEventBody = new UpdateEventBody(
+                            mSharePerferenceHelper.getUserName(), mSharePerferenceHelper.getUserId(), actualDateTime, pmServiceInfoDetailModel.getId()
+                    );
+                    String key = mSharePerferenceHelper.getUserId() + pmServiceInfoDetailModel.getId() + actualDateTime;
+                    updateEventBody.setId(key);
+                    dbHelper.updateEventBodyDAO().insert(updateEventBody);
+                    for (Event event : preEventList) {
+                        event.setUpdateEventBodyKey(key);
+                    }
+                    dbHelper.eventDAO().insertAll(preEventList);
+                    Toast.makeText(getContext(), "DATABASE" + dbHelper.updateEventBodyDAO().getNumberOfUpdateEventBody() + ", " +
+                            dbHelper.eventDAO().getNumberOfEvents(), Toast.LENGTH_SHORT).show();
+                    preEventList.clear();
+                }
+
+
+            }else{
+                new AlertDialog.Builder(this.getContext())
+                        .setIcon(R.drawable.warning)
+                        .setTitle("Photo")
+                        .setMessage("Your post-maintenance photos must be minimum 2 and maximum 10.")
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+
+                            }
+
+                        })
+                        .show();
+            }
+        } else if (postEventList.size() == 0 && preEventList.size() != 0){
+            //Maintenance photos attached ( max - 10 and min 2 )
+            if(preEventList.size() > 1 && preEventList.size() <11 ) {
+                Log.v("BEFORE_JOIN", "Before joining");
+                Log.v("JOIN", preEventList.size() + "");
+
+                date = new Date();
+                Timestamp timestamp = new Timestamp(date.getTime());
+                String actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
+
+                UpdateEventBody updateEventBody;
+                if (network.isNetworkAvailable()) { // Network available, send data to server
+                    updateEventBody = new UpdateEventBody(mSharePerferenceHelper.getUserName(), mSharePerferenceHelper.getUserId(), actualDateTime, pmServiceInfoDetailModel.getId(), preEventList);
+                    Call<ReturnStatus> returnStatusCallEvent = apiInterface.updateEvent("Bearer " + mSharePerferenceHelper.getToken(), updateEventBody);
+                    returnStatusCallEvent.enqueue(new Callback<ReturnStatus>() {
+                        @Override
+                        public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
+                            ReturnStatus returnStatus = response.body();
+                            if (response.isSuccessful()) {
+                                Toast.makeText(getContext(), returnStatus.getStatus() + ":Ok", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<ReturnStatus> call, Throwable t) {
+                            Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    preEventList.clear();
+                } else{ // Network unavailabe, store data to local db
+                    updateEventBody = new UpdateEventBody(
+                            mSharePerferenceHelper.getUserName(), mSharePerferenceHelper.getUserId(), actualDateTime, pmServiceInfoDetailModel.getId()
+                    );
+                    String key = mSharePerferenceHelper.getUserId() + pmServiceInfoDetailModel.getId() + actualDateTime;
+                    updateEventBody.setId(key);
+                    dbHelper.updateEventBodyDAO().insert(updateEventBody);
+                    for (Event event : preEventList) {
+                        event.setUpdateEventBodyKey(key);
+                    }
+                    dbHelper.eventDAO().insertAll(preEventList);
+                    Toast.makeText(getContext(), "DATABASE" + dbHelper.updateEventBodyDAO().getNumberOfUpdateEventBody() + ", " +
+                            dbHelper.eventDAO().getNumberOfEvents(), Toast.LENGTH_SHORT).show();
+                    preEventList.clear();
+                }
+
+
+            }else{
+                new AlertDialog.Builder(this.getContext())
+                        .setIcon(R.drawable.warning)
+                        .setTitle("Photo")
+                        .setMessage("Your pre-maintenance photos must be minimum 2 and maximum 10.")
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+
+                            }
+
+                        })
+                        .show();
+            }
+        }else if(preEventList.size() != 0 && postEventList.size() != 0){
+            //Maintenance photos attached ( max - 10 and min 2 )
+            if(preEventList.size() > 1 && preEventList.size() <11 && postEventList.size() >1 && postEventList.size() < 11) {
+                Log.v("BEFORE_JOIN", "Before joining");
+                preEventList.addAll(postEventList);
+                Log.v("JOIN", preEventList.size() + "");
+
+                date = new Date();
+                Timestamp timestamp = new Timestamp(date.getTime());
+                String actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
+
+                UpdateEventBody updateEventBody;
+                if (network.isNetworkAvailable()) { // Network available, send data to server
+                    updateEventBody = new UpdateEventBody(mSharePerferenceHelper.getUserName(), mSharePerferenceHelper.getUserId(), actualDateTime, pmServiceInfoDetailModel.getId(), preEventList);
+                    Call<ReturnStatus> returnStatusCallEvent = apiInterface.updateEvent("Bearer " + mSharePerferenceHelper.getToken(), updateEventBody);
+                    returnStatusCallEvent.enqueue(new Callback<ReturnStatus>() {
+                        @Override
+                        public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
+                            ReturnStatus returnStatus = response.body();
+                            if (response.isSuccessful()) {
+                                Toast.makeText(getContext(), returnStatus.getStatus() + ":Ok", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<ReturnStatus> call, Throwable t) {
+                            Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    preEventList.clear();
+                } else{ // Network unavailabe, store data to local db
+                    updateEventBody = new UpdateEventBody(
+                            mSharePerferenceHelper.getUserName(), mSharePerferenceHelper.getUserId(), actualDateTime, pmServiceInfoDetailModel.getId()
+                    );
+                    String key = mSharePerferenceHelper.getUserId() + pmServiceInfoDetailModel.getId() + actualDateTime;
+                    updateEventBody.setId(key);
+                    dbHelper.updateEventBodyDAO().insert(updateEventBody);
+                    for (Event event : preEventList) {
+                        event.setUpdateEventBodyKey(key);
+                    }
+                    dbHelper.eventDAO().insertAll(preEventList);
+                    Toast.makeText(getContext(), "DATABASE" + dbHelper.updateEventBodyDAO().getNumberOfUpdateEventBody() + ", " +
+                            dbHelper.eventDAO().getNumberOfEvents(), Toast.LENGTH_SHORT).show();
+                    preEventList.clear();
+                }
+
+
+            }else{
+                new AlertDialog.Builder(this.getContext())
+                        .setIcon(R.drawable.warning)
+                        .setTitle("Photo")
+                        .setMessage("Your photos must be minimum 2 and maximum 10.")
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+
+                            }
+
+                        })
+                        .show();
+            }
         }
 
     }

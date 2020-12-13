@@ -54,7 +54,7 @@ public class PasscodeActivity extends AppCompatActivity{
             @Override
             public void onTextChanged(String text) {
                 Log.i("Passcode", "text");
-                if(text.length() == 4){
+                if(text.length() == 6){
                     count++;
                     if(text.equals(mSharePreferenceHelper.getPinCode())){
                        finish();

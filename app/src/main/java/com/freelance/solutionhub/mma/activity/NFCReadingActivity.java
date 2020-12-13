@@ -18,6 +18,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.provider.Settings;
+import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -39,12 +41,16 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class NFCReadingActivity extends AppCompatActivity {
 
+    @BindView(R.id.btnCancel)
+    Button btnCancel;
     private NfcAdapter nfcAdapter;
     private PendingIntent pendingIntent;
     private String serviceOrderId;
@@ -63,6 +69,7 @@ public class NFCReadingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nfcreading);
+        ButterKnife.bind(this);
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);
         mSharedPreference = new SharePreferenceHelper(this);
         apiInterface = ApiClient.getClient(this);
@@ -70,7 +77,12 @@ public class NFCReadingActivity extends AppCompatActivity {
         dbHelper = InitializeDatabase.getInstance(this);
         serviceOrderId = getIntent().getStringExtra("id");
 
-
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         date = new Date();
         ts=new Timestamp(date.getTime());
@@ -84,7 +96,6 @@ public class NFCReadingActivity extends AppCompatActivity {
         }
 
         /****To Fix when NFC can read*********/
-        perFormTagEvent();
         /*********************/
         /////////////////////////////////////
 
@@ -93,8 +104,9 @@ public class NFCReadingActivity extends AppCompatActivity {
             //finish();
             return;
         }else {
-            if (!nfcAdapter.isEnabled())
-                requestPermissions(new String[]{Manifest.permission.NFC}, NFC_PERMISSION_CODE);
+            if (!nfcAdapter.isEnabled()){
+                showWirelessSettings();
+            }
         }
 
         pendingIntent = PendingIntent.getActivity(this, 0,
@@ -166,22 +178,6 @@ public class NFCReadingActivity extends AppCompatActivity {
         }
 
     }
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == NFC_PERMISSION_CODE)
-        {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
-            {
-                Toast.makeText(this, "camera permission granted", Toast.LENGTH_LONG).show();
-                //showWirelessSettings();
-            }
-            else
-            {
-                Toast.makeText(this, "camera permission denied", Toast.LENGTH_LONG).show();
-            }
-        }
-    }
 
     @Override
     protected void onResume() {
@@ -245,6 +241,7 @@ public class NFCReadingActivity extends AppCompatActivity {
         }
 
        Toast.makeText(this, builder.toString(), Toast.LENGTH_LONG).show();
+        perFormTagEvent();
     }
 
     private void showWirelessSettings() {
