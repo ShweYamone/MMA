@@ -74,7 +74,7 @@ public class PMActivity extends AppCompatActivity {
             case R.id.action_tagout:
                 Intent intent = new Intent(PMActivity.this, NFCReadingActivity.class);
                 intent.putExtra("id", pmServiceInfoDetailModel.getId());
-                intent.putExtra("TAG_OUT", true);
+                intent.putExtra("TAG_OUT", 1);
                 startActivity(intent);
                 finish();
                 break;

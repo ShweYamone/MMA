@@ -18,6 +18,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -60,6 +61,7 @@ public class NFCReadingActivity extends AppCompatActivity {
     private ApiInterface apiInterface;
     private Date date;
     private Timestamp ts;
+    boolean tag;
     private final int NFC_PERMISSION_CODE = 1002;
     List<Event> events = new ArrayList<>();
     String currentDateTime;
@@ -89,9 +91,12 @@ public class NFCReadingActivity extends AppCompatActivity {
         currentDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(ts);
         ////////////////////////////////
 
-        if (getIntent().getBooleanExtra("TAG_OUT", false)) {
+        if (getIntent().hasExtra("TAG_OUT")) {
+            tag = true;
+            Log.v("TAG_OUT",getIntent().getIntExtra("TAG_OUT",0)+"");
             events.add(new Event("TAG_OUT", "tagOut", "tagOut"));
         } else {
+            tag = false;
             events.add(new Event("TAG_IN", "tagIn", "tagIn"));
         }
 
@@ -129,7 +134,7 @@ public class NFCReadingActivity extends AppCompatActivity {
                 public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
                     if (response.isSuccessful()) {
                         Toast.makeText(getApplicationContext(), "TAG_SUCCESS" +  response.body().getStatus(), Toast.LENGTH_SHORT).show();
-                        if (getIntent().getBooleanExtra("TAG_OUT", false)) {
+                        if (tag) {
                             Intent intent = new Intent(NFCReadingActivity.this, MainActivity.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             startActivity(intent);
@@ -240,7 +245,7 @@ public class NFCReadingActivity extends AppCompatActivity {
             builder.append(str).append("\n");
         }
 
-       Toast.makeText(this, builder.toString(), Toast.LENGTH_LONG).show();
+       Toast.makeText(this, builder.toString(), Toast.LENGTH_SHORT).show();
         perFormTagEvent();
     }
 
