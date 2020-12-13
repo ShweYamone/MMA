@@ -6,7 +6,9 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -19,20 +21,19 @@ import org.w3c.dom.Text;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import in.arjsna.passcodeview.PassCodeView;
 
-public class PasscodeActivity extends AppCompatActivity implements View.OnClickListener{
+public class PasscodeActivity extends AppCompatActivity{
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
-    @BindView(R.id.et_pin_code)
-    EditText pinCode;
-
     @BindView(R.id.tv_pin_wrong)
     TextView pinWrongInfo;
 
-    @BindView(R.id.btn_login)
-    Button login;
+    @BindView(R.id.pass_code_view)
+    PassCodeView passCodeView;
+
 
     private SharePreferenceHelper mSharePreferenceHelper;
     private int count = 0;
@@ -42,52 +43,31 @@ public class PasscodeActivity extends AppCompatActivity implements View.OnClickL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_passcode);
         ButterKnife.bind(this);
+        toolbar.setTitle("");
         setSupportActionBar(toolbar);
-
         mSharePreferenceHelper = new SharePreferenceHelper(this);
-        if(count == 0)
-            pinWrongInfo.setVisibility(View.GONE);
-        login.setOnClickListener(this);
-    }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.btn_login:
-                checkPinCode();
-                break;
-        }
-    }
-
-    private void checkPinCode(){
-        count++;
-        if(!isEmpty(pinCode)){
-            String pin = pinCode.getText().toString().trim();
-            if(pin.equals(mSharePreferenceHelper.getPinCode())){
-                finish();
-            }else if(count == 1){
-                pinWrongInfo.setVisibility(View.VISIBLE);
-                pinWrongInfo.setText("1 time, wrong pin code!");
-            }else if(count > 5){
-                //Delete app data
-            }else {
-                pinWrongInfo.setText(count+" times, wrong pin code!");
+//        Typeface typeFace = Typeface.createFromAsset(getAssets(), "font/crimson_text_bold.ttf");
+//        passCodeView.setTypeFace(typeFace);
+        passCodeView.setOnTextChangeListener(new PassCodeView.TextChangeListener() {
+            @Override
+            public void onTextChanged(String text) {
+                Log.i("Passcode", "text");
+                if(text.length() == 4){
+                    count++;
+                    if(text.equals(mSharePreferenceHelper.getPinCode())){
+                        mSharePreferenceHelper.setIsPinCodeActive(true);
+                        finish();
+                    }else {
+                        passCodeView.setError(true);
+                    }
+                }
             }
-        }else {
-            new AlertDialog.Builder(this)
-                    .setTitle("Pin Code")
-                    .setMessage("You must enter your pin code.")
-                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-
-
-                        }
-
-                    })
-                    .show();
-        }
+        });
     }
+
+
+
     private boolean isEmpty(EditText etText) {
         return etText.getText().toString().trim().length() == 0;
     }

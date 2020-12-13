@@ -282,6 +282,7 @@ public class First_Step_PM_Fragment extends Fragment implements FirstStepPMFragm
                         Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
+                preEventList.clear();
             } else { // Network unavailabe, store data to local db
                 updateEventBody = new UpdateEventBody(
                         mSharePerferenceHelper.getUserName(), mSharePerferenceHelper.getUserId(), actualDateTime, pmServiceInfoDetailModel.getId()
@@ -295,6 +296,7 @@ public class First_Step_PM_Fragment extends Fragment implements FirstStepPMFragm
                 dbHelper.eventDAO().insertAll(preEventList);
                 Toast.makeText(getContext(), "DATABASE" + dbHelper.updateEventBodyDAO().getNumberOfUpdateEventBody() + ", " +
                         dbHelper.eventDAO().getNumberOfEvents(), Toast.LENGTH_SHORT).show();
+                preEventList.clear();
             }
 
 
