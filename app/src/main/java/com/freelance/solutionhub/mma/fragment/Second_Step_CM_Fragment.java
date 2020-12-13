@@ -488,16 +488,16 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
 
     private void getQREvent() {
 
-        if (!etThridPartyComment.getText().equals("")) { //third party comment
+        if (!etThridPartyComment.getText().toString().equals("")) { //third party comment
             hasEventToUpdate = true;
             events.add(
                     new Event("THIRD_PARTY_COMMENT_UPDATE",
                             "comment",
-                            etThridPartyComment.getText().toString())
+                            "" + etThridPartyComment.getText().toString())
             );
-            Log.i("EventHappenend", "getProblemCodeEvent: " + tvScanFault.getText().toString());
+            Log.i("EventHappenend", "getProblemCodeEvent:Desc " + etThridPartyComment.getText().toString());
         }
-        if (!tvScanFault.getText().equals("")) {
+        if (!tvScanFault.getText().toString().equals("")) {
             hasEventToUpdate = true;
             events.add(
                     new Event("PART_REPLACEMENT_UPDATE",
@@ -506,7 +506,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
             );
             Log.i("EventHappenend", "getProblemCodeEvent: " + tvScanFault.getText().toString());
         }
-        if (!tvScanReplacement.getText().equals("")) {
+        if (!tvScanReplacement.getText().toString().equals("")) {
             events.add(
                     new Event("PART_REPLACEMENT_UPDATE",
                     "replacementPartCode",
@@ -531,7 +531,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
         events.add(new Event(
                 "SERVICE_ORDER_UPDATE",
                 "reportedProblem",
-                pmServiceInfoModel.getReportedProblem()
+                "" + pmServiceInfoModel.getReportedProblem()
         ));
         Log.i("EventHappenend", "GETReprotedProblemPlain" +  pmServiceInfoModel.getReportedProblem());
         if (spinnerActualProbleCode.getSelectedItemPosition() > 0) {

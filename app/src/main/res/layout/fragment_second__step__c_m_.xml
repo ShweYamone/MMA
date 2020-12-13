@@ -131,6 +131,7 @@
                 android:background="@drawable/round_rect_shape_line">
                 <TextView
                     android:id="@+id/tvReportedProblemCode"
+                    android:text=""
                     android:textColor="@color/color_blue"
                     android:layout_margin="@dimen/margin_small"
                     android:layout_width="match_parent"
@@ -272,6 +273,7 @@
 
                     <EditText
                         android:id="@+id/etThirdPartyComment"
+                        android:text=""
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/crimson_text_regular"
