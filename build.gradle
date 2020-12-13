@@ -18,6 +18,7 @@ allprojects {
     repositories {
         google()
         mavenLocal()
+        jcenter()
         maven {
             url  "http://dl.bintray.com/javaphoenixchannels/java-phoenix-channels"
         }

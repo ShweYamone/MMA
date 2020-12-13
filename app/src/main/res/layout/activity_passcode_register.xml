@@ -31,43 +31,51 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
+    <ImageView
+        android:id="@+id/iv_re_type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/close"
+        android:visibility="invisible"
+        android:layout_gravity="right"
+        android:layout_margin="@dimen/txt_size_large"/>
+
     <LinearLayout
         android:layout_margin="@dimen/margin_xlarge"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:gravity="center">
-        <EditText
-            android:id="@+id/et_pin_code"
-            android:background="@drawable/bg_et_border_login"
-            android:inputType="numberPassword"
-            android:hint="@string/passcode"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/edittext_height"
-            android:paddingLeft="@dimen/padding_10"
-            android:drawableLeft="@drawable/login_lock"
-            android:drawablePadding="@dimen/padding_10"/>
-        <EditText
-            android:id="@+id/et_re_pin_code"
-            android:layout_marginTop="@dimen/margin_normal"
-            android:inputType="numberPassword"
-            android:background="@drawable/bg_et_border_login"
-            android:hint="@string/re_match_passcode"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/edittext_height"
-            android:paddingLeft="@dimen/padding_10"
-            android:drawableLeft="@drawable/login_lock"
-            android:drawablePadding="@dimen/padding_10"/>
-
-        <Button
-            android:id="@+id/btn_save"
-            android:layout_marginTop="@dimen/margin_xlarge"
-            android:background="@drawable/bg_btn_login"
-            android:text="@string/save"
+        <TextView
+            android:id="@+id/tv_pin_wrong"
             android:textSize="@dimen/txt_size_large"
-            android:textColor="@color/color_edt_grey"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorBlack"
+            android:text="Enter your new passcode"/>
+
+        <in.arjsna.passcodeview.PassCodeView
+            android:id="@+id/pass_code_view1"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            app:digits="4"
+            app:digit_size="30.0dp"
+            app:key_text_size="30.0sp"
+            android:padding="25.0dp"
+            app:empty_drawable="@drawable/empty_dot"
+            app:filled_drawable="@drawable/filled_dot"/>
+
+        <in.arjsna.passcodeview.PassCodeView
+            android:id="@+id/pass_code_view2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:digits="4"
+            app:digit_size="30.0dp"
+            android:visibility="gone"
+            app:key_text_size="30.0sp"
+            android:padding="25.0dp"
+            app:empty_drawable="@drawable/empty_dot"
+            app:filled_drawable="@drawable/filled_dot"/>
     </LinearLayout>
 
 </LinearLayout>

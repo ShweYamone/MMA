@@ -209,6 +209,7 @@ public class First_Step_CM_Fragment extends Fragment implements FirstStepPMFragm
                         Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
+                preEventList.clear();
             } else {// network unavailabel, store to local db
                 UpdateEventBody updateEventBody1 = new UpdateEventBody(
                         mSharePerferenceHelper.getUserName(),
@@ -228,6 +229,8 @@ public class First_Step_CM_Fragment extends Fragment implements FirstStepPMFragm
                         "DATABASE" + dbHelper.updateEventBodyDAO().getNumberOfUpdateEventBody() + ", " +
                                 dbHelper.eventDAO().getNumberOfEvents()
                         , Toast.LENGTH_SHORT).show();
+
+                preEventList.clear();
 
             }
 

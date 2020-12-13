@@ -37,33 +37,25 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:gravity="center">
-        <EditText
-            android:id="@+id/et_pin_code"
-            android:background="@drawable/bg_et_border_login"
-            android:inputType="numberPassword"
-            android:hint="@string/passcode"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/edittext_height"
-            android:paddingLeft="@dimen/padding_10"
-            android:drawableLeft="@drawable/login_lock"
-            android:drawablePadding="@dimen/padding_10"/>
-
         <TextView
             android:id="@+id/tv_pin_wrong"
+            android:textSize="@dimen/txt_size_large"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/colorRed"
-            android:text="4 times, wrong pin!"/>
+            android:textColor="@color/colorBlack"
+            android:text="Enter Passcode"/>
 
-        <Button
-            android:id="@+id/btn_login"
-            android:layout_marginTop="@dimen/margin_xlarge"
-            android:background="@drawable/bg_btn_login"
-            android:text="@string/login"
-            android:textSize="@dimen/txt_size_large"
-            android:textColor="@color/color_edt_grey"
+        <in.arjsna.passcodeview.PassCodeView
+            android:id="@+id/pass_code_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            app:digits="4"
+            app:digit_size="30.0dp"
+            app:key_text_size="30.0sp"
+            android:padding="25.0dp"
+            app:empty_drawable="@drawable/empty_dot"
+            app:filled_drawable="@drawable/filled_dot"/>
+
     </LinearLayout>
 
 </LinearLayout>

@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected ActionBarDrawerToggle mDrawerToggle;
     private SharePreferenceHelper mSharedPreferences;
     private Runnable runnable;
+    private int passcode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,23 +78,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Intent intent = new Intent(this, LoginActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
+        finish();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
         final Handler handler = new Handler();
-        final int delay = 10000; // 1000 milliseconds == 1 second
-
-        handler.postDelayed( runnable = new Runnable() {
-            public void run() {
-
-                handler.postDelayed(runnable, delay);
-            }
-        }, delay); // so basically after your getHeroes(), from next time it will be 5 sec repeated
+        final int delay = 20000; // 1000 milliseconds == 1 second
+        if(mSharedPreferences.getIsPinCodeActive()) {
+            mSharedPreferences.setIsPinCodeActive(false);
+            handler.postDelayed(runnable = new Runnable() {
+                public void run() {
+                    startActivity(new Intent(MainActivity.this, PasscodeActivity.class));
+                    handler.postDelayed(runnable, delay);
+                }
+            }, delay); // so basically after your getHeroes(), from next time it will be 5 sec repeated
+        }
     }
-
 
 
     private void setupToolbar() {
