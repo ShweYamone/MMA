@@ -84,7 +84,7 @@ public class PasscodeRegisterActivity extends AppCompatActivity {
                 if(text.length() == 4){
                     if(text.equals(pinCodeStr)){
                         mSharePreferenceHelper.setPinCode(text);
-                        mSharePreferenceHelper.setIsPinCodeActive(true);
+                     //   mSharePreferenceHelper.setIsPinCodeActive(true);
                         startActivity(new Intent(PasscodeRegisterActivity.this, LoginActivity.class));
                         finish();
                     }else {

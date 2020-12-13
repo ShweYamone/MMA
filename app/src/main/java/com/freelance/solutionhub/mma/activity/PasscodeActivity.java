@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.freelance.solutionhub.mma.R;
 import com.freelance.solutionhub.mma.util.SharePreferenceHelper;
@@ -56,8 +57,7 @@ public class PasscodeActivity extends AppCompatActivity{
                 if(text.length() == 4){
                     count++;
                     if(text.equals(mSharePreferenceHelper.getPinCode())){
-                        mSharePreferenceHelper.setIsPinCodeActive(true);
-                        finish();
+                       finish();
                     }else {
                         passCodeView.setError(true);
                     }

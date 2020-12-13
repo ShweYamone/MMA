@@ -51,6 +51,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private SharePreferenceHelper mSharedPreferences;
     private Runnable runnable;
     private int passcode;
+    private Handler handler;
+    private Runnable r;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +69,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         tvLogout.setOnClickListener(this);
 
 
+        handler = new Handler();
+        r = new Runnable() {
+
+            @Override
+            public void run() {
+                // TODO Auto-generated method stub
+                Toast.makeText(MainActivity.this, "user is inactive from last 10 seconds",Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(MainActivity.this, PasscodeActivity.class));
+            }
+        };
+        startHandler();
 
         ///////*********WebSocket*************//////////
 
@@ -82,8 +95,32 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        stopHandler();
+    }
+
+    
+
+    @Override
+    public void onUserInteraction() {
+        // TODO Auto-generated method stub
+        super.onUserInteraction();
+        stopHandler();//stop first and then start
+        startHandler();
+    }
+    public void stopHandler() {
+        handler.removeCallbacks(r);
+    }
+    public void startHandler() {
+        handler.postDelayed(r, 3 * 60 * 1000); //for 3 minutes
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
+        startHandler();
+        /*
         final Handler handler = new Handler();
         final int delay = 20000; // 1000 milliseconds == 1 second
         if(mSharedPreferences.getIsPinCodeActive()) {
@@ -94,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     handler.postDelayed(runnable, delay);
                 }
             }, delay); // so basically after your getHeroes(), from next time it will be 5 sec repeated
-        }
+        }*/
     }
 
 
