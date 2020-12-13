@@ -57,8 +57,6 @@ public class SharePreferenceHelper {
 		editor.commit();
 	}
 
-	public Boolean getIsPinCodeActive(){ return sharedPreference.getBoolean(IS_PIN_CODE_ACTIVE,false);}
-
 	public String getPinCode(){return sharedPreference.getString(PIN_CODE,"");}
 
 	public String getUserName() {

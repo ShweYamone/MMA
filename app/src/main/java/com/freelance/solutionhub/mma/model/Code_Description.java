@@ -1,4 +1,4 @@
-package com.freelance.solutionhub.mma.activity;
+package com.freelance.solutionhub.mma.model;
 
 public class Code_Description {
     String code;

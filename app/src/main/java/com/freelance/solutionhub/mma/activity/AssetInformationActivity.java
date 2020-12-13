@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.freelance.solutionhub.mma.R;
+import com.freelance.solutionhub.mma.model.ComponentDetails;
 import com.freelance.solutionhub.mma.model.QRReturnBody;
 import com.freelance.solutionhub.mma.util.ApiClient;
 import com.freelance.solutionhub.mma.util.ApiInterface;
@@ -38,6 +39,9 @@ public class AssetInformationActivity extends AppCompatActivity implements View.
 
     @BindView(R.id.tv_component_state)
     TextView tvComponentState;
+
+    @BindView(R.id.tvRemarks)
+    TextView tvDescription;
 
     @BindView(R.id.btnClose)
     Button btnClose;
@@ -89,10 +93,12 @@ public class AssetInformationActivity extends AppCompatActivity implements View.
                     public void onResponse(Call<QRReturnBody> call, Response<QRReturnBody> response) {
                         if (response.isSuccessful()) {
                             QRReturnBody qrReturnBody = response.body();
+                            ComponentDetails componentDetails = qrReturnBody.getComponentDetails();
                             tvComponentId.setText(result.getContents() + "");
-                            tvSerialNumber.setText(qrReturnBody.getComponentDetails().getSerialNo());
-                            tvComponentType.setText(qrReturnBody.getComponentDetails().getComponentType());
-                            tvComponentState.setText(qrReturnBody.getComponentDetails().getStatus());
+                            tvSerialNumber.setText(componentDetails.getSerialNo());
+                            tvComponentType.setText(componentDetails.getComponentType());
+                            tvComponentState.setText(componentDetails.getStatus());
+                            tvDescription.setText(componentDetails.getDescription());
                         } else {
                             Log.i("ASSET", "onResponse: " + response.code());
                         }
