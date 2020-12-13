@@ -181,7 +181,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
     //qr code scanner object
     private IntentIntegrator qrScan;
 
-    private List<Event> events = new ArrayList<>();
+    private ArrayList<Event> events = new ArrayList<>();
 
 
     List<Code_Description> problemList = new ArrayList<>();
@@ -190,7 +190,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
 
     List<String> problemArr = new ArrayList<>(); String[] actualProblemCode = new String[0];
     List<String> causeArr = new ArrayList<>(); String[] causeProblemCode = new String[0];
-    List<String> remedyArr = new ArrayList<>();
+    List<String> remedyArr = new ArrayList<>(); String[] remedyProblemCode = new String[0];
 
     private String actualProblem, causeCode, remedyCode = "";
     private boolean thirdPartyShow = true;
@@ -259,7 +259,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
                 remedyArrAdapter.notifyDataSetChanged();
                 spinnerCauseCode.setSelection(0, true);
                 spinnerRemedyCode.setSelection(0,true);
-                actualProblem = problemArr.get(i);
+                actualProblem = actualProblemCode[i];
             }
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
@@ -270,16 +270,21 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 remedyArr.clear();
                 if (causeRemedyMap.containsKey(causeProblemCode[i])) {
+                    remedyProblemCode = new String[causeRemedyMap.get(causeProblemCode[i]).size() + 1];
                     Code_Description temp;
                     for (int k = 0; k < causeRemedyMap.get(causeProblemCode[i]).size(); k++) {
                         temp = causeRemedyMap.get(causeProblemCode[i]).get(k);
+                        remedyProblemCode[k+1] = temp.getCode();
                         remedyArr.add(temp.getDescription());
                     }
+                } else {
+                    remedyProblemCode = new String[1];
                 }
+                remedyProblemCode[0] = "Select Remedy Code";
                 remedyArr.add(0, "Select Remedy Code");
                 remedyArrAdapter.notifyDataSetChanged();
                 spinnerRemedyCode.setSelection(0);
-                causeCode = causeArr.get(i);
+                causeCode = causeProblemCode[i];
             }
 
             @Override
@@ -291,7 +296,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
         spinnerRemedyCode.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                remedyCode = remedyArr.get(i);
+                remedyCode = remedyProblemCode[i];
             }
 
             @Override
@@ -326,7 +331,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
     private void displayMaintenanceWorkInformation() {
         tvAcknowledgeBy.setText(pmServiceInfoModel.getAcknowledgedBy());
         tvAcknowledgeDT.setText(pmServiceInfoModel.getAcknowledgementDate());
-        tvReportedCode.setText(pmServiceInfoModel.getReportedProblem());
+        tvReportedCode.setText(pmServiceInfoModel.getReportedProblemDescription());
         Call<ResponseBody> call = apiInterface.getFaultMappings("Bearer " + mSharePreference.getToken());
         call.enqueue(new Callback<ResponseBody>() {
             @Override
@@ -486,7 +491,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
     }
 
     private void getQREvent() {
-/*
+
         if (!etThridPartyComment.getText().equals("")) { //third party comment
             hasEventToUpdate = true;
             events.add(
@@ -495,7 +500,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
                             etThridPartyComment.getText().toString())
             );
             Log.i("EventHappenend", "getProblemCodeEvent: " + tvScanFault.getText().toString());
-        }*/
+        }
         if (!tvScanFault.getText().equals("")) {
             hasEventToUpdate = true;
             events.add(
@@ -526,34 +531,36 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
     }
 
     public void getProblemCodeEvent() {
+
         events.add(new Event(
                 "SERVICE_ORDER_UPDATE",
                 "reportedProblem",
-                mSharePreference.getUserId() + " - " + pmServiceInfoModel.getReportedProblemDescription()
+                pmServiceInfoModel.getReportedProblem()
         ));
+        Log.i("EventHappenend", "GETReprotedProblemPlain" +  pmServiceInfoModel.getReportedProblem());
         if (spinnerActualProbleCode.getSelectedItemPosition() > 0) {
             hasEventToUpdate = true;
             events.add(new Event(
                     "SERVICE_ORDER_UPDATE",
                     "actualProblem" ,
-                    mSharePreference.getUserId() + " - " + actualProblem));
-            Log.i("EventHappenend", "getProblemCodeEvent: " + actualProblem);
+                    actualProblem));
+            Log.i("EventHappenend",  actualProblem);
         }
         if (spinnerCauseCode.getSelectedItemPosition() > 0) {
             hasEventToUpdate = true;
             events.add(new Event(
                     "SERVICE_ORDER_UPDATE",
                     "cause",
-                    mSharePreference.getUserId() + " - " + causeCode));
-            Log.i("EventHappenend", "getProblemCodeEvent: " + causeCode);
+                    causeCode));
+            Log.i("EventHappenend", causeCode);
         }
         if (spinnerRemedyCode.getSelectedItemPosition() > 0) {
             hasEventToUpdate = true;
             events.add(new Event(
                     "SERVICE_ORDER_UPDATE",
                     "remedy",
-                    mSharePreference.getUserId() + " - " + remedyCode));
-            Log.i("EventHappenend", "getProblemCodeEvent: " + remedyCode);
+                    remedyCode));
+            Log.i("EventHappenend", remedyCode);
         }
 
     }

@@ -526,7 +526,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/attach_pre_maintenance_photo"
+                android:text="@string/attach_post_maintenance_photo"
                 android:textColor="@color/colorBlack"
                 android:layout_marginTop="@dimen/margin_normal"
                 android:fontFamily="@font/crimson_text_bold"
