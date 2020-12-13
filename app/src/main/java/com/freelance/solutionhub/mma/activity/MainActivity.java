@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.icu.text.RelativeDateTimeFormatter;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -284,6 +285,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Encode photo string to decode string
+     */
+    private String uploadPhotoByDecoding(String s){
+        byte[] data = Base64.decode(s,Base64.DEFAULT);
+        String s1 = new String(data);
+        Log.v("DECODE", s1);
+        return s1;
     }
 
 }

@@ -498,8 +498,14 @@ public class First_Step_PM_Fragment extends Fragment implements FirstStepPMFragm
             if(isPreMaintenance) {
                 date = new Date();
                 Timestamp timestamp = new Timestamp(date.getTime());
-                String actualDateTime = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss").format(timestamp);
-                uploadPhoto(theImage, "pre-maintenance-photo" + mSharePerferenceHelper.getUserId() +actualDateTime, isPreMaintenance);
+                String actualDateTime = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss").format(timestamp);   /**
+                 * Check returned photo whether network is okay or not
+                 */
+                if(network.isNetworkAvailable()) {
+                    uploadPhoto(theImage, "pre-maintenance-photo" + mSharePerferenceHelper.getUserId() + actualDateTime,isPreMaintenance);
+                }else {//Save To db
+                    saveEncodePhotoToDatabase(photo);
+                }
                 photo = getEncodedString(theImage);
                 prePhotoModels.add(new PhotoModel(photo, 1));
                 prePhotoAdapter.notifyDataSetChanged();
@@ -507,7 +513,14 @@ public class First_Step_PM_Fragment extends Fragment implements FirstStepPMFragm
                 date = new Date();
                 Timestamp timestamp = new Timestamp(date.getTime());
                 String actualDateTime = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss").format(timestamp);
-                uploadPhoto(theImage, "post-maintenance-photo" + mSharePerferenceHelper.getUserId()+actualDateTime, isPreMaintenance);
+                /**
+                 * Check returned photo whether network is okay or not
+                 */
+                if(network.isNetworkAvailable()) {
+                    uploadPhoto(theImage, "post-maintenance-photo" + mSharePerferenceHelper.getUserId()+actualDateTime, isPreMaintenance);
+                }else {//Save To db
+                    saveEncodePhotoToDatabase(photo);
+                }
                 photo = getEncodedString(theImage);
                 postPhotoModels.add(new PhotoModel(photo,2));
                 postPhotoAdapter.notifyDataSetChanged();
@@ -604,5 +617,17 @@ public class First_Step_PM_Fragment extends Fragment implements FirstStepPMFragm
 
             }
         });
+    }
+    /**
+     * //To Do save to database photo
+     */
+    private void saveEncodePhotoToDatabase(String sPhoto){
+        byte[] bytes = sPhoto.getBytes();
+        /**
+         * encodeToString is encoded string
+         */
+        String encodeToString = Base64.encodeToString(bytes,Base64.DEFAULT);
+        Log.v("ENCODE",encodeToString);
+
     }
 }

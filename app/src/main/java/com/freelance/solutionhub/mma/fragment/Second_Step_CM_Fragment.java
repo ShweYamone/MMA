@@ -691,7 +691,14 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
             date = new Date();
             Timestamp timestamp = new Timestamp(date.getTime());
             String actualDateTime = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss").format(timestamp);
-            uploadPhoto(bitmap, "pre-maintenance-photo" + mSharePreference.getUserId() +actualDateTime);
+            /**
+             * Check returned photo whether network is okay or not
+             */
+            if(network.isNetworkAvailable()) {
+                uploadPhoto(bitmap, "post-maintenance-photo" + mSharePreference.getUserId() +actualDateTime);
+            }else {//Save To db
+                saveEncodePhotoToDatabase(photo);
+            }
             photo = getEncodedString(bitmap);
             postModelList.add(new PhotoModel(photo, 1));
             postPhotoAdapter.notifyDataSetChanged();
@@ -777,6 +784,17 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
             }
         });
     }
+    /**
+     * //To Do save to database photo
+     */
+    private void saveEncodePhotoToDatabase(String sPhoto){
+        byte[] bytes = sPhoto.getBytes();
+        /**
+         * encodeToString is encoded string
+         */
+        String encodeToString = Base64.encodeToString(bytes,Base64.DEFAULT);
+        Log.v("ENCODE",encodeToString);
 
+    }
 
 }

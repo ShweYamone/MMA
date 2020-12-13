@@ -51,6 +51,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.security.spec.EncodedKeySpec;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -319,8 +320,16 @@ public class First_Step_CM_Fragment extends Fragment implements FirstStepPMFragm
                 date = new Date();
                 Timestamp timestamp = new Timestamp(date.getTime());
                 String actualDateTime = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss").format(timestamp);
-                uploadPhoto(theImage, "pre-maintenance-photo" + mSharePerferenceHelper.getUserId() +actualDateTime);
                 photo = getEncodedString(theImage);
+                Log.v("ORI",photo);
+            /**
+             * Check returned photo whether network is okay or not
+             */
+                 if(mNetwork.isNetworkAvailable()) {
+                    uploadPhoto(theImage, "pre-maintenance-photo" + mSharePerferenceHelper.getUserId() + actualDateTime);
+                }else {//Save To db
+                    saveEncodePhotoToDatabase(photo);
+                }
                 prePhotoModels.add(new PhotoModel(photo, 1));
                 prePhotoAdapter.notifyDataSetChanged();
 
@@ -404,6 +413,19 @@ public class First_Step_CM_Fragment extends Fragment implements FirstStepPMFragm
 
             }
         });
+    }
+
+    /**
+     * //To Do save to database photo
+     */
+    private void saveEncodePhotoToDatabase(String sPhoto){
+        byte[] bytes = sPhoto.getBytes();
+        /**
+         * encodeToString is encoded string
+         */
+        String encodeToString = Base64.encodeToString(bytes,Base64.DEFAULT);
+        Log.v("ENCODE",encodeToString);
+
     }
 
 }
