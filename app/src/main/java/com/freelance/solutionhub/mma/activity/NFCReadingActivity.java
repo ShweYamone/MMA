@@ -84,7 +84,6 @@ public class NFCReadingActivity extends AppCompatActivity {
         }
 
         /****To Fix when NFC can read*********/
-        perFormTagEvent();
         /*********************/
         /////////////////////////////////////
 
@@ -93,8 +92,9 @@ public class NFCReadingActivity extends AppCompatActivity {
             //finish();
             return;
         }else {
-            if (!nfcAdapter.isEnabled())
-                requestPermissions(new String[]{Manifest.permission.NFC}, NFC_PERMISSION_CODE);
+            if (!nfcAdapter.isEnabled()){
+                showWirelessSettings();
+            }
         }
 
         pendingIntent = PendingIntent.getActivity(this, 0,
@@ -166,22 +166,6 @@ public class NFCReadingActivity extends AppCompatActivity {
         }
 
     }
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == NFC_PERMISSION_CODE)
-        {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
-            {
-                Toast.makeText(this, "camera permission granted", Toast.LENGTH_LONG).show();
-                //showWirelessSettings();
-            }
-            else
-            {
-                Toast.makeText(this, "camera permission denied", Toast.LENGTH_LONG).show();
-            }
-        }
-    }
 
     @Override
     protected void onResume() {
@@ -245,6 +229,7 @@ public class NFCReadingActivity extends AppCompatActivity {
         }
 
        Toast.makeText(this, builder.toString(), Toast.LENGTH_LONG).show();
+        perFormTagEvent();
     }
 
     private void showWirelessSettings() {
