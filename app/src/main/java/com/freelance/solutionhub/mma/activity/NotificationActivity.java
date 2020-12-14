@@ -18,16 +18,17 @@ import com.freelance.solutionhub.mma.model.NotificationModel;
 import com.freelance.solutionhub.mma.util.SharePreferenceHelper;
 import com.freelance.solutionhub.mma.util.WebSocketUtils;
 
-import org.phoenixframework.channels.*;
 
-import java.io.IOException;
-import java.net.URI;
+import org.phoenixframework.channels.Channel;
+import org.phoenixframework.channels.Envelope;
+import org.phoenixframework.channels.IMessageCallback;
+import org.phoenixframework.channels.Socket;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.internal.Utils;
 
 public class NotificationActivity extends AppCompatActivity {
 
@@ -41,7 +42,9 @@ public class NotificationActivity extends AppCompatActivity {
 
     private Socket socket;
     private Channel channel;
+    private WebSocketUtils webSocketUtils;
     private SharePreferenceHelper mSharedPreference;
+    private String urlStr, channelStr;
 
     private static final String TAG = "NotificationActivity";
     @Override
@@ -52,7 +55,7 @@ public class NotificationActivity extends AppCompatActivity {
         setupToolbar();
         mSharedPreference = new SharePreferenceHelper(this);
         mAdapter = new NotificationAdapter(this, notificationList);
-
+        webSocketUtils = new WebSocketUtils(this);
         recyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(mLayoutManager);
@@ -60,9 +63,7 @@ public class NotificationActivity extends AppCompatActivity {
         prepareNotifications();
 
 
-
         /************WebScoket***************/
-
         Uri.Builder url = Uri.parse( "ws://hub-nightly-public-alb-1826126491.ap-southeast-1.elb.amazonaws.com/socket/websocket" ).buildUpon();
         //   url.appendQueryParameter("vsn", "2.0.0");
         url.appendQueryParameter( "token", mSharedPreference.getToken());
@@ -91,10 +92,11 @@ public class NotificationActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Exception" + e.getMessage(), Toast.LENGTH_SHORT).show();
             Log.i("Websocket",  e.getMessage() + "\n" + e.getLocalizedMessage());
         }
-        Toast.makeText(getApplicationContext(), "END", Toast.LENGTH_SHORT).show();
+     //   Toast.makeText(getApplicationContext(), "END", Toast.LENGTH_SHORT).show();
         Log.i("Websocket",  "END");
 
-    }
+
+}
 
     private void setupToolbar() {
         setSupportActionBar(toolbar);

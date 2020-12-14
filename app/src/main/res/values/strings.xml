@@ -5,7 +5,7 @@
 
     <!-- Strings related to login -->
     <string name="default_topic">rooms:lobby</string>
-    <string name="default_url">https://phxchat.codespyre.com/socket/websocket</string>
+    <string name="default_url">ws://hub-nightly-public-alb-1826126491.ap-southeast-1.elb.amazonaws.com/socket/websocket</string>
 
     <string name="nav_home">Home</string>
     <string name="nav_nfc">NFC</string>
