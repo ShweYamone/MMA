@@ -17,7 +17,12 @@ import com.freelance.solutionhub.mma.adapter.NotificationAdapter;
 import com.freelance.solutionhub.mma.model.NotificationModel;
 import com.freelance.solutionhub.mma.util.SharePreferenceHelper;
 import com.freelance.solutionhub.mma.util.WebSocketUtils;
+
+
+import java.io.IOException;
+import java.net.Socket;
 import java.net.URI;
+import java.nio.channels.Channel;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,10 +39,12 @@ public class NotificationActivity extends AppCompatActivity {
 
     private NotificationAdapter mAdapter;
     private List<NotificationModel> notificationList = new ArrayList<>();
-    /*
+
     private Socket socket;
-    private Channel channel;*/
+    private Channel channel;
+    private WebSocketUtils webSocketUtils;
     private SharePreferenceHelper mSharedPreference;
+    private String urlStr, channelStr;
 
     private static final String TAG = "NotificationActivity";
     @Override
@@ -48,13 +55,12 @@ public class NotificationActivity extends AppCompatActivity {
         setupToolbar();
         mSharedPreference = new SharePreferenceHelper(this);
         mAdapter = new NotificationAdapter(this, notificationList);
-
+        webSocketUtils = new WebSocketUtils(this);
         recyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setAdapter(mAdapter);
         prepareNotifications();
-
 
 
         /************WebScoket***************/

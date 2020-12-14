@@ -20,7 +20,7 @@ allprojects {
         mavenLocal()
         jcenter()
         maven {
-            url  "http://dl.bintray.com/javaphoenixchannels/java-phoenix-channels"
+            url  'https://jitpack.io'
         }
         jcenter()
         mavenCentral()

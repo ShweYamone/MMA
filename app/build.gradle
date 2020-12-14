@@ -18,6 +18,8 @@ android {
         exclude 'META-INF/NOTICE.md'
 
     }
+ 
+
     buildTypes {
         release {
             minifyEnabled false
@@ -87,12 +89,13 @@ dependencies {
 
     //QR Scan
     implementation 'com.journeyapps:zxing-android-embedded:3.4.0'
-/*
+
     //Phoenix
-    implementation ('com.github.eoinsha:JavaPhoenixChannels:0.2'){
-        exclude module: 'groovy-all'
-    }
-*/
+    implementation 'com.github.vheathen:JavaPhoenixChannels:v0.1.0'
+//    implementation ('com.github.eoinsha:JavaPhoenixChannels:0.2'){
+//        exclude module: 'groovy-all'
+//    }
+
     //jackson
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.10.1'
 
@@ -104,3 +107,4 @@ dependencies {
     implementation "in.arjsna:passcodeview:1.2.1"
 
 }
+
