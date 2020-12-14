@@ -1,15 +1,18 @@
 package com.freelance.solutionhub.mma.activity;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.freelance.solutionhub.mma.R;
@@ -20,6 +23,7 @@ import com.freelance.solutionhub.mma.util.WebSocketUtils;
 
 
 import org.phoenixframework.channels.Channel;
+import org.phoenixframework.channels.ChannelEvent;
 import org.phoenixframework.channels.Envelope;
 import org.phoenixframework.channels.IMessageCallback;
 import org.phoenixframework.channels.Socket;
@@ -65,7 +69,7 @@ public class NotificationActivity extends AppCompatActivity {
 
         /************WebScoket***************/
         Uri.Builder url = Uri.parse( "ws://hub-nightly-public-alb-1826126491.ap-southeast-1.elb.amazonaws.com/socket/websocket" ).buildUpon();
-        //   url.appendQueryParameter("vsn", "2.0.0");
+       // url.appendQueryParameter("vsn", "2.0.0");
         url.appendQueryParameter( "token", mSharedPreference.getToken());
         try {
             //    Log.i("Websocket", url.toString());
@@ -78,7 +82,7 @@ public class NotificationActivity extends AppCompatActivity {
                     .receive("ok", new IMessageCallback() {
                         @Override
                         public void onMessage(Envelope envelope) {
-                            Log.i("Websocket", "Joined with " + envelope.toString());
+                            Log.i("OK", "Joined with " + envelope.toString());
                         }
                     })
                     .receive("error", new IMessageCallback() {
@@ -86,15 +90,32 @@ public class NotificationActivity extends AppCompatActivity {
                         public void onMessage(Envelope envelope) {
                             Log.i("Websocket", "NOT Joined with ");
                         }
-                    })
-            ;
+                    });
+            channel.on("mso_created", new IMessageCallback() {
+                @Override
+                public void onMessage(Envelope envelope) {
+                    Toast.makeText(getApplicationContext(), "NEW MESSAGE: " + envelope.toString(), Toast.LENGTH_SHORT).show();
+                    //tvResult.setText("NEW MESSAGE: " + envelope.toString());
+                    Log.i("NEW_MESSAGE",envelope.toString());
+                }
+            });
+
+            channel.on("mso_rejected", new IMessageCallback() {
+                @Override
+                public void onMessage(Envelope envelope) {
+                    Toast.makeText(getApplicationContext(), "CLOSED: " + envelope.toString(), Toast.LENGTH_SHORT).show();
+                     //   tvResult.setText("CLOSED: " + envelope.toString());
+                    Log.i("CLOSED", envelope.toString());
+                }
+            });
+
         } catch (Exception e) {
             Toast.makeText(getApplicationContext(), "Exception" + e.getMessage(), Toast.LENGTH_SHORT).show();
             Log.i("Websocket",  e.getMessage() + "\n" + e.getLocalizedMessage());
         }
 
      //   Toast.makeText(getApplicationContext(), "END", Toast.LENGTH_SHORT).show();
-        Log.i("Websocket",  "END");
+        Log.i("END",  "END");
 
 
 }
@@ -114,5 +135,18 @@ public class NotificationActivity extends AppCompatActivity {
         notificationList.add(obj); notificationList.add(obj); notificationList.add(obj);
         notificationList.add(obj); notificationList.add(obj); notificationList.add(obj);
 
+    }
+
+    //For Back Arrow
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+
+
+        return super.onOptionsItemSelected(item);
     }
 }
