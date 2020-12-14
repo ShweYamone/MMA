@@ -65,7 +65,7 @@ public class NotificationActivity extends AppCompatActivity {
 
         Uri.Builder url = Uri.parse( "ws://hub-nightly-public-alb-1826126491.ap-southeast-1.elb.amazonaws.com/socket/websocket" ).buildUpon();
         //   url.appendQueryParameter("vsn", "2.0.0");
-        url.appendQueryParameter( "token", "eyJhbGciOiJSUzI1NiJ9.eyJyYW5kVXVpZCI6IjI0ZWU1MzE3ZWE0ZjQ3MmU4OGJmNzViMTkxNGFjYzZiIiwiYXVkIjpbImFwcC11c2VyIl0sImdyYW50X3R5cGUiOiJwYXNzd29yZCIsInVzZXJfbmFtZSI6Im1vYmlsZS0xIiwicGVybWlzc2lvbnMiOlsiRlVOQ19DUlVEX01NTV9DT05URU5UX19DT05UUkFDVE9SX1RBU0tTIiwiRlVOQ19WSUVXX01NTV9DT05URU5UX0NPTlRSQUNUT1JfVEFTS1MiXSwic2NvcGUiOlsiYXBwbGljYXRpb24iXSwiYXRpIjoiMmM0ODY1MWYtNTAyYi00N2E0LTlhOWMtMDc2MDE1OTE4MTQ2IiwiZXhwIjoxNjA3OTQ4OTYyLCJhdXRob3JpdGllcyI6WyJDT05UUkFDVE9SX01NTV9PRkZJQ0VSIiwiQ09OVFJBQ1RPUl9NTU1fVklFV0VSIl0sImp0aSI6ImJhNmMyN2VlLTZlNGQtNGUzNy04MWZjLWNiODNmM2U5ZmJmNiIsImNsaWVudF9pZCI6InRydXN0ZWQtYXBwIiwidXNlcm5hbWUiOiJtb2JpbGUtMSJ9.O7X8IWUi4PW23yXHzNOgErdAgQP_DxXYQSCQSR4o_F-DoFNH9UbGogyuqwpDkGvKE0SmZr5snZzar0mlTI6xZ2ynAueFJ7CUtUrk2NW8hyqjEJPQEo3cCaben2Oe1it5x8Cbb0QK3VbqccCDnUiUb1P7K5Vh6V3woYIyfivu1cKZUI2juhjnoahbqHSpfknVCrGHdgiqLdxYeG6T4YnXWxqbtSe6Ll0F5WJAg91pFNySkREdrPQpgNO0EXwThB4PG3B4bynuthb4MdAmoBq0b5ZkJ5elL6jNNQNsbhRwKzcO8illbtJMAy5vglvCuXJAzC_Xqgy_2tV4DkBBIKbtQw");
+        url.appendQueryParameter( "token", mSharedPreference.getToken());
         try {
             //    Log.i("Websocket", url.toString());
             socket = new Socket(url.build().toString());
