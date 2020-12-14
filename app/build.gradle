@@ -18,6 +18,7 @@ android {
         exclude 'META-INF/NOTICE.md'
 
     }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -29,11 +30,6 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
-    }
-
-    configurations.all {
-        // OkHttp 3.5.0+ includes the websockets API, so we need this to prevent a conflict
-        exclude module: 'okhttp-ws'
     }
 
 
@@ -87,12 +83,12 @@ dependencies {
 
     //QR Scan
     implementation 'com.journeyapps:zxing-android-embedded:3.4.0'
-/*
+
     //Phoenix
     implementation ('com.github.eoinsha:JavaPhoenixChannels:0.2'){
         exclude module: 'groovy-all'
     }
-*/
+
     //jackson
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.10.1'
 
