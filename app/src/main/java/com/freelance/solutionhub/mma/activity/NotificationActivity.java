@@ -15,6 +15,8 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.freelance.solutionhub.mma.R;
 import com.freelance.solutionhub.mma.adapter.NotificationAdapter;
 import com.freelance.solutionhub.mma.model.NotificationModel;
@@ -75,6 +77,9 @@ public class NotificationActivity extends AppCompatActivity {
             //    Log.i("Websocket", url.toString());
             socket = new Socket(url.build().toString());
             socket.connect();
+            if(socket.isConnected()){
+                Log.i("SOCKET_CONNECT","SUCCESS");
+            }
 
             channel = socket.chan("notification", null);
 
@@ -94,7 +99,7 @@ public class NotificationActivity extends AppCompatActivity {
             channel.on("mso_created", new IMessageCallback() {
                 @Override
                 public void onMessage(Envelope envelope) {
-                    Toast.makeText(getApplicationContext(), "NEW MESSAGE: " + envelope.toString(), Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getApplicationContext(), "NEW MESSAGE: " + envelope.toString(), Toast.LENGTH_SHORT).show();
                     //tvResult.setText("NEW MESSAGE: " + envelope.toString());
                     Log.i("NEW_MESSAGE",envelope.toString());
                 }
@@ -103,12 +108,19 @@ public class NotificationActivity extends AppCompatActivity {
             channel.on("mso_rejected", new IMessageCallback() {
                 @Override
                 public void onMessage(Envelope envelope) {
-                    Toast.makeText(getApplicationContext(), "CLOSED: " + envelope.toString(), Toast.LENGTH_SHORT).show();
+                  //  Toast.makeText(getApplicationContext(), "CLOSED: " + envelope.toString(), Toast.LENGTH_SHORT).show();
                      //   tvResult.setText("CLOSED: " + envelope.toString());
                     Log.i("CLOSED", envelope.toString());
                 }
             });
 
+
+//Sending a message. This library uses Jackson for JSON serialization
+//            ObjectNode node = new ObjectNode(JsonNodeFactory.instance)
+//                    .put("user", "my_username")
+//                    .put("body", "Hello");
+//
+//            channel.push("new:msg", node);
         } catch (Exception e) {
             Toast.makeText(getApplicationContext(), "Exception" + e.getMessage(), Toast.LENGTH_SHORT).show();
             Log.i("Websocket",  e.getMessage() + "\n" + e.getLocalizedMessage());
