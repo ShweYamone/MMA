@@ -1,15 +1,15 @@
 package com.freelance.solutionhub.mma.activity;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -19,7 +19,12 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.freelance.solutionhub.mma.R;
 import com.freelance.solutionhub.mma.adapter.NotificationAdapter;
+import com.freelance.solutionhub.mma.model.Item;
 import com.freelance.solutionhub.mma.model.NotificationModel;
+import com.freelance.solutionhub.mma.model.NotificationReadModel;
+import com.freelance.solutionhub.mma.model.Payload;
+import com.freelance.solutionhub.mma.util.ApiClient;
+import com.freelance.solutionhub.mma.util.ApiInterface;
 import com.freelance.solutionhub.mma.util.SharePreferenceHelper;
 import com.freelance.solutionhub.mma.util.WebSocketUtils;
 
@@ -29,11 +34,22 @@ import org.phoenixframework.channels.ChannelEvent;
 import org.phoenixframework.channels.Envelope;
 import org.phoenixframework.channels.IMessageCallback;
 import org.phoenixframework.channels.Socket;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.text.DateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class NotificationActivity extends AppCompatActivity {
 
@@ -50,6 +66,7 @@ public class NotificationActivity extends AppCompatActivity {
     private WebSocketUtils webSocketUtils;
 
     private SharePreferenceHelper mSharedPreference;
+    private ApiInterface apiInterface;
     private String urlStr, channelStr;
 
     private static final String TAG = "NotificationActivity";
@@ -59,6 +76,7 @@ public class NotificationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_notification);
         ButterKnife.bind(this);
         setupToolbar();
+        apiInterface = ApiClient.getClient(this);
         mSharedPreference = new SharePreferenceHelper(this);
         mAdapter = new NotificationAdapter(this, notificationList);
         webSocketUtils = new WebSocketUtils(this);
@@ -66,8 +84,9 @@ public class NotificationActivity extends AppCompatActivity {
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setAdapter(mAdapter);
-        prepareNotifications();
+       // prepareNotifications();
 
+        getMSOEvent();
 
         /************WebScoket***************/
         Uri.Builder url = Uri.parse( "ws://hub-nightly-public-alb-1826126491.ap-southeast-1.elb.amazonaws.com/socket/websocket" ).buildUpon();
@@ -139,6 +158,48 @@ public class NotificationActivity extends AppCompatActivity {
         final ActionBar ab = getSupportActionBar();
         //ab.setHomeAsUpIndicator(R.drawable.ic_menu);
         ab.setDisplayHomeAsUpEnabled(true);
+    }
+
+    private void getMSOEvent(){
+        Call<NotificationReadModel> notificationReadModelCall = apiInterface.getNotificationReadList("Bearer "+mSharedPreference.getToken(),1,10);
+        notificationReadModelCall.enqueue(new Callback<NotificationReadModel>() {
+            @Override
+            public void onResponse(Call<NotificationReadModel> call, Response<NotificationReadModel> response) {
+                NotificationReadModel readModel = response.body();
+                if(response.isSuccessful()){
+
+                    ArrayList<Item> items = new ArrayList<>();
+                    items.addAll(readModel.getItems());
+                    Toast.makeText(getApplicationContext(),"SUCCESS:"+items.size(),Toast.LENGTH_SHORT).show();
+                    for(int i = 0;i<items.size();i++){
+                        Payload payload = items.get(i).getPayload();
+                        // Note, MM is months, not mm
+                        DateFormat outputFormat = new SimpleDateFormat("dd/MM/yyyy HH:MM aa", Locale.US);
+                        DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX", Locale.US);
+
+                        String inputText = items.get(i).getInserted_at().toString();
+                        Date date = null;
+                        try {
+                            date = inputFormat.parse(inputText);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                        if(payload.getMso_type().equals("PM")) {
+                            notificationList.add(new NotificationModel("PM-MSO xxxx","You received an PM MSO Alert.",inputText));
+                        }else {
+                            notificationList.add(new NotificationModel("CM-MSO xxxx","You received an CM MSO Alert.",inputText));
+                        }
+
+                    }
+                    mAdapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<NotificationReadModel> call, Throwable t) {
+                    Log.i("ERROR",t.getLocalizedMessage());
+            }
+        });
     }
 
     private void prepareNotifications() {

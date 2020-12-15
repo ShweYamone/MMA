@@ -13,20 +13,52 @@ public class NotificationReadModel{
     public int totalElements;
     public int totalPages;
 
-    class Payload{
-        public String event_publisher;
-        public String mso_id;
-        public String mso_type;
-        public String status;
+    public List<Item> getItems() {
+        return items;
     }
 
-    class Item{
-        public String id;
-        public Date inserted_at;
-        public boolean is_read;
-        public Payload payload;
-        public String recipient_id;
-        public String type;
-        public Date updated_at;
+    public void setItems(List<Item> items) {
+        this.items = items;
     }
+
+    public int getNumberOfElements() {
+        return numberOfElements;
+    }
+
+    public void setNumberOfElements(int numberOfElements) {
+        this.numberOfElements = numberOfElements;
+    }
+
+    public int getPageNumber() {
+        return pageNumber;
+    }
+
+    public void setPageNumber(int pageNumber) {
+        this.pageNumber = pageNumber;
+    }
+
+    public int getPageSize() {
+        return pageSize;
+    }
+
+    public void setPageSize(int pageSize) {
+        this.pageSize = pageSize;
+    }
+
+    public int getTotalElements() {
+        return totalElements;
+    }
+
+    public void setTotalElements(int totalElements) {
+        this.totalElements = totalElements;
+    }
+
+    public int getTotalPages() {
+        return totalPages;
+    }
+
+    public void setTotalPages(int totalPages) {
+        this.totalPages = totalPages;
+    }
+
 }

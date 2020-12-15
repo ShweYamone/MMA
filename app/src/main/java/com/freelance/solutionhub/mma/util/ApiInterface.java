@@ -26,6 +26,7 @@ import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Part;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 
 public interface ApiInterface {
@@ -64,8 +65,8 @@ public interface ApiInterface {
     Call<QRReturnBody> getAssetInformation(@Header("Authorization") String auth, @Path("qrCode") String qrCode);
 
     //GET Notification Data
-    @GET("http://hub-nightly-public-alb-1826126491.ap-southeast-1.elb.amazonaws.com/api/notifications?page_number={page_number}&page_size={page_size}")
-    Call<NotificationReadModel> getNotificationReadList(@Header("Authorization") String auth, @Path("page_number") int pageNumber, @Path("page_size") int pageSize);
+    @GET("http://hub-nightly-public-alb-1826126491.ap-southeast-1.elb.amazonaws.com/api/notifications")
+    Call<NotificationReadModel> getNotificationReadList(@Header("Authorization") String auth, @Query("page_number") int pageNumber, @Query("page_size") int pageSize);
 
 }
 
