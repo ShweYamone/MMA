@@ -96,7 +96,9 @@ public class NotificationActivity extends AppCompatActivity  {
         mSmartScrollListener = new SmartScrollListener(new SmartScrollListener.OnSmartScrollListener() {
             @Override
             public void onListEndReach() {
+
                 page++;
+                Toast.makeText(getApplicationContext(), "Page " + page, Toast.LENGTH_SHORT).show();
                 if (page <= totalPages)
                     getServiceOrders();
             }
@@ -183,10 +185,11 @@ public class NotificationActivity extends AppCompatActivity  {
         notificationReadModelCall.enqueue(new Callback<NotificationReadModel>() {
             @Override
             public void onResponse(Call<NotificationReadModel> call, Response<NotificationReadModel> response) {
-                NotificationReadModel readModel = response.body();
-                if(response.isSuccessful()){
 
+                if(response.isSuccessful()){
+                    NotificationReadModel readModel = response.body();
                     ArrayList<Item> items = new ArrayList<>();
+
                     items.addAll(readModel.getItems());
                     Toast.makeText(getApplicationContext(),"SUCCESS:"+items.size(),Toast.LENGTH_SHORT).show();
                     for(int i = 0;i<items.size();i++){
@@ -228,9 +231,10 @@ public class NotificationActivity extends AppCompatActivity  {
         notificationReadModelCall.enqueue(new Callback<NotificationReadModel>() {
             @Override
             public void onResponse(Call<NotificationReadModel> call, Response<NotificationReadModel> response) {
-                NotificationReadModel readModel = response.body();
-                if(response.isSuccessful()){
 
+                if(response.isSuccessful()){
+                    NotificationReadModel readModel = response.body();
+                    totalPages = readModel.getTotalPages();
                     ArrayList<Item> items = new ArrayList<>();
                     items.addAll(readModel.getItems());
                     Toast.makeText(getApplicationContext(),"SUCCESS:"+items.size(),Toast.LENGTH_SHORT).show();
