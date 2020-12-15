@@ -13,6 +13,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.freelance.solutionhub.mma.R;
@@ -39,6 +40,8 @@ public class NotificationActivity extends AppCompatActivity {
     Toolbar toolbar;
     @BindView(R.id.recyclerview_NotiList)
     RecyclerView recyclerView;
+    @BindView(R.id.tvMessage)
+    TextView tvMessage;
 
     private NotificationAdapter mAdapter;
     private List<NotificationModel> notificationList = new ArrayList<>();
@@ -82,7 +85,8 @@ public class NotificationActivity extends AppCompatActivity {
                     .receive("ok", new IMessageCallback() {
                         @Override
                         public void onMessage(Envelope envelope) {
-                            Log.i("OK", "Joined with " + envelope.toString());
+                            Log.i(TAG, "Joined with " + envelope.toString());
+                            Log.i(TAG, "onMessage: " + socket.isConnected());
                         }
                     })
                     .receive("error", new IMessageCallback() {
@@ -94,9 +98,10 @@ public class NotificationActivity extends AppCompatActivity {
             channel.on("mso_created", new IMessageCallback() {
                 @Override
                 public void onMessage(Envelope envelope) {
-                    Toast.makeText(getApplicationContext(), "NEW MESSAGE: " + envelope.toString(), Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(getApplicationContext(), "NEW MESSAGE: " + envelope.toString(), Toast.LENGTH_SHORT).show();
                     //tvResult.setText("NEW MESSAGE: " + envelope.toString());
                     Log.i("NEW_MESSAGE",envelope.toString());
+                   // tvMessage.setText(envelope.toString());
                 }
             });
 
