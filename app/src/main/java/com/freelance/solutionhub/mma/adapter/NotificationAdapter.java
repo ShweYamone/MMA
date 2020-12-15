@@ -11,6 +11,7 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.freelance.solutionhub.mma.R;
+import com.freelance.solutionhub.mma.activity.NotificationViewActivity;
 import com.freelance.solutionhub.mma.model.NotificationModel;
 
 import java.util.List;
@@ -41,7 +42,9 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    Intent intent = new Intent(mContext, NotificationViewActivity.class);
+                    intent.putExtra("noti", notification);
+                    mContext.startActivity(intent);
                 }
             });
 
