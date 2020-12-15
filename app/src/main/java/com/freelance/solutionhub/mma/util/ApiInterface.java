@@ -1,6 +1,7 @@
 package com.freelance.solutionhub.mma.util;
 
 import com.freelance.solutionhub.mma.model.FilterModelBody;
+import com.freelance.solutionhub.mma.model.NotificationReadModel;
 import com.freelance.solutionhub.mma.model.PMServiceInfoDetailModel;
 import com.freelance.solutionhub.mma.model.PMServiceListModel;
 
@@ -25,6 +26,7 @@ import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Part;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 
 public interface ApiInterface {
@@ -61,6 +63,10 @@ public interface ApiInterface {
     //GET Data with QRCode
     @GET("https://hz35b2raaj.execute-api.ap-southeast-1.amazonaws.com/dev/component/{qrCode}")
     Call<QRReturnBody> getAssetInformation(@Header("Authorization") String auth, @Path("qrCode") String qrCode);
+
+    //GET Notification Data
+    @GET("http://hub-nightly-public-alb-1826126491.ap-southeast-1.elb.amazonaws.com/api/notifications")
+    Call<NotificationReadModel> getNotificationReadList(@Header("Authorization") String auth, @Query("page_number") int pageNumber, @Query("page_size") int pageSize);
 
 }
 
