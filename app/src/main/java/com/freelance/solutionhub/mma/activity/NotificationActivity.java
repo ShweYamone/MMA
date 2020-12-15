@@ -8,6 +8,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -20,9 +21,13 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.freelance.solutionhub.mma.R;
 import com.freelance.solutionhub.mma.adapter.NotificationAdapter;
+import com.freelance.solutionhub.mma.common.SmartScrollListener;
+import com.freelance.solutionhub.mma.delegate.HomeFragmentCallback;
+import com.freelance.solutionhub.mma.model.FilterModelBody;
 import com.freelance.solutionhub.mma.model.Item;
 import com.freelance.solutionhub.mma.model.NotificationModel;
 import com.freelance.solutionhub.mma.model.NotificationReadModel;
+import com.freelance.solutionhub.mma.model.PMServiceListModel;
 import com.freelance.solutionhub.mma.model.Payload;
 import com.freelance.solutionhub.mma.util.ApiClient;
 import com.freelance.solutionhub.mma.util.ApiInterface;
@@ -53,7 +58,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class NotificationActivity extends AppCompatActivity {
+public class NotificationActivity extends AppCompatActivity  {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -74,6 +79,9 @@ public class NotificationActivity extends AppCompatActivity {
     private String urlStr, channelStr;
     private Timestamp timestamp;
     private Date date;
+    private SmartScrollListener mSmartScrollListener;
+    private int page = 1;
+    private int totalPages = 0 ;
 
     private static final String TAG = "NotificationActivity";
     @Override
@@ -84,14 +92,24 @@ public class NotificationActivity extends AppCompatActivity {
         setupToolbar();
         apiInterface = ApiClient.getClient(this);
         mSharedPreference = new SharePreferenceHelper(this);
+
+        mSmartScrollListener = new SmartScrollListener(new SmartScrollListener.OnSmartScrollListener() {
+            @Override
+            public void onListEndReach() {
+                page++;
+                if (page <= totalPages)
+                    getServiceOrders();
+            }
+        });
+
+
         mAdapter = new NotificationAdapter(this, notificationList);
         webSocketUtils = new WebSocketUtils(this);
         recyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.addOnScrollListener(mSmartScrollListener);
         recyclerView.setAdapter(mAdapter);
-       // prepareNotifications();
-
         getMSOEvent();
 
         /************WebScoket***************/
@@ -159,6 +177,42 @@ public class NotificationActivity extends AppCompatActivity {
 
 
 }
+
+    private void getServiceOrders() {
+        Call<NotificationReadModel> notificationReadModelCall = apiInterface.getNotificationReadList("Bearer "+mSharedPreference.getToken(),page,10);
+        notificationReadModelCall.enqueue(new Callback<NotificationReadModel>() {
+            @Override
+            public void onResponse(Call<NotificationReadModel> call, Response<NotificationReadModel> response) {
+                NotificationReadModel readModel = response.body();
+                if(response.isSuccessful()){
+
+                    ArrayList<Item> items = new ArrayList<>();
+                    items.addAll(readModel.getItems());
+                    Toast.makeText(getApplicationContext(),"SUCCESS:"+items.size(),Toast.LENGTH_SHORT).show();
+                    for(int i = 0;i<items.size();i++){
+                        Payload payload = items.get(i).getPayload();
+                        date = items.get(i).getInserted_at();
+                        timestamp = new Timestamp(date.getTime());
+                        String actualDateTime = new SimpleDateFormat("dd.MM.yyyy/HH:mm aa").format(timestamp);
+                        if(payload.getMso_type().equals("PM")) {
+                            notificationList.add(new NotificationModel("PM-MSO xxxx","You received an PM MSO Alert.",actualDateTime));
+                        }else {
+                            notificationList.add(new NotificationModel("CM-MSO xxxx","You received an CM MSO Alert.",actualDateTime));
+                        }
+
+                    }
+                    mAdapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<NotificationReadModel> call, Throwable t) {
+                Log.i("ERROR",t.getLocalizedMessage());
+            }
+        });
+
+    }
+
 
     private void setupToolbar() {
         setSupportActionBar(toolbar);

@@ -149,7 +149,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
         recyclerViewMaintenance.setHasFixedSize(true);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(view.getContext());
         recyclerViewMaintenance.setLayoutManager(mLayoutManager);
-        recyclerViewMaintenance.setAdapter(mAdapter);
+        //recyclerViewMaintenance.setAdapter(mAdapter);
         recyclerViewMaintenance.addOnScrollListener(mSmartScrollListener);
         recyclerViewMaintenance.setAdapter(mAdapter);
 
