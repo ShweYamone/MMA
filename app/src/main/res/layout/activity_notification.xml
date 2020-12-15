@@ -33,13 +33,14 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <TextView
+        android:visibility="gone"
         android:id="@+id/tvMessage"
         android:text="message_text_here"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:visibility="gone"
+        android:visibility="visible"
         android:id="@+id/recyclerview_NotiList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

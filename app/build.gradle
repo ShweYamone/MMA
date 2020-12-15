@@ -33,7 +33,6 @@ android {
     }
 
 
-
 }
 
 dependencies {
@@ -88,7 +87,7 @@ dependencies {
     //Phoenix
     implementation 'com.github.vheathen:JavaPhoenixChannels:v0.1.0'
 
-   //jackson
+    //jackson
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.10.1'
 
     //room dependency
@@ -99,4 +98,3 @@ dependencies {
     implementation "in.arjsna:passcodeview:1.2.1"
 
 }
-

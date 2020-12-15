@@ -1,6 +1,8 @@
 package com.freelance.solutionhub.mma.model;
 
-public class NotificationModel {
+import java.io.Serializable;
+
+public class NotificationModel implements Serializable {
     String messageHead;
     String messageBody;
     String messageDateTime;
