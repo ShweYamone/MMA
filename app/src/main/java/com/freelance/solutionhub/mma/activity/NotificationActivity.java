@@ -36,6 +36,7 @@ import org.phoenixframework.channels.Envelope;
 import org.phoenixframework.channels.IMessageCallback;
 import org.phoenixframework.channels.Socket;
 
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.text.DateFormat;
@@ -71,6 +72,8 @@ public class NotificationActivity extends AppCompatActivity {
     private SharePreferenceHelper mSharedPreference;
     private ApiInterface apiInterface;
     private String urlStr, channelStr;
+    private Timestamp timestamp;
+    private Date date;
 
     private static final String TAG = "NotificationActivity";
     @Override
@@ -179,21 +182,13 @@ public class NotificationActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(),"SUCCESS:"+items.size(),Toast.LENGTH_SHORT).show();
                     for(int i = 0;i<items.size();i++){
                         Payload payload = items.get(i).getPayload();
-                        // Note, MM is months, not mm
-                        DateFormat outputFormat = new SimpleDateFormat("dd/MM/yyyy HH:MM aa", Locale.US);
-                        DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX", Locale.US);
-
-                        String inputText = items.get(i).getInserted_at().toString();
-                        Date date = null;
-                        try {
-                            date = inputFormat.parse(inputText);
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                        }
+                        date = items.get(i).getInserted_at();
+                        timestamp = new Timestamp(date.getTime());
+                        String actualDateTime = new SimpleDateFormat("dd.MM.yyyy/HH:mm aa").format(timestamp);
                         if(payload.getMso_type().equals("PM")) {
-                            notificationList.add(new NotificationModel("PM-MSO xxxx","You received an PM MSO Alert.",inputText));
+                            notificationList.add(new NotificationModel("PM-MSO xxxx","You received an PM MSO Alert.",actualDateTime));
                         }else {
-                            notificationList.add(new NotificationModel("CM-MSO xxxx","You received an CM MSO Alert.",inputText));
+                            notificationList.add(new NotificationModel("CM-MSO xxxx","You received an CM MSO Alert.",actualDateTime));
                         }
 
                     }
