@@ -35,16 +35,12 @@
     <TextView
         android:visibility="gone"
         android:id="@+id/tvMessage"
-        android:visibility="gone"
         android:text="message_text_here"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
     <androidx.recyclerview.widget.RecyclerView
-<<<<<<< HEAD
-=======
         android:visibility="visible"
->>>>>>> b4d850d1522eafc1e58548ac07f1622346fc82f1
         android:id="@+id/recyclerview_NotiList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
