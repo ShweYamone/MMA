@@ -42,6 +42,7 @@ import com.freelance.solutionhub.mma.model.PMServiceInfoModel;
 import com.freelance.solutionhub.mma.model.PhotoModel;
 import com.freelance.solutionhub.mma.model.ReturnStatus;
 import com.freelance.solutionhub.mma.model.UpdateEventBody;
+import com.freelance.solutionhub.mma.model.UploadPhotoModel;
 import com.freelance.solutionhub.mma.util.ApiClient;
 import com.freelance.solutionhub.mma.util.ApiInterface;
 import com.freelance.solutionhub.mma.util.Network;
@@ -322,13 +323,14 @@ public class First_Step_CM_Fragment extends Fragment implements FirstStepPMFragm
                 String actualDateTime = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss").format(timestamp);
                 photo = getEncodedString(theImage);
                 Log.v("ORI",photo);
+                String bucketName ="pids-pre-maintenance-photo";
             /**
              * Check returned photo whether network is okay or not
              */
                  if(mNetwork.isNetworkAvailable()) {
-                    uploadPhoto(theImage, "pre-maintenance-photo" + mSharePerferenceHelper.getUserId() + actualDateTime);
+                    uploadPhoto(theImage, "pre-maintenance-photo" + mSharePerferenceHelper.getUserId() + actualDateTime, bucketName);
                 }else {//Save To db
-                    saveEncodePhotoToDatabase(photo);
+                    saveEncodePhotoToDatabase(bucketName, photo);
                 }
                 prePhotoModels.add(new PhotoModel(photo, 1));
                 prePhotoAdapter.notifyDataSetChanged();
@@ -373,7 +375,7 @@ public class First_Step_CM_Fragment extends Fragment implements FirstStepPMFragm
      * @param bitmap
      * @param name
      */
-    private void uploadPhoto(Bitmap bitmap, String name) {
+    private void uploadPhoto(Bitmap bitmap, String name, String bucketName) {
         File filesDir = getContext().getFilesDir();
         File fileName = new File(filesDir, name + ".jpg");
 
@@ -392,7 +394,7 @@ public class First_Step_CM_Fragment extends Fragment implements FirstStepPMFragm
         builder.addFormDataPart("file",fileName.getName(), RequestBody.create(MediaType.parse("multipart/form-data"),fileName));
         MultipartBody requestBody = builder.build();
 
-        String bucketName ="pids-pre-maintenance-photo";
+
 
         Call<ReturnStatus> returnStatusCall = apiInterface.uploadPhoto(bucketName,  requestBody);
         returnStatusCall.enqueue(new Callback<ReturnStatus>() {
@@ -418,12 +420,13 @@ public class First_Step_CM_Fragment extends Fragment implements FirstStepPMFragm
     /**
      * //To Do save to database photo
      */
-    private void saveEncodePhotoToDatabase(String sPhoto){
+    private void saveEncodePhotoToDatabase(String bucketName, String sPhoto){
         byte[] bytes = sPhoto.getBytes();
         /**
          * encodeToString is encoded string
          */
         String encodeToString = Base64.encodeToString(bytes,Base64.DEFAULT);
+        dbHelper.uploadPhotoDAO().insert(new UploadPhotoModel(bucketName, encodeToString));
         Log.v("ENCODE",encodeToString);
 
     }

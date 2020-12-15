@@ -38,6 +38,7 @@ import com.freelance.solutionhub.mma.model.PMServiceInfoDetailModel;
 import com.freelance.solutionhub.mma.model.PhotoModel;
 import com.freelance.solutionhub.mma.model.ReturnStatus;
 import com.freelance.solutionhub.mma.model.UpdateEventBody;
+import com.freelance.solutionhub.mma.model.UploadPhotoModel;
 import com.freelance.solutionhub.mma.util.ApiClient;
 import com.freelance.solutionhub.mma.util.ApiInterface;
 import com.freelance.solutionhub.mma.util.Network;
@@ -138,6 +139,7 @@ public class First_Step_PM_Fragment extends Fragment implements FirstStepPMFragm
     private InitializeDatabase dbHelper;
     private Date date;
     private Timestamp ts;
+    private String bucketName;
 
     public First_Step_PM_Fragment(){}
 
@@ -501,10 +503,11 @@ public class First_Step_PM_Fragment extends Fragment implements FirstStepPMFragm
                 String actualDateTime = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss").format(timestamp);   /**
                  * Check returned photo whether network is okay or not
                  */
+                bucketName = "pids-pre-maintenance-photo";
                 if(network.isNetworkAvailable()) {
-                    uploadPhoto(theImage, "pre-maintenance-photo" + mSharePerferenceHelper.getUserId() + actualDateTime,isPreMaintenance);
+                    uploadPhoto(theImage, "pre-maintenance-photo" + mSharePerferenceHelper.getUserId() + actualDateTime,isPreMaintenance, bucketName);
                 }else {//Save To db
-                    saveEncodePhotoToDatabase(photo);
+                    saveEncodePhotoToDatabase(bucketName, photo);
                 }
                 photo = getEncodedString(theImage);
                 prePhotoModels.add(new PhotoModel(photo, 1));
@@ -516,10 +519,11 @@ public class First_Step_PM_Fragment extends Fragment implements FirstStepPMFragm
                 /**
                  * Check returned photo whether network is okay or not
                  */
+                bucketName = "pids-post-maintenance-photo";
                 if(network.isNetworkAvailable()) {
-                    uploadPhoto(theImage, "post-maintenance-photo" + mSharePerferenceHelper.getUserId()+actualDateTime, isPreMaintenance);
+                    uploadPhoto(theImage, "post-maintenance-photo" + mSharePerferenceHelper.getUserId()+actualDateTime, isPreMaintenance, bucketName);
                 }else {//Save To db
-                    saveEncodePhotoToDatabase(photo);
+                    saveEncodePhotoToDatabase(bucketName, photo);
                 }
                 photo = getEncodedString(theImage);
                 postPhotoModels.add(new PhotoModel(photo,2));
@@ -571,7 +575,7 @@ public class First_Step_PM_Fragment extends Fragment implements FirstStepPMFragm
      * @param bitmap
      * @param name
      */
-    private void uploadPhoto(Bitmap bitmap, String name, Boolean preOrPost) {
+    private void uploadPhoto(Bitmap bitmap, String name, Boolean preOrPost, String bucketName) {
         File filesDir = getContext().getFilesDir();
         File fileName = new File(filesDir, name + ".jpg");
 
@@ -590,9 +594,7 @@ public class First_Step_PM_Fragment extends Fragment implements FirstStepPMFragm
         builder.addFormDataPart("file",fileName.getName(),RequestBody.create(MediaType.parse("multipart/form-data"),fileName));
         MultipartBody requestBody = builder.build();
 
-        String bucketName = "pids-post-maintenance-photo";
-        if(preOrPost)
-            bucketName = "pids-pre-maintenance-photo";
+
 
         Call<ReturnStatus> returnStatusCall = apiInterface.uploadPhoto(bucketName,  requestBody);
         returnStatusCall.enqueue(new Callback<ReturnStatus>() {
@@ -621,12 +623,13 @@ public class First_Step_PM_Fragment extends Fragment implements FirstStepPMFragm
     /**
      * //To Do save to database photo
      */
-    private void saveEncodePhotoToDatabase(String sPhoto){
+    private void saveEncodePhotoToDatabase(String bucketName, String sPhoto){
         byte[] bytes = sPhoto.getBytes();
         /**
          * encodeToString is encoded string
          */
         String encodeToString = Base64.encodeToString(bytes,Base64.DEFAULT);
+        dbHelper.uploadPhotoDAO().insert(new UploadPhotoModel(bucketName, encodeToString));
         Log.v("ENCODE",encodeToString);
 
     }

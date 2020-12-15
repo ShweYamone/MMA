@@ -47,6 +47,7 @@ import com.freelance.solutionhub.mma.model.PMServiceInfoDetailModel;
 import com.freelance.solutionhub.mma.model.PhotoModel;
 import com.freelance.solutionhub.mma.model.ReturnStatus;
 import com.freelance.solutionhub.mma.model.UpdateEventBody;
+import com.freelance.solutionhub.mma.model.UploadPhotoModel;
 import com.freelance.solutionhub.mma.util.ApiClient;
 import com.freelance.solutionhub.mma.util.ApiInterface;
 import com.freelance.solutionhub.mma.util.Network;
@@ -691,13 +692,14 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
             date = new Date();
             Timestamp timestamp = new Timestamp(date.getTime());
             String actualDateTime = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss").format(timestamp);
+            String bucketName ="pids-pre-maintenance-photo";
             /**
              * Check returned photo whether network is okay or not
              */
             if(network.isNetworkAvailable()) {
-                uploadPhoto(bitmap, "post-maintenance-photo" + mSharePreference.getUserId() +actualDateTime);
+                uploadPhoto(bitmap, "post-maintenance-photo" + mSharePreference.getUserId() +actualDateTime, bucketName);
             }else {//Save To db
-                saveEncodePhotoToDatabase(photo);
+                saveEncodePhotoToDatabase(bucketName, photo);
             }
             photo = getEncodedString(bitmap);
             postModelList.add(new PhotoModel(photo, 1));
@@ -743,7 +745,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
      * @param bitmap
      * @param name
      */
-    private void uploadPhoto(Bitmap bitmap, String name) {
+    private void uploadPhoto(Bitmap bitmap, String name, String bucketName) {
         File filesDir = getContext().getFilesDir();
         File fileName = new File(filesDir, name + ".jpg");
 
@@ -762,7 +764,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
         builder.addFormDataPart("file",fileName.getName(), RequestBody.create(MediaType.parse("multipart/form-data"),fileName));
         MultipartBody requestBody = builder.build();
 
-        String bucketName ="pids-pre-maintenance-photo";
+
 
         Call<ReturnStatus> returnStatusCall = apiInterface.uploadPhoto(bucketName,  requestBody);
         returnStatusCall.enqueue(new Callback<ReturnStatus>() {
@@ -787,13 +789,15 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
     /**
      * //To Do save to database photo
      */
-    private void saveEncodePhotoToDatabase(String sPhoto){
+    private void saveEncodePhotoToDatabase(String buckName, String sPhoto){
         byte[] bytes = sPhoto.getBytes();
         /**
          * encodeToString is encoded string
          */
         String encodeToString = Base64.encodeToString(bytes,Base64.DEFAULT);
         Log.v("ENCODE",encodeToString);
+
+        dbHelper.uploadPhotoDAO().insert(new UploadPhotoModel(buckName, encodeToString));
 
     }
 
