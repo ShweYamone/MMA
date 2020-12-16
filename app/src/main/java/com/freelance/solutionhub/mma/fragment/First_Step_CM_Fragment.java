@@ -317,10 +317,6 @@ public class First_Step_CM_Fragment extends Fragment implements FirstStepPMFragm
         if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK)
         {
                theImage = (Bitmap) data.getExtras().get("data");
-            // Check whether request message is pre or post
-                date = new Date();
-                Timestamp timestamp = new Timestamp(date.getTime());
-                String actualDateTime = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss").format(timestamp);
                 photo = getEncodedString(theImage);
                 Log.v("ORI",photo);
                 String bucketName ="pids-pre-maintenance-photo";
@@ -425,8 +421,12 @@ public class First_Step_CM_Fragment extends Fragment implements FirstStepPMFragm
         /**
          * encodeToString is encoded string
          */
+
+        date = new Date();
+        Timestamp timestamp = new Timestamp(date.getTime());
+        String actualDateTime = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss").format(timestamp);
         String encodeToString = Base64.encodeToString(bytes,Base64.DEFAULT);
-        dbHelper.uploadPhotoDAO().insert(new UploadPhotoModel(bucketName, encodeToString));
+        dbHelper.uploadPhotoDAO().insert(new UploadPhotoModel(bucketName, encodeToString,actualDateTime));
         Log.v("ENCODE",encodeToString);
 
     }

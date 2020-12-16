@@ -405,20 +405,12 @@ public class First_Step_PM_Fragment extends Fragment implements FirstStepPMFragm
         if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK)
         {
             theImage = (Bitmap) data.getExtras().get("data");
-                date = new Date();
-                Timestamp timestamp = new Timestamp(date.getTime());
-                String actualDateTime = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss").format(timestamp);
                 /**
                  * Check returned photo whether network is okay or not
                  */
                 bucketName = "pids-post-maintenance-photo";
-                if(network.isNetworkAvailable()) {
-                 //   uploadPhoto(theImage, "post-maintenance-photo" + mSharePerferenceHelper.getUserId()+actualDateTime);
-
-                }else {//Save To db
-                    saveEncodePhotoToDatabase(bucketName, photo);
-                }
-                photo = getEncodedString(theImage);
+                photo = getEncodedString(getResizedBitmap(theImage,500));
+                saveEncodePhotoToDatabase(bucketName, photo);
                 postPhotoModels.add(new PhotoModel(photo,2));
                 postPhotoAdapter.notifyDataSetChanged();
         }
@@ -502,6 +494,28 @@ public class First_Step_PM_Fragment extends Fragment implements FirstStepPMFragm
                 }
             });
         }
+
+    /**
+     * reduces the size of the image
+     * @param image
+     * @param maxSize
+     * @return
+     */
+    public Bitmap getResizedBitmap(Bitmap image, int maxSize) {
+        int width = image.getWidth();
+        int height = image.getHeight();
+
+        float bitmapRatio = (float)width / (float) height;
+        if (bitmapRatio > 1) {
+            width = maxSize;
+            height = (int) (width / bitmapRatio);
+        } else {
+            height = maxSize;
+            width = (int) (height * bitmapRatio);
+        }
+        return Bitmap.createScaledBitmap(image, width, height, true);
+    }
+
         /**
          * //To Do save to database photo
          */
@@ -510,8 +524,12 @@ public class First_Step_PM_Fragment extends Fragment implements FirstStepPMFragm
             /**
              * encodeToString is encoded string
              */
+
+            date = new Date();
+            Timestamp timestamp = new Timestamp(date.getTime());
+            String actualDateTime = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss").format(timestamp);
             String encodeToString = Base64.encodeToString(bytes, Base64.DEFAULT);
-            dbHelper.uploadPhotoDAO().insert(new UploadPhotoModel(bucketName, encodeToString));
+            dbHelper.uploadPhotoDAO().insert(new UploadPhotoModel(bucketName, encodeToString,actualDateTime));
             Log.v("ENCODE", encodeToString);
 
 

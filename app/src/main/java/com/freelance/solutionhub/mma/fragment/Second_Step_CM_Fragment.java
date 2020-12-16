@@ -688,10 +688,6 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
         if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK)
         {
             bitmap = (Bitmap) data.getExtras().get("data");
-            // Check whether request message is pre or post
-            date = new Date();
-            Timestamp timestamp = new Timestamp(date.getTime());
-            String actualDateTime = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss").format(timestamp);
             String bucketName ="pids-pre-maintenance-photo";
             /**
              * Check returned photo whether network is okay or not
@@ -794,10 +790,14 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
         /**
          * encodeToString is encoded string
          */
+
+        date = new Date();
+        Timestamp timestamp = new Timestamp(date.getTime());
+        String actualDateTime = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss").format(timestamp);
         String encodeToString = Base64.encodeToString(bytes,Base64.DEFAULT);
         Log.v("ENCODE",encodeToString);
 
-        dbHelper.uploadPhotoDAO().insert(new UploadPhotoModel(buckName, encodeToString));
+        dbHelper.uploadPhotoDAO().insert(new UploadPhotoModel(buckName, encodeToString,actualDateTime));
 
     }
 
