@@ -18,9 +18,21 @@ public class UploadPhotoModel implements Serializable {
     @ColumnInfo(name = "encodedPhotoString")
     String encodedPhotoString;
 
-    public UploadPhotoModel(String bucketName, String encodedPhotoString) {
+    @ColumnInfo(name = "dateForPhotoName")
+    String dateForPhoto;
+
+    public UploadPhotoModel(String bucketName, String encodedPhotoString,String dateForPhoto) {
         this.bucketName = bucketName;
         this.encodedPhotoString = encodedPhotoString;
+        this.dateForPhoto = dateForPhoto;
+    }
+
+    public String getDateForPhoto() {
+        return dateForPhoto;
+    }
+
+    public void setDateForPhoto(String dateForPhoto) {
+        this.dateForPhoto = dateForPhoto;
     }
 
     public int getId() {

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_small"
+        android:background="@drawable/round_rect_shape_line"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_check_list_desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorBlack"
+            android:layout_margin="@dimen/margin_small"
+            android:text="@string/desc_visual_inspection"
+            android:textSize="@dimen/txt_size_normal" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/iv_edit"
+                android:layout_width="20dp"
+                android:layout_height="32dp"
+                android:layout_margin="@dimen/margin_small"
+                android:layout_toLeftOf="@+id/cb_check"
+                android:src="@drawable/remark_blank" />
+
+            <CheckBox
+                android:id="@+id/cb_check"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:buttonTint="@color/colorPrimary"
+                android:layout_margin="@dimen/margin_small"
+                android:layout_alignParentRight="true"/>
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_whole_card_design"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_small"
+                android:textStyle="bold"
+                android:text="@string/remark"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/txt_size_normal" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="5"
+                android:padding="@dimen/margin_small"
+                android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/et_remarks"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="5"
+                android:hint="@string/text_here"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/txt_size_normal" />
+            </LinearLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+</LinearLayout>

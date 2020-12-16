@@ -16,6 +16,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Base64;
@@ -31,8 +32,10 @@ import android.widget.Toast;
 
 import com.freelance.solutionhub.mma.DB.InitializeDatabase;
 import com.freelance.solutionhub.mma.R;
+import com.freelance.solutionhub.mma.adapter.CheckListAdapter;
 import com.freelance.solutionhub.mma.adapter.PhotoAdapter;
 import com.freelance.solutionhub.mma.delegate.FirstStepPMFragmentCallback;
+import com.freelance.solutionhub.mma.model.CheckListModel;
 import com.freelance.solutionhub.mma.model.Event;
 import com.freelance.solutionhub.mma.model.PMServiceInfoDetailModel;
 import com.freelance.solutionhub.mma.model.PhotoModel;
@@ -54,6 +57,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -65,7 +69,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class First_Step_PM_Fragment extends Fragment implements FirstStepPMFragmentCallback {
+public class First_Step_PM_Fragment extends Fragment implements FirstStepPMFragmentCallback{
 
     @BindView(R.id.ll_general_design)
     LinearLayout generalDesign;
@@ -103,14 +107,8 @@ public class First_Step_PM_Fragment extends Fragment implements FirstStepPMFragm
     @BindView(R.id.tv_actual_start_date_time)
     TextView tvActualStartDateTime;
 
-    @BindView(R.id.iv_attach_pre_maintenance_photo)
-    ImageView preMaintenancePhoto;
-
     @BindView(R.id.iv_attach_post_maintenance_photo)
     ImageView postMaintenancePhoto;
-
-    @BindView(R.id.recyclerview_pre_photo)
-    RecyclerView prePhoto;
 
     @BindView(R.id.recyclerview_post_photo)
     RecyclerView postPhoto;
@@ -121,17 +119,19 @@ public class First_Step_PM_Fragment extends Fragment implements FirstStepPMFragm
     @BindView(R.id.tvMSOStatus)
     TextView tvMSOStatus;
 
+    @BindView(R.id.rv_check_list)
+    RecyclerView checkList;
+
     private ApiInterface apiInterface;
-
-
-    private boolean isPreMaintenance = true;
     private static final int CAMERA_REQUEST = 1888;
     private static final int MY_CAMERA_PERMISSION_CODE = 100;
     //Bitmap photo;
     SharePreferenceHelper mSharePerferenceHelper;
+    CheckListAdapter checkListAdapter;
+    ArrayList<CheckListModel> checkListModels;
     String photo;
     ArrayList<PhotoModel> prePhotoModels, postPhotoModels;
-    ArrayList<Event> preEventList, postEventList;
+    ArrayList<Event> postEventList;
     Bitmap theImage;
     PhotoAdapter prePhotoAdapter, postPhotoAdapter;
     private PMServiceInfoDetailModel pmServiceInfoDetailModel;
@@ -163,8 +163,32 @@ public class First_Step_PM_Fragment extends Fragment implements FirstStepPMFragm
 
         prePhotoModels = new ArrayList<>();
         postPhotoModels = new ArrayList<>();
-        preEventList = new ArrayList<>();
         postEventList = new ArrayList<>();
+        //Check List
+        checkListModels = new ArrayList<>();
+        checkListAdapter = new CheckListAdapter(getContext(), checkListModels,this);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(view.getContext());
+      //  checkList.setHasFixedSize(true);
+        checkList.setLayoutManager(mLayoutManager);
+        checkList.setAdapter(checkListAdapter);
+
+        Call<List<CheckListModel>> callCheckList = apiInterface.getCheckList("Bearer "+mSharePerferenceHelper.getToken(),pmServiceInfoDetailModel.getId());
+        callCheckList.enqueue(new Callback<List<CheckListModel>>() {
+            @Override
+            public void onResponse(Call<List<CheckListModel>> call, Response<List<CheckListModel>> response) {
+                List<CheckListModel> checkListModel = response.body();
+                if(response.isSuccessful()){
+                    checkListModels.addAll(checkListModel);
+                    Log.i("CHECK_LIST",checkListModels.size()+"Size");
+                    checkListAdapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<CheckListModel>> call, Throwable t) {
+
+            }
+        });
 
         date = new Date();
         ts=new Timestamp(date.getTime());
@@ -181,31 +205,11 @@ public class First_Step_PM_Fragment extends Fragment implements FirstStepPMFragm
             }
         });
 
-        //Pre Maintenance Photo Click
-        preMaintenancePhoto.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.M)
-            @Override
-            public void onClick(View v) {
-                isPreMaintenance = true;
-                if (getActivity().checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
-                {
-                    requestPermissions(new String[]{Manifest.permission.CAMERA}, MY_CAMERA_PERMISSION_CODE);
-                }
-                else
-                {
-                    Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                    startActivityForResult(cameraIntent, CAMERA_REQUEST);
-
-                }
-            }
-        });
-
         //Post Maintenance Photo Click
         postMaintenancePhoto.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onClick(View v) {
-                isPreMaintenance = false;
                 if (getActivity().checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
                 {
                     requestPermissions(new String[]{Manifest.permission.CAMERA}, MY_CAMERA_PERMISSION_CODE);
@@ -242,10 +246,7 @@ public class First_Step_PM_Fragment extends Fragment implements FirstStepPMFragm
     }
 
     public void getPosition( int position , int preOrPost){
-        if(preOrPost == 1 && preEventList.size() != 0){
-            preEventList.remove(position);
-            Log.v("PRE_PHOTO", "Removed pre photo");
-        }else if(postEventList.size() != 0){
+       if(postEventList.size() != 0){
             postEventList.remove(position);
             Log.v("POST_PHOTO", "Removed post photo");
         }
@@ -256,20 +257,51 @@ public class First_Step_PM_Fragment extends Fragment implements FirstStepPMFragm
      * Update event for all photos
      */
     public void save(){
-        if(preEventList.size() == 0 && postEventList.size() != 0){
+
+        UpdateEventBody updateEventBody;
+        /**
+         * For Check List
+         */
+        date = new Date();
+        Timestamp timestamp = new Timestamp(date.getTime());
+        String actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
+        ArrayList<Event> events = checkListAdapter.getCheckListEvent();
+        for(Event e:events){
+            Log.i("VALUE",e.getValue());
+        }
+        Log.i("DONE","Done");
+        updateEventBody = new UpdateEventBody(mSharePerferenceHelper.getUserName(), mSharePerferenceHelper.getUserId(), actualDateTime, pmServiceInfoDetailModel.getId(), events);
+        Call<ReturnStatus> returnCheckList = apiInterface.updateEvent("Bearer "+mSharePerferenceHelper.getToken(), updateEventBody);
+        returnCheckList.enqueue(new Callback<ReturnStatus>() {
+            @Override
+            public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
+                ReturnStatus r = response.body();
+                if(response.isSuccessful()){
+                    Toast.makeText(getContext(),""+r.getStatus(),Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ReturnStatus> call, Throwable t) {
+
+            }
+        });
+
+
+        /**
+         *Photo Upload
+         */
+        if(postEventList.size() != 0){
             //Maintenance photos attached ( max - 10 and min 2 )
             if( postEventList.size() >1 && postEventList.size() < 11) {
                 Log.v("BEFORE_JOIN", "Before joining");
-                preEventList.addAll(postEventList);
-                Log.v("JOIN", preEventList.size() + "");
 
                 date = new Date();
-                Timestamp timestamp = new Timestamp(date.getTime());
-                String actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
+                timestamp = new Timestamp(date.getTime());
+                actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
 
-                UpdateEventBody updateEventBody;
-                if (network.isNetworkAvailable()) { // Network available, send data to server
-                    updateEventBody = new UpdateEventBody(mSharePerferenceHelper.getUserName(), mSharePerferenceHelper.getUserId(), actualDateTime, pmServiceInfoDetailModel.getId(), preEventList);
+                if(network.isNetworkAvailable()) { // Network available, send data to server
+                    updateEventBody = new UpdateEventBody(mSharePerferenceHelper.getUserName(), mSharePerferenceHelper.getUserId(), actualDateTime, pmServiceInfoDetailModel.getId(), postEventList);
                     Call<ReturnStatus> returnStatusCallEvent = apiInterface.updateEvent("Bearer " + mSharePerferenceHelper.getToken(), updateEventBody);
                     returnStatusCallEvent.enqueue(new Callback<ReturnStatus>() {
                         @Override
@@ -285,7 +317,7 @@ public class First_Step_PM_Fragment extends Fragment implements FirstStepPMFragm
                             Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     });
-                    preEventList.clear();
+                    postEventList.clear();
                 } else{ // Network unavailabe, store data to local db
                     updateEventBody = new UpdateEventBody(
                             mSharePerferenceHelper.getUserName(), mSharePerferenceHelper.getUserId(), actualDateTime, pmServiceInfoDetailModel.getId()
@@ -293,13 +325,13 @@ public class First_Step_PM_Fragment extends Fragment implements FirstStepPMFragm
                     String key = mSharePerferenceHelper.getUserId() + pmServiceInfoDetailModel.getId() + actualDateTime;
                     updateEventBody.setId(key);
                     dbHelper.updateEventBodyDAO().insert(updateEventBody);
-                    for (Event event : preEventList) {
+                    for (Event event : postEventList) {
                         event.setUpdateEventBodyKey(key);
                     }
-                    dbHelper.eventDAO().insertAll(preEventList);
+                    dbHelper.eventDAO().insertAll(postEventList);
                     Toast.makeText(getContext(), "DATABASE" + dbHelper.updateEventBodyDAO().getNumberOfUpdateEventBody() + ", " +
                             dbHelper.eventDAO().getNumberOfEvents(), Toast.LENGTH_SHORT).show();
-                    preEventList.clear();
+                    postEventList.clear();
                 }
 
 
@@ -308,129 +340,6 @@ public class First_Step_PM_Fragment extends Fragment implements FirstStepPMFragm
                         .setIcon(R.drawable.warning)
                         .setTitle("Photo")
                         .setMessage("Your post-maintenance photos must be minimum 2 and maximum 10.")
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-
-                            }
-
-                        })
-                        .show();
-            }
-        } else if (postEventList.size() == 0 && preEventList.size() != 0){
-            //Maintenance photos attached ( max - 10 and min 2 )
-            if(preEventList.size() > 1 && preEventList.size() <11 ) {
-                Log.v("BEFORE_JOIN", "Before joining");
-                Log.v("JOIN", preEventList.size() + "");
-
-                date = new Date();
-                Timestamp timestamp = new Timestamp(date.getTime());
-                String actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
-
-                UpdateEventBody updateEventBody;
-                if (network.isNetworkAvailable()) { // Network available, send data to server
-                    updateEventBody = new UpdateEventBody(mSharePerferenceHelper.getUserName(), mSharePerferenceHelper.getUserId(), actualDateTime, pmServiceInfoDetailModel.getId(), preEventList);
-                    Call<ReturnStatus> returnStatusCallEvent = apiInterface.updateEvent("Bearer " + mSharePerferenceHelper.getToken(), updateEventBody);
-                    returnStatusCallEvent.enqueue(new Callback<ReturnStatus>() {
-                        @Override
-                        public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
-                            ReturnStatus returnStatus = response.body();
-                            if (response.isSuccessful()) {
-                                Toast.makeText(getContext(), returnStatus.getStatus() + ":Ok", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<ReturnStatus> call, Throwable t) {
-                            Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                    preEventList.clear();
-                } else{ // Network unavailabe, store data to local db
-                    updateEventBody = new UpdateEventBody(
-                            mSharePerferenceHelper.getUserName(), mSharePerferenceHelper.getUserId(), actualDateTime, pmServiceInfoDetailModel.getId()
-                    );
-                    String key = mSharePerferenceHelper.getUserId() + pmServiceInfoDetailModel.getId() + actualDateTime;
-                    updateEventBody.setId(key);
-                    dbHelper.updateEventBodyDAO().insert(updateEventBody);
-                    for (Event event : preEventList) {
-                        event.setUpdateEventBodyKey(key);
-                    }
-                    dbHelper.eventDAO().insertAll(preEventList);
-                    Toast.makeText(getContext(), "DATABASE" + dbHelper.updateEventBodyDAO().getNumberOfUpdateEventBody() + ", " +
-                            dbHelper.eventDAO().getNumberOfEvents(), Toast.LENGTH_SHORT).show();
-                    preEventList.clear();
-                }
-
-
-            }else{
-                new AlertDialog.Builder(this.getContext())
-                        .setIcon(R.drawable.warning)
-                        .setTitle("Photo")
-                        .setMessage("Your pre-maintenance photos must be minimum 2 and maximum 10.")
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-
-                            }
-
-                        })
-                        .show();
-            }
-        }else if(preEventList.size() != 0 && postEventList.size() != 0){
-            //Maintenance photos attached ( max - 10 and min 2 )
-            if(preEventList.size() > 1 && preEventList.size() <11 && postEventList.size() >1 && postEventList.size() < 11) {
-                Log.v("BEFORE_JOIN", "Before joining");
-                preEventList.addAll(postEventList);
-                Log.v("JOIN", preEventList.size() + "");
-
-                date = new Date();
-                Timestamp timestamp = new Timestamp(date.getTime());
-                String actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
-
-                UpdateEventBody updateEventBody;
-                if (network.isNetworkAvailable()) { // Network available, send data to server
-                    updateEventBody = new UpdateEventBody(mSharePerferenceHelper.getUserName(), mSharePerferenceHelper.getUserId(), actualDateTime, pmServiceInfoDetailModel.getId(), preEventList);
-                    Call<ReturnStatus> returnStatusCallEvent = apiInterface.updateEvent("Bearer " + mSharePerferenceHelper.getToken(), updateEventBody);
-                    returnStatusCallEvent.enqueue(new Callback<ReturnStatus>() {
-                        @Override
-                        public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
-                            ReturnStatus returnStatus = response.body();
-                            if (response.isSuccessful()) {
-                                Toast.makeText(getContext(), returnStatus.getStatus() + ":Ok", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<ReturnStatus> call, Throwable t) {
-                            Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                    preEventList.clear();
-                } else{ // Network unavailabe, store data to local db
-                    updateEventBody = new UpdateEventBody(
-                            mSharePerferenceHelper.getUserName(), mSharePerferenceHelper.getUserId(), actualDateTime, pmServiceInfoDetailModel.getId()
-                    );
-                    String key = mSharePerferenceHelper.getUserId() + pmServiceInfoDetailModel.getId() + actualDateTime;
-                    updateEventBody.setId(key);
-                    dbHelper.updateEventBodyDAO().insert(updateEventBody);
-                    for (Event event : preEventList) {
-                        event.setUpdateEventBodyKey(key);
-                    }
-                    dbHelper.eventDAO().insertAll(preEventList);
-                    Toast.makeText(getContext(), "DATABASE" + dbHelper.updateEventBodyDAO().getNumberOfUpdateEventBody() + ", " +
-                            dbHelper.eventDAO().getNumberOfEvents(), Toast.LENGTH_SHORT).show();
-                    preEventList.clear();
-                }
-
-
-            }else{
-                new AlertDialog.Builder(this.getContext())
-                        .setIcon(R.drawable.warning)
-                        .setTitle("Photo")
-                        .setMessage("Your photos must be minimum 2 and maximum 10.")
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -497,39 +406,14 @@ public class First_Step_PM_Fragment extends Fragment implements FirstStepPMFragm
         if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK)
         {
             theImage = (Bitmap) data.getExtras().get("data");
-            // Check whether request message is pre or post
-            if(isPreMaintenance) {
-                date = new Date();
-                Timestamp timestamp = new Timestamp(date.getTime());
-                String actualDateTime = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss").format(timestamp);   /**
-                 * Check returned photo whether network is okay or not
-                 */
-                bucketName = "pids-pre-maintenance-photo";
-                if(network.isNetworkAvailable()) {
-                    uploadPhoto(theImage, "pre-maintenance-photo" + mSharePerferenceHelper.getUserId() + actualDateTime,isPreMaintenance, bucketName);
-                }else {//Save To db
-                    saveEncodePhotoToDatabase(bucketName, photo);
-                }
-                photo = getEncodedString(theImage);
-                prePhotoModels.add(new PhotoModel(photo, 1));
-                prePhotoAdapter.notifyDataSetChanged();
-            }else {
-                date = new Date();
-                Timestamp timestamp = new Timestamp(date.getTime());
-                String actualDateTime = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss").format(timestamp);
                 /**
                  * Check returned photo whether network is okay or not
                  */
                 bucketName = "pids-post-maintenance-photo";
-                if(network.isNetworkAvailable()) {
-                    uploadPhoto(theImage, "post-maintenance-photo" + mSharePerferenceHelper.getUserId()+actualDateTime, isPreMaintenance, bucketName);
-                }else {//Save To db
-                    saveEncodePhotoToDatabase(bucketName, photo);
-                }
-                photo = getEncodedString(theImage);
+                photo = getEncodedString(getResizedBitmap(theImage,500));
+                saveEncodePhotoToDatabase(bucketName, photo);
                 postPhotoModels.add(new PhotoModel(photo,2));
                 postPhotoAdapter.notifyDataSetChanged();
-            }
         }
     }
 
@@ -537,16 +421,11 @@ public class First_Step_PM_Fragment extends Fragment implements FirstStepPMFragm
      * Set two recycler view with adapter
      */
     private void setDataAdapter() {
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getContext(),3  );
-        //Pre Maintenance Photo Adapter Setup
-        prePhoto.setLayoutManager(layoutManager);
-        prePhotoAdapter = new PhotoAdapter(getContext(), prePhotoModels, this);
-        prePhoto.setAdapter(prePhotoAdapter);
 
         //Post Maintenance Photo Adapter Setup
         RecyclerView.LayoutManager postLayoutManager = new GridLayoutManager(getContext(),3);
         postPhoto.setLayoutManager(postLayoutManager);
-        postPhotoAdapter = new PhotoAdapter(getContext(), postPhotoModels,this);
+        postPhotoAdapter = new PhotoAdapter(getContext(), postPhotoModels);
         postPhoto.setAdapter(postPhotoAdapter);
 
     }
@@ -576,62 +455,84 @@ public class First_Step_PM_Fragment extends Fragment implements FirstStepPMFragm
      * @param bitmap
      * @param name
      */
-    private void uploadPhoto(Bitmap bitmap, String name, Boolean preOrPost, String bucketName) {
-        File filesDir = getContext().getFilesDir();
-        File fileName = new File(filesDir, name + ".jpg");
+    private void uploadPhoto(Bitmap bitmap, String name) {
+            File filesDir = getContext().getFilesDir();
+            File fileName = new File(filesDir, name + ".jpg");
 
-        OutputStream os;
-        try {
-            os = new FileOutputStream(fileName);
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
-            os.flush();
-            os.close();
-        } catch (Exception e) {
-            Log.e("PHOTO", "Error writing bitmap", e);
+            OutputStream os;
+            try {
+                os = new FileOutputStream(fileName);
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
+                os.flush();
+                os.close();
+            } catch (Exception e) {
+                Log.e("PHOTO", "Error writing bitmap", e);
+            }
+
+            MultipartBody.Builder builder = new MultipartBody.Builder();
+            builder.setType(MultipartBody.FORM);
+            builder.addFormDataPart("file", fileName.getName(), RequestBody.create(MediaType.parse("multipart/form-data"), fileName));
+            MultipartBody requestBody = builder.build();
+
+            String bucketName = "pids-post-maintenance-photo";
+
+            Call<ReturnStatus> returnStatusCall = apiInterface.uploadPhoto(bucketName, requestBody);
+            returnStatusCall.enqueue(new Callback<ReturnStatus>() {
+                @Override
+                public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
+                    ReturnStatus returnStatus = response.body();
+                    if (response.isSuccessful()) {
+                        postEventList.add(new Event("POST_MAINTENANCE_PHOTO_UPDATE", "postMaintenancePhotoUpdate", returnStatus.getData().getFileUrl()));
+                        Toast.makeText(getContext(), returnStatus.getData().getFileUrl() + ":Ok", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getContext(), ";", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ReturnStatus> call, Throwable t) {
+
+                }
+            });
         }
 
-        MultipartBody.Builder builder = new MultipartBody.Builder();
-        builder.setType(MultipartBody.FORM);
-        builder.addFormDataPart("file",fileName.getName(),RequestBody.create(MediaType.parse("multipart/form-data"),fileName));
-        MultipartBody requestBody = builder.build();
-
-
-
-        Call<ReturnStatus> returnStatusCall = apiInterface.uploadPhoto(bucketName,  requestBody);
-        returnStatusCall.enqueue(new Callback<ReturnStatus>() {
-            @Override
-            public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
-                ReturnStatus returnStatus = response.body();
-                if(response.isSuccessful()){
-                    if(preOrPost){
-                        Log.v("PRE_EVENT","Added pre event");
-                        preEventList.add(new Event("PRE_MAINTENANCE_PHOTO_UPDATE","preMaintenancePhotoUpdate",returnStatus.getData().getFileUrl()));
-                    }else {
-                        postEventList.add(new Event("POST_MAINTENANCE_PHOTO_UPDATE","postMaintenancePhotoUpdate",returnStatus.getData().getFileUrl()));
-                    }
-                    Toast.makeText(getContext(),returnStatus.getData().getFileUrl()+":Ok",Toast.LENGTH_SHORT).show();
-                }else {
-                    Toast.makeText(getContext(),";",Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ReturnStatus> call, Throwable t) {
-
-            }
-        });
-    }
     /**
-     * //To Do save to database photo
+     * reduces the size of the image
+     * @param image
+     * @param maxSize
+     * @return
      */
-    private void saveEncodePhotoToDatabase(String bucketName, String sPhoto){
-        byte[] bytes = sPhoto.getBytes();
+    public Bitmap getResizedBitmap(Bitmap image, int maxSize) {
+        int width = image.getWidth();
+        int height = image.getHeight();
+
+        float bitmapRatio = (float)width / (float) height;
+        if (bitmapRatio > 1) {
+            width = maxSize;
+            height = (int) (width / bitmapRatio);
+        } else {
+            height = maxSize;
+            width = (int) (height * bitmapRatio);
+        }
+        return Bitmap.createScaledBitmap(image, width, height, true);
+    }
+
         /**
-         * encodeToString is encoded string
+         * //To Do save to database photo
          */
-        String encodeToString = Base64.encodeToString(bytes,Base64.DEFAULT);
-        dbHelper.uploadPhotoDAO().insert(new UploadPhotoModel(bucketName, encodeToString));
-        Log.v("ENCODE",encodeToString);
+        private void saveEncodePhotoToDatabase (String bucketName, String photo){
+            byte[] bytes = photo.getBytes();
+            /**
+             * encodeToString is encoded string
+             */
+
+            date = new Date();
+            Timestamp timestamp = new Timestamp(date.getTime());
+            String actualDateTime = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss").format(timestamp);
+            String encodeToString = Base64.encodeToString(bytes, Base64.DEFAULT);
+            dbHelper.uploadPhotoDAO().insert(new UploadPhotoModel(bucketName, encodeToString,actualDateTime));
+            Log.v("ENCODE", encodeToString);
+
 
     }
 }

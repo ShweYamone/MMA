@@ -28,7 +28,7 @@
                     android:layout_weight="2.3"
                     android:textColor="@color/colorBlack"
                     android:text="@string/basic_information"
-                    android:fontFamily="@font/crimson_text_bold"
+                    android:textStyle="bold"
                     android:textSize="@dimen/txt_size_large"/>
 
                 <TextView
@@ -38,7 +38,6 @@
                     android:gravity="right"
                     android:textColor="@color/colorBlack"
                     android:text="@string/mso_status"
-                    android:fontFamily="@font/crimson_text_regular"
                     android:textSize="@dimen/txt_size_normal"/>
 
                 <TextView
@@ -46,7 +45,6 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.7"
-                    android:fontFamily="@font/crimson_text_bold"
                     android:textSize="@dimen/txt_size_small"
                     android:textColor="@color/colorPrimary"
                     android:background="@drawable/round_rect_shape_progress"
@@ -73,7 +71,6 @@
                         android:layout_weight="1"
                         android:textColor="@color/colorPrimary"
                         android:text="@string/panel_id"
-                        android:fontFamily="@font/crimson_text_regular"
                         android:textSize="@dimen/txt_size_normal"/>
 
                     <TextView
@@ -83,7 +80,6 @@
                         android:layout_weight="3.5"
                         android:textColor="@color/colorBlack"
                         android:text="4609"
-                        android:fontFamily="@font/crimson_text_regular"
                         android:textSize="@dimen/txt_size_normal"/>
                     <ImageView
                         android:id="@+id/iv_arrow_drop_down"
@@ -121,7 +117,6 @@
                             android:layout_weight="2.5"
                             android:textColor="@color/colorPrimary"
                             android:text="@string/panel_id"
-                            android:fontFamily="@font/crimson_text_regular"
                             android:textSize="@dimen/txt_size_normal"/>
 
                         <TextView
@@ -130,7 +125,6 @@
                             android:layout_weight="1.5"
                             android:textColor="@color/colorPrimary"
                             android:text="@string/performed_by"
-                            android:fontFamily="@font/crimson_text_regular"
                             android:textSize="@dimen/txt_size_normal"/>
                     </LinearLayout>
                     <LinearLayout
@@ -145,7 +139,6 @@
                             android:layout_weight="2.5"
                             android:textColor="@color/colorBlack"
                             android:text="PGS/18/100000307"
-                            android:fontFamily="@font/crimson_text_regular"
                             android:textSize="@dimen/txt_size_normal"/>
 
                         <TextView
@@ -155,7 +148,6 @@
                             android:layout_weight="1.5"
                             android:textColor="@color/colorBlack"
                             android:text="VMS1 002"
-                            android:fontFamily="@font/crimson_text_regular"
                             android:textSize="@dimen/txt_size_normal"/>
                     </LinearLayout>
                 </LinearLayout>
@@ -177,7 +169,6 @@
                             android:layout_weight="2.5"
                             android:textColor="@color/colorPrimary"
                             android:text="@string/location"
-                            android:fontFamily="@font/crimson_text_regular"
                             android:textSize="@dimen/txt_size_normal"/>
 
                         <TextView
@@ -186,7 +177,6 @@
                             android:layout_weight="1.5"
                             android:textColor="@color/colorPrimary"
                             android:text="@string/bust_stop_number"
-                            android:fontFamily="@font/crimson_text_regular"
                             android:textSize="@dimen/txt_size_normal"/>
                     </LinearLayout>
                     <LinearLayout
@@ -200,7 +190,6 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="2.5"
                             android:textColor="@color/colorBlack"
-                            android:fontFamily="@font/crimson_text_regular"
                             android:textSize="@dimen/txt_size_normal"/>
 
                         <TextView
@@ -209,7 +198,6 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1.5"
                             android:textColor="@color/colorBlack"
-                            android:fontFamily="@font/crimson_text_regular"
                             android:textSize="@dimen/txt_size_normal"/>
                     </LinearLayout>
                 </LinearLayout>
@@ -225,7 +213,6 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/colorPrimary"
                         android:text="@string/schedule_start_date_time"
-                        android:fontFamily="@font/crimson_text_regular"
                         android:textSize="@dimen/txt_size_normal"/>
                     <TextView
                         android:id="@+id/tv_schedule_start_date_time"
@@ -233,7 +220,6 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/colorBlack"
                         android:text="24.06.2019 / 11.00.18"
-                        android:fontFamily="@font/crimson_text_regular"
                         android:textSize="@dimen/txt_size_normal"/>
                 </LinearLayout>
 
@@ -248,7 +234,6 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/colorPrimary"
                         android:text="@string/schedule_end_date_time"
-                        android:fontFamily="@font/crimson_text_regular"
                         android:textSize="@dimen/txt_size_normal"/>
                     <TextView
                         android:id="@+id/tv_schedule_end_date_time"
@@ -256,7 +241,6 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/colorBlack"
                         android:text="23.06.2019 / 11.00.18"
-                        android:fontFamily="@font/crimson_text_regular"
                         android:textSize="@dimen/txt_size_normal"/>
                 </LinearLayout>
 
@@ -271,7 +255,6 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/colorPrimary"
                         android:text="@string/actual_start_date_time"
-                        android:fontFamily="@font/crimson_text_regular"
                         android:textSize="@dimen/txt_size_normal"/>
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -285,7 +268,6 @@
                             android:layout_weight="4.5"
                             android:textColor="@color/colorBlack"
                             android:text="23.06.2019 / 11.00.18"
-                            android:fontFamily="@font/crimson_text_regular"
                             android:textSize="@dimen/txt_size_normal"/>
                         <ImageView
                             android:id="@+id/iv_arrow_drop_up"
@@ -304,7 +286,7 @@
                 android:text="@string/check_list"
                 android:textColor="@color/colorBlack"
                 android:layout_marginTop="@dimen/margin_normal"
-                android:fontFamily="@font/crimson_text_bold"
+                android:textStyle="bold"
                 android:textSize="@dimen/txt_size_large"/>
 
             <TextView
@@ -312,180 +294,21 @@
                 android:layout_height="wrap_content"
                 android:text="@string/visual_inspection"
                 android:textColor="@color/colorPrimary"
-                android:fontFamily="@font/crimson_text_regular"
                 android:textSize="@dimen/txt_size_normal"/>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_small"
-                android:orientation="vertical"
-                android:background="@drawable/round_rect_shape_line">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/margin_small"
-                    android:text="@string/desc_visual_inspection"
-                    android:fontFamily="@font/crimson_text_regular"
-                    android:textSize="@dimen/txt_size_normal"/>
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                    <ImageView
-                        android:id="@+id/iv_remark_blank_1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/margin_small"
-                        android:layout_toLeftOf="@+id/iv_check_blank_1"
-                        android:src="@drawable/remark_blank"/>
 
-                    <ImageView
-                        android:id="@+id/iv_check_blank_1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/check_blank"
-                        android:layout_margin="@dimen/margin_small"
-                        android:layout_alignParentRight="true"/>
-                </RelativeLayout>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    android:orientation="vertical">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/margin_small"
-                        android:text="@string/remark"
-                        android:textColor="@color/colorBlack"
-                        android:fontFamily="@font/crimson_text_bold"
-                        android:textSize="@dimen/txt_size_normal"/>
+           <androidx.recyclerview.widget.RecyclerView
+               android:id="@+id/rv_check_list"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"/>
 
-                    <EditText
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/colorBlack"
-                        android:textSize="@dimen/txt_size_normal"
-                        android:hint="@string/text_here"/>
-                </LinearLayout>
 
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_normal"
-                android:orientation="vertical"
-                android:background="@drawable/round_rect_shape_line">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/margin_small"
-                    android:text="@string/desc_visual_inspection"
-                    android:fontFamily="@font/crimson_text_regular"
-                    android:textSize="@dimen/txt_size_normal"/>
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                    <ImageView
-                        android:id="@+id/iv_remark_blank_2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/margin_small"
-                        android:layout_toLeftOf="@+id/iv_check_blank_2"
-                        android:src="@drawable/remark_blank"/>
-
-                    <ImageView
-                        android:id="@+id/iv_check_blank_2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/check_blank"
-                        android:layout_margin="@dimen/margin_small"
-                        android:layout_alignParentRight="true"/>
-                </RelativeLayout>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    android:orientation="vertical">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/margin_small"
-                        android:text="@string/remark"
-                        android:textColor="@color/colorBlack"
-                        android:fontFamily="@font/crimson_text_bold"
-                        android:textSize="@dimen/txt_size_normal"/>
-
-                    <EditText
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/colorBlack"
-                        android:textSize="@dimen/txt_size_normal"
-                        android:hint="@string/text_here"/>
-                </LinearLayout>
-
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_normal"
-                android:orientation="vertical"
-                android:background="@drawable/round_rect_shape_line">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/margin_small"
-                    android:text="@string/desc_visual_inspection"
-                    android:fontFamily="@font/crimson_text_regular"
-                    android:textSize="@dimen/txt_size_normal"/>
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                    <ImageView
-                        android:id="@+id/iv_remark_blank_3"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/margin_small"
-                        android:layout_toLeftOf="@+id/iv_check_blank_3"
-                        android:src="@drawable/remark_blank"/>
-
-                    <ImageView
-                        android:id="@+id/iv_check_blank_3"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/check_blank"
-                        android:layout_margin="@dimen/margin_small"
-                        android:layout_alignParentRight="true"/>
-                </RelativeLayout>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    android:orientation="vertical">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/margin_small"
-                        android:text="@string/remark"
-                        android:textColor="@color/colorBlack"
-                        android:fontFamily="@font/crimson_text_bold"
-                        android:textSize="@dimen/txt_size_normal"/>
-
-                    <EditText
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/colorBlack"
-                        android:textSize="@dimen/txt_size_normal"
-                        android:hint="@string/text_here"/>
-                </LinearLayout>
-
-            </LinearLayout>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/fault_found"
                 android:textColor="@color/colorBlack"
+                android:textStyle="bold"
                 android:layout_marginTop="@dimen/margin_normal"
-                android:fontFamily="@font/crimson_text_bold"
                 android:textSize="@dimen/txt_size_large"/>
 
             <LinearLayout
@@ -493,6 +316,7 @@
                 android:layout_height="wrap_content"
                 android:weightSum="5"
                 android:orientation="horizontal"
+                android:layout_marginTop="@dimen/margin_small"
                 android:background="@drawable/round_rect_shape_line">
                 <TextView
                     android:layout_width="0dp"
@@ -514,46 +338,13 @@
 
             </LinearLayout>
 
-
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/attach_pre_maintenance_photo"
+                android:text="@string/photo_attachment"
+                android:textStyle="bold"
                 android:textColor="@color/colorBlack"
                 android:layout_marginTop="@dimen/margin_normal"
-                android:fontFamily="@font/crimson_text_bold"
-                android:textSize="@dimen/txt_size_large"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_small"
-                android:weightSum="4">
-
-                <ImageView
-                    android:id="@+id/iv_attach_pre_maintenance_photo"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:src="@drawable/add_photo"/>
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recyclerview_pre_photo"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="3"
-                    android:padding="3dp"
-                    android:scrollbars="none"/>
-
-            </LinearLayout>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/attach_post_maintenance_photo"
-                android:textColor="@color/colorBlack"
-                android:layout_marginTop="@dimen/margin_normal"
-                android:fontFamily="@font/crimson_text_bold"
                 android:textSize="@dimen/txt_size_large"/>
 
             <LinearLayout
