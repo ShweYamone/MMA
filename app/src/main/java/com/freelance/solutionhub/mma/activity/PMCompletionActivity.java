@@ -62,7 +62,7 @@ public class PMCompletionActivity extends AppCompatActivity implements View.OnCl
             @Override
             public void run() {
                 // TODO Auto-generated method stub
-              //  Toast.makeText(MainActivity.this, "user is inactive from last 1 minute",Toast.LENGTH_SHORT).show();
+                Toast.makeText(PMCompletionActivity.this, "user is inactive from last 5 minutes",Toast.LENGTH_SHORT).show();
                 startHandler = false;
                 Intent intent = new Intent(PMCompletionActivity.this, PasscodeActivity.class);
                 intent.putExtra("workInMiddle", "work");
@@ -88,7 +88,7 @@ public class PMCompletionActivity extends AppCompatActivity implements View.OnCl
     public void onUserInteraction() {
         // TODO Auto-generated method stub
         super.onUserInteraction();
-        Toast.makeText(this, "UserInteraction", Toast.LENGTH_SHORT).show();
+    //    Toast.makeText(this, "UserInteraction", Toast.LENGTH_SHORT).show();
         stopHandler();//stop first and then start
         if (startHandler)
             startHandler();

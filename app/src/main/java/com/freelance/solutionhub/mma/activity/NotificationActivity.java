@@ -194,7 +194,7 @@ public class NotificationActivity extends AppCompatActivity  {
             @Override
             public void run() {
                 // TODO Auto-generated method stub
-                //Toast.makeText(MainActivity.this, "user is inactive from last 1 minute",Toast.LENGTH_SHORT).show();
+                Toast.makeText(NotificationActivity.this, "user is inactive from last 5 minutes",Toast.LENGTH_SHORT).show();
                 startHandler = false;
                 Intent intent = new Intent(NotificationActivity.this, PasscodeActivity.class);
                 intent.putExtra("workInMiddle", "work");
@@ -220,7 +220,7 @@ public class NotificationActivity extends AppCompatActivity  {
     public void onUserInteraction() {
         // TODO Auto-generated method stub
         super.onUserInteraction();
-        Toast.makeText(this, "UserInteraction", Toast.LENGTH_SHORT).show();
+     //   Toast.makeText(this, "UserInteraction", Toast.LENGTH_SHORT).show();
         stopHandler();//stop first and then start
         if (startHandler)
             startHandler();

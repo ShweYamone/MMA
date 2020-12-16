@@ -94,7 +94,7 @@ public class AssetInformationActivity extends AppCompatActivity implements View.
             @Override
             public void run() {
                 // TODO Auto-generated method stub
-            //    Toast.makeText(AssetInformationActivity.this, "user is inactive from last 1 minute",Toast.LENGTH_SHORT).show();
+                Toast.makeText(AssetInformationActivity.this, "user is inactive from last 5 minutes",Toast.LENGTH_SHORT).show();
                 startHandler = false;
                 Intent intent = new Intent(AssetInformationActivity.this, PasscodeActivity.class);
                 intent.putExtra("workInMiddle", "work");
@@ -120,7 +120,7 @@ public class AssetInformationActivity extends AppCompatActivity implements View.
     public void onUserInteraction() {
         // TODO Auto-generated method stub
         super.onUserInteraction();
-        Toast.makeText(this, "UserInteraction", Toast.LENGTH_SHORT).show();
+      //  Toast.makeText(this, "UserInteraction", Toast.LENGTH_SHORT).show();
         stopHandler();//stop first and then start
         if (startHandler)
             startHandler();

@@ -137,7 +137,7 @@ public class PowerGridActivity extends AppCompatActivity implements View.OnClick
             @Override
             public void run() {
                 // TODO Auto-generated method stub
-              //  Toast.makeText(MainActivity.this, "user is inactive from last 1 minute",Toast.LENGTH_SHORT).show();
+                Toast.makeText(PowerGridActivity.this, "user is inactive from last 5 minute",Toast.LENGTH_SHORT).show();
                 startHandler = false;
                 Intent intent = new Intent(PowerGridActivity.this, PasscodeActivity.class);
                 intent.putExtra("workInMiddle", "work");
@@ -163,7 +163,7 @@ public class PowerGridActivity extends AppCompatActivity implements View.OnClick
     public void onUserInteraction() {
         // TODO Auto-generated method stub
         super.onUserInteraction();
-        Toast.makeText(this, "UserInteraction", Toast.LENGTH_SHORT).show();
+      //  Toast.makeText(this, "UserInteraction", Toast.LENGTH_SHORT).show();
         stopHandler();//stop first and then start
         if (startHandler)
             startHandler();
