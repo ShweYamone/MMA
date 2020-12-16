@@ -328,11 +328,7 @@ public class First_Step_CM_Fragment extends Fragment implements FirstStepPMFragm
              * Check returned photo whether network is okay or not
              */
                  if(mNetwork.isNetworkAvailable()) {
-<<<<<<< HEAD
                    // uploadPhoto(theImage, "pre-maintenance-photo" + mSharePerferenceHelper.getUserId() + actualDateTime);
-=======
-                    uploadPhoto(theImage, "pre-maintenance-photo" + mSharePerferenceHelper.getUserId() + actualDateTime, bucketName);
->>>>>>> d2372db29629114b770d313ea8563e2f3a7efec0
                 }else {//Save To db
                     saveEncodePhotoToDatabase(bucketName, photo);
                 }

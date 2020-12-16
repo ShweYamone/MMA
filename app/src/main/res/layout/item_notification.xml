@@ -38,7 +38,7 @@
                         android:id="@+id/tvDateTime"
                         android:text="12/05/2020/ 05:18PM"
                         android:textSize="@dimen/txt_size_small"
-                        android:drawableLeft="@drawable/dotted"
+                        android:drawableLeft="@drawable/filled_circle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>
                 </LinearLayout>

@@ -697,11 +697,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
              * Check returned photo whether network is okay or not
              */
             if(network.isNetworkAvailable()) {
-<<<<<<< HEAD
               //  uploadPhoto(bitmap, "post-maintenance-photo" + mSharePreference.getUserId() +actualDateTime);
-=======
-                uploadPhoto(bitmap, "post-maintenance-photo" + mSharePreference.getUserId() +actualDateTime, bucketName);
->>>>>>> d2372db29629114b770d313ea8563e2f3a7efec0
             }else {//Save To db
                 saveEncodePhotoToDatabase(bucketName, photo);
             }

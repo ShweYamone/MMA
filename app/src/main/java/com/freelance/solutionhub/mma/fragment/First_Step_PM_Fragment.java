@@ -405,26 +405,6 @@ public class First_Step_PM_Fragment extends Fragment implements FirstStepPMFragm
         if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK)
         {
             theImage = (Bitmap) data.getExtras().get("data");
-<<<<<<< HEAD
-=======
-            // Check whether request message is pre or post
-            if(isPreMaintenance) {
-                date = new Date();
-                Timestamp timestamp = new Timestamp(date.getTime());
-                String actualDateTime = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss").format(timestamp);   /**
-                 * Check returned photo whether network is okay or not
-                 */
-                bucketName = "pids-pre-maintenance-photo";
-                if(network.isNetworkAvailable()) {
-                    uploadPhoto(theImage, "pre-maintenance-photo" + mSharePerferenceHelper.getUserId() + actualDateTime,isPreMaintenance, bucketName);
-                }else {//Save To db
-                    saveEncodePhotoToDatabase(bucketName, photo);
-                }
-                photo = getEncodedString(theImage);
-                prePhotoModels.add(new PhotoModel(photo, 1));
-                prePhotoAdapter.notifyDataSetChanged();
-            }else {
->>>>>>> d2372db29629114b770d313ea8563e2f3a7efec0
                 date = new Date();
                 Timestamp timestamp = new Timestamp(date.getTime());
                 String actualDateTime = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss").format(timestamp);
@@ -433,11 +413,8 @@ public class First_Step_PM_Fragment extends Fragment implements FirstStepPMFragm
                  */
                 bucketName = "pids-post-maintenance-photo";
                 if(network.isNetworkAvailable()) {
-<<<<<<< HEAD
                  //   uploadPhoto(theImage, "post-maintenance-photo" + mSharePerferenceHelper.getUserId()+actualDateTime);
-=======
-                    uploadPhoto(theImage, "post-maintenance-photo" + mSharePerferenceHelper.getUserId()+actualDateTime, isPreMaintenance, bucketName);
->>>>>>> d2372db29629114b770d313ea8563e2f3a7efec0
+
                 }else {//Save To db
                     saveEncodePhotoToDatabase(bucketName, photo);
                 }
@@ -485,65 +462,58 @@ public class First_Step_PM_Fragment extends Fragment implements FirstStepPMFragm
      * @param bitmap
      * @param name
      */
-<<<<<<< HEAD
     private void uploadPhoto(Bitmap bitmap, String name) {
-=======
-    private void uploadPhoto(Bitmap bitmap, String name, Boolean preOrPost, String bucketName) {
->>>>>>> d2372db29629114b770d313ea8563e2f3a7efec0
-        File filesDir = getContext().getFilesDir();
-        File fileName = new File(filesDir, name + ".jpg");
+            File filesDir = getContext().getFilesDir();
+            File fileName = new File(filesDir, name + ".jpg");
 
-        OutputStream os;
-        try {
-            os = new FileOutputStream(fileName);
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
-            os.flush();
-            os.close();
-        } catch (Exception e) {
-            Log.e("PHOTO", "Error writing bitmap", e);
-        }
+            OutputStream os;
+            try {
+                os = new FileOutputStream(fileName);
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
+                os.flush();
+                os.close();
+            } catch (Exception e) {
+                Log.e("PHOTO", "Error writing bitmap", e);
+            }
 
-        MultipartBody.Builder builder = new MultipartBody.Builder();
-        builder.setType(MultipartBody.FORM);
-        builder.addFormDataPart("file",fileName.getName(),RequestBody.create(MediaType.parse("multipart/form-data"),fileName));
-        MultipartBody requestBody = builder.build();
+            MultipartBody.Builder builder = new MultipartBody.Builder();
+            builder.setType(MultipartBody.FORM);
+            builder.addFormDataPart("file", fileName.getName(), RequestBody.create(MediaType.parse("multipart/form-data"), fileName));
+            MultipartBody requestBody = builder.build();
 
-<<<<<<< HEAD
-        String bucketName = "pids-post-maintenance-photo";
-=======
+            String bucketName = "pids-post-maintenance-photo";
 
->>>>>>> d2372db29629114b770d313ea8563e2f3a7efec0
-
-        Call<ReturnStatus> returnStatusCall = apiInterface.uploadPhoto(bucketName,  requestBody);
-        returnStatusCall.enqueue(new Callback<ReturnStatus>() {
-            @Override
-            public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
-                ReturnStatus returnStatus = response.body();
-                if(response.isSuccessful()){
-                    postEventList.add(new Event("POST_MAINTENANCE_PHOTO_UPDATE","postMaintenancePhotoUpdate",returnStatus.getData().getFileUrl()));
-                    Toast.makeText(getContext(),returnStatus.getData().getFileUrl()+":Ok",Toast.LENGTH_SHORT).show();
-                }else {
-                    Toast.makeText(getContext(),";",Toast.LENGTH_SHORT).show();
+            Call<ReturnStatus> returnStatusCall = apiInterface.uploadPhoto(bucketName, requestBody);
+            returnStatusCall.enqueue(new Callback<ReturnStatus>() {
+                @Override
+                public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
+                    ReturnStatus returnStatus = response.body();
+                    if (response.isSuccessful()) {
+                        postEventList.add(new Event("POST_MAINTENANCE_PHOTO_UPDATE", "postMaintenancePhotoUpdate", returnStatus.getData().getFileUrl()));
+                        Toast.makeText(getContext(), returnStatus.getData().getFileUrl() + ":Ok", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getContext(), ";", Toast.LENGTH_SHORT).show();
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<ReturnStatus> call, Throwable t) {
+                @Override
+                public void onFailure(Call<ReturnStatus> call, Throwable t) {
 
-            }
-        });
-    }
-    /**
-     * //To Do save to database photo
-     */
-    private void saveEncodePhotoToDatabase(String bucketName, String sPhoto){
-        byte[] bytes = sPhoto.getBytes();
+                }
+            });
+        }
         /**
-         * encodeToString is encoded string
+         * //To Do save to database photo
          */
-        String encodeToString = Base64.encodeToString(bytes,Base64.DEFAULT);
-        dbHelper.uploadPhotoDAO().insert(new UploadPhotoModel(bucketName, encodeToString));
-        Log.v("ENCODE",encodeToString);
+        private void saveEncodePhotoToDatabase (String bucketName, String photo){
+            byte[] bytes = photo.getBytes();
+            /**
+             * encodeToString is encoded string
+             */
+            String encodeToString = Base64.encodeToString(bytes, Base64.DEFAULT);
+            dbHelper.uploadPhotoDAO().insert(new UploadPhotoModel(bucketName, encodeToString));
+            Log.v("ENCODE", encodeToString);
+
 
     }
 }
