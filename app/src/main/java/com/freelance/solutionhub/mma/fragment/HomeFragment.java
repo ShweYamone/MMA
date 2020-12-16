@@ -282,9 +282,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
 
 
                     //store pm services to local DB
-                    //first delete and insert PM SERVICES
+                    //first delete and insert CM SERVICES
                     Log.i("LOCAL", "onResponse: " + dbHelper.eventDAO().getNumberOfEvents());
-                    dbHelper.serviceInfoModelDAO().deletePMServices();
+                    dbHelper.serviceInfoModelDAO().deleteCMServices();
                     dbHelper.serviceInfoModelDAO().insertAll(pmServiceListModel.getItems());
                     Toast.makeText(getContext(), dbHelper.eventDAO().getNumberOfEvents() + " events", Toast.LENGTH_SHORT).show();
                     Toast.makeText(getContext(), dbHelper.serviceInfoModelDAO().getNumberOfServices() + " services", Toast.LENGTH_SHORT).show();
@@ -319,7 +319,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
 
                     //store pm services to local DB
                     //first delete and insert PM SERVICES
-                    dbHelper.serviceInfoModelDAO().deleteCMServices();
+                    dbHelper.serviceInfoModelDAO().deletePMServices();
                     dbHelper.serviceInfoModelDAO().insertAll(pmServiceListModel.getItems());
                     Toast.makeText(getContext(), dbHelper.serviceInfoModelDAO().getNumberOfServices() + " services", Toast.LENGTH_SHORT).show();
                     Log.i("LOCAl_DB", "onResponse: " + dbHelper.serviceInfoModelDAO().getNumberOfServices());
