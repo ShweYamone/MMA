@@ -170,7 +170,7 @@ public class NFCReadingActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
                     if (response.isSuccessful()) {
-                        Toast.makeText(getApplicationContext(), "TAG_SUCCESS" +  response.body().getStatus(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "TAG_" +  response.body().getStatus(), Toast.LENGTH_SHORT).show();
                         if (tag) {
                             Intent intent = new Intent(NFCReadingActivity.this, MainActivity.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

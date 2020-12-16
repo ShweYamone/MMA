@@ -277,7 +277,15 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
 
                 if (response.isSuccessful()) {
                     pmServiceListModel = response.body();
-                    tvCMCount.setText(pmServiceListModel.getTotalElements()+"");
+                    int tempCount = pmServiceListModel.getTotalElements();
+                    if (tempCount == 0) {
+                        tvCMCount.setText("0");
+                    } else if (tempCount < 10) {
+                        tvCMCount.setText("0" + tempCount);
+                    } else if (tempCount < 100){
+                        tvCMCount.setText(tempCount+"");
+                    } else
+                        tvCMCount.setText("99+");
                 }
             }
 
@@ -296,7 +304,15 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
 
                 if (response.isSuccessful()) {
                     pmServiceListModel = response.body();
-                    tvPMCount.setText(pmServiceListModel.getTotalElements()+"");
+                    int tempCount = pmServiceListModel.getTotalElements();
+                    if (tempCount == 0) {
+                        tvPMCount.setText("0");
+                    } else if (tempCount < 10) {
+                        tvPMCount.setText("0" + tempCount);
+                    } else if (tempCount < 100){
+                        tvPMCount.setText(tempCount+"");
+                    } else
+                        tvPMCount.setText("99+");
                 }
             }
 
