@@ -695,7 +695,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
              * Check returned photo whether network is okay or not
              */
             if(network.isNetworkAvailable()) {
-                uploadPhoto(bitmap, "post-maintenance-photo" + mSharePreference.getUserId() +actualDateTime);
+              //  uploadPhoto(bitmap, "post-maintenance-photo" + mSharePreference.getUserId() +actualDateTime);
             }else {//Save To db
                 saveEncodePhotoToDatabase(photo);
             }
@@ -713,7 +713,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getContext(),3  );
         //Pre Maintenance Photo Adapter Setup
         postRecyclerView.setLayoutManager(layoutManager);
-        postPhotoAdapter = new PhotoAdapter(getContext(), postModelList, this);
+        postPhotoAdapter = new PhotoAdapter(getContext(), postModelList);
         postRecyclerView.setAdapter(postPhotoAdapter);
 
     }

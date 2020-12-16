@@ -326,7 +326,7 @@ public class First_Step_CM_Fragment extends Fragment implements FirstStepPMFragm
              * Check returned photo whether network is okay or not
              */
                  if(mNetwork.isNetworkAvailable()) {
-                    uploadPhoto(theImage, "pre-maintenance-photo" + mSharePerferenceHelper.getUserId() + actualDateTime);
+                   // uploadPhoto(theImage, "pre-maintenance-photo" + mSharePerferenceHelper.getUserId() + actualDateTime);
                 }else {//Save To db
                     saveEncodePhotoToDatabase(photo);
                 }
@@ -343,7 +343,7 @@ public class First_Step_CM_Fragment extends Fragment implements FirstStepPMFragm
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getContext(),3  );
         //Pre Maintenance Photo Adapter Setup
         prePhoto.setLayoutManager(layoutManager);
-        prePhotoAdapter = new PhotoAdapter(getContext(), prePhotoModels, this);
+        prePhotoAdapter = new PhotoAdapter(getContext(), prePhotoModels);
         prePhoto.setAdapter(prePhotoAdapter);
 
     }

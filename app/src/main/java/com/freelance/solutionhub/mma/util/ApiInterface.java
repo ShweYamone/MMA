@@ -1,5 +1,6 @@
 package com.freelance.solutionhub.mma.util;
 
+import com.freelance.solutionhub.mma.model.CheckListModel;
 import com.freelance.solutionhub.mma.model.FilterModelBody;
 import com.freelance.solutionhub.mma.model.NotificationReadModel;
 import com.freelance.solutionhub.mma.model.PMServiceInfoDetailModel;
@@ -11,6 +12,8 @@ import com.freelance.solutionhub.mma.model.UpdateEventBody;
 import com.freelance.solutionhub.mma.model.ReturnStatus;
 import com.freelance.solutionhub.mma.model.UserModel;
 import com.freelance.solutionhub.mma.model.UserProfile;
+
+import java.util.List;
 
 import okhttp3.ResponseBody;
 
@@ -67,6 +70,10 @@ public interface ApiInterface {
     //GET Notification Data
     @GET("http://hub-nightly-public-alb-1826126491.ap-southeast-1.elb.amazonaws.com/api/notifications")
     Call<NotificationReadModel> getNotificationReadList(@Header("Authorization") String auth, @Query("page_number") int pageNumber, @Query("page_size") int pageSize);
+
+    //Get check list
+    @GET("service-orders/{service_order_id}/pm-check-list")
+    Call<List<CheckListModel>> getCheckList(@Header("Authorization") String auth, @Path("service_order_id") String serviceOrderId);
 
 }
 
