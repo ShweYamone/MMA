@@ -8,14 +8,17 @@ import androidx.room.RoomDatabase;
 
 import com.freelance.solutionhub.mma.DAO.EventDAO;
 import com.freelance.solutionhub.mma.DAO.UpdateEventBodyDAO;
+import com.freelance.solutionhub.mma.DAO.UploadPhotoDAO;
 import com.freelance.solutionhub.mma.model.Event;
 import com.freelance.solutionhub.mma.model.UpdateEventBody;
+import com.freelance.solutionhub.mma.model.UploadPhotoModel;
 
-@Database(entities = {UpdateEventBody.class, Event.class} , version = 1,exportSchema = false)
+@Database(entities = {UpdateEventBody.class, Event.class, UploadPhotoModel.class} , version = 1,exportSchema = false)
 public abstract class InitializeDatabase extends RoomDatabase {
     private static InitializeDatabase INSTANCE;
     public abstract EventDAO eventDAO();
     public abstract UpdateEventBodyDAO updateEventBodyDAO();
+    public abstract UploadPhotoDAO uploadPhotoDAO();
 
     public static InitializeDatabase getInstance(Context context) {
         if (INSTANCE == null) {
