@@ -36,8 +36,6 @@
                         android:id="@+id/tvMSONumber"
                         android:text="xxxxxx"
                         android:textColor="@color/colorBlack"
-                        android:textStyle="bold"
-                        android:fontFamily="@font/crimson_text_regular"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>
                 </LinearLayout>
@@ -56,8 +54,6 @@
                         android:id="@+id/tvStatus"
                         android:text="APPR"
                         android:textColor="@color/colorBlack"
-                        android:textStyle="bold"
-                        android:fontFamily="@font/crimson_text_regular"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>
                 </LinearLayout>
@@ -81,7 +77,26 @@
 
             <LinearLayout
                 android:layout_margin="@dimen/margin_small"
-                android:layout_weight="7"
+                android:layout_weight="3.3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <TextView
+                    android:text="Panel ID:"
+                    android:textSize="@dimen/txt_size_small"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:id="@+id/tv_panel_id"
+                    android:text=""
+                    android:textColor="@color/colorBlack"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_margin="@dimen/margin_small"
+                android:layout_weight="5"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
@@ -94,8 +109,6 @@
                     android:id="@+id/tvLocation"
                     android:text="Rochar Rd Canter Ader Lly"
                     android:textColor="@color/colorBlack"
-                    android:textStyle="bold"
-                    android:fontFamily="@font/crimson_text_regular"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
             </LinearLayout>

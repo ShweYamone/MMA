@@ -9,8 +9,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,14 +25,13 @@ import com.freelance.solutionhub.mma.DB.InitializeDatabase;
 import com.freelance.solutionhub.mma.R;
 import com.freelance.solutionhub.mma.activity.LoadingActivity;
 import com.freelance.solutionhub.mma.activity.LoginActivity;
-import com.freelance.solutionhub.mma.activity.MainActivity;
 import com.freelance.solutionhub.mma.adapter.ServiceOrderAdapter;
 import com.freelance.solutionhub.mma.common.SmartScrollListener;
 import com.freelance.solutionhub.mma.delegate.HomeFragmentCallback;
 import com.freelance.solutionhub.mma.model.Data;
 import com.freelance.solutionhub.mma.model.FaultMappingJSONString;
 import com.freelance.solutionhub.mma.model.FilterModelBody;
-import com.freelance.solutionhub.mma.model.PMServiceInfoModel;
+import com.freelance.solutionhub.mma.model.ServiceInfoModel;
 import com.freelance.solutionhub.mma.model.PMServiceListModel;
 import com.freelance.solutionhub.mma.model.ReturnStatus;
 import com.freelance.solutionhub.mma.model.UpdateEventBody;
@@ -42,10 +39,6 @@ import com.freelance.solutionhub.mma.model.UserProfile;
 import com.freelance.solutionhub.mma.util.ApiClient;
 import com.freelance.solutionhub.mma.util.ApiInterface;
 import com.freelance.solutionhub.mma.util.SharePreferenceHelper;
-import com.freelance.solutionhub.mma.util.TokenManager;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -63,7 +56,6 @@ import static com.freelance.solutionhub.mma.util.AppConstant.ALL;
 import static com.freelance.solutionhub.mma.util.AppConstant.APPR;
 import static com.freelance.solutionhub.mma.util.AppConstant.CM;
 import static com.freelance.solutionhub.mma.util.AppConstant.INPRG;
-import static com.freelance.solutionhub.mma.util.AppConstant.JOBDONE;
 import static com.freelance.solutionhub.mma.util.AppConstant.PM;
 import static com.freelance.solutionhub.mma.util.AppConstant.WSCH;
 
@@ -114,7 +106,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
     private String[] list;
     private ArrayAdapter spinnerArrAdaper;
     private ServiceOrderAdapter mAdapter;
-    private List<PMServiceInfoModel> serviceInfoModelList = new ArrayList<>();
+    private List<ServiceInfoModel> serviceInfoModelList = new ArrayList<>();
     private ApiInterface apiInterface;
     private SmartScrollListener mSmartScrollListener;
     private SharePreferenceHelper mSharePreference;
@@ -127,7 +119,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
     private String filterExpression;
     private InitializeDatabase dbHelper;
     PMServiceListModel pmServiceListModel;
-    List<PMServiceInfoModel> pmServiceInfoModels;
+    List<ServiceInfoModel> serviceInfoModels;
     List<String> textValueList = new ArrayList<>();
 
     @Override
@@ -262,7 +254,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
     }
 
     public void update_APPR_To_ACK_UI(int position){
-        pmServiceInfoModels.get(position).setServiceOrderStatus(ACK);
+        serviceInfoModels.get(position).setServiceOrderStatus(ACK);
         mAdapter.notifyItemChanged(position);
     }
 
@@ -286,6 +278,17 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
                         tvCMCount.setText(tempCount+"");
                     } else
                         tvCMCount.setText("99+");
+                    Log.i("LOCAl_DB", "onResponse: " + dbHelper.serviceInfoModelDAO().getNumberOfServices());
+
+
+                    //store pm services to local DB
+                    //first delete and insert PM SERVICES
+                    Log.i("LOCAL", "onResponse: " + dbHelper.eventDAO().getNumberOfEvents());
+                    dbHelper.serviceInfoModelDAO().deletePMServices();
+                    dbHelper.serviceInfoModelDAO().insertAll(pmServiceListModel.getItems());
+                    Toast.makeText(getContext(), dbHelper.eventDAO().getNumberOfEvents() + " events", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), dbHelper.serviceInfoModelDAO().getNumberOfServices() + " services", Toast.LENGTH_SHORT).show();
+                   // Log.i("LOCAl", "onResponse: " + dbHelper.serviceInfoModelDAO().getNumberOfEvents());
                 }
             }
 
@@ -313,6 +316,14 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
                         tvPMCount.setText(tempCount+"");
                     } else
                         tvPMCount.setText("99+");
+
+                    //store pm services to local DB
+                    //first delete and insert PM SERVICES
+                    dbHelper.serviceInfoModelDAO().deleteCMServices();
+                    dbHelper.serviceInfoModelDAO().insertAll(pmServiceListModel.getItems());
+                    Toast.makeText(getContext(), dbHelper.serviceInfoModelDAO().getNumberOfServices() + " services", Toast.LENGTH_SHORT).show();
+                    Log.i("LOCAl_DB", "onResponse: " + dbHelper.serviceInfoModelDAO().getNumberOfServices());
+
                 }
             }
 
@@ -336,8 +347,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
                     PMServiceListModel pmList = response.body();
                     totalPages = pmList.getTotalPages();
                  //   Toast.makeText(getContext(), "totalPages : " + totalPages + ", Current Page:" + page + "->" + pmList.getItems().size(),Toast.LENGTH_SHORT).show();
-                    pmServiceInfoModels = pmList.getItems();
-                    serviceInfoModelList.addAll(pmServiceInfoModels);
+                    serviceInfoModels = pmList.getItems();
+                    serviceInfoModelList.addAll(serviceInfoModels);
                     mAdapter.notifyDataSetChanged();
                 }
                 else if (response.code()==401){

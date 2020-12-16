@@ -16,7 +16,7 @@ public class PMServiceListModel implements Serializable {
 
     int totalElements;
 
-    List<PMServiceInfoModel> items;
+    List<ServiceInfoModel> items;
 
     /*
     "pageNumber": 1,
@@ -66,11 +66,11 @@ public class PMServiceListModel implements Serializable {
         this.totalElements = totalElements;
     }
 
-    public List<PMServiceInfoModel> getItems() {
+    public List<ServiceInfoModel> getItems() {
         return items;
     }
 
-    public void setItems(List<PMServiceInfoModel> items) {
+    public void setItems(List<ServiceInfoModel> items) {
         this.items = items;
     }
 }
