@@ -3,7 +3,11 @@ package com.freelance.solutionhub.mma.activity;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.PowerManager;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,6 +36,8 @@ import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static com.freelance.solutionhub.mma.util.AppConstant.user_inactivity_time;
 
 public class PowerGridActivity extends AppCompatActivity implements View.OnClickListener{
 
@@ -83,6 +89,10 @@ public class PowerGridActivity extends AppCompatActivity implements View.OnClick
     private Date date;
     private String cmID;
 
+    private Handler handler;
+    private Runnable r;
+    private boolean startHandler = true;
+    private SharePreferenceHelper sharePreferenceHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +100,9 @@ public class PowerGridActivity extends AppCompatActivity implements View.OnClick
         setContentView(R.layout.activity_power_grid);
 
         ButterKnife.bind(this);
+        sharePreferenceHelper = new SharePreferenceHelper(this);
+        sharePreferenceHelper.setLock(false);
+
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
 
@@ -116,7 +129,72 @@ public class PowerGridActivity extends AppCompatActivity implements View.OnClick
         actionDateTime.setOnClickListener(this);
         save.setOnClickListener(this);
 
+        /**
+         after certain amount of user inactivity, asks for passcode
+         */
+        handler = new Handler();
+        r = new Runnable() {
+            @Override
+            public void run() {
+                // TODO Auto-generated method stub
+              //  Toast.makeText(MainActivity.this, "user is inactive from last 1 minute",Toast.LENGTH_SHORT).show();
+                startHandler = false;
+                Intent intent = new Intent(PowerGridActivity.this, PasscodeActivity.class);
+                intent.putExtra("workInMiddle", "work");
+                startActivity(intent);
+                stopHandler();
+            }
+        };
     }
+
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        boolean isScreenOn = pm.isInteractive();
+        if (isScreenOn)
+            stopHandler();
+        else
+            sharePreferenceHelper.setLock(true);
+    }
+
+    @Override
+    public void onUserInteraction() {
+        // TODO Auto-generated method stub
+        super.onUserInteraction();
+        Toast.makeText(this, "UserInteraction", Toast.LENGTH_SHORT).show();
+        stopHandler();//stop first and then start
+        if (startHandler)
+            startHandler();
+    }
+    public void stopHandler() {
+        handler.removeCallbacks(r);
+    }
+    public void startHandler() {
+        handler.postDelayed(r, user_inactivity_time); //for 3 minutes
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (sharePreferenceHelper.getLock()) {
+            Intent intent = new Intent(PowerGridActivity.this, PasscodeActivity.class);
+            intent.putExtra("workInMiddle", "work");
+            startActivity(intent);
+        } else {
+            startHandler = true;
+            startHandler();
+        }
+    }
+
+    @Override
+    protected void onUserLeaveHint() {
+        super.onUserLeaveHint();
+        sharePreferenceHelper.setLock(true);
+    }
+
+
     @Override
     public void onClick(View v) {
         switch (v.getId()){

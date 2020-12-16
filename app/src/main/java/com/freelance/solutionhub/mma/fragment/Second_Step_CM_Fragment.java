@@ -685,6 +685,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        mSharePreference.setLock(false);
         if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK)
         {
             bitmap = (Bitmap) data.getExtras().get("data");

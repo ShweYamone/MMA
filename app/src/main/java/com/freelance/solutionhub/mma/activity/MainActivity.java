@@ -1,11 +1,11 @@
 package com.freelance.solutionhub.mma.activity;
 
 
+import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.icu.text.RelativeDateTimeFormatter;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.PowerManager;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
@@ -34,6 +34,8 @@ import com.google.android.material.navigation.NavigationView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.freelance.solutionhub.mma.util.AppConstant.user_inactivity_time;
+
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
 
     @BindView(R.id.toolbar)
@@ -54,12 +56,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private int passcode;
     private Handler handler;
     private Runnable r;
+    private boolean startHandler = true;
+    private boolean lockScreen = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mSharedPreferences = new SharePreferenceHelper(this);
+        mSharedPreferences.setLock(false);
 
         ButterKnife.bind(this);
         setupToolbar();
@@ -69,21 +74,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // lotout txtview is here
         tvLogout.setOnClickListener(this);
 
+        /**
+         * call service
+         */
+       // startService(new Intent(getBaseContext(), OnClearFromRecentService.class));
 
+        /**
+        after certain amount of user inactivity, asks for passcode
+         */
         handler = new Handler();
         r = new Runnable() {
-
             @Override
             public void run() {
                 // TODO Auto-generated method stub
-                Toast.makeText(MainActivity.this, "user is inactive from last 10 seconds",Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(MainActivity.this, PasscodeActivity.class));
+                Toast.makeText(MainActivity.this, "user is inactive from last 1 minute",Toast.LENGTH_SHORT).show();
+                startHandler = false;
+                Intent intent = new Intent(MainActivity.this, PasscodeActivity.class);
+                intent.putExtra("workInMiddle", "work");
+                startActivity(intent);
+                stopHandler();
             }
         };
-        startHandler();
-
-        ///////*********WebSocket*************//////////
-
+       // startHandler();
     }
 
     @Override
@@ -96,45 +108,52 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-        stopHandler();
+    protected void onStop() {
+        super.onStop();
+        PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        boolean isScreenOn = pm.isInteractive();
+        if (isScreenOn)
+            stopHandler();
+        else
+            mSharedPreferences.setLock(true);
     }
-
-    
 
     @Override
     public void onUserInteraction() {
         // TODO Auto-generated method stub
         super.onUserInteraction();
+       // Toast.makeText(this, "UserInteraction", Toast.LENGTH_SHORT).show();
         stopHandler();//stop first and then start
-        startHandler();
+        if (startHandler)
+            startHandler();
     }
     public void stopHandler() {
         handler.removeCallbacks(r);
     }
     public void startHandler() {
-        handler.postDelayed(r, 5* 60 * 1000); //for 3 minutes
+        handler.postDelayed(r, user_inactivity_time); //for 3 minutes
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        startHandler();
-        /*
-        final Handler handler = new Handler();
-        final int delay = 20000; // 1000 milliseconds == 1 second
-        if(mSharedPreferences.getIsPinCodeActive()) {
-            mSharedPreferences.setIsPinCodeActive(false);
-            handler.postDelayed(runnable = new Runnable() {
-                public void run() {
-                    startActivity(new Intent(MainActivity.this, PasscodeActivity.class));
-                    handler.postDelayed(runnable, delay);
-                }
-            }, delay); // so basically after your getHeroes(), from next time it will be 5 sec repeated
-        }*/
+        Log.i("LOCKSCREEN", "onResume: " + mSharedPreferences.getLock());
+        if (mSharedPreferences.getLock()) {
+            Intent intent = new Intent(MainActivity.this, PasscodeActivity.class);
+            intent.putExtra("workInMiddle", "work");
+            startActivity(intent);
+        } else {
+            startHandler = true;
+            startHandler();
+        }
     }
 
+    @Override
+    protected void onUserLeaveHint() {
+        super.onUserLeaveHint();
+        Log.i("LOCKSCREENUserLeave", "onResume: " + mSharedPreferences.getLock());
+        mSharedPreferences.setLock(true);
+    }
 
     private void setupToolbar() {
 

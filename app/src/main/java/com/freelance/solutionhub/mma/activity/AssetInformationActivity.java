@@ -3,8 +3,11 @@ package com.freelance.solutionhub.mma.activity;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.PowerManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -25,6 +28,8 @@ import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static com.freelance.solutionhub.mma.util.AppConstant.user_inactivity_time;
 
 public class AssetInformationActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -51,11 +56,18 @@ public class AssetInformationActivity extends AppCompatActivity implements View.
     private ApiInterface apiInterface;
     private SharePreferenceHelper mSharedPreference;
 
+    private Handler handler;
+    private Runnable r;
+    private boolean startHandler = true;
+    private boolean lockScreen = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         apiInterface = ApiClient.getClient(this);
         mSharedPreference = new SharePreferenceHelper(this);
+        mSharedPreference.setLock(false);
+
         setContentView(R.layout.activity_asset_information);
         ButterKnife.bind(this);
 
@@ -74,11 +86,78 @@ public class AssetInformationActivity extends AppCompatActivity implements View.
 
         btnClose.setOnClickListener(this);
 
+        /**
+         after certain amount of user inactivity, asks for passcode
+         */
+        handler = new Handler();
+        r = new Runnable() {
+            @Override
+            public void run() {
+                // TODO Auto-generated method stub
+            //    Toast.makeText(AssetInformationActivity.this, "user is inactive from last 1 minute",Toast.LENGTH_SHORT).show();
+                startHandler = false;
+                Intent intent = new Intent(AssetInformationActivity.this, PasscodeActivity.class);
+                intent.putExtra("workInMiddle", "work");
+                startActivity(intent);
+                stopHandler();
+            }
+        };
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        boolean isScreenOn = pm.isInteractive();
+        if (isScreenOn)
+            stopHandler();
+        else
+            mSharedPreference.setLock(true);
+    }
+
+    @Override
+    public void onUserInteraction() {
+        // TODO Auto-generated method stub
+        super.onUserInteraction();
+        Toast.makeText(this, "UserInteraction", Toast.LENGTH_SHORT).show();
+        stopHandler();//stop first and then start
+        if (startHandler)
+            startHandler();
+    }
+    public void stopHandler() {
+        handler.removeCallbacks(r);
+    }
+    public void startHandler() {
+        handler.postDelayed(r, user_inactivity_time); //for 3 minutes
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.i("LOCKSCREEN", "onResume: " + mSharedPreference.getLock());
+        if (mSharedPreference.getLock()) {
+
+            Intent intent = new Intent(AssetInformationActivity.this, PasscodeActivity.class);
+            intent.putExtra("workInMiddle", "work");
+            startActivity(intent);
+        } else {
+            startHandler = true;
+            startHandler();
+        }
+    }
+
+    @Override
+    protected void onUserLeaveHint() {
+        super.onUserLeaveHint();
+        Log.i("LOCKSCREENUserLeave", "onResume: " + mSharedPreference.getLock());
+        mSharedPreference.setLock(true);
     }
 
     //Getting the scan results
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        mSharedPreference.setLock(false);
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         if (result != null) {
             //if qrcode has nothing in it

@@ -8,8 +8,11 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.PowerManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,6 +25,7 @@ import com.freelance.solutionhub.mma.fragment.Second_Step_CM_Fragment;
 import com.freelance.solutionhub.mma.fragment.Third_Step_CM_Fragment;
 import com.freelance.solutionhub.mma.model.PMServiceInfoDetailModel;
 import com.freelance.solutionhub.mma.util.AppConstant;
+import com.freelance.solutionhub.mma.util.SharePreferenceHelper;
 import com.google.android.material.tabs.TabLayout;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
@@ -31,6 +35,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.freelance.solutionhub.mma.util.AppConstant.user_inactivity_time;
 
 public class CMActivity extends AppCompatActivity {
 
@@ -42,12 +48,20 @@ public class CMActivity extends AppCompatActivity {
 
     private PMServiceInfoDetailModel pmServiceInfoDetailModel;
 
+    private Handler handler;
+    private Runnable r;
+    private boolean startHandler = true;
+    private boolean lockScreen = false;
+    private SharePreferenceHelper mSharedPreference;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         pmServiceInfoDetailModel = (PMServiceInfoDetailModel)(getIntent().getSerializableExtra("object"));
-        setContentView(R.layout.activity_c_m);
 
+        setContentView(R.layout.activity_c_m);
+        mSharedPreference = new SharePreferenceHelper(this);
+        mSharedPreference.setLock(false);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
@@ -72,6 +86,70 @@ public class CMActivity extends AppCompatActivity {
         first_step_cm_fragment.setArguments(bundle);
         second_step_cm_fragment.setArguments(bundle);
         third_step_cm_fragment.setArguments(bundle);
+
+
+        /**
+         after certain amount of user inactivity, asks for passcode
+         */
+        handler = new Handler();
+        r = new Runnable() {
+            @Override
+            public void run() {
+                // TODO Auto-generated method stub
+               // Toast.makeText(MainActivity.this, "user is inactive from last 1 minute",Toast.LENGTH_SHORT).show();
+                startHandler = false;
+                Intent intent = new Intent(CMActivity.this, PasscodeActivity.class);
+                intent.putExtra("workInMiddle", "work");
+                startActivity(intent);
+                stopHandler();
+            }
+        };
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        boolean isScreenOn = pm.isInteractive();
+        if (isScreenOn)
+            stopHandler();
+        else
+            mSharedPreference.setLock(true);
+    }
+
+    @Override
+    public void onUserInteraction() {
+        // TODO Auto-generated method stub
+        super.onUserInteraction();
+        Toast.makeText(this, "UserInteraction", Toast.LENGTH_SHORT).show();
+        stopHandler();//stop first and then start
+        if (startHandler)
+            startHandler();
+    }
+    public void stopHandler() {
+        handler.removeCallbacks(r);
+    }
+    public void startHandler() {
+        handler.postDelayed(r, user_inactivity_time); //for 3 minutes
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mSharedPreference.getLock()) {
+            Intent intent = new Intent(CMActivity.this, PasscodeActivity.class);
+            intent.putExtra("workInMiddle", "work");
+            startActivity(intent);
+        } else {
+            startHandler = true;
+            startHandler();
+        }
+    }
+
+    @Override
+    protected void onUserLeaveHint() {
+        super.onUserLeaveHint();
+        mSharedPreference.setLock(true);
     }
 
     // Add steps' fragment to view pager
@@ -142,6 +220,7 @@ public class CMActivity extends AppCompatActivity {
     //Getting the scan results
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        mSharedPreference.setLock(false);
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         if (result != null) {
             //if qrcode has nothing in it

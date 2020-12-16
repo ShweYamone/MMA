@@ -2,6 +2,7 @@ package com.freelance.solutionhub.mma.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.provider.ContactsContract;
 
 public class SharePreferenceHelper {
 
@@ -16,14 +17,13 @@ public class SharePreferenceHelper {
  	private static String TOKEN = "refreshToken";
 
  	private static String PIN_CODE = "pinCode";
- 	private static String IS_PIN_CODE_ACTIVE = "isPinCodeActive";
+ 	private static String LOCK = "lock";
 
 
 	public SharePreferenceHelper(Context context)
 	{
 		sharedPreference = context.getSharedPreferences(SHARE_PREFRENCE, Context.MODE_PRIVATE);
 	}
-
 
 	public void setLogin(String name, String token)
 	{
@@ -45,10 +45,15 @@ public class SharePreferenceHelper {
 		editor.putString(PIN_CODE, pinCode);
 		editor.commit();
 	}
-	public void setIsPinCodeActive(boolean isPinCodeActive){
+
+	public void setLock(boolean lock) {
 		SharedPreferences.Editor editor = sharedPreference.edit();
-		editor.putBoolean(IS_PIN_CODE_ACTIVE,isPinCodeActive);
+		editor.putBoolean(LOCK, lock);
 		editor.commit();
+	}
+
+	public boolean getLock() {
+		return sharedPreference.getBoolean(LOCK, false);
 	}
 
 	public void setToken(String token) {
@@ -91,13 +96,10 @@ public class SharePreferenceHelper {
 		{
 			return true;
 		}
-		else
-		{
-			return false;
-		}
+		return false;
 	}
 
-	public boolean isPinCode(){
+	public boolean hasPinCode(){
 		if(sharedPreference.contains(PIN_CODE)) return true;
 		return false;
 	}
