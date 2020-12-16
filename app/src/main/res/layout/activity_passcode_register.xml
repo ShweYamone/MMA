@@ -22,7 +22,7 @@
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light" >
             <TextView
                 android:id="@+id/toolbar_title"
-                android:text="MMA"
+                android:text="MMA-Register"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"

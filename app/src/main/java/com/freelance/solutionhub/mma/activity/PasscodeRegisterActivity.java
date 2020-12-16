@@ -49,8 +49,8 @@ public class PasscodeRegisterActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         mSharePreferenceHelper = new SharePreferenceHelper(this);
-        if(mSharePreferenceHelper.isPinCode()){
-            startActivity(new Intent(PasscodeRegisterActivity.this, LauncherActivity.class));
+        if (mSharePreferenceHelper.hasPinCode()) {
+            startActivity(new Intent(PasscodeRegisterActivity.this, PasscodeActivity.class));
             finish();
         }
 
@@ -84,7 +84,6 @@ public class PasscodeRegisterActivity extends AppCompatActivity {
                 if(text.length() == 6){
                     if(text.equals(pinCodeStr)){
                         mSharePreferenceHelper.setPinCode(text);
-                     //   mSharePreferenceHelper.setIsPinCodeActive(true);
                         startActivity(new Intent(PasscodeRegisterActivity.this, LoginActivity.class));
                         finish();
                     }else {

@@ -314,6 +314,7 @@ public class First_Step_CM_Fragment extends Fragment implements FirstStepPMFragm
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        mSharePerferenceHelper.setLock(false);
         if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK)
         {
                theImage = (Bitmap) data.getExtras().get("data");

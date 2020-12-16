@@ -8,10 +8,14 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Notification;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.PowerManager;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -58,6 +62,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.freelance.solutionhub.mma.util.AppConstant.user_inactivity_time;
+
 public class NotificationActivity extends AppCompatActivity  {
 
     @BindView(R.id.toolbar)
@@ -82,6 +88,10 @@ public class NotificationActivity extends AppCompatActivity  {
     private SmartScrollListener mSmartScrollListener;
     private int page = 1;
     private int totalPages = 0 ;
+    private Handler handler;
+    private Runnable r;
+    private boolean startHandler = true;
+    private boolean lockScreen = false;
 
     private static final String TAG = "NotificationActivity";
     @Override
@@ -92,6 +102,7 @@ public class NotificationActivity extends AppCompatActivity  {
         setupToolbar();
         apiInterface = ApiClient.getClient(this);
         mSharedPreference = new SharePreferenceHelper(this);
+        mSharedPreference.setLock(false);
 
         mSmartScrollListener = new SmartScrollListener(new SmartScrollListener.OnSmartScrollListener() {
             @Override
@@ -174,11 +185,72 @@ public class NotificationActivity extends AppCompatActivity  {
             Log.i("Websocket",  e.getMessage() + "\n" + e.getLocalizedMessage());
         }
 
-     //   Toast.makeText(getApplicationContext(), "END", Toast.LENGTH_SHORT).show();
-        Log.i("END",  "END");
+
+        /**
+         after certain amount of user inactivity, asks for passcode
+         */
+        handler = new Handler();
+        r = new Runnable() {
+            @Override
+            public void run() {
+                // TODO Auto-generated method stub
+                //Toast.makeText(MainActivity.this, "user is inactive from last 1 minute",Toast.LENGTH_SHORT).show();
+                startHandler = false;
+                Intent intent = new Intent(NotificationActivity.this, PasscodeActivity.class);
+                intent.putExtra("workInMiddle", "work");
+                startActivity(intent);
+                stopHandler();
+            }
+        };
+    }
 
 
-}
+    @Override
+    protected void onStop() {
+        super.onStop();
+        PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        boolean isScreenOn = pm.isInteractive();
+        if (isScreenOn)
+            stopHandler();
+        else
+            mSharedPreference.setLock(true);
+    }
+
+    @Override
+    public void onUserInteraction() {
+        // TODO Auto-generated method stub
+        super.onUserInteraction();
+        Toast.makeText(this, "UserInteraction", Toast.LENGTH_SHORT).show();
+        stopHandler();//stop first and then start
+        if (startHandler)
+            startHandler();
+    }
+    public void stopHandler() {
+        handler.removeCallbacks(r);
+    }
+    public void startHandler() {
+        handler.postDelayed(r, user_inactivity_time); //for 3 minutes
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mSharedPreference.getLock()) {
+            Intent intent = new Intent(NotificationActivity.this, PasscodeActivity.class);
+            intent.putExtra("workInMiddle", "work");
+            startActivity(intent);
+        } else {
+            startHandler = true;
+            startHandler();
+        }
+    }
+
+    @Override
+    protected void onUserLeaveHint() {
+        super.onUserLeaveHint();
+        mSharedPreference.setLock(true);
+    }
+
 
     private void getServiceOrders() {
         Call<NotificationReadModel> notificationReadModelCall = apiInterface.getNotificationReadList("Bearer "+mSharedPreference.getToken(),page,10);

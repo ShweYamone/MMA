@@ -28,6 +28,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+
         <activity android:name=".activity.NotificationViewActivity"
             android:parentActivityName=".activity.NotificationActivity"></activity>
         <activity android:name=".activity.PasscodeRegisterActivity">
@@ -58,7 +59,6 @@
         <activity android:name=".activity.NFCReadingActivity" />
         <activity android:name=".activity.LoginActivity" />
         <activity android:name=".activity.MainActivity" />
-        <activity android:name=".activity.LauncherActivity"></activity>
     </application>
 
 </manifest>

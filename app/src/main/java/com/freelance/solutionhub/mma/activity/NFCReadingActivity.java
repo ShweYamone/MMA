@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.nfc.NdefMessage;
@@ -16,7 +17,9 @@ import android.nfc.tech.MifareClassic;
 import android.nfc.tech.MifareUltralight;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Parcelable;
+import android.os.PowerManager;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
@@ -48,6 +51,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.freelance.solutionhub.mma.util.AppConstant.user_inactivity_time;
+
 public class NFCReadingActivity extends AppCompatActivity {
 
     @BindView(R.id.btnCancel)
@@ -66,18 +71,45 @@ public class NFCReadingActivity extends AppCompatActivity {
     List<Event> events = new ArrayList<>();
     String currentDateTime;
 
+    private Handler handler;
+    private Runnable r;
+    private boolean startHandler = true;
+    private boolean lockScreen = false;
+
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nfcreading);
         ButterKnife.bind(this);
+
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);
         mSharedPreference = new SharePreferenceHelper(this);
+        mSharedPreference.setLock(false);
+
+
         apiInterface = ApiClient.getClient(this);
         network = new Network(this);
         dbHelper = InitializeDatabase.getInstance(this);
         serviceOrderId = getIntent().getStringExtra("id");
+
+
+        /**
+         after certain amount of user inactivity, asks for passcode
+         */
+        handler = new Handler();
+        r = new Runnable() {
+            @Override
+            public void run() {
+                // TODO Auto-generated method stub
+                // Toast.makeText(NFCReadingActivity.this, "user is inactive from last 1 minute",Toast.LENGTH_SHORT).show();
+                startHandler = false;
+                Intent intent = new Intent(NFCReadingActivity.this, PasscodeActivity.class);
+                intent.putExtra("workInMiddle", "work");
+                startActivity(intent);
+                stopHandler();
+            }
+        };
 
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -117,6 +149,10 @@ public class NFCReadingActivity extends AppCompatActivity {
         pendingIntent = PendingIntent.getActivity(this, 0,
                 new Intent(this, this.getClass())
                         .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
+
+
+
+
 
     }
 
@@ -182,17 +218,64 @@ public class NFCReadingActivity extends AppCompatActivity {
             }
         }
 
+
+
+    }
+
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        boolean isScreenOn = pm.isInteractive();
+        if (isScreenOn)
+            stopHandler();
+        else
+            mSharedPreference.setLock(true);
+    }
+
+    @Override
+    public void onUserInteraction() {
+        // TODO Auto-generated method stub
+        super.onUserInteraction();
+        Toast.makeText(this, "UserInteraction", Toast.LENGTH_SHORT).show();
+        stopHandler();//stop first and then start
+        if (startHandler)
+            startHandler();
+    }
+    public void stopHandler() {
+        handler.removeCallbacks(r);
+    }
+    public void startHandler() {
+        handler.postDelayed(r, user_inactivity_time); //for 3 minutes
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
+        Log.i("LOCKSCREEN", "onResume: " + mSharedPreference.getLock());
+        if (mSharedPreference.getLock()) {
+            Intent intent = new Intent(NFCReadingActivity.this, PasscodeActivity.class);
+            intent.putExtra("workInMiddle", "work");
+            startActivity(intent);
+        } else {
+            startHandler = true;
+            startHandler();
+        }
         if (nfcAdapter != null) {
-
             nfcAdapter.enableForegroundDispatch(this, pendingIntent, null, null);
         }
     }
+
+
+
+    @Override
+    protected void onUserLeaveHint() {
+        Log.i("LOCKSCREEN", "onResume: " + mSharedPreference.getLock());
+        super.onUserLeaveHint();
+        mSharedPreference.setLock(true);
+    }
+
 
     @Override
     protected void onNewIntent(Intent intent) {
