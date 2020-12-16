@@ -8,6 +8,7 @@
         android:id="@+id/imgDisplay"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
+        android:background="@color/colorBlack"
         android:scaleType="fitCenter" />
 
     <ImageView
@@ -19,7 +20,6 @@
         android:layout_alignParentTop="true"
         android:layout_marginRight="15dp"
         android:layout_marginTop="15dp"
-        android:background="@drawable/circle_shape"
         android:textColor="#ffffff"
         app:tint="#C7C7C7" />
 

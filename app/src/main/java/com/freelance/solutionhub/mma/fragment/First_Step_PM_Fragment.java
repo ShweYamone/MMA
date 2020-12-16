@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -130,10 +131,10 @@ public class First_Step_PM_Fragment extends Fragment implements FirstStepPMFragm
     CheckListAdapter checkListAdapter;
     ArrayList<CheckListModel> checkListModels;
     String photo;
-    ArrayList<PhotoModel> prePhotoModels, postPhotoModels;
+    ArrayList<PhotoModel>  postPhotoModels;
     ArrayList<Event> postEventList;
     Bitmap theImage;
-    PhotoAdapter prePhotoAdapter, postPhotoAdapter;
+    PhotoAdapter postPhotoAdapter;
     private PMServiceInfoDetailModel pmServiceInfoDetailModel;
     private Network network;
     private InitializeDatabase dbHelper;
@@ -161,7 +162,6 @@ public class First_Step_PM_Fragment extends Fragment implements FirstStepPMFragm
         network = new Network(getContext());
         dbHelper = InitializeDatabase.getInstance(getContext());
 
-        prePhotoModels = new ArrayList<>();
         postPhotoModels = new ArrayList<>();
         postEventList = new ArrayList<>();
         //Check List
@@ -406,12 +406,9 @@ public class First_Step_PM_Fragment extends Fragment implements FirstStepPMFragm
         if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK)
         {
             theImage = (Bitmap) data.getExtras().get("data");
-                /**
-                 * Check returned photo whether network is okay or not
-                 */
-                bucketName = "pids-post-maintenance-photo";
-                photo = getEncodedString(getResizedBitmap(theImage,500));
-                saveEncodePhotoToDatabase(bucketName, photo);
+            bucketName = "pids-post-maintenance-photo";
+            photo = getEncodedString(theImage);;
+             //   saveEncodePhotoToDatabase(bucketName, photo);
                 postPhotoModels.add(new PhotoModel(photo,2));
                 postPhotoAdapter.notifyDataSetChanged();
         }
