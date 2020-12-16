@@ -83,7 +83,8 @@ public class LoginActivity extends AppCompatActivity {
                             mSharedPreferance.setLogin(loginModel.getUsername(), loginModel.getRefreshToken());
                             if (mSharedPreferance.isLogin()) {
                                 Toast.makeText(getApplicationContext(), "login success", Toast.LENGTH_SHORT).show();
-                                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                startActivity(intent);
                                 finish();
                             }
                         } else {
