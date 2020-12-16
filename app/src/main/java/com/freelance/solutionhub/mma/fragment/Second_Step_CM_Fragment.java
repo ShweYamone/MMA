@@ -688,15 +688,6 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
         if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK)
         {
             bitmap = (Bitmap) data.getExtras().get("data");
-            String bucketName ="pids-pre-maintenance-photo";
-            /**
-             * Check returned photo whether network is okay or not
-             */
-            if(network.isNetworkAvailable()) {
-              //  uploadPhoto(bitmap, "post-maintenance-photo" + mSharePreference.getUserId() +actualDateTime);
-            }else {//Save To db
-                saveEncodePhotoToDatabase(bucketName, photo);
-            }
             photo = getEncodedString(bitmap);
             postModelList.add(new PhotoModel(photo, 1));
             postPhotoAdapter.notifyDataSetChanged();

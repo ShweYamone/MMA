@@ -319,15 +319,6 @@ public class First_Step_CM_Fragment extends Fragment implements FirstStepPMFragm
                theImage = (Bitmap) data.getExtras().get("data");
                 photo = getEncodedString(theImage);
                 Log.v("ORI",photo);
-                String bucketName ="pids-pre-maintenance-photo";
-            /**
-             * Check returned photo whether network is okay or not
-             */
-                 if(mNetwork.isNetworkAvailable()) {
-                   // uploadPhoto(theImage, "pre-maintenance-photo" + mSharePerferenceHelper.getUserId() + actualDateTime);
-                }else {//Save To db
-                    saveEncodePhotoToDatabase(bucketName, photo);
-                }
                 prePhotoModels.add(new PhotoModel(photo, 1));
                 prePhotoAdapter.notifyDataSetChanged();
 

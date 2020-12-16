@@ -405,19 +405,8 @@ public class First_Step_PM_Fragment extends Fragment implements FirstStepPMFragm
         if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK)
         {
             theImage = (Bitmap) data.getExtras().get("data");
-                /**
-                 * Check returned photo whether network is okay or not
-                 */
-                bucketName = "pids-post-maintenance-photo";
-
-            Log.i("BEFORE_COMPRESS", theImage.getWidth()+"*"+theImage.getHeight());
-                ByteArrayOutputStream ostream = new ByteArrayOutputStream();
-                theImage.compress(Bitmap.CompressFormat.JPEG,100,ostream);
-                byte[] bytes = ostream.toByteArray();
-                Bitmap p = BitmapFactory.decodeByteArray(bytes,0,bytes.length);
-                Log.i("COMPRESS", p.getWidth()+"*"+p.getHeight());
-              photo = getEncodedString(p);
-          //      photo = getEncodedString(getResizedBitmap(theImage,500));
+            bucketName = "pids-post-maintenance-photo";
+            photo = getEncodedString(theImage);;
              //   saveEncodePhotoToDatabase(bucketName, photo);
                 postPhotoModels.add(new PhotoModel(photo,2));
                 postPhotoAdapter.notifyDataSetChanged();
