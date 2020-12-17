@@ -342,8 +342,8 @@
                <EditText
                    android:id="@+id/et_fault_found_remarks"
                    android:text=""
-                   android:layout_marginLeft="@dimen/margin_normal"
-                   android:layout_marginRight="@dimen/margin_normal"
+                   android:layout_marginLeft="@dimen/margin_small"
+                   android:layout_marginRight="@dimen/margin_small"
                    android:hint="Text here"
                    android:visibility="gone"
                    android:layout_width="match_parent"
