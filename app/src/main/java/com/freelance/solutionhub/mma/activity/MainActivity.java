@@ -201,12 +201,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 @Override
                 public void onMessage(Envelope envelope) {
                     Log.i("NEW_MESSAGE",envelope.toString());
-                    final JsonNode user = envelope.getPayload().get("user");
+                    final JsonNode user = envelope.getPayload().get("mso_id");
                     if (user == null || user instanceof NullNode) {
-                        onMessageToast("An anonymous user entered");
+                        onMessageNoti("An anonymous user entered","");
                     }
                     else {
-                        onMessageToast("User '" + user.toString() + "' entered");
+                        onMessageNoti(envelope.getPayload().get("mso_id")+"",envelope.getPayload().get("mso_type")+"");
                     }
 
                 }
@@ -250,17 +250,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //ab.setHomeAsUpIndicator(R.drawable.ic_menu);
         ab.setDisplayHomeAsUpEnabled(true);
     }
-    public void onMessageToast(String envolope){
+    public void onMessageNoti(String envolope,String mso_type){
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 menu.getItem(0).setIcon(ContextCompat.getDrawable(MainActivity.this, R.drawable.noti_new));
-                sendNotification();
+                sendNotification(envolope,mso_type);
             }
         });
     }
     //  @OnClick(R.id.button)
-    public void sendNotification() {
+    public void sendNotification(String title, String type) {
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         String NOTIFICATION_CHANNEL_ID = "tutorialspoint_01";
@@ -283,8 +283,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .setStyle(new NotificationCompat.BigTextStyle()
                         .bigText("Much longer text that cannot fit one line..."))
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .setContentTitle("sample notification")
-                .setContentText("This is sample notification")
+                .setContentTitle(title)
+                .setContentText(type)
                 .setContentInfo("Information");
         notificationManager.notify(1, notificationBuilder.build());
     }
