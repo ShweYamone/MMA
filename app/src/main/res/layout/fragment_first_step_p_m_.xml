@@ -315,25 +315,39 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:weightSum="5"
-                android:orientation="horizontal"
+                android:orientation="vertical"
                 android:layout_marginTop="@dimen/margin_small"
                 android:background="@drawable/round_rect_shape_line">
-                <TextView
-                    android:layout_width="0dp"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="4.65"
-                    android:layout_margin="@dimen/margin_small"
-                    android:text="@string/fault_found_remarks"
-                    android:fontFamily="@font/crimson_text_regular"
-                    android:textSize="@dimen/txt_size_normal"/>
-                <ImageView
-                    android:id="@+id/iv_fault_found_remarks"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.35"
-                    android:src="@drawable/check_blank"
-                    android:layout_margin="@dimen/margin_small"
-                    android:layout_alignParentRight="true"/>
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="4.65"
+                        android:layout_margin="@dimen/margin_small"
+                        android:text="@string/fault_found_remarks"
+                        android:fontFamily="@font/crimson_text_regular"
+                        android:textSize="@dimen/txt_size_normal"/>
+                    <ImageView
+                        android:id="@+id/iv_fault_found_remarks"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.35"
+                        android:src="@drawable/check_blank"
+                        android:layout_margin="@dimen/margin_small"
+                        android:layout_alignParentRight="true"/>
+                </LinearLayout>
+               <EditText
+                   android:id="@+id/et_fault_found_remarks"
+                   android:text=""
+                   android:layout_marginLeft="@dimen/margin_normal"
+                   android:layout_marginRight="@dimen/margin_normal"
+                   android:hint="Text here"
+                   android:visibility="gone"
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"/>
 
 
             </LinearLayout>

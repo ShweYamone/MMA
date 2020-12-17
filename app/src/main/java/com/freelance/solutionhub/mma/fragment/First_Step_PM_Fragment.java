@@ -26,11 +26,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.freelance.solutionhub.mma.DB.InitializeDatabase;
 import com.freelance.solutionhub.mma.R;
 import com.freelance.solutionhub.mma.adapter.CheckListAdapter;
@@ -123,6 +125,12 @@ public class First_Step_PM_Fragment extends Fragment implements FirstStepPMFragm
     @BindView(R.id.rv_check_list)
     RecyclerView checkList;
 
+    @BindView(R.id.et_fault_found_remarks)
+    EditText etFaultFoundRemarks;
+
+    @BindView(R.id.iv_fault_found_remarks)
+    ImageView ivFaultFoundRemarks;
+
     private ApiInterface apiInterface;
     private static final int CAMERA_REQUEST = 1888;
     private static final int MY_CAMERA_PERMISSION_CODE = 100;
@@ -141,6 +149,7 @@ public class First_Step_PM_Fragment extends Fragment implements FirstStepPMFragm
     private Date date;
     private Timestamp ts;
     private String bucketName;
+    ArrayList<Event> events = new ArrayList<>();
 
     public First_Step_PM_Fragment(){}
 
@@ -191,6 +200,27 @@ public class First_Step_PM_Fragment extends Fragment implements FirstStepPMFragm
 
             }
         });
+
+        ivFaultFoundRemarks.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (etFaultFoundRemarks.getVisibility()==View.VISIBLE) {
+                    etFaultFoundRemarks.setVisibility(View.GONE);
+                    Glide.with(getActivity())
+                            .load(R.drawable.check_blank)
+                            .into(ivFaultFoundRemarks);
+
+                } else if (etFaultFoundRemarks.getVisibility()==View.GONE) {
+                    etFaultFoundRemarks.setVisibility(View.VISIBLE);
+                    Glide.with(getActivity())
+                            .load(R.drawable.check)
+                            .into(ivFaultFoundRemarks);
+                }
+
+            }
+        });
+
+
 
         date = new Date();
         ts=new Timestamp(date.getTime());
@@ -267,7 +297,15 @@ public class First_Step_PM_Fragment extends Fragment implements FirstStepPMFragm
         date = new Date();
         Timestamp timestamp = new Timestamp(date.getTime());
         String actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
-        ArrayList<Event> events = checkListAdapter.getCheckListEvent();
+        if (!etFaultFoundRemarks.getText().toString().equals("")) {
+            events.add(new Event(
+                    "PM_FAULT_FOUND_UPDATE",
+                    "PM_FAULT_FOUND_UPDATE",
+                    etFaultFoundRemarks.getText().toString()
+            ));
+        }
+
+        events.addAll(checkListAdapter.getCheckListEvent());
         for(Event e:events){
             Log.i("VALUE",e.getValue());
         }
@@ -282,7 +320,6 @@ public class First_Step_PM_Fragment extends Fragment implements FirstStepPMFragm
                     Toast.makeText(getContext(),""+r.getStatus(),Toast.LENGTH_SHORT).show();
                 }
             }
-
             @Override
             public void onFailure(Call<ReturnStatus> call, Throwable t) {
 
@@ -388,6 +425,7 @@ public class First_Step_PM_Fragment extends Fragment implements FirstStepPMFragm
         {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
             {
+                mSharePerferenceHelper.setLock(false);
                 Toast.makeText(getActivity(), "camera permission granted", Toast.LENGTH_LONG).show();
                 Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
                 startActivityForResult(cameraIntent, CAMERA_REQUEST);
