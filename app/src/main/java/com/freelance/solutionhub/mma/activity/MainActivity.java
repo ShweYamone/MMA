@@ -1,8 +1,15 @@
 package com.freelance.solutionhub.mma.activity;
 
 
+import android.annotation.SuppressLint;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PowerManager;
@@ -18,6 +25,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -25,11 +33,19 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.NullNode;
 import com.freelance.solutionhub.mma.R;
 import com.freelance.solutionhub.mma.fragment.AboutFragment;
 import com.freelance.solutionhub.mma.fragment.HomeFragment;
 import com.freelance.solutionhub.mma.util.SharePreferenceHelper;
+import com.freelance.solutionhub.mma.util.WebSocketUtils;
 import com.google.android.material.navigation.NavigationView;
+
+import org.phoenixframework.channels.Channel;
+import org.phoenixframework.channels.Envelope;
+import org.phoenixframework.channels.IMessageCallback;
+import org.phoenixframework.channels.Socket;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -58,6 +74,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private Runnable r;
     private boolean startHandler = true;
     private boolean lockScreen = false;
+    private Socket socket;
+    private Channel channel;
+    private WebSocketUtils webSocketUtils;
+    private Menu menu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +93,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         displayView(R.id.nav_home);
         // lotout txtview is here
         tvLogout.setOnClickListener(this);
+
+        webSocketUtils = new WebSocketUtils(this);
 
         /**
          * call service
@@ -146,6 +168,71 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             startHandler = true;
             startHandler();
         }
+
+        /************WebScoket***************/
+        Uri.Builder url = Uri.parse( "ws://hub-nightly-public-alb-1826126491.ap-southeast-1.elb.amazonaws.com/socket/websocket" ).buildUpon();
+        // url.appendQueryParameter("vsn", "2.0.0");
+        url.appendQueryParameter( "token", mSharedPreferences.getToken());
+        try {
+            //    Log.i("Websocket", url.toString());
+            socket = new Socket(url.build().toString());
+            socket.connect();
+            if(socket.isConnected()){
+                Log.i("SOCKET_CONNECT","SUCCESS");
+            }
+
+            channel = socket.chan("notification", null);
+
+            channel.join()
+                    .receive("ok", new IMessageCallback() {
+                        @Override
+                        public void onMessage(Envelope envelope) {
+                            Log.i("JOINED_WITH", "Joined with " + envelope.toString());
+                            Log.i("ON_MESSAGE", "onMessage: " + socket.isConnected());
+                        }
+                    })
+                    .receive("error", new IMessageCallback() {
+                        @Override
+                        public void onMessage(Envelope envelope) {
+                            Log.i("Websocket", "NOT Joined with ");
+                        }
+                    });
+            channel.on("mso_created", new IMessageCallback() {
+                @Override
+                public void onMessage(Envelope envelope) {
+                    Log.i("NEW_MESSAGE",envelope.toString());
+                    final JsonNode user = envelope.getPayload().get("user");
+                    if (user == null || user instanceof NullNode) {
+                        onMessageToast("An anonymous user entered");
+                    }
+                    else {
+                        onMessageToast("User '" + user.toString() + "' entered");
+                    }
+
+                }
+            });
+
+            channel.on("mso_rejected", new IMessageCallback() {
+                @Override
+                public void onMessage(Envelope envelope) {
+                    //  Toast.makeText(getApplicationContext(), "CLOSED: " + envelope.toString(), Toast.LENGTH_SHORT).show();
+                    //   tvResult.setText("CLOSED: " + envelope.toString());
+                    Log.i("CLOSED", envelope.toString());
+                }
+            });
+
+
+//Sending a message. This library uses Jackson for JSON serialization
+//            ObjectNode node = new ObjectNode(JsonNodeFactory.instance)
+//                    .put("user", "my_username")
+//                    .put("body", "Hello");
+//
+//            channel.push("new:msg", node);
+        } catch (Exception e) {
+            Toast.makeText(getApplicationContext(), "Exception" + e.getMessage(), Toast.LENGTH_SHORT).show();
+            Log.i("Websocket",  e.getMessage() + "\n" + e.getLocalizedMessage());
+        }
+
     }
 
     @Override
@@ -162,6 +249,44 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         ab.setDisplayShowTitleEnabled(false);
         //ab.setHomeAsUpIndicator(R.drawable.ic_menu);
         ab.setDisplayHomeAsUpEnabled(true);
+    }
+    public void onMessageToast(String envolope){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                menu.getItem(0).setIcon(ContextCompat.getDrawable(MainActivity.this, R.drawable.noti_new));
+                sendNotification();
+            }
+        });
+    }
+    //  @OnClick(R.id.button)
+    public void sendNotification() {
+
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        String NOTIFICATION_CHANNEL_ID = "tutorialspoint_01";
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            @SuppressLint("WrongConstant") NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, "My Notifications", NotificationManager.IMPORTANCE_MAX);
+            // Configure the notification channel.
+            notificationChannel.setDescription("Sample Channel description");
+            notificationChannel.enableLights(true);
+            notificationChannel.setLightColor(Color.RED);
+            notificationChannel.setVibrationPattern(new long[]{0, 1000, 500, 1000});
+            notificationChannel.enableVibration(true);
+            notificationManager.createNotificationChannel(notificationChannel);
+        }
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID);
+        notificationBuilder.setAutoCancel(true)
+                .setDefaults(Notification.DEFAULT_ALL)
+                .setWhen(System.currentTimeMillis())
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setTicker("Tutorialspoint")
+                .setStyle(new NotificationCompat.BigTextStyle()
+                        .bigText("Much longer text that cannot fit one line..."))
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setContentTitle("sample notification")
+                .setContentText("This is sample notification")
+                .setContentInfo("Information");
+        notificationManager.notify(1, notificationBuilder.build());
     }
 
 
@@ -283,6 +408,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        this.menu = menu;
         return true;
     }
 

@@ -5,12 +5,17 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.NotificationCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -21,7 +26,9 @@ import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.freelance.solutionhub.mma.R;
 import com.freelance.solutionhub.mma.adapter.NotificationAdapter;
@@ -76,9 +83,6 @@ public class NotificationActivity extends AppCompatActivity  {
     private NotificationAdapter mAdapter;
     private List<NotificationModel> notificationList = new ArrayList<>();
 
-    private Socket socket;
-    private Channel channel;
-    private WebSocketUtils webSocketUtils;
 
     private SharePreferenceHelper mSharedPreference;
     private ApiInterface apiInterface;
@@ -117,7 +121,6 @@ public class NotificationActivity extends AppCompatActivity  {
 
 
         mAdapter = new NotificationAdapter(this, notificationList);
-        webSocketUtils = new WebSocketUtils(this);
         recyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(mLayoutManager);
@@ -125,65 +128,6 @@ public class NotificationActivity extends AppCompatActivity  {
         recyclerView.setAdapter(mAdapter);
         getMSOEvent();
 
-        /************WebScoket***************/
-        Uri.Builder url = Uri.parse( "ws://hub-nightly-public-alb-1826126491.ap-southeast-1.elb.amazonaws.com/socket/websocket" ).buildUpon();
-       // url.appendQueryParameter("vsn", "2.0.0");
-        url.appendQueryParameter( "token", mSharedPreference.getToken());
-        try {
-            //    Log.i("Websocket", url.toString());
-            socket = new Socket(url.build().toString());
-            socket.connect();
-            if(socket.isConnected()){
-                Log.i("SOCKET_CONNECT","SUCCESS");
-            }
-
-            channel = socket.chan("notification", null);
-
-            channel.join()
-                    .receive("ok", new IMessageCallback() {
-                        @Override
-                        public void onMessage(Envelope envelope) {
-                            Log.i(TAG, "Joined with " + envelope.toString());
-                            Log.i(TAG, "onMessage: " + socket.isConnected());
-                        }
-                    })
-                    .receive("error", new IMessageCallback() {
-                        @Override
-                        public void onMessage(Envelope envelope) {
-                            Log.i("Websocket", "NOT Joined with ");
-                        }
-                    });
-            channel.on("mso_created", new IMessageCallback() {
-                @Override
-                public void onMessage(Envelope envelope) {
-
-//                    Toast.makeText(getApplicationContext(), "NEW MESSAGE: " + envelope.toString(), Toast.LENGTH_SHORT).show();
-                   //tvResult.setText("NEW MESSAGE: " + envelope.toString());
-                    Log.i("NEW_MESSAGE",envelope.toString());
-                   // tvMessage.setText(envelope.toString());
-                }
-            });
-
-            channel.on("mso_rejected", new IMessageCallback() {
-                @Override
-                public void onMessage(Envelope envelope) {
-                  //  Toast.makeText(getApplicationContext(), "CLOSED: " + envelope.toString(), Toast.LENGTH_SHORT).show();
-                     //   tvResult.setText("CLOSED: " + envelope.toString());
-                    Log.i("CLOSED", envelope.toString());
-                }
-            });
-
-
-//Sending a message. This library uses Jackson for JSON serialization
-//            ObjectNode node = new ObjectNode(JsonNodeFactory.instance)
-//                    .put("user", "my_username")
-//                    .put("body", "Hello");
-//
-//            channel.push("new:msg", node);
-        } catch (Exception e) {
-            Toast.makeText(getApplicationContext(), "Exception" + e.getMessage(), Toast.LENGTH_SHORT).show();
-            Log.i("Websocket",  e.getMessage() + "\n" + e.getLocalizedMessage());
-        }
 
 
         /**
@@ -203,6 +147,7 @@ public class NotificationActivity extends AppCompatActivity  {
             }
         };
     }
+
 
 
     @Override
