@@ -109,6 +109,7 @@ public class CMActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
+        Log.i("Tracing......", "Stop: ");
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         boolean isScreenOn = pm.isInteractive();
         if (isScreenOn)
@@ -136,6 +137,7 @@ public class CMActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        Log.i("Tracing......", "onResume: " + mSharedPreference.getLock());
         if (mSharedPreference.getLock()) {
             Intent intent = new Intent(CMActivity.this, PasscodeActivity.class);
             intent.putExtra("workInMiddle", "work");
@@ -149,6 +151,7 @@ public class CMActivity extends AppCompatActivity {
     @Override
     protected void onUserLeaveHint() {
         super.onUserLeaveHint();
+        Log.i("Tracing......", "onUserLeaveHint: " + mSharedPreference.getLock());
         mSharedPreference.setLock(true);
     }
 

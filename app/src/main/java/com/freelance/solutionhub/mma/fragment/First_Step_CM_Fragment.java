@@ -276,12 +276,15 @@ public class First_Step_CM_Fragment extends Fragment implements FirstStepPMFragm
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         mSharePerferenceHelper.setLock(false);
+        Log.i("Tracing......", "PermissionResultStart: " + mSharePerferenceHelper.getLock());
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == MY_CAMERA_PERMISSION_CODE)
         {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
             {
+                Log.i("Tracing......", "PermissionResultGranted: " + mSharePerferenceHelper.getLock());
                 Toast.makeText(getActivity(), "camera permission granted", Toast.LENGTH_LONG).show();
+                mSharePerferenceHelper.setLock(false);
                 Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
                 startActivityForResult(cameraIntent, CAMERA_REQUEST);
             }
@@ -302,6 +305,7 @@ public class First_Step_CM_Fragment extends Fragment implements FirstStepPMFragm
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         mSharePerferenceHelper.setLock(false);
+        Log.i("Tracing......", "onActivityResult: " + mSharePerferenceHelper.getLock());
         if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK)
         {
                theImage = (Bitmap) data.getExtras().get("data");
