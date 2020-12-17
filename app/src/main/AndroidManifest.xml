@@ -31,37 +31,72 @@
 
 
         <activity android:name=".activity.NotificationViewActivity"
-            android:parentActivityName=".activity.NotificationActivity"></activity>
+            android:parentActivityName=".activity.NotificationActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"></activity>
 
-        <activity android:name=".activity.FullScreenActivity"></activity>
+        <activity android:name=".activity.FullScreenActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"></activity>
 
-        <activity android:name=".activity.PasscodeRegisterActivity">
+        <activity android:name=".activity.PasscodeRegisterActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.PasscodeActivity" />
+        <activity android:name=".activity.PasscodeActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".activity.CaptureActivityPotrait"
             android:screenOrientation="sensorPortrait"
             android:stateNotNeeded="true"
             android:theme="@style/zxing_CaptureTheme"
             android:windowSoftInputMode="stateAlwaysHidden" />
-        <activity android:name=".activity.TelcoActivity" />
-        <activity android:name=".activity.PowerGridActivity" />
-        <activity android:name=".activity.OtherActivity" />
-        <activity android:name=".activity.NotificationActivity" />
-        <activity android:name=".activity.PMCompletionActivity" />
-        <activity android:name=".activity.CMCompletionActivity" />
-        <activity android:name=".activity.AssetInformationActivity" />
-        <activity android:name=".activity.CMActivity" />
-        <activity android:name=".activity.PMActivity" />
-        <activity android:name=".activity.LoadingActivity" />
-        <activity android:name=".activity.NFCReadingActivity" />
-        <activity android:name=".activity.LoginActivity" />
-        <activity android:name=".activity.MainActivity" />
+
+        <activity android:name=".activity.TelcoActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activity.PowerGridActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activity.OtherActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activity.NotificationActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activity.PMCompletionActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activity.CMCompletionActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activity.AssetInformationActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activity.CMActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activity.PMActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activity.LoadingActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activity.NFCReadingActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activity.LoginActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activity.MainActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

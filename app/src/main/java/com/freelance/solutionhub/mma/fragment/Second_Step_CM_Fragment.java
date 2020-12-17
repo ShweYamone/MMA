@@ -643,12 +643,15 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        mSharePreference.setLock(false);
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == MY_CAMERA_PERMISSION_CODE)
         {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
             {
+                mSharePreference.setLock(false);
                 Toast.makeText(getActivity(), "camera permission granted", Toast.LENGTH_LONG).show();
+                mSharePreference.setLock(false);
                 Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
                 startActivityForResult(cameraIntent, CAMERA_REQUEST);
             }

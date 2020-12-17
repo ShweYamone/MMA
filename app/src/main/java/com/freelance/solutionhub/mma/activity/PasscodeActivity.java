@@ -68,19 +68,16 @@ public class PasscodeActivity extends AppCompatActivity{
                     count++;
                     if(text.equals(mSharePreferenceHelper.getPinCode())){
                         mSharePreferenceHelper.setLock(false);
-                        if (mSharePreferenceHelper.isLogin()) {
-
-                                if (getIntent().hasExtra("workInMiddle") &&
-                                        getIntent().getStringExtra("workInMiddle").equals("work")) {
-
-                                } else
-                                    startActivity(new Intent(PasscodeActivity.this, MainActivity.class));
-
-                                finish();
-                        } else {
-                            startActivity(new Intent(PasscodeActivity.this, LoginActivity.class));
-                            finish();
+                        if (getIntent().hasExtra("workInMiddle") &&
+                                getIntent().getStringExtra("workInMiddle").equals("work")) {
+                            //do nothing
+                        } else {//this is the start of the app, thus navigate to MainActivity
+                            if(mSharePreferenceHelper.isLogin())
+                                startActivity(new Intent(PasscodeActivity.this, MainActivity.class));
+                            else
+                                startActivity(new Intent(PasscodeActivity.this, LoginActivity.class));
                         }
+                        finish();
                     }else {
                         passCodeView.setError(true);
                     }

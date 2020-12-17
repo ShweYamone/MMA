@@ -159,6 +159,8 @@ public class First_Step_PM_Fragment extends Fragment implements FirstStepPMFragm
         ButterKnife.bind(this, view);
         apiInterface = ApiClient.getClient(this.getContext());
         mSharePerferenceHelper = new SharePreferenceHelper(this.getContext());
+     //   mSharePerferenceHelper.setLock(false);
+
         network = new Network(getContext());
         dbHelper = InitializeDatabase.getInstance(getContext());
 
@@ -376,8 +378,11 @@ public class First_Step_PM_Fragment extends Fragment implements FirstStepPMFragm
      * @param grantResults
      */
 
+
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        mSharePerferenceHelper.setLock(false);
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == MY_CAMERA_PERMISSION_CODE)
         {

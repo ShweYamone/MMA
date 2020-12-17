@@ -286,8 +286,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
                     Log.i("LOCAL", "onResponse: " + dbHelper.eventDAO().getNumberOfEvents());
                     dbHelper.serviceInfoModelDAO().deleteCMServices();
                     dbHelper.serviceInfoModelDAO().insertAll(pmServiceListModel.getItems());
-//                    Toast.makeText(getContext(), dbHelper.eventDAO().getNumberOfEvents() + " events", Toast.LENGTH_SHORT).show();
-        //            Toast.makeText(getContext(), dbHelper.serviceInfoModelDAO().getNumberOfServices() + " services", Toast.LENGTH_SHORT).show();
+                 //   Toast.makeText(getContext(), dbHelper.eventDAO().getNumberOfEvents() + " events", Toast.LENGTH_SHORT).show();
+                 //   Toast.makeText(getContext(), dbHelper.serviceInfoModelDAO().getNumberOfServices() + " services", Toast.LENGTH_SHORT).show();
                    // Log.i("LOCAl", "onResponse: " + dbHelper.serviceInfoModelDAO().getNumberOfEvents());
                 }
             }
@@ -321,7 +321,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
                     //first delete and insert PM SERVICES
                     dbHelper.serviceInfoModelDAO().deletePMServices();
                     dbHelper.serviceInfoModelDAO().insertAll(pmServiceListModel.getItems());
-                    Toast.makeText(getContext(), dbHelper.serviceInfoModelDAO().getNumberOfServices() + " services", Toast.LENGTH_SHORT).show();
+                  //  Toast.makeText(getContext(), dbHelper.serviceInfoModelDAO().getNumberOfServices() + " services", Toast.LENGTH_SHORT).show();
                     Log.i("LOCAl_DB", "onResponse: " + dbHelper.serviceInfoModelDAO().getNumberOfServices());
 
                 }
@@ -362,7 +362,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
 
             @Override
             public void onFailure(Call<PMServiceListModel> call, Throwable t) {
-                Toast.makeText(getContext(), "connection failure", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getContext(), "connection failure", Toast.LENGTH_SHORT).show();
             }
         });
 

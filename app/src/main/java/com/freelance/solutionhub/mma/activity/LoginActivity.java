@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PowerManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -116,16 +117,6 @@ public class LoginActivity extends AppCompatActivity {
         };
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-        boolean isScreenOn = pm.isInteractive();
-        if (isScreenOn)
-            stopHandler();
-        else
-            mSharedPreferance.setLock(true);
-    }
 
     @Override
     public void onUserInteraction() {
@@ -157,7 +148,20 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onStop() {
+        Log.i("Tracing......", "onStop: ");
+        super.onStop();
+        PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        boolean isScreenOn = pm.isInteractive();
+        if (isScreenOn)
+            stopHandler();
+        else
+            mSharedPreferance.setLock(true);
+    }
+
+    @Override
     protected void onUserLeaveHint() {
+        Log.i("Tracing......", "onUserLeaveHint: ");
         super.onUserLeaveHint();
         mSharedPreferance.setLock(true);
     }
