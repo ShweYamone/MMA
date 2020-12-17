@@ -64,7 +64,7 @@ public class LoadingActivity extends AppCompatActivity {
             @Override
             public void run() {
                 // TODO Auto-generated method stub
-                Toast.makeText(LoadingActivity.this, "user is inactive from last 1 minute",Toast.LENGTH_SHORT).show();
+                Toast.makeText(LoadingActivity.this, "user is inactive from last 5 minutes",Toast.LENGTH_SHORT).show();
                 startHandler = false;
                 Intent intent = new Intent(LoadingActivity.this, PasscodeActivity.class);
                 intent.putExtra("workInMiddle", "work");
@@ -90,7 +90,7 @@ public class LoadingActivity extends AppCompatActivity {
     public void onUserInteraction() {
         // TODO Auto-generated method stub
         super.onUserInteraction();
-        Toast.makeText(this, "UserInteraction", Toast.LENGTH_SHORT).show();
+      //  Toast.makeText(this, "UserInteraction", Toast.LENGTH_SHORT).show();
         stopHandler();//stop first and then start
         if (startHandler)
             startHandler();

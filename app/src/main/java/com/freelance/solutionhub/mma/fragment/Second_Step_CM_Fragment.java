@@ -329,28 +329,11 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
         tvAcknowledgeBy.setText(pmServiceInfoModel.getAcknowledgedBy());
         tvAcknowledgeDT.setText(pmServiceInfoModel.getAcknowledgementDate());
         tvReportedCode.setText(pmServiceInfoModel.getReportedProblemDescription());
-        Call<ResponseBody> call = apiInterface.getFaultMappings("Bearer " + mSharePreference.getToken());
-        call.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                Log.i("FaultMapping", "onResponse: " + response.code());
-                if (response.isSuccessful()) {
-                    try {
-                        setFaultMappingSpinner(new JSONObject(response.body().string()));
-
-                    } catch (JSONException e) {
-                        Log.i("Exception", "onResponse: " + e.getMessage());
-                    } catch (IOException e) {
-                        Log.i("Exception", "onResponse: " + e.getMessage());
-                    }
-                }
-            }
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Log.i("FaultMapping", "onResponse: ");
-            }
-        });
-
+        try {
+            setFaultMappingSpinner(new JSONObject(dbHelper.faultMappingDAO().getFaultMappingJSON().get(0).getJsonString()));
+        } catch (JSONException e) {
+            Log.e("JSON Exception", "displayMaintenanceWorkInformation: " + e.getMessage() + "");
+        }
 
     }
 

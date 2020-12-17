@@ -2,6 +2,8 @@
 <resources>
     <color name="colorPrimary">#00558c</color>
     <color name="colorPrimaryDark">#032d5d</color>
+
+    <color name="colorPrimaryTransparent">#4D00558c</color>
     <color name="colorAccent">#D81B60</color>
     <color name="window_background">#FFF5F5F5</color>
     <color name="navigation_item">#4caf50</color>

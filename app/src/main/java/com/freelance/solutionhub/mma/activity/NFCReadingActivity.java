@@ -102,7 +102,7 @@ public class NFCReadingActivity extends AppCompatActivity {
             @Override
             public void run() {
                 // TODO Auto-generated method stub
-                // Toast.makeText(NFCReadingActivity.this, "user is inactive from last 1 minute",Toast.LENGTH_SHORT).show();
+                Toast.makeText(NFCReadingActivity.this, "user is inactive from last 5 minutes",Toast.LENGTH_SHORT).show();
                 startHandler = false;
                 Intent intent = new Intent(NFCReadingActivity.this, PasscodeActivity.class);
                 intent.putExtra("workInMiddle", "work");
@@ -136,6 +136,7 @@ public class NFCReadingActivity extends AppCompatActivity {
         /*********************/
         /////////////////////////////////////
 
+       // perFormTagEvent();
         if(nfcAdapter == null){
             Toast.makeText(this, "No NFC", Toast.LENGTH_SHORT).show();
             //finish();
@@ -169,7 +170,7 @@ public class NFCReadingActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
                     if (response.isSuccessful()) {
-                        Toast.makeText(getApplicationContext(), "TAG_SUCCESS" +  response.body().getStatus(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "TAG_" +  response.body().getStatus(), Toast.LENGTH_SHORT).show();
                         if (tag) {
                             Intent intent = new Intent(NFCReadingActivity.this, MainActivity.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -238,7 +239,7 @@ public class NFCReadingActivity extends AppCompatActivity {
     public void onUserInteraction() {
         // TODO Auto-generated method stub
         super.onUserInteraction();
-        Toast.makeText(this, "UserInteraction", Toast.LENGTH_SHORT).show();
+     //   Toast.makeText(this, "UserInteraction", Toast.LENGTH_SHORT).show();
         stopHandler();//stop first and then start
         if (startHandler)
             startHandler();

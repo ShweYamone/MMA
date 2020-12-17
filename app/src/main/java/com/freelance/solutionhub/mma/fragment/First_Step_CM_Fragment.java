@@ -2,25 +2,18 @@ package com.freelance.solutionhub.mma.fragment;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.room.DatabaseConfiguration;
-import androidx.room.InvalidationTracker;
-import androidx.sqlite.db.SupportSQLiteOpenHelper;
 
 import android.util.Base64;
 import android.util.Log;
@@ -38,7 +31,6 @@ import com.freelance.solutionhub.mma.adapter.PhotoAdapter;
 import com.freelance.solutionhub.mma.delegate.FirstStepPMFragmentCallback;
 import com.freelance.solutionhub.mma.model.Event;
 import com.freelance.solutionhub.mma.model.PMServiceInfoDetailModel;
-import com.freelance.solutionhub.mma.model.PMServiceInfoModel;
 import com.freelance.solutionhub.mma.model.PhotoModel;
 import com.freelance.solutionhub.mma.model.ReturnStatus;
 import com.freelance.solutionhub.mma.model.UpdateEventBody;
@@ -52,10 +44,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
-import java.security.spec.EncodedKeySpec;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -67,10 +57,6 @@ import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-import static com.freelance.solutionhub.mma.util.AppConstant.pm;
-import static com.freelance.solutionhub.mma.util.AppConstant.pmID;
-import static com.freelance.solutionhub.mma.util.AppConstant.token;
 
 public class First_Step_CM_Fragment extends Fragment implements FirstStepPMFragmentCallback {
 

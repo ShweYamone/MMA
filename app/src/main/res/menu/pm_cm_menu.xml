@@ -4,7 +4,7 @@
     tools:context=".activity.CMActivity">
     <item
         android:id="@+id/action_tagout"
-        android:icon="@drawable/logout_exit"
+        android:icon="@drawable/tag_out"
         android:title="notifications"
         android:orderInCategory="100"
         app:showAsAction="ifRoom" />

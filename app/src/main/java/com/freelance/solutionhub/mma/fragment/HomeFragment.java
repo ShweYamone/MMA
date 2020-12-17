@@ -9,8 +9,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.os.Handler;
-import android.os.Looper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,16 +21,17 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.freelance.solutionhub.mma.DB.InitializeDatabase;
 import com.freelance.solutionhub.mma.R;
 import com.freelance.solutionhub.mma.activity.LoadingActivity;
 import com.freelance.solutionhub.mma.activity.LoginActivity;
-import com.freelance.solutionhub.mma.activity.MainActivity;
 import com.freelance.solutionhub.mma.adapter.ServiceOrderAdapter;
 import com.freelance.solutionhub.mma.common.SmartScrollListener;
 import com.freelance.solutionhub.mma.delegate.HomeFragmentCallback;
 import com.freelance.solutionhub.mma.model.Data;
+import com.freelance.solutionhub.mma.model.FaultMappingJSONString;
 import com.freelance.solutionhub.mma.model.FilterModelBody;
-import com.freelance.solutionhub.mma.model.PMServiceInfoModel;
+import com.freelance.solutionhub.mma.model.ServiceInfoModel;
 import com.freelance.solutionhub.mma.model.PMServiceListModel;
 import com.freelance.solutionhub.mma.model.ReturnStatus;
 import com.freelance.solutionhub.mma.model.UpdateEventBody;
@@ -39,13 +39,14 @@ import com.freelance.solutionhub.mma.model.UserProfile;
 import com.freelance.solutionhub.mma.util.ApiClient;
 import com.freelance.solutionhub.mma.util.ApiInterface;
 import com.freelance.solutionhub.mma.util.SharePreferenceHelper;
-import com.freelance.solutionhub.mma.util.TokenManager;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -55,7 +56,6 @@ import static com.freelance.solutionhub.mma.util.AppConstant.ALL;
 import static com.freelance.solutionhub.mma.util.AppConstant.APPR;
 import static com.freelance.solutionhub.mma.util.AppConstant.CM;
 import static com.freelance.solutionhub.mma.util.AppConstant.INPRG;
-import static com.freelance.solutionhub.mma.util.AppConstant.JOBDONE;
 import static com.freelance.solutionhub.mma.util.AppConstant.PM;
 import static com.freelance.solutionhub.mma.util.AppConstant.WSCH;
 
@@ -106,7 +106,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
     private String[] list;
     private ArrayAdapter spinnerArrAdaper;
     private ServiceOrderAdapter mAdapter;
-    private List<PMServiceInfoModel> serviceInfoModelList = new ArrayList<>();
+    private List<ServiceInfoModel> serviceInfoModelList = new ArrayList<>();
     private ApiInterface apiInterface;
     private SmartScrollListener mSmartScrollListener;
     private SharePreferenceHelper mSharePreference;
@@ -117,8 +117,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
     private String enumValue;
     private String textValue;
     private String filterExpression;
+    private InitializeDatabase dbHelper;
     PMServiceListModel pmServiceListModel;
-    List<PMServiceInfoModel> pmServiceInfoModels;
+    List<ServiceInfoModel> serviceInfoModels;
     List<String> textValueList = new ArrayList<>();
 
     @Override
@@ -128,6 +129,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
         View view =  inflater.inflate(R.layout.fragment_home, container, false);
         mSharePreference = new SharePreferenceHelper(getContext());
         apiInterface = ApiClient.getClient(this.getContext());
+        dbHelper = InitializeDatabase.getInstance(this.getContext());
 
         ButterKnife.bind(this, view);
         cvCorrectiveMaintenance.setOnClickListener(this);
@@ -158,7 +160,38 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
         }
 
         setServiceOrderCount();
+
+        getFaultMappingData();
         return view;
+    }
+
+    /**
+     * Fault Mapping Data for Second Step CM , for later use
+     */
+    private void getFaultMappingData() {
+        Call<ResponseBody> call = apiInterface.getFaultMappings("Bearer " + mSharePreference.getToken());
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                Log.i("FaultMapping", "onResponse: " + response.code());
+                if (response.isSuccessful()) {
+                    try {
+                        //first delete and insert new fault-mapping data for later use
+                        dbHelper.faultMappingDAO().delete();
+                        dbHelper.faultMappingDAO().insert(
+                                new FaultMappingJSONString(
+                                        response.body().string()));
+                    } catch (IOException e) {
+                        Log.e("IOException", "onResponse: " + e.getMessage() );
+                    }
+
+                }
+            }
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.i("FaultMapping", "onResponse: ");
+            }
+        });
     }
 
     private void getUserIdAndUserDisplayName() {
@@ -221,7 +254,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
     }
 
     public void update_APPR_To_ACK_UI(int position){
-        pmServiceInfoModels.get(position).setServiceOrderStatus(ACK);
+        serviceInfoModels.get(position).setServiceOrderStatus(ACK);
         mAdapter.notifyItemChanged(position);
     }
 
@@ -236,7 +269,26 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
 
                 if (response.isSuccessful()) {
                     pmServiceListModel = response.body();
-                    tvCMCount.setText(pmServiceListModel.getTotalElements()+"");
+                    int tempCount = pmServiceListModel.getTotalElements();
+                    if (tempCount == 0) {
+                        tvCMCount.setText("0");
+                    } else if (tempCount < 10) {
+                        tvCMCount.setText("0" + tempCount);
+                    } else if (tempCount < 100){
+                        tvCMCount.setText(tempCount+"");
+                    } else
+                        tvCMCount.setText("99+");
+                    Log.i("LOCAl_DB", "onResponse: " + dbHelper.serviceInfoModelDAO().getNumberOfServices());
+
+
+                    //store pm services to local DB
+                    //first delete and insert CM SERVICES
+                    Log.i("LOCAL", "onResponse: " + dbHelper.eventDAO().getNumberOfEvents());
+                    dbHelper.serviceInfoModelDAO().deleteCMServices();
+                    dbHelper.serviceInfoModelDAO().insertAll(pmServiceListModel.getItems());
+                    Toast.makeText(getContext(), dbHelper.eventDAO().getNumberOfEvents() + " events", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), dbHelper.serviceInfoModelDAO().getNumberOfServices() + " services", Toast.LENGTH_SHORT).show();
+                   // Log.i("LOCAl", "onResponse: " + dbHelper.serviceInfoModelDAO().getNumberOfEvents());
                 }
             }
 
@@ -255,7 +307,23 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
 
                 if (response.isSuccessful()) {
                     pmServiceListModel = response.body();
-                    tvPMCount.setText(pmServiceListModel.getTotalElements()+"");
+                    int tempCount = pmServiceListModel.getTotalElements();
+                    if (tempCount == 0) {
+                        tvPMCount.setText("0");
+                    } else if (tempCount < 10) {
+                        tvPMCount.setText("0" + tempCount);
+                    } else if (tempCount < 100){
+                        tvPMCount.setText(tempCount+"");
+                    } else
+                        tvPMCount.setText("99+");
+
+                    //store pm services to local DB
+                    //first delete and insert PM SERVICES
+                    dbHelper.serviceInfoModelDAO().deletePMServices();
+                    dbHelper.serviceInfoModelDAO().insertAll(pmServiceListModel.getItems());
+                    Toast.makeText(getContext(), dbHelper.serviceInfoModelDAO().getNumberOfServices() + " services", Toast.LENGTH_SHORT).show();
+                    Log.i("LOCAl_DB", "onResponse: " + dbHelper.serviceInfoModelDAO().getNumberOfServices());
+
                 }
             }
 
@@ -279,8 +347,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
                     PMServiceListModel pmList = response.body();
                     totalPages = pmList.getTotalPages();
                  //   Toast.makeText(getContext(), "totalPages : " + totalPages + ", Current Page:" + page + "->" + pmList.getItems().size(),Toast.LENGTH_SHORT).show();
-                    pmServiceInfoModels = pmList.getItems();
-                    serviceInfoModelList.addAll(pmServiceInfoModels);
+                    serviceInfoModels = pmList.getItems();
+                    serviceInfoModelList.addAll(serviceInfoModels);
                     mAdapter.notifyDataSetChanged();
                 }
                 else if (response.code()==401){

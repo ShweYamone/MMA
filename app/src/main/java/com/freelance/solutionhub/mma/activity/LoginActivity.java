@@ -83,7 +83,8 @@ public class LoginActivity extends AppCompatActivity {
                             mSharedPreferance.setLogin(loginModel.getUsername(), loginModel.getRefreshToken());
                             if (mSharedPreferance.isLogin()) {
                                 Toast.makeText(getApplicationContext(), "login success", Toast.LENGTH_SHORT).show();
-                                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                startActivity(intent);
                                 finish();
                             }
                         } else {
@@ -105,7 +106,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void run() {
                 // TODO Auto-generated method stub
-                Toast.makeText(LoginActivity.this, "user is inactive from last 1 minute",Toast.LENGTH_SHORT).show();
+                Toast.makeText(LoginActivity.this, "user is inactive from last 5 minutes",Toast.LENGTH_SHORT).show();
                 startHandler = false;
                 Intent intent = new Intent(LoginActivity.this, PasscodeActivity.class);
                 intent.putExtra("workInMiddle", "work");

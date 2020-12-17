@@ -96,7 +96,7 @@ public class CMActivity extends AppCompatActivity {
             @Override
             public void run() {
                 // TODO Auto-generated method stub
-               // Toast.makeText(MainActivity.this, "user is inactive from last 1 minute",Toast.LENGTH_SHORT).show();
+                Toast.makeText(CMActivity.this, "user is inactive from last 5 minute",Toast.LENGTH_SHORT).show();
                 startHandler = false;
                 Intent intent = new Intent(CMActivity.this, PasscodeActivity.class);
                 intent.putExtra("workInMiddle", "work");
@@ -121,7 +121,7 @@ public class CMActivity extends AppCompatActivity {
     public void onUserInteraction() {
         // TODO Auto-generated method stub
         super.onUserInteraction();
-        Toast.makeText(this, "UserInteraction", Toast.LENGTH_SHORT).show();
+     //   Toast.makeText(this, "UserInteraction", Toast.LENGTH_SHORT).show();
         stopHandler();//stop first and then start
         if (startHandler)
             startHandler();

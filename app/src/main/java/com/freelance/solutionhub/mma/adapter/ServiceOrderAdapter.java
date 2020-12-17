@@ -2,31 +2,19 @@ package com.freelance.solutionhub.mma.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.transition.Slide;
 
 import com.bumptech.glide.Glide;
 import com.freelance.solutionhub.mma.R;
-import com.freelance.solutionhub.mma.activity.CMActivity;
-import com.freelance.solutionhub.mma.activity.LoadingActivity;
 import com.freelance.solutionhub.mma.activity.NFCReadingActivity;
-import com.freelance.solutionhub.mma.activity.PMActivity;
 import com.freelance.solutionhub.mma.delegate.HomeFragmentCallback;
-import com.freelance.solutionhub.mma.fragment.First_Step_CM_Fragment;
-import com.freelance.solutionhub.mma.model.PMServiceInfoModel;
+import com.freelance.solutionhub.mma.model.ServiceInfoModel;
 
 import java.util.List;
 
@@ -35,7 +23,6 @@ import butterknife.ButterKnife;
 
 import static com.freelance.solutionhub.mma.util.AppConstant.ACK;
 import static com.freelance.solutionhub.mma.util.AppConstant.APPR;
-import static com.freelance.solutionhub.mma.util.AppConstant.CM;
 import static com.freelance.solutionhub.mma.util.AppConstant.INPRG;
 import static com.freelance.solutionhub.mma.util.AppConstant.WSCH;
 import static com.freelance.solutionhub.mma.util.AppConstant.cm;
@@ -43,7 +30,7 @@ import static com.freelance.solutionhub.mma.util.AppConstant.cm;
 public class ServiceOrderAdapter extends RecyclerView.Adapter<ServiceOrderAdapter.MyViewHolder> {
 
     private Context mContext;
-    private List<PMServiceInfoModel> serviceInfoModelList;
+    private List<ServiceInfoModel> serviceInfoModelList;
     private HomeFragmentCallback callback;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
@@ -59,10 +46,13 @@ public class ServiceOrderAdapter extends RecyclerView.Adapter<ServiceOrderAdapte
         @BindView(R.id.tvTime)
         TextView tvTime;
 
+        @BindView(R.id.tv_panel_id)
+        TextView tvPanelId;
+
         @BindView(R.id.ivLanding)
         ImageView ivLanding;
 
-        private PMServiceInfoModel service;
+        private ServiceInfoModel service;
 
         public MyViewHolder(View view) {
             super(view);
@@ -76,14 +66,14 @@ public class ServiceOrderAdapter extends RecyclerView.Adapter<ServiceOrderAdapte
 
         }
 
-        public void bindView(PMServiceInfoModel service, int position){
+        public void bindView(ServiceInfoModel service, int position){
             this.service = service;
             tvTime.setText(service.getCreationDate());
             tvMsoNumber.setText(service.getId());
             String status = service.getServiceOrderStatus();
             tvStatus.setText(status);
             tvLocation.setText(service.getBusStopLocation());
-
+            tvPanelId.setText(service.getPanelId());
             if (service.getId().startsWith(cm)) {
                 if (status.equals(APPR)){
                     Glide.with(mContext).load(R.drawable.ack).into(ivLanding);
@@ -154,7 +144,7 @@ public class ServiceOrderAdapter extends RecyclerView.Adapter<ServiceOrderAdapte
         }
     }
 
-    public ServiceOrderAdapter(Context mContext, List<PMServiceInfoModel> serviceInfoModelList, HomeFragmentCallback callback) {
+    public ServiceOrderAdapter(Context mContext, List<ServiceInfoModel> serviceInfoModelList, HomeFragmentCallback callback) {
         this.mContext = mContext;
         this.serviceInfoModelList = serviceInfoModelList;
         this.callback = callback;
@@ -170,7 +160,7 @@ public class ServiceOrderAdapter extends RecyclerView.Adapter<ServiceOrderAdapte
 
     @Override
     public void onBindViewHolder(ServiceOrderAdapter.MyViewHolder holder, int position) {
-        PMServiceInfoModel service = serviceInfoModelList.get(position);
+        ServiceInfoModel service = serviceInfoModelList.get(position);
         holder.bindView(service, position);
     }
 
