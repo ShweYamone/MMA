@@ -275,6 +275,7 @@ public class First_Step_CM_Fragment extends Fragment implements FirstStepPMFragm
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        mSharePerferenceHelper.setLock(false);
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == MY_CAMERA_PERMISSION_CODE)
         {
