@@ -352,9 +352,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
                     mAdapter.notifyDataSetChanged();
                 }
                 else if (response.code()==401){
-                    Intent intent = new Intent(getContext(), LoadingActivity.class);
+                  //  Intent intent = new Intent(getContext(), LoadingActivity.class);
                  //   intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(new Intent(getContext(), LoginActivity.class));
+                    startActivity(new Intent(getActivity(), LoginActivity.class));
                     mSharePreference.logoutSharePreference();
                     getActivity().finish();
                 }
