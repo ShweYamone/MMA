@@ -43,9 +43,7 @@
         android:visibility="visible"
         android:id="@+id/recyclerview_NotiList"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginLeft="@dimen/margin_normal"
-        android:layout_marginRight="@dimen/margin_normal"/>
+        android:layout_height="match_parent"/>
 
     <LinearLayout
         android:id="@+id/layoutEmpty"

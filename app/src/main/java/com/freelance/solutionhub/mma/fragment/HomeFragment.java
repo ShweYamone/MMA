@@ -286,8 +286,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
                     Log.i("LOCAL", "onResponse: " + dbHelper.eventDAO().getNumberOfEvents());
                     dbHelper.serviceInfoModelDAO().deleteCMServices();
                     dbHelper.serviceInfoModelDAO().insertAll(pmServiceListModel.getItems());
-                    Toast.makeText(getContext(), dbHelper.eventDAO().getNumberOfEvents() + " events", Toast.LENGTH_SHORT).show();
-                    Toast.makeText(getContext(), dbHelper.serviceInfoModelDAO().getNumberOfServices() + " services", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(getContext(), dbHelper.eventDAO().getNumberOfEvents() + " events", Toast.LENGTH_SHORT).show();
+        //            Toast.makeText(getContext(), dbHelper.serviceInfoModelDAO().getNumberOfServices() + " services", Toast.LENGTH_SHORT).show();
                    // Log.i("LOCAl", "onResponse: " + dbHelper.serviceInfoModelDAO().getNumberOfEvents());
                 }
             }

@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools" tools:context=".activity.MainActivity">
     <item
         android:id="@+id/action_notifications"
-        android:icon="@drawable/icon_notifications"
+        android:icon="@drawable/bell"
         android:title="notifications"
         android:orderInCategory="100"
         app:showAsAction="ifRoom" />

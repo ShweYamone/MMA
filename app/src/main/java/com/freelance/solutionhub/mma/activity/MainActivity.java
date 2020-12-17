@@ -7,7 +7,10 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -15,9 +18,11 @@ import android.os.Handler;
 import android.os.PowerManager;
 import android.util.Base64;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,6 +43,12 @@ import com.fasterxml.jackson.databind.node.NullNode;
 import com.freelance.solutionhub.mma.R;
 import com.freelance.solutionhub.mma.fragment.AboutFragment;
 import com.freelance.solutionhub.mma.fragment.HomeFragment;
+import com.freelance.solutionhub.mma.model.Item;
+import com.freelance.solutionhub.mma.model.NotificationModel;
+import com.freelance.solutionhub.mma.model.NotificationReadModel;
+import com.freelance.solutionhub.mma.model.Payload;
+import com.freelance.solutionhub.mma.util.ApiClient;
+import com.freelance.solutionhub.mma.util.ApiInterface;
 import com.freelance.solutionhub.mma.util.SharePreferenceHelper;
 import com.freelance.solutionhub.mma.util.WebSocketUtils;
 import com.google.android.material.navigation.NavigationView;
@@ -47,8 +58,15 @@ import org.phoenixframework.channels.Envelope;
 import org.phoenixframework.channels.IMessageCallback;
 import org.phoenixframework.channels.Socket;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static com.freelance.solutionhub.mma.util.AppConstant.user_inactivity_time;
 
@@ -70,6 +88,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private SharePreferenceHelper mSharedPreferences;
     private Runnable runnable;
     private int passcode;
+    private ApiInterface apiInterface;
     private Handler handler;
     private Runnable r;
     private boolean startHandler = true;
@@ -78,6 +97,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private Channel channel;
     private WebSocketUtils webSocketUtils;
     private Menu menu;
+    private RelativeLayout notificationRelativeLayout;
+    private TextView notificationCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,7 +114,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         displayView(R.id.nav_home);
         // lotout txtview is here
         tvLogout.setOnClickListener(this);
-
+        apiInterface = ApiClient.getClient(this);
         webSocketUtils = new WebSocketUtils(this);
 
         /**
@@ -168,6 +189,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             startHandler = true;
             startHandler();
         }
+      //  getMSOEvent();
 
         /************WebScoket***************/
         Uri.Builder url = Uri.parse( "ws://hub-nightly-public-alb-1826126491.ap-southeast-1.elb.amazonaws.com/socket/websocket" ).buildUpon();
@@ -254,7 +276,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                menu.getItem(0).setIcon(ContextCompat.getDrawable(MainActivity.this, R.drawable.noti_new));
                 sendNotification(envolope,mso_type);
             }
         });
@@ -409,7 +430,33 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         this.menu = menu;
+        getMSOEvent();
         return true;
+    }
+    private Drawable buildCounterDrawable(int count, int backgroundImageId) {
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View view = inflater.inflate(R.layout.notification_layout, null);
+        view.setBackgroundResource(backgroundImageId);
+
+        if (count == 0) {
+            View counterTextPanel = view.findViewById(R.id.counterValuePanel);
+            counterTextPanel.setVisibility(View.GONE);
+        } else {
+            TextView textView = (TextView) view.findViewById(R.id.count);
+            textView.setText("" + count);
+        }
+
+        view.measure(
+                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+        view.layout(0, 0, view.getMeasuredWidth(), view.getMeasuredHeight());
+
+        view.setDrawingCacheEnabled(true);
+        view.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+        Bitmap bitmap = Bitmap.createBitmap(view.getDrawingCache());
+        view.setDrawingCacheEnabled(false);
+
+        return new BitmapDrawable(getResources(), bitmap);
     }
 
     @Override
@@ -432,6 +479,33 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return super.onOptionsItemSelected(item);
     }
 
+    private void getMSOEvent(){
+        Call<NotificationReadModel> notificationReadModelCall = apiInterface.getNotificationReadList("Bearer "+mSharedPreferences.getToken(),1,5);
+        notificationReadModelCall.enqueue(new Callback<NotificationReadModel>() {
+            @Override
+            public void onResponse(Call<NotificationReadModel> call, Response<NotificationReadModel> response) {
+
+                if(response.isSuccessful()){
+                    NotificationReadModel readModel = response.body();
+                    ArrayList<Item> items = new ArrayList<>();
+                    items.addAll(readModel.getItems());
+                    int count = 0;
+                    Toast.makeText(getApplicationContext(),"SUCCESS:"+items.size(),Toast.LENGTH_SHORT).show();
+                    for(int i = 0;i<items.size();i++){
+                        if(!items.get(i).is_read){
+                            count++;
+                        }
+                    }
+                    menu.getItem(0).setIcon(buildCounterDrawable(count,R.drawable.bell));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<NotificationReadModel> call, Throwable t) {
+                Log.i("ERROR",t.getLocalizedMessage());
+            }
+        });
+    }
     /**
      * Encode photo string to decode string
      */

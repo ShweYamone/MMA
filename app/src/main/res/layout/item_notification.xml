@@ -2,13 +2,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/margin_normal"
-    android:layout_marginBottom="@dimen/margin_small"
     xmlns:card_view="http://schemas.android.com/apk/res-auto">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_small"
         android:elevation="10dp"
         card_view:cardCornerRadius="@dimen/card_corner_large">
         <LinearLayout
@@ -51,16 +50,9 @@
                         android:text="@string/temp_text"
                         android:textColor="@color/colorBlack"
                         android:fontFamily="@font/crimson_text_regular"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="4.7"/>
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
 
-                    <ImageView
-                        android:src="@drawable/ack"
-                        android:layout_gravity="center"
-                        android:layout_width="0dp"
-                        android:layout_height="42dp"
-                        android:layout_weight="1"/>
                 </LinearLayout>
 
 

@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -154,7 +155,7 @@ public class First_Step_CM_Fragment extends Fragment implements FirstStepPMFragm
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(preEventList.size() != 0)
+                if(prePhotoModels.size() != 0)
                     save();
             }
         });
@@ -165,78 +166,64 @@ public class First_Step_CM_Fragment extends Fragment implements FirstStepPMFragm
      * Update event for all
      */
     public void save(){
-        //Maintenance photos attached ( max - 10 and min 2 )
-        if(preEventList.size() > 1 && preEventList.size() <5) {
-            Log.v("BEFORE_JOIN", "Before joining");
-            Log.v("JOIN", preEventList.size() + "");
+            //For no photo upload
 
-            date = new Date();
-            Timestamp timestamp = new Timestamp(date.getTime());
-            String actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
+            Log.v("BEFORE_SIZE", "No zero");
+            if( mNetwork.isNetworkAvailable() ) {
+                if (prePhotoModels.size() > 1 && prePhotoModels.size() < 5) {
+                    Log.v("JOIN", preEventList.size() + "");
 
-            if (mNetwork.isNetworkAvailable()) {//network available
-                UpdateEventBody updateEventBody = new UpdateEventBody(mSharePerferenceHelper.getUserName(),
-                        mSharePerferenceHelper.getUserId(),
-                        actualDateTime,
-                        pmServiceInfoModel.getId(),
-                        preEventList);
+                    date = new Date();
+                    Timestamp timestamp = new Timestamp(date.getTime());
+                    String actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
+//                    //Upload photos to server
+//                    for(PhotoModel p : prePhotoModels){
+//                        uploadPhoto(getBitmapFromEncodedString(p.getImage()),actualDateTime,"pids-pre-maintenance-photo");
+//                    }
+                    getBitmapFromEncodedString(prePhotoModels.get(0).getImage());
 
-                Call<ReturnStatus> returnStatusCallEvent = apiInterface.updateEvent("Bearer " + mSharePerferenceHelper.getToken(), updateEventBody);
-                returnStatusCallEvent.enqueue(new Callback<ReturnStatus>() {
-                    @Override
-                    public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
-                        ReturnStatus returnStatus = response.body();
-                        if (response.isSuccessful()) {
-                            Toast.makeText(getContext(), returnStatus.getStatus() + "", Toast.LENGTH_LONG).show();
+                    if(preEventList.size() != 0) {
 
-                        }
+                        UpdateEventBody updateEventBody = new UpdateEventBody(mSharePerferenceHelper.getUserName(),
+                                mSharePerferenceHelper.getUserId(),
+                                actualDateTime,
+                                pmServiceInfoModel.getId(),
+                                preEventList);
+
+                        Call<ReturnStatus> returnStatusCallEvent = apiInterface.updateEvent("Bearer " + mSharePerferenceHelper.getToken(), updateEventBody);
+                        returnStatusCallEvent.enqueue(new Callback<ReturnStatus>() {
+                            @Override
+                            public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
+                                ReturnStatus returnStatus = response.body();
+                                if (response.isSuccessful()) {
+                                    Toast.makeText(getContext(), returnStatus.getStatus() + ":URL", Toast.LENGTH_LONG).show();
+
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<ReturnStatus> call, Throwable t) {
+                                Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        preEventList.clear();
                     }
+                } else {
+                    new AlertDialog.Builder(this.getContext())
+                            .setIcon(R.drawable.warning)
+                            .setTitle("Photo")
+                            .setMessage("Your photos must be minimum 2 and maximum 5.")
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
 
-                    @Override
-                    public void onFailure(Call<ReturnStatus> call, Throwable t) {
-                        Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
-                preEventList.clear();
-            } else {// network unavailabel, store to local db
-                UpdateEventBody updateEventBody1 = new UpdateEventBody(
-                        mSharePerferenceHelper.getUserName(),
-                        mSharePerferenceHelper.getUserId(),
-                        actualDateTime,
-                        pmServiceInfoModel.getId()
-                );
-                String key = mSharePerferenceHelper.getUserId() + pmServiceInfoModel.getId() + actualDateTime;
-                updateEventBody1.setId(key);
-                dbHelper.updateEventBodyDAO().insert(updateEventBody1);
 
-                for (Event event: preEventList) {
-                    event.setUpdateEventBodyKey(key);
+                                }
+
+                            })
+                            .show();
                 }
-                dbHelper.eventDAO().insertAll(preEventList);
-                Toast.makeText(getContext() ,
-                        "DATABASE" + dbHelper.updateEventBodyDAO().getNumberOfUpdateEventBody() + ", " +
-                                dbHelper.eventDAO().getNumberOfEvents()
-                        , Toast.LENGTH_SHORT).show();
-
-                preEventList.clear();
-
-            }
-
-        }else {
-            new AlertDialog.Builder(this.getContext())
-                    .setIcon(R.drawable.warning)
-                    .setTitle("Photo")
-                    .setMessage("Your photos must be minimum 2 and maximum 5.")
-                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-
-
-                        }
-
-                    })
-                    .show();
-        }
+            }//Network end
 
     }
 
@@ -351,7 +338,7 @@ public class First_Step_CM_Fragment extends Fragment implements FirstStepPMFragm
      */
     private void uploadPhoto(Bitmap bitmap, String name, String bucketName) {
         File filesDir = getContext().getFilesDir();
-        File fileName = new File(filesDir, name + ".jpg");
+        File fileName = new File(filesDir, bucketName+name + ".jpg");
 
         OutputStream os;
         try {
@@ -375,12 +362,14 @@ public class First_Step_CM_Fragment extends Fragment implements FirstStepPMFragm
             @Override
             public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
                 ReturnStatus returnStatus = response.body();
+
+                Log.v("EVENT","Added pre event");
                 if(response.isSuccessful()){
                     Log.v("PRE_EVENT","Added pre event");
                     preEventList.add(new Event("PRE_MAINTENANCE_PHOTO_UPDATE","preMaintenancePhotoUpdate",returnStatus.getData().getFileUrl()));
-                    Toast.makeText(getContext(),returnStatus.getStatus()+"",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(),returnStatus.getStatus()+":PHOTO",Toast.LENGTH_SHORT).show();
                 }else {
-                    Toast.makeText(getContext(),";",Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(),"FAILED",Toast.LENGTH_LONG).show();
                 }
             }
 
@@ -389,6 +378,24 @@ public class First_Step_CM_Fragment extends Fragment implements FirstStepPMFragm
 
             }
         });
+    }
+
+
+    private void getBitmapFromEncodedString(String encodedString){
+
+        byte[] arr = Base64.decode(encodedString, Base64.URL_SAFE);
+
+        Bitmap img = BitmapFactory.decodeByteArray(arr, 0, arr.length);
+
+        date = new Date();
+        Timestamp timestamp = new Timestamp(date.getTime());
+        String actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
+//                    //Upload photos to server
+//                    for(PhotoModel p : prePhotoModels){
+//                        uploadPhoto(getBitmapFromEncodedString(p.getImage()),actualDateTime,"pids-pre-maintenance-photo");
+        uploadPhoto(img,actualDateTime,"pids-pre-maintenance-photo");
+
+
     }
 
     /**
