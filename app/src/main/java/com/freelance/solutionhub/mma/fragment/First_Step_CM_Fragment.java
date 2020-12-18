@@ -50,6 +50,7 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Random;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -60,7 +61,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class First_Step_CM_Fragment extends Fragment implements FirstStepPMFragmentCallback {
+public class First_Step_CM_Fragment extends Fragment {
 
     @BindView(R.id.tv_mso_status)
     TextView tvMsoStatus;
@@ -213,14 +214,6 @@ public class First_Step_CM_Fragment extends Fragment implements FirstStepPMFragm
 
     }
 
-
-    public void getPosition( int position , int preOrPost){
-        if(preEventList.size() != 0) {
-            preEventList.remove(position);
-            Log.v("PRE_PHOTO", "Removed pre photo");
-        }
-    }
-
     /**
      * Reuqesting for premissons
      * @param requestCode
@@ -312,7 +305,7 @@ public class First_Step_CM_Fragment extends Fragment implements FirstStepPMFragm
         File[] files = new File[p.size()];
         for(int i = 0 ; i < p.size(); i++) {
             File filesDir = getContext().getFilesDir();
-            File fileName = new File(filesDir, mSharePerferenceHelper.getUserId() + ".jpg");
+            File fileName = new File(filesDir, mSharePerferenceHelper.getUserId()+getSaltString() + ".jpg");
 
             Log.i("FILE_NAME", fileName.toString());
             OutputStream os;
@@ -329,6 +322,20 @@ public class First_Step_CM_Fragment extends Fragment implements FirstStepPMFragm
 
         return files;
     }
+
+    protected String getSaltString() {
+        String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+        StringBuilder salt = new StringBuilder();
+        Random rnd = new Random();
+        while (salt.length() < 7) { // length of the random string.
+            int index = (int) (rnd.nextFloat() * SALTCHARS.length());
+            salt.append(SALTCHARS.charAt(index));
+        }
+        String saltStr = salt.toString();
+        return saltStr;
+
+    }
+
 
 
     private Bitmap getBitmapFromEncodedString(String encodedString){
@@ -358,6 +365,7 @@ public class First_Step_CM_Fragment extends Fragment implements FirstStepPMFragm
         Log.v("ENCODE",encodeToString);
 
     }
+
     class LoadImage extends AsyncTask<File, Void, Boolean> {
 
         private ArrayList<Event> f;
@@ -425,7 +433,7 @@ public class First_Step_CM_Fragment extends Fragment implements FirstStepPMFragm
                             count++;
                             if(files.length == count)
                                 uploadEvent();
-                            Toast.makeText(getContext(), returnStatus.getStatus() + ":PHOTO", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), returnStatus.getStatus() + ":PHOTO"+count, Toast.LENGTH_SHORT).show();
                         } else {
                             Toast.makeText(getContext(), "FAILED", Toast.LENGTH_LONG).show();
                         }
@@ -438,38 +446,10 @@ public class First_Step_CM_Fragment extends Fragment implements FirstStepPMFragm
                 });
             }
 
-            Log.i("ALL","NO");
-//            if(f.size() == files.length) {
-//                Log.i("ALLPH","COMPLETE");
-//                date = new Date();
-//                Timestamp timestamp = new Timestamp(date.getTime());
-//                String actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
-//                UpdateEventBody updateEventBody = new UpdateEventBody(mSharePerferenceHelper.getUserName(),
-//                        mSharePerferenceHelper.getUserId(),
-//                        actualDateTime,
-//                        pmServiceInfoModel.getId(),
-//                        f);
-//
-//                Call<ReturnStatus> returnStatusCallEvent = apiInterface.updateEvent("Bearer " + mSharePerferenceHelper.getToken(), updateEventBody);
-//                returnStatusCallEvent.enqueue(new Callback<ReturnStatus>() {
-//                    @Override
-//                    public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
-//                        ReturnStatus returnStatus = response.body();
-//                        if (response.isSuccessful()) {
-//                            Toast.makeText(getContext(), returnStatus.getStatus() + ":URL", Toast.LENGTH_LONG).show();
-//
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onFailure(Call<ReturnStatus> call, Throwable t) {
-//                        Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
-//                    }
-//                });
-//                f.clear();
-//            }
-            if(files.length == count)
+
+            if(files.length == count) {
                 return true;
+            }
             return false;
         }
 
