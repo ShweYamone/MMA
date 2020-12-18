@@ -427,8 +427,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
 
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-        serviceInfoModelList.clear();
-        mAdapter.notifyDataSetChanged();
+
         page = 1;
         switch (list[i]) {
             case ALL :
@@ -461,6 +460,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
                 textValueList.add(APPR);
         }
 
+        serviceInfoModelList.clear();
+        mAdapter.notifyDataSetChanged();
         getServiceOrders();
     }
 
