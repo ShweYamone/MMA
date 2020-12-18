@@ -146,6 +146,7 @@
     <!-- Button -->
     <string name="save">SAVE</string>
     <string name="job_done">Job Done</string>
+    <string name="verify">Verify</string>
     <string name="qr_scan">QR SCAN</string>
 
     <string name="log_out">Logout</string>

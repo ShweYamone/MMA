@@ -140,6 +140,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_home, container, false);
         mSharePreference = new SharePreferenceHelper(getContext());
+        mSharePreference.userClickCMStepOne(false);
+        mSharePreference.userClickCMStepTwo(false);
         apiInterface = ApiClient.getClient(getContext());
         network = new Network(getContext());
         dbHelper = InitializeDatabase.getInstance(getContext());

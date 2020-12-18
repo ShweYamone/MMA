@@ -440,6 +440,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
                 getProblemCodeEvent();
                 getQREvent();
                 if (isMandatoryFieldLeft && postModelList.size() == 0) {
+                    mSharePreference.userClickCMStepTwo(false);
                     new AlertDialog.Builder(getContext())
                             .setIcon(R.drawable.warning)
                             .setTitle("Mandatory Fields Left:")
@@ -452,6 +453,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
                             })
                             .show();
                 } else if (isMandatoryFieldLeft) {
+                    mSharePreference.userClickCMStepTwo(false);
                         new AlertDialog.Builder(getContext())
                                 .setIcon(R.drawable.warning)
                                 .setTitle("Mandatory Field Left:")
@@ -464,6 +466,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
                                 })
                                 .show();
                 } else if (postModelList.size() == 0) {
+                    mSharePreference.userClickCMStepTwo(false);
                     new AlertDialog.Builder(getContext())
                             .setIcon(R.drawable.warning)
                             .setTitle("Mandatory Field Left:")
@@ -477,6 +480,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
                             .show();
                 }
                 else if (postModelList.size() < 2 || postModelList.size() > 6){
+                    mSharePreference.userClickCMStepTwo(false);
                     new AlertDialog.Builder(this.getContext())
                             .setIcon(R.drawable.warning)
                             .setTitle("Photo")
@@ -495,7 +499,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
                     //Mandatory QR and Problem event are choosen, can update events.......
                     //Mandatory Photos are attached, can update events.......
                     getPhotoEvents();
-                    uploadEvents();
+                 //   uploadEvents();
 
                 }
                 break;
@@ -802,6 +806,12 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
 
         private void updateEvents() {
             Log.i("EVENT_LIST",f.size()+"");
+            String temp = "";
+            for (int i = 0; i < f.size(); i++) {
+                temp += f.get(i).getEventType() + "\n";
+            }
+            Log.i("EVENT_LIST",temp+"");
+            Toast.makeText(getContext(), temp, Toast.LENGTH_SHORT).show();
             date = new Date();
             Timestamp timestamp = new Timestamp(date.getTime());
             String actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
@@ -823,6 +833,8 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
                         public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
                             if (response.isSuccessful()) {
                                 Toast.makeText(getContext(),  response.body().getStatus()+":ALL EVENTS UPLOADED" , Toast.LENGTH_SHORT).show();
+
+                                mSharePreference.userClickCMStepTwo(true);
                             } else {
                                 Toast.makeText(getContext(), "response " + response.code(), Toast.LENGTH_LONG).show();
                             }
@@ -873,8 +885,10 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
 
 
             if(files.length == count) {
-                if(f.size() != 0)
+                if(f.size() != 0) {
                     updateEvents();
+                }
+
                 return true;
             }
             return false;

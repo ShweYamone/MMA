@@ -12,6 +12,7 @@ import com.freelance.solutionhub.mma.model.UpdateEventBody;
 import com.freelance.solutionhub.mma.model.ReturnStatus;
 import com.freelance.solutionhub.mma.model.UserModel;
 import com.freelance.solutionhub.mma.model.UserProfile;
+import com.freelance.solutionhub.mma.model.VerificationReturnBody;
 
 import java.util.List;
 
@@ -75,5 +76,8 @@ public interface ApiInterface {
     @GET("service-orders/{service_order_id}/pm-check-list")
     Call<List<CheckListModel>> getCheckList(@Header("Authorization") String auth, @Path("service_order_id") String serviceOrderId);
 
+    //Fault Clearance Verification
+    @GET("http://control-center-nightly-alb-906188569.ap-southeast-1.elb.amazonaws.com/control/fault-status")
+    Call<VerificationReturnBody> verifyWorks(@Header("Authorization") String auth, @Query("id") String serviceOrderId);
 }
 

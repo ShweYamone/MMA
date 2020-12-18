@@ -160,6 +160,7 @@ public class First_Step_CM_Fragment extends Fragment {
                 if(prePhotoModels.size() > 0)
                     save();
                 else {
+                    mSharePerferenceHelper.userClickCMStepOne(false);
                     new AlertDialog.Builder(getContext())
                             .setIcon(R.drawable.warning)
                             .setTitle("Photo")
@@ -415,6 +416,7 @@ public class First_Step_CM_Fragment extends Fragment {
                     ReturnStatus returnStatus = response.body();
                     if (response.isSuccessful()) {
                         Toast.makeText(getContext(), returnStatus.getStatus() + ":URL", Toast.LENGTH_LONG).show();
+                        mSharePerferenceHelper.userClickCMStepOne(true);
 
                     }
                 }
