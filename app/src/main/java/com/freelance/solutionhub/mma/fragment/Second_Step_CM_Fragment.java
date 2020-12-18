@@ -443,7 +443,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
                     new AlertDialog.Builder(getContext())
                             .setIcon(R.drawable.warning)
                             .setTitle("Mandatory Fields Left:")
-                            .setMessage(mandatoryFieldsLeft + "\nAttaching Post-Maintenance Photos")
+                            .setMessage(mandatoryFieldsLeft + "\nTo Attach Post-Maintenance Photos")
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
@@ -494,8 +494,9 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
                 else {
                     //Mandatory QR and Problem event are choosen, can update events.......
                     //Mandatory Photos are attached, can update events.......
-                    uploadEvents();
                     getPhotoEvents();
+                    uploadEvents();
+
                 }
                 break;
             case R.id.iv_attach_post_maintenance_photo:
@@ -550,6 +551,8 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
             }
             dbHelper.eventDAO().insertAll(events);
         }else {
+        //    Toast.makeText(getContext(), events.size() + " events" , Toast.LENGTH_SHORT).show();
+            Log.e("EventSize", "uploadEvents" + events.size());
             if(events.size() != 0)
                 new LoadImage(events).execute(new File[0]);
         }
@@ -649,6 +652,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
             //Maintenance photos attached ( max - 10 and min 2 )
           //  if (postModelList.size() > 1 && postModelList.size() < 6) {
                 Log.v("BEFORE_JOIN", "Before joining");
+          //  Toast.makeText(getContext(), events.size() + " events In getPHOTOEvents" , Toast.LENGTH_SHORT).show();
                 new LoadImage(events).execute(uploadPhoto(postModelList));
 
         }else {

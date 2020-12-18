@@ -129,7 +129,7 @@ public class NotificationActivity extends AppCompatActivity  {
         recyclerView.setAdapter(mAdapter);
 
 
-
+        getMSOEvent();
         /**
          after certain amount of user inactivity, asks for passcode
          */
@@ -198,6 +198,7 @@ public class NotificationActivity extends AppCompatActivity  {
 //            Log.i("LIST","WORK");
 //
 //        }
+        page = 1;
         notificationList.clear();
         mAdapter.notifyDataSetChanged();
         getMSOEvent();
@@ -273,7 +274,9 @@ public class NotificationActivity extends AppCompatActivity  {
 
 
     private void getServiceOrders() {
-        Call<NotificationReadModel> notificationReadModelCall = apiInterface.getNotificationReadList("Bearer "+mSharedPreference.getToken(),page,10);
+        ApiClient.removeFromCache("http://hub-nightly-public-alb-1826126491.ap-southeast-1.elb.amazonaws.com/api/notifications?page_number="+page+"&page_size="+5);
+
+        Call<NotificationReadModel> notificationReadModelCall = apiInterface.getNotificationReadList("Bearer "+mSharedPreference.getToken(),page,5);
         notificationReadModelCall.enqueue(new Callback<NotificationReadModel>() {
             @Override
             public void onResponse(Call<NotificationReadModel> call, Response<NotificationReadModel> response) {
@@ -283,7 +286,7 @@ public class NotificationActivity extends AppCompatActivity  {
                     ArrayList<Item> items = new ArrayList<>();
 
                     items.addAll(readModel.getItems());
-                    Toast.makeText(getApplicationContext(),"SUCCESS:"+items.size(),Toast.LENGTH_SHORT).show();
+                 //   Toast.makeText(getApplicationContext(),"SUCCESS:"+items.size(),Toast.LENGTH_SHORT).show();
                     for(int i = 0;i<items.size();i++){
                         Log.i("IS_READ",""+items.get(i).isIs_read());
                         Payload payload = items.get(i).getPayload();
@@ -320,17 +323,19 @@ public class NotificationActivity extends AppCompatActivity  {
     }
 
     private void getMSOEvent(){
-        Call<NotificationReadModel> notificationReadModelCall = apiInterface.getNotificationReadList("Bearer "+mSharedPreference.getToken(),1,10);
+        ApiClient.removeFromCache("http://hub-nightly-public-alb-1826126491.ap-southeast-1.elb.amazonaws.com/api/notifications?page_number=1&page_size=5");
+        Call<NotificationReadModel> notificationReadModelCall = apiInterface.getNotificationReadList("Bearer "+mSharedPreference.getToken(),1,5);
         notificationReadModelCall.enqueue(new Callback<NotificationReadModel>() {
             @Override
             public void onResponse(Call<NotificationReadModel> call, Response<NotificationReadModel> response) {
 
                 if(response.isSuccessful()){
                     NotificationReadModel readModel = response.body();
-                    totalPages = readModel.getTotalPages();
+                  //  totalPages = readModel.getTotalPages();
+                    totalPages = 10;
                     ArrayList<Item> items = new ArrayList<>();
                     items.addAll(readModel.getItems());
-                    Toast.makeText(getApplicationContext(),"SUCCESS:"+items.size(),Toast.LENGTH_SHORT).show();
+                 //   Toast.makeText(getApplicationContext(),"SUCCESS:"+items.size(),Toast.LENGTH_SHORT).show();
                     for(int i = 0;i<items.size();i++){
                         Log.i("Is_read",items.get(i).isIs_read()+"");
                         Payload payload = items.get(i).getPayload();

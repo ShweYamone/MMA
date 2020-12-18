@@ -60,6 +60,7 @@ public class ServiceOrderAdapter extends RecyclerView.Adapter<ServiceOrderAdapte
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
                  //   Toast.makeText(v.getContext(), "click", Toast.LENGTH_SHORT).show();
                 }
             });
