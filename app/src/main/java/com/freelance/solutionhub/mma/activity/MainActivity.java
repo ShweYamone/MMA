@@ -180,6 +180,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onResume() {
         super.onResume();
+
+        getMSOEvent();
         Log.i("LOCKSCREEN", "onResume: " + mSharedPreferences.getLock());
         if (mSharedPreferences.getLock()) {
             Intent intent = new Intent(MainActivity.this, PasscodeActivity.class);
@@ -189,7 +191,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             startHandler = true;
             startHandler();
         }
-      //  getMSOEvent();
+         getMSOEvent();
 
         /************WebScoket***************/
         Uri.Builder url = Uri.parse( "ws://hub-nightly-public-alb-1826126491.ap-southeast-1.elb.amazonaws.com/socket/websocket" ).buildUpon();
@@ -480,7 +482,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void getMSOEvent(){
-        Call<NotificationReadModel> notificationReadModelCall = apiInterface.getNotificationReadList("Bearer "+mSharedPreferences.getToken(),1,5);
+        Call<NotificationReadModel> notificationReadModelCall = apiInterface.getNotificationReadList("Bearer "+mSharedPreferences.getToken(),1,10);
         notificationReadModelCall.enqueue(new Callback<NotificationReadModel>() {
             @Override
             public void onResponse(Call<NotificationReadModel> call, Response<NotificationReadModel> response) {
@@ -497,7 +499,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             count++;
                         }
                     }
-                    menu.getItem(0).setIcon(buildCounterDrawable(count,R.drawable.bell));
+                    if(menu != null)
+                        menu.getItem(0).setIcon(buildCounterDrawable(count,R.drawable.bell));
                 }
             }
 
