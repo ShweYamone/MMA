@@ -17,7 +17,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.freelance.solutionhub.mma.R;
 import com.freelance.solutionhub.mma.delegate.FirstStepPMFragmentCallback;
 import com.freelance.solutionhub.mma.model.CheckListModel;
@@ -31,12 +30,10 @@ public class CheckListAdapter extends RecyclerView.Adapter<CheckListAdapter.MyVi
 
     ArrayList<CheckListModel> checkListModels;
     ArrayList<Event> checkListEvent;
-    private FirstStepPMFragmentCallback callback;
     SQLiteDatabase db;
-    public CheckListAdapter(Context context, ArrayList<CheckListModel> checkListModels, FirstStepPMFragmentCallback callback) {
+    public CheckListAdapter(Context context, ArrayList<CheckListModel> checkListModels) {
         this.context = context;
         this.checkListModels = checkListModels;
-        this.callback =callback;
         checkListEvent = new ArrayList<>();
 
     }
@@ -55,11 +52,11 @@ public class CheckListAdapter extends RecyclerView.Adapter<CheckListAdapter.MyVi
         Log.i("ArrayList",i+":");
         myViewHolder.bindView(checkListModel);
         checkListEvent.add(i*2,new Event("PM_CHECK_LIST_DONE",checkListModel.getId()+"",myViewHolder.checkList.isChecked()+""));
-        checkListEvent.add((i*2)+1 ,  new Event("PM_CHECK_LIST_REMARK",checkListModel.getId()+"",""));
+        checkListEvent.add((i*2)+1 ,  new Event("PM_CHECK_LIST_REMARK",checkListModel.getId()+""," "));
         myViewHolder.checkList.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                changeValue(checkListModel.getId(),i,checkListEvent,isChecked+"",true);
+                changeValue(checkListModel.getId(),i,isChecked+"",true);
             }
         });
         myViewHolder.checkListValue.addTextChangedListener(new TextWatcher() {
@@ -71,7 +68,7 @@ public class CheckListAdapter extends RecyclerView.Adapter<CheckListAdapter.MyVi
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if(s.length() != 0){
-                    changeValue(checkListModel.getId(),i,checkListEvent,s.toString(),false);
+                    changeValue(checkListModel.getId(),i,s.toString(),false);
 
                 }
             }
@@ -104,7 +101,7 @@ public class CheckListAdapter extends RecyclerView.Adapter<CheckListAdapter.MyVi
         return checkListModels.size();
     }
 
-    private void changeValue(int id, int position, final ArrayList<Event> arrayList,String value,boolean checkBox){
+    private void changeValue(int id, int position,String value,boolean checkBox){
 
         if(checkBox){
             checkListEvent.remove(position*2);
