@@ -806,6 +806,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
             Timestamp timestamp = new Timestamp(date.getTime());
             String actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
 
+         //   Toast.makeText(getContext(), f.size() + "events in update" , Toast.LENGTH_SHORT).show();
             if (f.size() > 0) {
                 UpdateEventBody eventBody = new UpdateEventBody(
                             mSharePreference.getUserName(),
