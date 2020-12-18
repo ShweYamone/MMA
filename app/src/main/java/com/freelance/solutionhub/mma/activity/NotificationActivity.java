@@ -127,6 +127,8 @@ public class NotificationActivity extends AppCompatActivity  {
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.addOnScrollListener(mSmartScrollListener);
         recyclerView.setAdapter(mAdapter);
+        notificationList.clear();
+        mAdapter.notifyDataSetChanged();
         getMSOEvent();
 
 
@@ -260,7 +262,8 @@ public class NotificationActivity extends AppCompatActivity  {
 
 
     private void getServiceOrders() {
-        Call<NotificationReadModel> notificationReadModelCall = apiInterface.getNotificationReadList("Bearer "+mSharedPreference.getToken(),page,10);
+      //  ApiClient.removeFromCache("http://hub-nightly-public-alb-1826126491.ap-southeast-1.elb.amazonaws.com/api/notifications?page_number=1&page_size=10");
+        Call<NotificationReadModel> notificationReadModelCall = apiInterface.getNotificationReadList("Bearer "+mSharedPreference.getToken(),page,5);
         notificationReadModelCall.enqueue(new Callback<NotificationReadModel>() {
             @Override
             public void onResponse(Call<NotificationReadModel> call, Response<NotificationReadModel> response) {
@@ -305,7 +308,8 @@ public class NotificationActivity extends AppCompatActivity  {
     }
 
     private void getMSOEvent(){
-        Call<NotificationReadModel> notificationReadModelCall = apiInterface.getNotificationReadList("Bearer "+mSharedPreference.getToken(),1,10);
+     //   ApiClient.removeFromCache("http://hub-nightly-public-alb-1826126491.ap-southeast-1.elb.amazonaws.com/api/notifications?page_number=1&page_size=10");
+        Call<NotificationReadModel> notificationReadModelCall = apiInterface.getNotificationReadList("Bearer "+mSharedPreference.getToken(),1,5);
         notificationReadModelCall.enqueue(new Callback<NotificationReadModel>() {
             @Override
             public void onResponse(Call<NotificationReadModel> call, Response<NotificationReadModel> response) {
@@ -316,7 +320,7 @@ public class NotificationActivity extends AppCompatActivity  {
                     List<Item> items = readModel.getItems();
                     Toast.makeText(getApplicationContext(),"SUCCESS:"+items.size(),Toast.LENGTH_SHORT).show();
                     for(int i = 0;i<items.size();i++){
-                        Log.i("Is_read",items.get(i).isIs_read()+"");
+                        Log.i("Is_read",items.get(i).isIs_read()+":"+i);
                         Payload payload = items.get(i).getPayload();
                         date = items.get(i).getInserted_at();
                         timestamp = new Timestamp(date.getTime());
@@ -350,5 +354,10 @@ public class NotificationActivity extends AppCompatActivity  {
 
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed(){
+        finish();
     }
 }
