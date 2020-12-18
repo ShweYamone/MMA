@@ -127,11 +127,9 @@ public class NotificationActivity extends AppCompatActivity  {
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.addOnScrollListener(mSmartScrollListener);
         recyclerView.setAdapter(mAdapter);
-        notificationList.clear();
-        mAdapter.notifyDataSetChanged();
+
+
         getMSOEvent();
-
-
         /**
          after certain amount of user inactivity, asks for passcode
          */
@@ -190,6 +188,20 @@ public class NotificationActivity extends AppCompatActivity  {
             startHandler = true;
             startHandler();
         }
+//        if(notificationList.size()>=11){
+//            Log.i("LIST10","WORK");
+//            for(int i = 1,j=notificationList.size()-1;i<11;i++,j--){
+//                notificationList.remove(j);
+//            }
+//            getServiceOrders();
+//        }else {
+//            Log.i("LIST","WORK");
+//
+//        }
+        page = 1;
+        notificationList.clear();
+        mAdapter.notifyDataSetChanged();
+        getMSOEvent();
 
         /************WebScoket***************/
         Uri.Builder url = Uri.parse( "ws://hub-nightly-public-alb-1826126491.ap-southeast-1.elb.amazonaws.com/socket/websocket" ).buildUpon();
@@ -262,7 +274,6 @@ public class NotificationActivity extends AppCompatActivity  {
 
 
     private void getServiceOrders() {
-      //  ApiClient.removeFromCache("http://hub-nightly-public-alb-1826126491.ap-southeast-1.elb.amazonaws.com/api/notifications?page_number=1&page_size=10");
         Call<NotificationReadModel> notificationReadModelCall = apiInterface.getNotificationReadList("Bearer "+mSharedPreference.getToken(),page,5);
         notificationReadModelCall.enqueue(new Callback<NotificationReadModel>() {
             @Override
@@ -270,8 +281,10 @@ public class NotificationActivity extends AppCompatActivity  {
 
                 if(response.isSuccessful()){
                     NotificationReadModel readModel = response.body();
-                    List<Item> items = readModel.getItems();
-                    Toast.makeText(getApplicationContext(),"SUCCESS:"+items.size(),Toast.LENGTH_SHORT).show();
+                    ArrayList<Item> items = new ArrayList<>();
+
+                    items.addAll(readModel.getItems());
+                 //   Toast.makeText(getApplicationContext(),"SUCCESS:"+items.size(),Toast.LENGTH_SHORT).show();
                     for(int i = 0;i<items.size();i++){
                         Log.i("IS_READ",""+items.get(i).isIs_read());
                         Payload payload = items.get(i).getPayload();
@@ -308,7 +321,6 @@ public class NotificationActivity extends AppCompatActivity  {
     }
 
     private void getMSOEvent(){
-     //   ApiClient.removeFromCache("http://hub-nightly-public-alb-1826126491.ap-southeast-1.elb.amazonaws.com/api/notifications?page_number=1&page_size=10");
         Call<NotificationReadModel> notificationReadModelCall = apiInterface.getNotificationReadList("Bearer "+mSharedPreference.getToken(),1,5);
         notificationReadModelCall.enqueue(new Callback<NotificationReadModel>() {
             @Override
@@ -316,9 +328,11 @@ public class NotificationActivity extends AppCompatActivity  {
 
                 if(response.isSuccessful()){
                     NotificationReadModel readModel = response.body();
-                    totalPages = readModel.getTotalPages();
-                    List<Item> items = readModel.getItems();
-                    Toast.makeText(getApplicationContext(),"SUCCESS:"+items.size(),Toast.LENGTH_SHORT).show();
+                  //  totalPages = readModel.getTotalPages();
+                    totalPages = 10;
+                    ArrayList<Item> items = new ArrayList<>();
+                    items.addAll(readModel.getItems());
+                 //   Toast.makeText(getApplicationContext(),"SUCCESS:"+items.size(),Toast.LENGTH_SHORT).show();
                     for(int i = 0;i<items.size();i++){
                         Log.i("Is_read",items.get(i).isIs_read()+":"+i);
                         Payload payload = items.get(i).getPayload();

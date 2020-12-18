@@ -19,6 +19,29 @@ public class SharePreferenceHelper {
  	private static String PIN_CODE = "pinCode";
  	private static String LOCK = "lock";
 
+ 	private static String CMStepOneClick = "CMStepONE";
+ 	private static String CMStepTwoClick = "CMStepTwo";
+
+ 	public void userClickCMStepOne(boolean click) {
+ 		SharedPreferences.Editor editor = sharedPreference.edit();
+ 		editor.putBoolean(CMStepOneClick, click);
+ 		editor.commit();
+	}
+
+	public void userClickCMStepTwo(boolean click) {
+ 		SharedPreferences.Editor editor = sharedPreference.edit();
+ 		editor.putBoolean(CMStepTwoClick, click);
+ 		editor.commit();
+	}
+
+	public boolean userClickStepOneOrNot() {
+ 		return sharedPreference.getBoolean(CMStepOneClick, false);
+	}
+
+	public boolean userClickStepTwoOrNot() {
+ 		return sharedPreference.getBoolean(CMStepTwoClick, false);
+	}
+
 
 	public SharePreferenceHelper(Context context)
 	{
