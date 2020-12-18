@@ -274,8 +274,6 @@ public class NotificationActivity extends AppCompatActivity  {
 
 
     private void getServiceOrders() {
-        ApiClient.removeFromCache("http://hub-nightly-public-alb-1826126491.ap-southeast-1.elb.amazonaws.com/api/notifications?page_number="+page+"&page_size="+5);
-
         Call<NotificationReadModel> notificationReadModelCall = apiInterface.getNotificationReadList("Bearer "+mSharedPreference.getToken(),page,5);
         notificationReadModelCall.enqueue(new Callback<NotificationReadModel>() {
             @Override
@@ -323,7 +321,6 @@ public class NotificationActivity extends AppCompatActivity  {
     }
 
     private void getMSOEvent(){
-        ApiClient.removeFromCache("http://hub-nightly-public-alb-1826126491.ap-southeast-1.elb.amazonaws.com/api/notifications?page_number=1&page_size=5");
         Call<NotificationReadModel> notificationReadModelCall = apiInterface.getNotificationReadList("Bearer "+mSharedPreference.getToken(),1,5);
         notificationReadModelCall.enqueue(new Callback<NotificationReadModel>() {
             @Override
@@ -337,7 +334,7 @@ public class NotificationActivity extends AppCompatActivity  {
                     items.addAll(readModel.getItems());
                  //   Toast.makeText(getApplicationContext(),"SUCCESS:"+items.size(),Toast.LENGTH_SHORT).show();
                     for(int i = 0;i<items.size();i++){
-                        Log.i("Is_read",items.get(i).isIs_read()+"");
+                        Log.i("Is_read",items.get(i).isIs_read()+":"+i);
                         Payload payload = items.get(i).getPayload();
                         date = items.get(i).getInserted_at();
                         timestamp = new Timestamp(date.getTime());
@@ -371,5 +368,10 @@ public class NotificationActivity extends AppCompatActivity  {
 
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed(){
+        finish();
     }
 }

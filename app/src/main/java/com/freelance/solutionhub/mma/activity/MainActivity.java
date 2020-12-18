@@ -61,6 +61,7 @@ import org.phoenixframework.channels.Socket;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -84,6 +85,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @BindView(R.id.tvLogout)
     TextView tvLogout;
 
+    private int count;
     protected ActionBarDrawerToggle mDrawerToggle;
     private SharePreferenceHelper mSharedPreferences;
     private Runnable runnable;
@@ -180,8 +182,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onResume() {
         super.onResume();
-
-        getMSOEvent();
         Log.i("LOCKSCREEN", "onResume: " + mSharedPreferences.getLock());
         if (mSharedPreferences.getLock()) {
             Intent intent = new Intent(MainActivity.this, PasscodeActivity.class);
@@ -191,7 +191,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             startHandler = true;
             startHandler();
         }
-         getMSOEvent();
+        if(menu != null)
+            getMSOEvent();
 
         /************WebScoket***************/
         Uri.Builder url = Uri.parse( "ws://hub-nightly-public-alb-1826126491.ap-southeast-1.elb.amazonaws.com/socket/websocket" ).buildUpon();
@@ -230,7 +231,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         onMessageNoti("An anonymous user entered","");
                     }
                     else {
-                        onMessageNoti(envelope.getPayload().get("mso_id")+"",envelope.getPayload().get("mso_type")+"");
+                        onMessageNoti(envelope.getPayload().get("mso_id")+"","MSO is created.");
                     }
 
                 }
@@ -279,6 +280,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void run() {
                 sendNotification(envolope,mso_type);
+                if(menu != null)
+                    menu.getItem(0).setIcon(buildCounterDrawable(count+1,R.drawable.bell));
             }
         });
     }
@@ -303,9 +306,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .setWhen(System.currentTimeMillis())
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setTicker("Tutorialspoint")
-                .setStyle(new NotificationCompat.BigTextStyle()
-                        .bigText("Much longer text that cannot fit one line..."))
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setContentTitle(title)
                 .setContentText(type)
                 .setContentInfo("Information");
@@ -430,8 +430,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
         this.menu = menu;
+        getMenuInflater().inflate(R.menu.menu_main, menu);
         getMSOEvent();
         return true;
     }
@@ -482,19 +482,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void getMSOEvent(){
-        Call<NotificationReadModel> notificationReadModelCall = apiInterface.getNotificationReadList("Bearer "+mSharedPreferences.getToken(),1,10);
+        count = 0;
+        Call<NotificationReadModel> notificationReadModelCall = apiInterface.getNotificationReadList("Bearer "+mSharedPreferences.getToken(),1,5);
         notificationReadModelCall.enqueue(new Callback<NotificationReadModel>() {
             @Override
             public void onResponse(Call<NotificationReadModel> call, Response<NotificationReadModel> response) {
 
+                NotificationReadModel readModel = response.body();
                 if(response.isSuccessful()){
-                    NotificationReadModel readModel = response.body();
-                    ArrayList<Item> items = new ArrayList<>();
-                    items.addAll(readModel.getItems());
-                    int count = 0;
+                    List<Item> items = readModel.getItems();
                     Toast.makeText(getApplicationContext(),"SUCCESS:"+items.size(),Toast.LENGTH_SHORT).show();
                     for(int i = 0;i<items.size();i++){
-                        Log.i("Is_read",items.get(i).isIs_read()+"");
+                        Log.i("Is_read_Main",items.get(i).isIs_read()+":"+i);
                         if(!items.get(i).isIs_read()){
                             count++;
                         }
