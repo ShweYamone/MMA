@@ -296,7 +296,7 @@ public class First_Step_PM_Fragment extends Fragment {
                 new AlertDialog.Builder(this.getContext())
                         .setIcon(R.drawable.warning)
                         .setTitle("Photo")
-                        .setMessage("Your photos must be minimum 2 and maximum 5.")
+                        .setMessage("Your photos must be minimum 2 and maximum 10.")
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {

@@ -83,7 +83,8 @@ public class NotificationActivity extends AppCompatActivity  {
     private NotificationAdapter mAdapter;
     private List<NotificationModel> notificationList = new ArrayList<>();
 
-
+    private Socket socket;
+    private Channel channel;
     private SharePreferenceHelper mSharedPreference;
     private ApiInterface apiInterface;
     private String urlStr, channelStr;
@@ -187,6 +188,67 @@ public class NotificationActivity extends AppCompatActivity  {
         } else {
             startHandler = true;
             startHandler();
+        }
+        /************WebScoket***************/
+        Uri.Builder url = Uri.parse( "ws://hub-nightly-public-alb-1826126491.ap-southeast-1.elb.amazonaws.com/socket/websocket" ).buildUpon();
+        // url.appendQueryParameter("vsn", "2.0.0");
+        url.appendQueryParameter( "token", mSharedPreference.getToken());
+        try {
+            //    Log.i("Websocket", url.toString());
+            socket = new Socket(url.build().toString());
+            socket.connect();
+            if(socket.isConnected()){
+                Log.i("SOCKET_CONNECT","SUCCESS");
+            }
+
+            channel = socket.chan("notification", null);
+
+            channel.join()
+                    .receive("ok", new IMessageCallback() {
+                        @Override
+                        public void onMessage(Envelope envelope) {
+                            Log.i("JOINED_WITH", "Joined with " + envelope.toString());
+                            Log.i("ON_MESSAGE", "onMessage: " + socket.isConnected());
+                        }
+                    })
+                    .receive("error", new IMessageCallback() {
+                        @Override
+                        public void onMessage(Envelope envelope) {
+                            Log.i("Websocket", "NOT Joined with ");
+                        }
+                    });
+            channel.on("mso_created", new IMessageCallback() {
+                @Override
+                public void onMessage(Envelope envelope) {
+                    Log.i("NEW_MESSAGE",envelope.toString());
+                    final JsonNode user = envelope.getPayload().get("mso_id");
+                    if (user == null || user instanceof NullNode) {
+                    }
+                    else {
+                    }
+
+                }
+            });
+
+            channel.on("mso_rejected", new IMessageCallback() {
+                @Override
+                public void onMessage(Envelope envelope) {
+                    //  Toast.makeText(getApplicationContext(), "CLOSED: " + envelope.toString(), Toast.LENGTH_SHORT).show();
+                    //   tvResult.setText("CLOSED: " + envelope.toString());
+                    Log.i("CLOSED", envelope.toString());
+                }
+            });
+
+
+//Sending a message. This library uses Jackson for JSON serialization
+//            ObjectNode node = new ObjectNode(JsonNodeFactory.instance)
+//                    .put("user", "my_username")
+//                    .put("body", "Hello");
+//
+//            channel.push("new:msg", node);
+        } catch (Exception e) {
+            Toast.makeText(getApplicationContext(), "Exception" + e.getMessage(), Toast.LENGTH_SHORT).show();
+            Log.i("Websocket",  e.getMessage() + "\n" + e.getLocalizedMessage());
         }
     }
 
