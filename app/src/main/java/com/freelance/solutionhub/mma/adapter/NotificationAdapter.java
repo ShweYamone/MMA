@@ -52,6 +52,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    isRead.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.read_message));
                     Intent intent = new Intent(mContext, NotificationViewActivity.class);
                     intent.putExtra("noti", notification);
                     mContext.startActivity(intent);

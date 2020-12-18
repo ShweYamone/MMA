@@ -127,7 +127,7 @@ public class NotificationActivity extends AppCompatActivity  {
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.addOnScrollListener(mSmartScrollListener);
         recyclerView.setAdapter(mAdapter);
-
+        getMSOEvent();
 
 
         /**
@@ -188,19 +188,6 @@ public class NotificationActivity extends AppCompatActivity  {
             startHandler = true;
             startHandler();
         }
-//        if(notificationList.size()>=11){
-//            Log.i("LIST10","WORK");
-//            for(int i = 1,j=notificationList.size()-1;i<11;i++,j--){
-//                notificationList.remove(j);
-//            }
-//            getServiceOrders();
-//        }else {
-//            Log.i("LIST","WORK");
-//
-//        }
-        notificationList.clear();
-        mAdapter.notifyDataSetChanged();
-        getMSOEvent();
 
         /************WebScoket***************/
         Uri.Builder url = Uri.parse( "ws://hub-nightly-public-alb-1826126491.ap-southeast-1.elb.amazonaws.com/socket/websocket" ).buildUpon();
@@ -280,9 +267,7 @@ public class NotificationActivity extends AppCompatActivity  {
 
                 if(response.isSuccessful()){
                     NotificationReadModel readModel = response.body();
-                    ArrayList<Item> items = new ArrayList<>();
-
-                    items.addAll(readModel.getItems());
+                    List<Item> items = readModel.getItems();
                     Toast.makeText(getApplicationContext(),"SUCCESS:"+items.size(),Toast.LENGTH_SHORT).show();
                     for(int i = 0;i<items.size();i++){
                         Log.i("IS_READ",""+items.get(i).isIs_read());
@@ -328,8 +313,7 @@ public class NotificationActivity extends AppCompatActivity  {
                 if(response.isSuccessful()){
                     NotificationReadModel readModel = response.body();
                     totalPages = readModel.getTotalPages();
-                    ArrayList<Item> items = new ArrayList<>();
-                    items.addAll(readModel.getItems());
+                    List<Item> items = readModel.getItems();
                     Toast.makeText(getApplicationContext(),"SUCCESS:"+items.size(),Toast.LENGTH_SHORT).show();
                     for(int i = 0;i<items.size();i++){
                         Log.i("Is_read",items.get(i).isIs_read()+"");
