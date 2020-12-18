@@ -7,12 +7,22 @@ public class NotificationModel implements Serializable {
     String messageHead;
     String messageBody;
     String messageDateTime;
+    boolean isRead;
 
-    public NotificationModel(String id,String messageHead, String messageBody, String messageDateTime) {
+    public NotificationModel(String id,String messageHead, String messageBody, String messageDateTime,boolean isRead) {
         this.id = id;
         this.messageHead = messageHead;
         this.messageBody = messageBody;
         this.messageDateTime = messageDateTime;
+        this.isRead = isRead;
+    }
+
+    public boolean isRead() {
+        return isRead;
+    }
+
+    public void setRead(boolean read) {
+        isRead = read;
     }
 
     public String getId() {

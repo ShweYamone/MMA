@@ -277,9 +277,9 @@ public class NotificationActivity extends AppCompatActivity  {
                         timestamp = new Timestamp(date.getTime());
                         String actualDateTime = new SimpleDateFormat("dd.MM.yyyy/HH:mm aa").format(timestamp);
                         if(payload.getMso_type().equals("PM")) {
-                            notificationList.add(new NotificationModel(items.get(i).getId(),"PM-MSO xxxx","You received an PM MSO Alert.",actualDateTime));
+                            notificationList.add(new NotificationModel(items.get(i).getId(),"PM-MSO xxxx","You received an PM MSO Alert.",actualDateTime,items.get(i).isIs_read()));
                         }else {
-                            notificationList.add(new NotificationModel(items.get(i).getId(),"CM-MSO xxxx","You received an CM MSO Alert.",actualDateTime));
+                            notificationList.add(new NotificationModel(items.get(i).getId(),"CM-MSO xxxx","You received an CM MSO Alert.",actualDateTime, items.get(i).isIs_read()));
                         }
 
                     }
@@ -323,9 +323,9 @@ public class NotificationActivity extends AppCompatActivity  {
                         timestamp = new Timestamp(date.getTime());
                         String actualDateTime = new SimpleDateFormat("dd.MM.yyyy/HH:mm aa").format(timestamp);
                         if(payload.getMso_type().equals("PM")) {
-                            notificationList.add(new NotificationModel(items.get(i).getId(),"PM-MSO xxxx","You received an PM MSO Alert.",actualDateTime));
+                            notificationList.add(new NotificationModel(items.get(i).getId(),"PM-MSO xxxx","You received an PM MSO Alert.",actualDateTime,items.get(i).isIs_read()));
                         }else {
-                            notificationList.add(new NotificationModel(items.get(i).getId(),"CM-MSO xxxx","You received an CM MSO Alert.",actualDateTime));
+                            notificationList.add(new NotificationModel(items.get(i).getId(),"CM-MSO xxxx","You received an CM MSO Alert.",actualDateTime,items.get(i).isIs_read()));
                         }
 
                     }

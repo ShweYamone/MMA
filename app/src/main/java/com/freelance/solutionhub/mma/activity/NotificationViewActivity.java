@@ -7,6 +7,7 @@ import androidx.appcompat.widget.Toolbar;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PowerManager;
@@ -20,7 +21,10 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.freelance.solutionhub.mma.R;
+import com.freelance.solutionhub.mma.model.Event;
 import com.freelance.solutionhub.mma.model.NotificationModel;
+import com.freelance.solutionhub.mma.model.ReturnStatus;
+import com.freelance.solutionhub.mma.model.UpdateEventBody;
 import com.freelance.solutionhub.mma.util.SharePreferenceHelper;
 
 import org.phoenixframework.channels.Channel;
@@ -28,8 +32,21 @@ import org.phoenixframework.channels.Envelope;
 import org.phoenixframework.channels.IMessageCallback;
 import org.phoenixframework.channels.Socket;
 
+import java.io.File;
+import java.io.IOException;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static com.freelance.solutionhub.mma.util.AppConstant.user_inactivity_time;
 
@@ -73,6 +90,65 @@ public class NotificationViewActivity extends AppCompatActivity {
         tvMessageBody.setText(notificationModel.getMessageBody());
         tvDataTime.setText(notificationModel.getMessageDateTime());
 
+
+        /************WebScoket***************/
+        Uri.Builder url = Uri.parse( "ws://hub-nightly-public-alb-1826126491.ap-southeast-1.elb.amazonaws.com/socket/websocket" ).buildUpon();
+        // url.appendQueryParameter("vsn", "2.0.0");
+        url.appendQueryParameter( "token", sharePreferenceHelper.getToken());
+        Log.i("notification_id",notificationModel.getId());
+        try {
+            //    Log.i("Websocket", url.toString());
+            socket = new Socket(url.build().toString());
+            socket.connect();
+            if(socket.isConnected()){
+                Log.i("SOCKET_CONNECT","SUCCESS");
+            }
+
+            channel = socket.chan("notification", null);
+
+            channel.join()
+                    .receive("ok", new IMessageCallback() {
+                        @Override
+                        public void onMessage(Envelope envelope) {
+                            Log.i("JOINED_WITH", "Joined with " + envelope.toString());
+                            Log.i("ON_MESSAGE", "onMessage: " + socket.isConnected());
+                            new LoadImage().execute(new Boolean[]{true});
+                        }
+                    })
+                    .receive("error", new IMessageCallback() {
+                        @Override
+                        public void onMessage(Envelope envelope) {
+                            Log.i("Websocket", "NOT Joined with ");
+                        }
+                    });
+
+            channel.on("mso_created", new IMessageCallback() {
+                @Override
+                public void onMessage(Envelope envelope) {
+                    Log.i("NEW_MESSAGE",envelope.toString());
+                    final JsonNode user = envelope.getPayload().get("mso_id");
+                    if (user == null || user instanceof NullNode) {
+                    }
+                    else {
+                    }
+
+                }
+            });
+
+            channel.on("mso_rejected", new IMessageCallback() {
+                @Override
+                public void onMessage(Envelope envelope) {
+                    //  Toast.makeText(getApplicationContext(), "CLOSED: " + envelope.toString(), Toast.LENGTH_SHORT).show();
+                    //   tvResult.setText("CLOSED: " + envelope.toString());
+                    Log.i("CLOSED", envelope.toString());
+                }
+            });
+
+
+        } catch (Exception e) {
+            Toast.makeText(getApplicationContext(), "Exception" + e.getMessage(), Toast.LENGTH_SHORT).show();
+            Log.i("Websocket",  e.getMessage() + "\n" + e.getLocalizedMessage());
+        }
 
         /**
          after certain amount of user inactivity, asks for passcode
@@ -145,49 +221,42 @@ public class NotificationViewActivity extends AppCompatActivity {
             startHandler();
         }
 
-        /************WebScoket***************/
-        Uri.Builder url = Uri.parse( "ws://hub-nightly-public-alb-1826126491.ap-southeast-1.elb.amazonaws.com/socket/websocket" ).buildUpon();
-        // url.appendQueryParameter("vsn", "2.0.0");
-        url.appendQueryParameter( "token", sharePreferenceHelper.getToken());
-        try {
-            //    Log.i("Websocket", url.toString());
-            socket = new Socket(url.build().toString());
-            socket.connect();
-            if(socket.isConnected()){
-                Log.i("SOCKET_CONNECT","SUCCESS");
-            }
-
-            channel = socket.chan("notification", null);
-
-            channel.join()
-                    .receive("ok", new IMessageCallback() {
-                        @Override
-                        public void onMessage(Envelope envelope) {
-                            Log.i("JOINED_WITH", "Joined with " + envelope.toString());
-                            Log.i("ON_MESSAGE", "onMessage: " + socket.isConnected());
-                        }
-                    })
-                    .receive("error", new IMessageCallback() {
-                        @Override
-                        public void onMessage(Envelope envelope) {
-                            Log.i("Websocket", "NOT Joined with ");
-                        }
-                    });
-
-//Sending a message. This library uses Jackson for JSON serialization
-            ObjectNode node = new ObjectNode(JsonNodeFactory.instance)
-                    .put("notification_id",notificationModel.getId());
-
-            channel.push("notification_read", node);
-        } catch (Exception e) {
-            Toast.makeText(getApplicationContext(), "Exception" + e.getMessage(), Toast.LENGTH_SHORT).show();
-            Log.i("Websocket",  e.getMessage() + "\n" + e.getLocalizedMessage());
-        }
     }
 
     @Override
     protected void onUserLeaveHint() {
         super.onUserLeaveHint();
         sharePreferenceHelper.setLock(true);
+    }
+    class LoadImage extends AsyncTask<Boolean, Void, Boolean> {
+
+        public LoadImage() {
+
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aVoid) {
+            super.onPostExecute(aVoid);
+        }
+
+
+        @Override
+        protected Boolean doInBackground(Boolean... b) {
+            if(b[0]){
+
+//Sending a message. This library uses Jackson for JSON serialization
+                ObjectNode node = new ObjectNode(JsonNodeFactory.instance)
+                        .put("notification_id",notificationModel.getId());
+                try {
+                    channel.push("notification_read",node);
+                    Log.i("notification_read",channel.canPush()+"");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            return false;
+        }
+
     }
 }

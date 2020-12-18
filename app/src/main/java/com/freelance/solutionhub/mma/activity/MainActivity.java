@@ -492,7 +492,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     int count = 0;
                     Toast.makeText(getApplicationContext(),"SUCCESS:"+items.size(),Toast.LENGTH_SHORT).show();
                     for(int i = 0;i<items.size();i++){
-                        if(!items.get(i).is_read){
+                        Log.i("Is_read",items.get(i).isIs_read()+"");
+                        if(!items.get(i).isIs_read()){
                             count++;
                         }
                     }

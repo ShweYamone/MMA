@@ -2,6 +2,7 @@ package com.freelance.solutionhub.mma.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.freelance.solutionhub.mma.R;
@@ -37,8 +39,10 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         @BindView(R.id.tvDateTime)
         TextView tvDateTime;
 
-        @BindView(R.id.cv_notification)
-        CardView cardView;
+        @BindView(R.id.iv_is_read)
+        ImageView isRead;
+
+
 
         private NotificationModel notification;
 
@@ -59,6 +63,8 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         public void bindView(NotificationModel notification){
 
             this.notification = notification;
+            if(notification.isRead())
+                isRead.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.read_message));
             tvMessageHead.setText(notification.getMessageHead());
             tvMessageBody.setText(notification.getMessageBody());
             tvDateTime.setText(notification.getMessageDateTime());
