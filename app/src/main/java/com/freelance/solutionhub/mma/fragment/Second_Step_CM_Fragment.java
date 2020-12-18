@@ -197,6 +197,8 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
 
     private boolean qrScan1Click = true;
     private boolean hasEventToUpdate = false;
+
+    private String mandatoryFieldsLeft = "";
     Intent intent;
     public Second_Step_CM_Fragment() {
         // Required empty public constructor
