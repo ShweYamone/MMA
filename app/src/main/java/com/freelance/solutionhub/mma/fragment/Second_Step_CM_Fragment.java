@@ -196,7 +196,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
     private boolean replacementShow = true;
 
     private boolean qrScan1Click = true;
-    private boolean hasEventToUpdate = false;
+    private boolean isMandatoryFieldLeft = false;
 
     private String mandatoryFieldsLeft = "";
     Intent intent;
@@ -435,12 +435,67 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
                 qrScan.initiateScan();
                 break;
             case R.id.btnSave:
+                isMandatoryFieldLeft = false;
+                mandatoryFieldsLeft = "";
                 getProblemCodeEvent();
                 getQREvent();
-                if(postModelList.size() != 0) {
-                    getPhotoEvents();
-                }else {
+                if (isMandatoryFieldLeft && postModelList.size() == 0) {
+                    new AlertDialog.Builder(getContext())
+                            .setIcon(R.drawable.warning)
+                            .setTitle("Mandatory Fields Left:")
+                            .setMessage(mandatoryFieldsLeft + "\nAttaching Post-Maintenance Photos")
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                }
+
+                            })
+                            .show();
+                } else if (isMandatoryFieldLeft) {
+                        new AlertDialog.Builder(getContext())
+                                .setIcon(R.drawable.warning)
+                                .setTitle("Mandatory Field Left:")
+                                .setMessage(mandatoryFieldsLeft)
+                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                    }
+
+                                })
+                                .show();
+                } else if (postModelList.size() == 0) {
+                    new AlertDialog.Builder(getContext())
+                            .setIcon(R.drawable.warning)
+                            .setTitle("Mandatory Field Left:")
+                            .setMessage("To attach post-maintenance photos(min(2) and max(5)")
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                }
+
+                            })
+                            .show();
+                }
+                else if (postModelList.size() < 2 || postModelList.size() > 6){
+                    new AlertDialog.Builder(this.getContext())
+                            .setIcon(R.drawable.warning)
+                            .setTitle("Photo")
+                            .setMessage("Your photos must be minimum 2 and maximum 5.")
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+
+
+                                }
+
+                            })
+                            .show();
+                }
+                else {
+                    //Mandatory QR and Problem event are choosen, can update events.......
+                    //Mandatory Photos are attached, can update events.......
                     uploadEvents();
+                    getPhotoEvents();
                 }
                 break;
             case R.id.iv_attach_post_maintenance_photo:
@@ -503,7 +558,6 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
     private void getQREvent() {
 
         if (!etThridPartyComment.getText().toString().equals("")) { //third party comment
-            hasEventToUpdate = true;
             events.add(
                     new Event("THIRD_PARTY_COMMENT_UPDATE",
                             "comment",
@@ -512,13 +566,15 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
             Log.i("EventHappenend", "getProblemCodeEvent:Desc " + etThridPartyComment.getText().toString());
         }
         if (!tvScanFault.getText().toString().equals("")) {
-            hasEventToUpdate = true;
             events.add(
                     new Event("PART_REPLACEMENT_UPDATE",
                             "faultPartCode",
                             tvScanFault.getText().toString())
             );
             Log.i("EventHappenend", "getProblemCodeEvent: " + tvScanFault.getText().toString());
+        } else {
+            mandatoryFieldsLeft += "\nscan faulty component";
+            isMandatoryFieldLeft = true;
         }
         if (!tvScanReplacement.getText().toString().equals("")) {
             events.add(
@@ -526,8 +582,10 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
                     "replacementPartCode",
                     tvScanReplacement.getText().toString())
             );
-            hasEventToUpdate = true;
             Log.i("EventHappenend", "getProblemCodeEvent: " + tvScanReplacement.getText().toString());
+        } else {
+            mandatoryFieldsLeft += "\nscan replaced component";
+            isMandatoryFieldLeft = true;
         }
 
     }
@@ -549,29 +607,37 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
         ));
         Log.i("EventHappenend", "GETReprotedProblemPlain" +  pmServiceInfoModel.getReportedProblem());
         if (spinnerActualProbleCode.getSelectedItemPosition() > 0) {
-            hasEventToUpdate = true;
+
             events.add(new Event(
                     "SERVICE_ORDER_UPDATE",
                     "actualProblem" ,
                     actualProblem));
             Log.i("EventHappenend",  actualProblem);
+        } else {
+            mandatoryFieldsLeft += "\nselect actual problem code";
+            isMandatoryFieldLeft = true;
         }
         if (spinnerCauseCode.getSelectedItemPosition() > 0) {
-            hasEventToUpdate = true;
             events.add(new Event(
                     "SERVICE_ORDER_UPDATE",
                     "cause",
                     causeCode));
             Log.i("EventHappenend", causeCode);
+        } else {
+            mandatoryFieldsLeft += "\nselect cause code";
+            isMandatoryFieldLeft = true;
         }
         if (spinnerRemedyCode.getSelectedItemPosition() > 0) {
-            hasEventToUpdate = true;
             events.add(new Event(
                     "SERVICE_ORDER_UPDATE",
                     "remedy",
                     remedyCode));
             Log.i("EventHappenend", remedyCode);
+        } else {
+            mandatoryFieldsLeft += "\nselect remedy code";
+            isMandatoryFieldLeft = true;
         }
+
 
     }
 
@@ -581,25 +647,10 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
     public void getPhotoEvents(){
         if(network.isNetworkAvailable()) {
             //Maintenance photos attached ( max - 10 and min 2 )
-            if (postModelList.size() > 1 && postModelList.size() < 6) {
+          //  if (postModelList.size() > 1 && postModelList.size() < 6) {
                 Log.v("BEFORE_JOIN", "Before joining");
                 new LoadImage(events).execute(uploadPhoto(postModelList));
 
-            } else {
-                new AlertDialog.Builder(this.getContext())
-                        .setIcon(R.drawable.warning)
-                        .setTitle("Photo")
-                        .setMessage("Your photos must be minimum 2 and maximum 5.")
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-
-                            }
-
-                        })
-                        .show();
-            }
         }else {
 
         }
