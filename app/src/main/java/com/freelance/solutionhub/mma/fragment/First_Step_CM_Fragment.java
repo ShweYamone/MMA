@@ -157,8 +157,22 @@ public class First_Step_CM_Fragment extends Fragment {
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(prePhotoModels.size() != 0)
+                if(prePhotoModels.size() > 0)
                     save();
+                else {
+                    new AlertDialog.Builder(getContext())
+                            .setIcon(R.drawable.warning)
+                            .setTitle("Photo")
+                            .setMessage("You need to attach premaintenance photos.")
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                }
+
+                            })
+                            .show();
+                }
+
             }
         });
         setDataAdapter();

@@ -49,7 +49,9 @@ public class PasscodeRegisterActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         mSharePreferenceHelper = new SharePreferenceHelper(this);
+        Log.i("PasscodeProblem", "onCreate: check" + mSharePreferenceHelper.getPinCode());
         if (mSharePreferenceHelper.hasPinCode()) {
+            Log.i("PasscodeProblem", "onCreate: has PinCode " + mSharePreferenceHelper.getPinCode());
             startActivity(new Intent(PasscodeRegisterActivity.this, PasscodeActivity.class));
             finish();
         }
@@ -80,7 +82,7 @@ public class PasscodeRegisterActivity extends AppCompatActivity {
         rePinCode.setOnTextChangeListener(new PassCodeView.TextChangeListener() {
             @Override
             public void onTextChanged(String text) {
-                Log.i("Passcode", "text");
+                Log.i("PasscodeProblem", "text");
                 if(text.length() == 6){
                     if(text.equals(pinCodeStr)){
                         mSharePreferenceHelper.setPinCode(text);
