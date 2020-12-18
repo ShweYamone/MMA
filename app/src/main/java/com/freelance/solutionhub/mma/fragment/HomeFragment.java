@@ -17,6 +17,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,10 +36,12 @@ import com.freelance.solutionhub.mma.model.FilterModelBody;
 import com.freelance.solutionhub.mma.model.ServiceInfoModel;
 import com.freelance.solutionhub.mma.model.PMServiceListModel;
 import com.freelance.solutionhub.mma.model.ReturnStatus;
+import com.freelance.solutionhub.mma.model.TextValue;
 import com.freelance.solutionhub.mma.model.UpdateEventBody;
 import com.freelance.solutionhub.mma.model.UserProfile;
 import com.freelance.solutionhub.mma.util.ApiClient;
 import com.freelance.solutionhub.mma.util.ApiInterface;
+import com.freelance.solutionhub.mma.util.Network;
 import com.freelance.solutionhub.mma.util.SharePreferenceHelper;
 
 import java.io.IOException;
@@ -103,6 +107,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
     @BindView(R.id.tvCMCount)
     TextView tvCMCount;
 
+    @BindView(R.id.progress_bar)
+    RelativeLayout progressBar;
+
     private String[] list;
     private ArrayAdapter spinnerArrAdaper;
     private ServiceOrderAdapter mAdapter;
@@ -111,6 +118,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
     private SmartScrollListener mSmartScrollListener;
     private SharePreferenceHelper mSharePreference;
     private FilterModelBody filterModelBody;
+    private Network network;
 
     private int page = 1;
     private int totalPages = 0;
@@ -118,9 +126,13 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
     private String textValue;
     private String filterExpression;
     private InitializeDatabase dbHelper;
+    private int totalPMPages = 0;
+    private int totalCMPages = 0;
+
     PMServiceListModel pmServiceListModel;
     List<ServiceInfoModel> serviceInfoModels;
     List<String> textValueList = new ArrayList<>();
+    List<ServiceInfoModel> tempServices = new ArrayList<>(); // temp list for local DB
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -128,8 +140,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_home, container, false);
         mSharePreference = new SharePreferenceHelper(getContext());
-        apiInterface = ApiClient.getClient(this.getContext());
-        dbHelper = InitializeDatabase.getInstance(this.getContext());
+        apiInterface = ApiClient.getClient(getContext());
+        network = new Network(getContext());
+        dbHelper = InitializeDatabase.getInstance(getContext());
 
         ButterKnife.bind(this, view);
         cvCorrectiveMaintenance.setOnClickListener(this);
@@ -159,9 +172,14 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
             getUserIdAndUserDisplayName();
         }
 
-        setServiceOrderCount();
+        if (network.isNetworkAvailable()) {
+            setServiceOrderCount();
+            getFaultMappingData();
+        } else {
+            progressBar.setVisibility(View.GONE);
+            //handle with local db
+        }
 
-        getFaultMappingData();
         return view;
     }
 
@@ -175,6 +193,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 Log.i("FaultMapping", "onResponse: " + response.code());
                 if (response.isSuccessful()) {
+                    progressBar.setVisibility(View.GONE);
                     try {
                         //first delete and insert new fault-mapping data for later use
                         dbHelper.faultMappingDAO().delete();
@@ -270,6 +289,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
                 if (response.isSuccessful()) {
                     pmServiceListModel = response.body();
                     int tempCount = pmServiceListModel.getTotalElements();
+                    totalCMPages = pmServiceListModel.getTotalPages();
                     if (tempCount == 0) {
                         tvCMCount.setText("0");
                     } else if (tempCount < 10) {
@@ -280,6 +300,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
                         tvCMCount.setText("99+");
                     Log.i("LOCAl_DB", "onResponse: " + dbHelper.serviceInfoModelDAO().getNumberOfServices());
 
+                    for (int i = 1; i < totalCMPages; i++) {
+
+                    }
 
                     //store pm services to local DB
                     //first delete and insert CM SERVICES
@@ -307,6 +330,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
 
                 if (response.isSuccessful()) {
                     pmServiceListModel = response.body();
+                    totalPMPages = pmServiceListModel.getTotalPages();
                     int tempCount = pmServiceListModel.getTotalElements();
                     if (tempCount == 0) {
                         tvPMCount.setText("0");
@@ -332,6 +356,16 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
             }
         });
     }
+    /*
+    private void getServiceOrdersForLocalDB(String enumValue, List<String> temp, int page) {
+        filterModelBody = FilterModelBody.createFilterModel(filterExpression, PM, temp, page);
+        Call<PMServiceListModel> call = apiInterface.getPMServiceOrders("Bearer " + mSharePreference.getToken(), filterModelBody);
+
+    }
+
+    private void getCMServiceOrdersForLocalDB() {
+
+    }*/
 
     private void getServiceOrders() {
         filterModelBody = FilterModelBody.createFilterModel(filterExpression, enumValue, textValueList, page);

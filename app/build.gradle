@@ -97,4 +97,7 @@ dependencies {
     //Passcode
     implementation "in.arjsna:passcodeview:1.2.1"
 
+    // ProgressBar
+    implementation 'com.github.ybq:Android-SpinKit:1.4.0'
+
 }
