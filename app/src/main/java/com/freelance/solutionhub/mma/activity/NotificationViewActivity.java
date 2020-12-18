@@ -6,16 +6,27 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PowerManager;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.NullNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.freelance.solutionhub.mma.R;
 import com.freelance.solutionhub.mma.model.NotificationModel;
 import com.freelance.solutionhub.mma.util.SharePreferenceHelper;
+
+import org.phoenixframework.channels.Channel;
+import org.phoenixframework.channels.Envelope;
+import org.phoenixframework.channels.IMessageCallback;
+import org.phoenixframework.channels.Socket;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -35,6 +46,9 @@ public class NotificationViewActivity extends AppCompatActivity {
 
     private Handler handler;
     private Runnable r;
+    private Socket socket;
+    private Channel channel;
+    private NotificationModel notificationModel;
     private boolean startHandler = true;
     private SharePreferenceHelper sharePreferenceHelper;
 
@@ -52,7 +66,9 @@ public class NotificationViewActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        NotificationModel notificationModel = (NotificationModel)getIntent().getSerializableExtra("noti");
+        notificationModel = (NotificationModel)getIntent().getSerializableExtra("noti");
+        if(notificationModel == null)
+            finish();
         tvMessageHead.setText(notificationModel.getMessageHead());
         tvMessageBody.setText(notificationModel.getMessageBody());
         tvDataTime.setText(notificationModel.getMessageDateTime());
@@ -127,6 +143,45 @@ public class NotificationViewActivity extends AppCompatActivity {
         } else {
             startHandler = true;
             startHandler();
+        }
+
+        /************WebScoket***************/
+        Uri.Builder url = Uri.parse( "ws://hub-nightly-public-alb-1826126491.ap-southeast-1.elb.amazonaws.com/socket/websocket" ).buildUpon();
+        // url.appendQueryParameter("vsn", "2.0.0");
+        url.appendQueryParameter( "token", sharePreferenceHelper.getToken());
+        try {
+            //    Log.i("Websocket", url.toString());
+            socket = new Socket(url.build().toString());
+            socket.connect();
+            if(socket.isConnected()){
+                Log.i("SOCKET_CONNECT","SUCCESS");
+            }
+
+            channel = socket.chan("notification", null);
+
+            channel.join()
+                    .receive("ok", new IMessageCallback() {
+                        @Override
+                        public void onMessage(Envelope envelope) {
+                            Log.i("JOINED_WITH", "Joined with " + envelope.toString());
+                            Log.i("ON_MESSAGE", "onMessage: " + socket.isConnected());
+                        }
+                    })
+                    .receive("error", new IMessageCallback() {
+                        @Override
+                        public void onMessage(Envelope envelope) {
+                            Log.i("Websocket", "NOT Joined with ");
+                        }
+                    });
+
+//Sending a message. This library uses Jackson for JSON serialization
+            ObjectNode node = new ObjectNode(JsonNodeFactory.instance)
+                    .put("notification_id",notificationModel.getId());
+
+            channel.push("notification_read", node);
+        } catch (Exception e) {
+            Toast.makeText(getApplicationContext(), "Exception" + e.getMessage(), Toast.LENGTH_SHORT).show();
+            Log.i("Websocket",  e.getMessage() + "\n" + e.getLocalizedMessage());
         }
     }
 

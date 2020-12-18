@@ -277,9 +277,9 @@ public class NotificationActivity extends AppCompatActivity  {
                         timestamp = new Timestamp(date.getTime());
                         String actualDateTime = new SimpleDateFormat("dd.MM.yyyy/HH:mm aa").format(timestamp);
                         if(payload.getMso_type().equals("PM")) {
-                            notificationList.add(new NotificationModel("PM-MSO xxxx","You received an PM MSO Alert.",actualDateTime));
+                            notificationList.add(new NotificationModel(items.get(i).getId(),"PM-MSO xxxx","You received an PM MSO Alert.",actualDateTime));
                         }else {
-                            notificationList.add(new NotificationModel("CM-MSO xxxx","You received an CM MSO Alert.",actualDateTime));
+                            notificationList.add(new NotificationModel(items.get(i).getId(),"CM-MSO xxxx","You received an CM MSO Alert.",actualDateTime));
                         }
 
                     }
@@ -323,9 +323,9 @@ public class NotificationActivity extends AppCompatActivity  {
                         timestamp = new Timestamp(date.getTime());
                         String actualDateTime = new SimpleDateFormat("dd.MM.yyyy/HH:mm aa").format(timestamp);
                         if(payload.getMso_type().equals("PM")) {
-                            notificationList.add(new NotificationModel("PM-MSO xxxx","You received an PM MSO Alert.",actualDateTime));
+                            notificationList.add(new NotificationModel(items.get(i).getId(),"PM-MSO xxxx","You received an PM MSO Alert.",actualDateTime));
                         }else {
-                            notificationList.add(new NotificationModel("CM-MSO xxxx","You received an CM MSO Alert.",actualDateTime));
+                            notificationList.add(new NotificationModel(items.get(i).getId(),"CM-MSO xxxx","You received an CM MSO Alert.",actualDateTime));
                         }
 
                     }
@@ -338,14 +338,6 @@ public class NotificationActivity extends AppCompatActivity  {
                     Log.i("ERROR",t.getLocalizedMessage());
             }
         });
-    }
-
-    private void prepareNotifications() {
-        NotificationModel obj = new NotificationModel("Announcement", "This is message. This is message. This is message. This is message. Fighting", "12/5/2020/ 05:54PM");
-        notificationList.add(obj); notificationList.add(obj); notificationList.add(obj);
-        notificationList.add(obj); notificationList.add(obj); notificationList.add(obj);
-        notificationList.add(obj); notificationList.add(obj); notificationList.add(obj);
-
     }
 
     //For Back Arrow

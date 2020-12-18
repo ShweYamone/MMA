@@ -58,7 +58,6 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.MyViewHolder
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, FullScreenActivity.class);
-
                 Bundle extras = new Bundle();
                 extras.putParcelable("imagebitmap", getBitmapFromEncodedString(singleRowArrayList.get(i).getImage()));
                 intent.putExtras(extras);
