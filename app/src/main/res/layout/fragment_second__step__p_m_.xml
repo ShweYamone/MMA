@@ -37,13 +37,25 @@
                 android:gravity="top"/>
         </LinearLayout>
 
+
+        <Button
+            android:id="@+id/btn_verify"
+            android:layout_above="@id/btnJobDone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorWhite"
+            android:background="@drawable/round_rect_shape_button"
+            android:layout_margin="@dimen/margin_small"
+            android:textAllCaps="false"
+            android:text="@string/verify"/>
+
         <Button
             android:id="@+id/btnJobDone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:textColor="@color/colorWhite"
-            android:background="@drawable/round_rect_shape_button"
+            android:background="@drawable/round_rectangle_shape_button_grey"
             android:layout_margin="@dimen/margin_small"
             android:textAllCaps="false"
             android:text="@string/job_done"/>
