@@ -1,9 +1,11 @@
 package com.freelance.solutionhub.mma.fragment;
 
 import android.app.usage.EventStats;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -19,6 +21,7 @@ import com.freelance.solutionhub.mma.activity.PMCompletionActivity;
 import com.freelance.solutionhub.mma.model.PMServiceInfoDetailModel;
 import com.freelance.solutionhub.mma.model.ReturnStatus;
 import com.freelance.solutionhub.mma.model.UpdateEventBody;
+import com.freelance.solutionhub.mma.model.VerificationReturnBody;
 import com.freelance.solutionhub.mma.util.ApiClient;
 import com.freelance.solutionhub.mma.util.ApiInterface;
 import com.freelance.solutionhub.mma.util.Network;
@@ -43,6 +46,9 @@ public class Second_Step_PM_Fragment extends Fragment implements View.OnClickLis
 
     @BindView(R.id.et_remarks)
     EditText remarks;
+
+    @BindView(R.id.btn_verify)
+    Button verify;
 
     private ApiInterface apiInterface;
     private SharePreferenceHelper mSharePreferenceHelper;
@@ -72,7 +78,9 @@ public class Second_Step_PM_Fragment extends Fragment implements View.OnClickLis
         network = new Network(getContext());
         dbHelper = InitializeDatabase.getInstance(getContext());
 
+        btnJobDone.setClickable(false);
         btnJobDone.setOnClickListener(this);
+        verify.setOnClickListener(this);
 
 
         return view;
@@ -81,6 +89,49 @@ public class Second_Step_PM_Fragment extends Fragment implements View.OnClickLis
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
+            case R.id.btn_verify:
+                if(mSharePreferenceHelper.userClickPMStepOneOrNot()){
+                    Call<VerificationReturnBody> call = apiInterface.verifyWorks("Bearer " + mSharePreferenceHelper.getToken(), "CM20205B6923C2");
+                    call.enqueue(new Callback<VerificationReturnBody>() {
+                        @Override
+                        public void onResponse(Call<VerificationReturnBody> call, Response<VerificationReturnBody> response) {
+                            if (response.isSuccessful()) {
+                                VerificationReturnBody verificationReturnBody = response.body();
+                                if (verificationReturnBody.isFault_resolved()) {
+                                    btnJobDone.setClickable(true);
+                                    btnJobDone.setBackground(getResources().getDrawable(R.drawable.round_rect_shape_button));
+                                } else {
+                                    Toast.makeText(getContext(), "Verification failed", Toast.LENGTH_SHORT).show();
+                                    btnJobDone.setClickable(false);
+                                    btnJobDone.setBackground(getResources().getDrawable(R.drawable.round_rectangle_shape_button_grey));
+                                }
+                            }
+                            else {
+                                Toast.makeText(getContext(), response.code() + "", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<VerificationReturnBody> call, Throwable t) {
+
+                        }
+                    });
+                }else {
+                    new AlertDialog.Builder(this.getContext())
+                            .setIcon(R.drawable.warning)
+                            .setTitle("Unsaved Work")
+                            .setMessage("You need to save works in Step 1.")
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+
+
+                                }
+
+                            })
+                            .show();
+                }
+                break;
             case R.id.btnJobDone :
                 updateEvent();
                 Intent intent = new Intent(this.getContext(), PMCompletionActivity.class);

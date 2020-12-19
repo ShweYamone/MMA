@@ -21,10 +21,17 @@ public class SharePreferenceHelper {
 
  	private static String CMStepOneClick = "CMStepONE";
  	private static String CMStepTwoClick = "CMStepTwo";
+ 	private static String PMStepOneClick = "PMStepOne";
 
  	public void userClickCMStepOne(boolean click) {
  		SharedPreferences.Editor editor = sharedPreference.edit();
  		editor.putBoolean(CMStepOneClick, click);
+ 		editor.commit();
+	}
+
+	public void userClickPMStepOne(boolean click){
+ 		SharedPreferences.Editor editor = sharedPreference.edit();
+ 		editor.putBoolean(PMStepOneClick, click);
  		editor.commit();
 	}
 
@@ -34,6 +41,9 @@ public class SharePreferenceHelper {
  		editor.commit();
 	}
 
+	public boolean userClickPMStepOneOrNot(){
+ 		return sharedPreference.getBoolean(PMStepOneClick, false);
+	}
 	public boolean userClickStepOneOrNot() {
  		return sharedPreference.getBoolean(CMStepOneClick, false);
 	}

@@ -198,10 +198,6 @@ public class NotificationActivity extends AppCompatActivity  {
 //            Log.i("LIST","WORK");
 //
 //        }
-        page = 1;
-        notificationList.clear();
-        mAdapter.notifyDataSetChanged();
-        getMSOEvent();
 
         /************WebScoket***************/
         Uri.Builder url = Uri.parse( "ws://hub-nightly-public-alb-1826126491.ap-southeast-1.elb.amazonaws.com/socket/websocket" ).buildUpon();
@@ -274,7 +270,7 @@ public class NotificationActivity extends AppCompatActivity  {
 
 
     private void getServiceOrders() {
-        Call<NotificationReadModel> notificationReadModelCall = apiInterface.getNotificationReadList("Bearer "+mSharedPreference.getToken(),page,5);
+        Call<NotificationReadModel> notificationReadModelCall = apiInterface.getNotificationReadList("Bearer "+mSharedPreference.getToken(),page,10);
         notificationReadModelCall.enqueue(new Callback<NotificationReadModel>() {
             @Override
             public void onResponse(Call<NotificationReadModel> call, Response<NotificationReadModel> response) {
@@ -321,7 +317,7 @@ public class NotificationActivity extends AppCompatActivity  {
     }
 
     private void getMSOEvent(){
-        Call<NotificationReadModel> notificationReadModelCall = apiInterface.getNotificationReadList("Bearer "+mSharedPreference.getToken(),1,5);
+        Call<NotificationReadModel> notificationReadModelCall = apiInterface.getNotificationReadList("Bearer "+mSharedPreference.getToken(),1,10);
         notificationReadModelCall.enqueue(new Callback<NotificationReadModel>() {
             @Override
             public void onResponse(Call<NotificationReadModel> call, Response<NotificationReadModel> response) {

@@ -53,6 +53,7 @@ public class PMActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         sharePreferenceHelper = new SharePreferenceHelper(this);
         sharePreferenceHelper.setLock(false);
+        sharePreferenceHelper.userClickPMStepOne(false);
 
         first_step_pm_fragment = new First_Step_PM_Fragment();
         second_step_pm_fragment = new Second_Step_PM_Fragment();

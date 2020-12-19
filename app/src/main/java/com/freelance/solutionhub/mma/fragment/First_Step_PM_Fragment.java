@@ -150,7 +150,8 @@ public class First_Step_PM_Fragment extends Fragment {
     private Date date;
     private Timestamp ts;
     private Network mNetwork;
-    private String bucketName;
+    private boolean isMandatory = false;
+    private String mandatoryString = "";
     ArrayList<Event> events = new ArrayList<>();
 
     public First_Step_PM_Fragment(){}
@@ -262,10 +263,14 @@ public class First_Step_PM_Fragment extends Fragment {
             @Override
             public void onClick(View v) {
                 addEvents();
-                if(postPhotoModels.size() != 0)
+                if(isMandatory){
+                    showDialog();
+                }else {
                     save();
-                else
-                    uploadEvent();
+                    mSharePerferenceHelper.userClickPMStepOne(true);
+                }
+                isMandatory = false;
+                mandatoryString = "";
             }
         });
 
@@ -310,6 +315,21 @@ public class First_Step_PM_Fragment extends Fragment {
         }//Network end
 
     }
+    private void showDialog(){
+        new AlertDialog.Builder(this.getContext())
+                .setIcon(R.drawable.warning)
+                .setTitle("Mandatory Field Left:")
+                .setMessage(mandatoryString)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+
+                    }
+
+                })
+                .show();
+    }
     private void addEvents(){
         if (!etFaultFoundRemarks.getText().toString().equals("")) {
             events.add(new Event(
@@ -319,16 +339,25 @@ public class First_Step_PM_Fragment extends Fragment {
             ));
         }
 
-       // events.addAll(checkListAdapter.getCheckListEvent());
-        for(Event e:events){
-            Log.i("VALUE",e.getValue()+",KEY:"+e.getKey()+",evenType:"+e.getEventType());
+        ArrayList<Event> checkList = checkListAdapter.getCheckListEvent();
+        for(int i = 0 ;i<checkListModels.size();i++){
+            Log.i("Checklist",checkList.get(i*2).getValue());
+            if(checkList.get(i*2).getValue().equals("false")){
+                isMandatory = true;
+                mandatoryString += "Check in checklist "+(i+1)+"\n";
+            }
+
         }
+        if(!(postPhotoModels.size() > 1 && postPhotoModels.size() < 6)){
+            isMandatory = true;
+            mandatoryString += "Add photo (between 2 and 5)\n";
+        }
+       // events.addAll(checkListAdapter.getCheckListEvent());
         Log.i("DONE","Done");
     }
     private void uploadEvent(){
         if(network.isNetworkAvailable()){
-            if(events.size() != 0)
-                new LoadImage(events).execute(new File[0]);
+
         }
     }
 
