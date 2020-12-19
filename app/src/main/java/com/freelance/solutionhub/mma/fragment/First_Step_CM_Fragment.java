@@ -416,6 +416,7 @@ public class First_Step_CM_Fragment extends Fragment {
                     ReturnStatus returnStatus = response.body();
                     if (response.isSuccessful()) {
                         Toast.makeText(getContext(), returnStatus.getStatus() + ":URL", Toast.LENGTH_LONG).show();
+                        f.clear();
                         mSharePerferenceHelper.userClickCMStepOne(true);
 
                     }
@@ -426,7 +427,7 @@ public class First_Step_CM_Fragment extends Fragment {
                     Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
-            f.clear();
+
         }
 
         @Override
