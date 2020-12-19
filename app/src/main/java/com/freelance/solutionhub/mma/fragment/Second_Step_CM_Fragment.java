@@ -444,8 +444,8 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
                     mSharePreference.userClickCMStepTwo(false);
                     new AlertDialog.Builder(getContext())
                             .setIcon(R.drawable.warning)
-                            .setTitle("Mandatory Fields Left:")
-                            .setMessage(mandatoryFieldsLeft + "\nTo Attach Post-Maintenance Photos")
+                            .setTitle("Mandatory Fields")
+                            .setMessage(mandatoryFieldsLeft + "\nAttach Post-Maintenance Photos")
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
@@ -457,7 +457,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
                     mSharePreference.userClickCMStepTwo(false);
                         new AlertDialog.Builder(getContext())
                                 .setIcon(R.drawable.warning)
-                                .setTitle("Mandatory Field Left:")
+                                .setTitle("Mandatory Fields:")
                                 .setMessage(mandatoryFieldsLeft)
                                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                     @Override
@@ -470,8 +470,8 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
                     mSharePreference.userClickCMStepTwo(false);
                     new AlertDialog.Builder(getContext())
                             .setIcon(R.drawable.warning)
-                            .setTitle("Mandatory Field Left:")
-                            .setMessage("To attach post-maintenance photos(min(2) and max(5)")
+                            .setTitle("Mandatory Fields:")
+                            .setMessage("Attach post-maintenance photos(min(2) and max(5)")
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
@@ -581,7 +581,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
             );
             Log.i("EventHappenend", "getProblemCodeEvent: " + tvScanFault.getText().toString());
         } else {
-            mandatoryFieldsLeft += "\nTo Scan Faulty Component";
+            mandatoryFieldsLeft += "\nScan Faulty Component";
             isMandatoryFieldLeft = true;
         }
         if (!tvScanReplacement.getText().toString().equals("")) {
@@ -592,7 +592,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
             );
             Log.i("EventHappenend", "getProblemCodeEvent: " + tvScanReplacement.getText().toString());
         } else {
-            mandatoryFieldsLeft += "\nTo Scan Replaced Component";
+            mandatoryFieldsLeft += "\nScan Replaced Component";
             isMandatoryFieldLeft = true;
         }
 
@@ -622,7 +622,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
                     actualProblem));
             Log.i("EventHappenend",  actualProblem);
         } else {
-            mandatoryFieldsLeft += "\nTo Select Actual Problem Code";
+            mandatoryFieldsLeft += "\nSelect Actual Problem Code";
             isMandatoryFieldLeft = true;
         }
         if (spinnerCauseCode.getSelectedItemPosition() > 0) {
@@ -632,7 +632,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
                     causeCode));
             Log.i("EventHappenend", causeCode);
         } else {
-            mandatoryFieldsLeft += "\nTo Select Cause Code";
+            mandatoryFieldsLeft += "\nSelect Cause Code";
             isMandatoryFieldLeft = true;
         }
         if (spinnerRemedyCode.getSelectedItemPosition() > 0) {
@@ -642,7 +642,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
                     remedyCode));
             Log.i("EventHappenend", remedyCode);
         } else {
-            mandatoryFieldsLeft += "\nTo Select Remedy Code";
+            mandatoryFieldsLeft += "\nSelect Remedy Code";
             isMandatoryFieldLeft = true;
         }
 

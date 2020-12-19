@@ -1,9 +1,11 @@
 package com.freelance.solutionhub.mma.activity;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -93,6 +95,8 @@ public class PowerGridActivity extends AppCompatActivity implements View.OnClick
     private Runnable r;
     private boolean startHandler = true;
     private SharePreferenceHelper sharePreferenceHelper;
+    private boolean isMandatoryFieldLeft = false;
+    private String mandatoryFieldsLeft = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -238,78 +242,119 @@ public class PowerGridActivity extends AppCompatActivity implements View.OnClick
      */
     public void save(){
 
+        isMandatoryFieldLeft = false;
+        mandatoryFieldsLeft = "";
+        eventLists.clear();
         addEvents();
-        Log.v("BEFORE_JOIN", "Before joining");
-        Log.v("JOIN", eventLists.size() + "");
 
-        date = new Date();
-        Timestamp timestamp = new Timestamp(date.getTime());
-        String actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
-        UpdateEventBody updateEventBody;
+        if (isMandatoryFieldLeft) {
+            new AlertDialog.Builder(this)
+                    .setIcon(R.drawable.warning)
+                    .setTitle("Mandatory Fields")
+                    .setMessage(mandatoryFieldsLeft)
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                        }
 
-        if (network.isNetworkAvailable()) {
-            updateEventBody = new UpdateEventBody(mSharePreferenceHelper.getUserName(),
-                    mSharePreferenceHelper.getUserId(),
-                    actualDateTime,
-                    cmID,
-                    eventLists);
-
-            Call<ReturnStatus> returnStatusCallEvent = apiInterface.updateEvent("Bearer " + mSharePreferenceHelper.getToken(), updateEventBody);
-            returnStatusCallEvent.enqueue(new Callback<ReturnStatus>() {
-                @Override
-                public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
-                    ReturnStatus returnStatus = response.body();
-                    Log.v("SUCCESS","error");
-                    if (response.isSuccessful()) {
-                        Log.v("SUCCESS","success");
-                        Toast.makeText(getApplicationContext(), returnStatus.getStatus() + "", Toast.LENGTH_LONG).show();
-
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<ReturnStatus> call, Throwable t) {
-                    Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            });
+                    })
+                    .show();
         } else {
-            updateEventBody = new UpdateEventBody(
-                mSharePreferenceHelper.getUserName(),
-                mSharePreferenceHelper.getUserId(),
-                actualDateTime,
-                cmID
-            );
-            String key = mSharePreferenceHelper.getUserId() + cmID + actualDateTime;
-            updateEventBody.setId(key);
-            dbHelper.updateEventBodyDAO().insert(updateEventBody);
-            for (Event event: eventLists) {
-                event.setUpdateEventBodyKey(key);
+            Log.v("BEFORE_JOIN", "Before joining");
+            Log.v("JOIN", eventLists.size() + "");
+
+            date = new Date();
+            Timestamp timestamp = new Timestamp(date.getTime());
+            String actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
+            UpdateEventBody updateEventBody;
+
+            if (network.isNetworkAvailable()) {
+                updateEventBody = new UpdateEventBody(mSharePreferenceHelper.getUserName(),
+                        mSharePreferenceHelper.getUserId(),
+                        actualDateTime,
+                        cmID,
+                        eventLists);
+
+                Call<ReturnStatus> returnStatusCallEvent = apiInterface.updateEvent("Bearer " + mSharePreferenceHelper.getToken(), updateEventBody);
+                returnStatusCallEvent.enqueue(new Callback<ReturnStatus>() {
+                    @Override
+                    public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
+                        ReturnStatus returnStatus = response.body();
+                        Log.v("SUCCESS","error");
+                        if (response.isSuccessful()) {
+                            Log.v("SUCCESS","success");
+                            Toast.makeText(getApplicationContext(), returnStatus.getStatus() + "", Toast.LENGTH_LONG).show();
+
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ReturnStatus> call, Throwable t) {
+                        Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+            } else {
+                updateEventBody = new UpdateEventBody(
+                        mSharePreferenceHelper.getUserName(),
+                        mSharePreferenceHelper.getUserId(),
+                        actualDateTime,
+                        cmID
+                );
+                String key = mSharePreferenceHelper.getUserId() + cmID + actualDateTime;
+                updateEventBody.setId(key);
+                dbHelper.updateEventBodyDAO().insert(updateEventBody);
+                for (Event event: eventLists) {
+                    event.setUpdateEventBodyKey(key);
+                }
+                dbHelper.eventDAO().insertAll(eventLists);
             }
-            dbHelper.eventDAO().insertAll(eventLists);
+
+            eventLists.clear();
         }
 
-        eventLists.clear();
+
 
     }
     private void addEvents(){
         if(!isEmpty(powerGridNo))
             eventLists.add(new Event("POWER_GRIP_UPDATE","thirdPartyNumber", powerGridNo.getText().toString()));
+        else {
+            isMandatoryFieldLeft = true;
+            mandatoryFieldsLeft += "\nPower Grip Number";
+        }
+
         if(!isEmpty(ctPersonnel)) {
             eventLists.add(new Event("POWER_GRIP_UPDATE", "ctPersonnel", ctPersonnel.getText().toString()));
+        } else {
+            isMandatoryFieldLeft = true;
+            mandatoryFieldsLeft += "\nCT Personnel";
         }
+
         eventLists.add(new Event("POWER_GRIP_UPDATE", "referDate",referDateTime.getText().toString()));
         eventLists.add(new Event("POWER_GRIP_UPDATE", "expectedCompletionDate",expectedCompletionDateTime.getText().toString()));
         eventLists.add(new Event("POWER_GRIP_UPDATE", "clearanceDate",clearanceDateTime.getText().toString()));
+
         if(!isEmpty(powerGridFaultStatus))
             eventLists.add(new Event("POWER_GRIP_UPDATE", "faultStatus",powerGridFaultStatus.getText().toString()));
+        else {
+            isMandatoryFieldLeft = true;
+            mandatoryFieldsLeft += "\nPower Grip Fault Status";
+        }
+
         if(!isEmpty(remarksOnTelcoFault))
             eventLists.add(new Event("POWER_GRIP_UPDATE","remarkOnFault",remarksOnTelcoFault.getText().toString()));
+
         if(!isEmpty(powerGridOfficer))
             eventLists.add(new Event("POWER_GRIP_UPDATE", "officer",powerGridOfficer.getText().toString()));
-       eventLists.add(new Event("POWER_GRIP_UPDATE", "faultDetectedDate",faultDetectedDateTime.getText().toString()));
+        eventLists.add(new Event("POWER_GRIP_UPDATE", "faultDetectedDate",faultDetectedDateTime.getText().toString()));
         eventLists.add(new Event("POWER_GRIP_UPDATE", "actionDate",actionDateTime.getText().toString()));
+
         if(!isEmpty(actionTaken))
             eventLists.add(new Event("POWER_GRIP_UPDATE", "actionTaken",actionTaken.getText().toString()));
+        else {
+            isMandatoryFieldLeft = true;
+            mandatoryFieldsLeft += "\nAction Taken by Power Grid";
+        }
     }
     private boolean isEmpty(EditText etText) {
         return etText.getText().toString().trim().length() == 0;
