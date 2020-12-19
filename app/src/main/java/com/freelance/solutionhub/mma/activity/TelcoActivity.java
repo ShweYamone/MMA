@@ -97,6 +97,7 @@ public class TelcoActivity extends AppCompatActivity implements View.OnClickList
     private Runnable r;
     private boolean startHandler = true;
     private SharePreferenceHelper sharePreferenceHelper;
+    private String
 
 
     @Override
