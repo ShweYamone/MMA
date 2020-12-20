@@ -121,7 +121,7 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
                     new AlertDialog.Builder(getContext())
                             .setIcon(R.drawable.warning)
                             .setTitle("Unsaved Works")
-                            .setMessage("You need to save works in Step One and Two.")
+                            .setMessage("You have unsaved changes in Step One and Two.")
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
@@ -133,7 +133,7 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
                     new AlertDialog.Builder(getContext())
                             .setIcon(R.drawable.warning)
                             .setTitle("Unsaved Works")
-                            .setMessage("You need to save works in Step One.")
+                            .setMessage("You have unsaved changes in Step One.")
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
@@ -145,7 +145,7 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
                     new AlertDialog.Builder(getContext())
                             .setIcon(R.drawable.warning)
                             .setTitle("Unsaved Works")
-                            .setMessage("You need to save works in Step Two.")
+                            .setMessage("You have unsaved changes in Step and Two.")
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {

@@ -437,14 +437,15 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
             case R.id.btnSave:
                 isMandatoryFieldLeft = false;
                 mandatoryFieldsLeft = "";
+                events.clear();
                 getProblemCodeEvent();
                 getQREvent();
                 if (isMandatoryFieldLeft && postModelList.size() == 0) {
                     mSharePreference.userClickCMStepTwo(false);
                     new AlertDialog.Builder(getContext())
                             .setIcon(R.drawable.warning)
-                            .setTitle("Mandatory Fields Left:")
-                            .setMessage(mandatoryFieldsLeft + "\nTo Attach Post-Maintenance Photos")
+                            .setTitle("Mandatory Fields")
+                            .setMessage(mandatoryFieldsLeft + "\nAttach Post-Maintenance Photos")
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
@@ -456,7 +457,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
                     mSharePreference.userClickCMStepTwo(false);
                         new AlertDialog.Builder(getContext())
                                 .setIcon(R.drawable.warning)
-                                .setTitle("Mandatory Field Left:")
+                                .setTitle("Mandatory Fields:")
                                 .setMessage(mandatoryFieldsLeft)
                                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                     @Override
@@ -469,8 +470,8 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
                     mSharePreference.userClickCMStepTwo(false);
                     new AlertDialog.Builder(getContext())
                             .setIcon(R.drawable.warning)
-                            .setTitle("Mandatory Field Left:")
-                            .setMessage("To attach post-maintenance photos(min(2) and max(5)")
+                            .setTitle("Mandatory Fields:")
+                            .setMessage("Attach post-maintenance photos(min(2) and max(5)")
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
@@ -499,7 +500,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
                     //Mandatory QR and Problem event are choosen, can update events.......
                     //Mandatory Photos are attached, can update events.......
                     getPhotoEvents();
-                 //   uploadEvents();
+                  //  uploadEvents();
 
                 }
                 break;
@@ -580,7 +581,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
             );
             Log.i("EventHappenend", "getProblemCodeEvent: " + tvScanFault.getText().toString());
         } else {
-            mandatoryFieldsLeft += "\nscan faulty component";
+            mandatoryFieldsLeft += "\nScan Faulty Component";
             isMandatoryFieldLeft = true;
         }
         if (!tvScanReplacement.getText().toString().equals("")) {
@@ -591,7 +592,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
             );
             Log.i("EventHappenend", "getProblemCodeEvent: " + tvScanReplacement.getText().toString());
         } else {
-            mandatoryFieldsLeft += "\nscan replaced component";
+            mandatoryFieldsLeft += "\nScan Replaced Component";
             isMandatoryFieldLeft = true;
         }
 
@@ -621,7 +622,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
                     actualProblem));
             Log.i("EventHappenend",  actualProblem);
         } else {
-            mandatoryFieldsLeft += "\nselect actual problem code";
+            mandatoryFieldsLeft += "\nSelect Actual Problem Code";
             isMandatoryFieldLeft = true;
         }
         if (spinnerCauseCode.getSelectedItemPosition() > 0) {
@@ -631,7 +632,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
                     causeCode));
             Log.i("EventHappenend", causeCode);
         } else {
-            mandatoryFieldsLeft += "\nselect cause code";
+            mandatoryFieldsLeft += "\nSelect Cause Code";
             isMandatoryFieldLeft = true;
         }
         if (spinnerRemedyCode.getSelectedItemPosition() > 0) {
@@ -641,7 +642,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
                     remedyCode));
             Log.i("EventHappenend", remedyCode);
         } else {
-            mandatoryFieldsLeft += "\nselect remedy code";
+            mandatoryFieldsLeft += "\nSelect Remedy Code";
             isMandatoryFieldLeft = true;
         }
 
@@ -806,17 +807,10 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
 
         private void updateEvents() {
             Log.i("EVENT_LIST",f.size()+"");
-            String temp = "";
-            for (int i = 0; i < f.size(); i++) {
-                temp += f.get(i).getEventType() + "\n";
-            }
-            Log.i("EVENT_LIST",temp+"");
-            Toast.makeText(getContext(), temp, Toast.LENGTH_SHORT).show();
             date = new Date();
             Timestamp timestamp = new Timestamp(date.getTime());
             String actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
 
-         //   Toast.makeText(getContext(), f.size() + "events in update" , Toast.LENGTH_SHORT).show();
             if (f.size() > 0) {
                 UpdateEventBody eventBody = new UpdateEventBody(
                             mSharePreference.getUserName(),
@@ -826,15 +820,17 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
                             f
                     );
 
+
                     Call<ReturnStatus> call = apiInterface.updateEvent("Bearer " + mSharePreference.getToken(),
                             eventBody);
                     call.enqueue(new Callback<ReturnStatus>() {
                         @Override
                         public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
                             if (response.isSuccessful()) {
-                                Toast.makeText(getContext(),  response.body().getStatus()+":ALL EVENTS UPLOADED" , Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getContext(),  response.body().getStatus()+ f.size() + ":ALL EVENTS UPLOADED" , Toast.LENGTH_SHORT).show();
 
                                 mSharePreference.userClickCMStepTwo(true);
+                                f.clear();
                             } else {
                                 Toast.makeText(getContext(), "response " + response.code(), Toast.LENGTH_LONG).show();
                             }
@@ -845,7 +841,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
 
                         }
                     });
-                    f.clear();
+
             }
 
         }
@@ -857,7 +853,6 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
                 builder.setType(MultipartBody.FORM);
                 builder.addFormDataPart("file", fileName.getName(), RequestBody.create(MediaType.parse("multipart/form-data"), fileName));
                 MultipartBody requestBody = builder.build();
-
 
                 Call<ReturnStatus> returnStatusCall = apiInterface.uploadPhoto("pids-post-maintenance-photo", requestBody);
                 returnStatusCall.enqueue(new Callback<ReturnStatus>() {

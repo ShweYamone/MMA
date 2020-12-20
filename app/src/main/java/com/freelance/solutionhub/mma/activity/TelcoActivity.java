@@ -97,6 +97,8 @@ public class TelcoActivity extends AppCompatActivity implements View.OnClickList
     private Runnable r;
     private boolean startHandler = true;
     private SharePreferenceHelper sharePreferenceHelper;
+    private boolean isMandatoryFieldLeft = false;
+    private String mandatoryFieldsLeft = "";
 
 
     @Override
@@ -238,75 +240,123 @@ public class TelcoActivity extends AppCompatActivity implements View.OnClickList
      */
     public void save(){
 
+        isMandatoryFieldLeft = false;
+        mandatoryFieldsLeft = "";
+        eventLists.clear();
         addEvents();
         Log.v("JOIN", eventLists.size() + "");
 
-        date = new Date();
-        Timestamp timestamp = new Timestamp(date.getTime());
-        String actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
+        if (isMandatoryFieldLeft) { // mandatory fields can't proceed
+            new AlertDialog.Builder(this)
+                    .setIcon(R.drawable.warning)
+                    .setTitle("Mandatory Fields")
+                    .setMessage(mandatoryFieldsLeft)
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                        }
 
-        UpdateEventBody updateEventBody;
-        if (network.isNetworkAvailable()) {
-            updateEventBody = new UpdateEventBody(mSharePreferenceHelper.getUserName(),
-                    mSharePreferenceHelper.getUserId(),
-                    actualDateTime,
-                    cmID,
-                    eventLists);
-            Call<ReturnStatus> returnStatusCallEvent = apiInterface.updateEvent("Bearer " + mSharePreferenceHelper.getToken(), updateEventBody);
-            returnStatusCallEvent.enqueue(new Callback<ReturnStatus>() {
-                @Override
-                public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
-                    ReturnStatus returnStatus = response.body();
-                    Log.v("SUCCESS","error");
-                    if (response.isSuccessful()) {
-                        Log.v("SUCCESS","success");
-                        Toast.makeText(getApplicationContext(), returnStatus.getStatus() + "", Toast.LENGTH_LONG).show();
+                    })
+                    .show();
+        } else { // mandatory fields are filled, update events
+            date = new Date();
+            Timestamp timestamp = new Timestamp(date.getTime());
+            String actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
 
+            UpdateEventBody updateEventBody;
+            if (network.isNetworkAvailable()) {
+                updateEventBody = new UpdateEventBody(mSharePreferenceHelper.getUserName(),
+                        mSharePreferenceHelper.getUserId(),
+                        actualDateTime,
+                        cmID,
+                        eventLists);
+                Call<ReturnStatus> returnStatusCallEvent = apiInterface.updateEvent("Bearer " + mSharePreferenceHelper.getToken(), updateEventBody);
+                returnStatusCallEvent.enqueue(new Callback<ReturnStatus>() {
+                    @Override
+                    public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
+                        ReturnStatus returnStatus = response.body();
+                        Log.v("SUCCESS","error");
+                        if (response.isSuccessful()) {
+                            Log.v("SUCCESS","success");
+                            Toast.makeText(getApplicationContext(), returnStatus.getStatus() + "", Toast.LENGTH_LONG).show();
+
+                        }
                     }
-                }
 
-                @Override
-                public void onFailure(Call<ReturnStatus> call, Throwable t) {
-                    Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            });
-        } else {
-            updateEventBody = new UpdateEventBody(mSharePreferenceHelper.getUserName(),
-                    mSharePreferenceHelper.getUserId(),
-                    actualDateTime,
-                    cmID);
-            String key = mSharePreferenceHelper.getUserId() + cmID + actualDateTime;
-            updateEventBody.setId(key);
-            dbHelper.updateEventBodyDAO().insert(updateEventBody);
-            for (Event event: eventLists)
-                event.setUpdateEventBodyKey(key);
-            dbHelper.eventDAO().insertAll(eventLists);
+                    @Override
+                    public void onFailure(Call<ReturnStatus> call, Throwable t) {
+                        Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+            } else {
+                updateEventBody = new UpdateEventBody(mSharePreferenceHelper.getUserName(),
+                        mSharePreferenceHelper.getUserId(),
+                        actualDateTime,
+                        cmID);
+                String key = mSharePreferenceHelper.getUserId() + cmID + actualDateTime;
+                updateEventBody.setId(key);
+                dbHelper.updateEventBodyDAO().insert(updateEventBody);
+                for (Event event: eventLists)
+                    event.setUpdateEventBodyKey(key);
+                dbHelper.eventDAO().insertAll(eventLists);
 
+            }
+
+
+            eventLists.clear();
         }
 
 
-        eventLists.clear();
     }
 
     private void addEvents(){
         Log.v("TELCO","H"+telcoNo.getText().toString()+"H");
         if(!isEmpty(telcoNo))
             eventLists.add(new Event("TELCO_UPDATE","thirdPartyNumber", telcoNo.getText().toString()));
+        else {
+            isMandatoryFieldLeft = true;
+            mandatoryFieldsLeft += "\nTelco No";
+        }
+
         if(!isEmpty(dockerNo))
             eventLists.add(new Event("TELCO_UPDATE", "docketNumber",dockerNo.getText().toString()));
+        else {
+            isMandatoryFieldLeft  = true;
+            mandatoryFieldsLeft += "\nDocker No";
+        }
+
         if(!isEmpty(ctPersonnel))
             eventLists.add(new Event("TELCO_UPDATE", "ctPersonnel",ctPersonnel.getText().toString()));
+        else {
+            isMandatoryFieldLeft = true;
+            mandatoryFieldsLeft += "\nCT Personnel";
+        }
+
         eventLists.add(new Event("TELCO_UPDATE", "referDate",referDateTime.getText().toString()));
         eventLists.add(new Event("TELCO_UPDATE", "expectedCompletionDate",expectedCompletionDateTime.getText().toString()));
         eventLists.add(new Event("TELCO_UPDATE", "clearanceDate",clearanceDateTime.getText().toString()));
+
+
         if(!isEmpty(telcoFaultStatus))
             eventLists.add(new Event("TELCO_UPDATE", "faultStatus",telcoFaultStatus.getText().toString()));
+        else {
+            isMandatoryFieldLeft = true;
+            mandatoryFieldsLeft += "\nFault Status";
+        }
+
         if(!isEmpty(telcoOfficer))
             eventLists.add(new Event("TELCO_UPDATE", "officer",telcoOfficer.getText().toString()));
+
         eventLists.add(new Event("TELCO_UPDATE", "faultDetectedDate",faultDetectedDateTime.getText().toString()));
         eventLists.add(new Event("TELCO_UPDATE", "actionDate",actionDateTime.getText().toString()));
+
         if(!isEmpty(actionTaken))
             eventLists.add(new Event("TELCO_UPDATE", "actionTaken",actionTaken.getText().toString()));
+        else {
+            isMandatoryFieldLeft = true;
+            mandatoryFieldsLeft += "\nAction Taken By Telco";
+        }
+
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

@@ -163,8 +163,8 @@ public class First_Step_CM_Fragment extends Fragment {
                     mSharePerferenceHelper.userClickCMStepOne(false);
                     new AlertDialog.Builder(getContext())
                             .setIcon(R.drawable.warning)
-                            .setTitle("Photo")
-                            .setMessage("You need to attach premaintenance photos.")
+                            .setTitle("Mandatory Fields:")
+                            .setMessage("Attach Premaintenance Photos.")
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
@@ -416,6 +416,7 @@ public class First_Step_CM_Fragment extends Fragment {
                     ReturnStatus returnStatus = response.body();
                     if (response.isSuccessful()) {
                         Toast.makeText(getContext(), returnStatus.getStatus() + ":URL", Toast.LENGTH_LONG).show();
+                        f.clear();
                         mSharePerferenceHelper.userClickCMStepOne(true);
 
                     }
@@ -426,7 +427,7 @@ public class First_Step_CM_Fragment extends Fragment {
                     Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
-            f.clear();
+
         }
 
         @Override

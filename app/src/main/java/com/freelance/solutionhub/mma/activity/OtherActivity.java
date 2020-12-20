@@ -1,9 +1,11 @@
 package com.freelance.solutionhub.mma.activity;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -93,6 +95,8 @@ public class OtherActivity extends AppCompatActivity implements View.OnClickList
     private Runnable r;
     private boolean startHandler = true;
     private boolean lockScreen = false;
+    private boolean isMandatoryFieldLeft = false;
+    private String mandatoryFieldsLeft = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -247,57 +251,76 @@ public class OtherActivity extends AppCompatActivity implements View.OnClickList
      */
     public void save(){
 
-        addEvents();
-        Log.v("BEFORE_JOIN", "Before joining");
-        Log.v("JOIN", eventLists.size() + "");
-
-        date = new Date();
-        Timestamp timestamp = new Timestamp(date.getTime());
-        String actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
-        UpdateEventBody updateEventBody;
-        if (network.isNetworkAvailable()) {
-            updateEventBody = new UpdateEventBody(mSharePreferenceHelper.getUserName(),
-                    mSharePreferenceHelper.getUserId(),
-                    actualDateTime,
-                    cmID,
-                    eventLists);
-
-            Call<ReturnStatus> returnStatusCallEvent = apiInterface.updateEvent("Bearer " + mSharePreferenceHelper.getToken(), updateEventBody);
-            returnStatusCallEvent.enqueue(new Callback<ReturnStatus>() {
-                @Override
-                public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
-                    ReturnStatus returnStatus = response.body();
-                    Log.v("SUCCESS","error");
-                    if (response.isSuccessful()) {
-                        Log.v("SUCCESS","success");
-                        Toast.makeText(getApplicationContext(), returnStatus.getStatus() + "", Toast.LENGTH_LONG).show();
-
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<ReturnStatus> call, Throwable t) {
-                    Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            });
-        } else {
-            updateEventBody = new UpdateEventBody(
-              mSharePreferenceHelper.getUserName(),
-              mSharePreferenceHelper.getUserId(),
-              actualDateTime,
-                    cmID
-            );
-            String key = mSharePreferenceHelper.getUserId() + cmID + actualDateTime;
-            updateEventBody.setId(key);
-            dbHelper.updateEventBodyDAO().insert(updateEventBody);
-            for (Event event: eventLists) {
-                event.setUpdateEventBodyKey(key);
-            }
-            dbHelper.eventDAO().insertAll(eventLists);
-        }
-
-
+        isMandatoryFieldLeft = false;
+        mandatoryFieldsLeft = "";
         eventLists.clear();
+        addEvents();
+
+        if (isMandatoryFieldLeft) {
+            new AlertDialog.Builder(this)
+                    .setIcon(R.drawable.warning)
+                    .setTitle("Mandatory Fields")
+                    .setMessage(mandatoryFieldsLeft)
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                        }
+
+                    })
+                    .show();
+        } else {
+            Log.v("BEFORE_JOIN", "Before joining");
+            Log.v("JOIN", eventLists.size() + "");
+
+            date = new Date();
+            Timestamp timestamp = new Timestamp(date.getTime());
+            String actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
+            UpdateEventBody updateEventBody;
+            if (network.isNetworkAvailable()) {
+                updateEventBody = new UpdateEventBody(mSharePreferenceHelper.getUserName(),
+                        mSharePreferenceHelper.getUserId(),
+                        actualDateTime,
+                        cmID,
+                        eventLists);
+
+                Call<ReturnStatus> returnStatusCallEvent = apiInterface.updateEvent("Bearer " + mSharePreferenceHelper.getToken(), updateEventBody);
+                returnStatusCallEvent.enqueue(new Callback<ReturnStatus>() {
+                    @Override
+                    public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
+                        ReturnStatus returnStatus = response.body();
+                        Log.v("SUCCESS","error");
+                        if (response.isSuccessful()) {
+                            Log.v("SUCCESS","success");
+                            Toast.makeText(getApplicationContext(), returnStatus.getStatus() + "", Toast.LENGTH_LONG).show();
+
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ReturnStatus> call, Throwable t) {
+                        Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+            } else {
+                updateEventBody = new UpdateEventBody(
+                        mSharePreferenceHelper.getUserName(),
+                        mSharePreferenceHelper.getUserId(),
+                        actualDateTime,
+                        cmID
+                );
+                String key = mSharePreferenceHelper.getUserId() + cmID + actualDateTime;
+                updateEventBody.setId(key);
+                dbHelper.updateEventBodyDAO().insert(updateEventBody);
+                for (Event event: eventLists) {
+                    event.setUpdateEventBodyKey(key);
+                }
+                dbHelper.eventDAO().insertAll(eventLists);
+            }
+
+
+            eventLists.clear();
+
+        }
 
 
     }
@@ -307,18 +330,43 @@ public class OtherActivity extends AppCompatActivity implements View.OnClickList
         eventLists.add(new Event("OTHER_CONTRACTOR_UPDATE", "clearanceDate",clearanceDateTime.getText().toString()));
         if(!isEmpty(faultStatus))
             eventLists.add(new Event("OTHER_CONTRACTOR_UPDATE", "faultStatus",faultStatus.getText().toString()));
+        else {
+            isMandatoryFieldLeft = true;
+            mandatoryFieldsLeft += "\nFault Status";
+        }
         if(!isEmpty(remarks))
             eventLists.add(new Event("OTHER_CONTRACTOR_UPDATE","remarkOnFault",remarks.getText().toString()));
+
         if(!isEmpty(thirdPartyContractorName))
             eventLists.add(new Event("OTHER_CONTRACTOR_UPDATE", "officer",thirdPartyContractorName.getText().toString()));
+        else {
+            isMandatoryFieldLeft = true;
+            mandatoryFieldsLeft += "\n3rd Party Contractor Name";
+        }
+
         if(!isEmpty(thirdPartyCompanyName))
             eventLists.add(new Event("OTHER_CONTRACTOR_UPDATE", "companyName",thirdPartyCompanyName.getText().toString()));
+        else {
+            isMandatoryFieldLeft = true;
+            mandatoryFieldsLeft += "\n3rd Party Company Name";
+        }
+
         if(!isEmpty(thirdPartyContractorNo))
             eventLists.add(new Event("OTHER_CONTRACTOR_UPDATE", "contactNumber",thirdPartyContractorNo.getText().toString()));
+        else {
+            isMandatoryFieldLeft = true;
+            mandatoryFieldsLeft += "\n3rd Party Contractor No";
+        }
+
         eventLists.add(new Event("OTHER_CONTRACTOR_UPDATE", "faultDetectedDate",faultDetectedDateTime.getText().toString()));
         eventLists.add(new Event("OTHER_CONTRACTOR_UPDATE", "actionDate",actionDateTime.getText().toString()));
+
         if(!isEmpty(actionTaken))
             eventLists.add(new Event("OTHER_CONTRACTOR_UPDATE", "actionTaken",actionTaken.getText().toString()));
+        else {
+            isMandatoryFieldLeft = true;
+            mandatoryFieldsLeft += "\nAction Taken By Contractor";
+        }
     }
     private boolean isEmpty(EditText etText) {
         return etText.getText().toString().trim().length() == 0;
