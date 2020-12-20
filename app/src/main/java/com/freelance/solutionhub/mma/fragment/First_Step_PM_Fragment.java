@@ -36,6 +36,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.freelance.solutionhub.mma.DB.InitializeDatabase;
 import com.freelance.solutionhub.mma.R;
+import com.freelance.solutionhub.mma.activity.PMActivity;
 import com.freelance.solutionhub.mma.adapter.CheckListAdapter;
 import com.freelance.solutionhub.mma.adapter.PhotoAdapter;
 import com.freelance.solutionhub.mma.delegate.FirstStepPMFragmentCallback;
@@ -295,6 +296,7 @@ public class First_Step_PM_Fragment extends Fragment {
         if( mNetwork.isNetworkAvailable() ) {
             if (postPhotoModels.size() > 1 && postPhotoModels.size() < 11) {
                 //Upload photos to server
+                ((PMActivity)getActivity()).showProgressBar();
                 new LoadImage(events).execute(uploadPhoto(postPhotoModels));
 
             } else {
@@ -571,6 +573,7 @@ public class First_Step_PM_Fragment extends Fragment {
                     public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
                         if (response.isSuccessful()) {
                             Toast.makeText(getContext(),  response.body().getStatus()+":ALL EVENTS UPLOADED" , Toast.LENGTH_SHORT).show();
+                            ((PMActivity)getActivity()).hideProgressBar();
                         } else {
                             Toast.makeText(getContext(), "response " + response.code(), Toast.LENGTH_LONG).show();
                         }

@@ -88,8 +88,7 @@ public class FullScreenActivity extends AppCompatActivity {
         boolean isScreenOn = pm.isInteractive();
         if (isScreenOn)
             stopHandler();
-        else
-            sharePreferenceHelper.setLock(true);
+        sharePreferenceHelper.setLock(true);
     }
 
     @Override
@@ -122,9 +121,8 @@ public class FullScreenActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onUserLeaveHint() {
-        super.onUserLeaveHint();
-        sharePreferenceHelper.setLock(true);
+    public void onBackPressed() {
+        super.onBackPressed();
+        sharePreferenceHelper.setLock(false);
     }
-
 }

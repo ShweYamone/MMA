@@ -36,6 +36,7 @@
                     android:layout_weight="1"
                     android:gravity="right"
                     android:textColor="@color/colorBlack"
+                    android:layout_marginRight="@dimen/margin_small"
                     android:text="@string/mso_status"
                     android:fontFamily="@font/crimson_text_regular"
                     android:textSize="@dimen/txt_size_normal"/>
@@ -45,16 +46,17 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.7"
-                    android:fontFamily="@font/crimson_text_bold"
-                    android:textSize="@dimen/txt_size_small"
-                    android:textColor="@color/colorPrimary"
                     android:background="@drawable/round_rect_shape_progress"
-                    android:gravity="center"/>
+                    android:gravity="center"
+                    android:padding="@dimen/padding_8"
+                    android:textColor="@color/colorOrange"
+                    android:textStyle="bold" />
 
             </LinearLayout>
 
             <!-- the whole card design -->
             <LinearLayout
+                android:layout_marginTop="@dimen/margin_small"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -356,4 +358,43 @@
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
+
+    <RelativeLayout
+        android:visibility="gone"
+        android:id="@+id/progress_bar"
+        android:clickable="true"
+        android:background="@color/color_black_trans"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.github.ybq.android.spinkit.SpinKitView
+            android:id="@+id/spinKitView"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            style="@style/SpinKitView.Large.Circle"
+            android:layout_centerHorizontal="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:SpinKit_Color="@color/colorWhite" />
+
+        <TextView
+            android:layout_marginTop="@dimen/margin_xxlarge"
+            android:layout_below="@id/spinKitView"
+            android:id="@+id/firstText"
+            android:text="Saving update data."
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/txt_size_large"
+            android:layout_centerHorizontal="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:layout_below="@id/firstText"
+            android:text="Please wait..."
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/txt_size_large"
+            android:layout_centerInParent="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </RelativeLayout>
 </FrameLayout>

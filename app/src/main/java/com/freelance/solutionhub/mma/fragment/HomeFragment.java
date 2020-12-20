@@ -252,8 +252,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
                 serviceOrderId,ACK
         );
 
-       // String
-        update_APPR_To_ACK_UI(position);
         Call<ReturnStatus> call = apiInterface.updateStatusEvent("Bearer " + mSharePreference.getToken(), updateEventBody);
         call.enqueue(new Callback<ReturnStatus>() {
             @Override
@@ -261,6 +259,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
                 if (response.isSuccessful()) {
                     ReturnStatus returnStatus = response.body();
                     Toast.makeText(getContext().getApplicationContext(), returnStatus.getStatus()+"APPRtoACK", Toast.LENGTH_SHORT).show();
+                    update_APPR_To_ACK_UI(position);
                 } else {
                     Toast.makeText(getContext().getApplicationContext(), response.code()+"APPRtoACK", Toast.LENGTH_SHORT).show();
 
@@ -275,7 +274,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
     }
 
     public void update_APPR_To_ACK_UI(int position){
-        serviceInfoModels.get(position).setServiceOrderStatus(ACK);
+        serviceInfoModelList.get(position).setServiceOrderStatus(ACK);
         mAdapter.notifyItemChanged(position);
     }
 
@@ -300,20 +299,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
                         tvCMCount.setText(tempCount+"");
                     } else
                         tvCMCount.setText("99+");
-                    Log.i("LOCAl_DB", "onResponse: " + dbHelper.serviceInfoModelDAO().getNumberOfServices());
-
-                    for (int i = 1; i < totalCMPages; i++) {
-
-                    }
-
-                    //store pm services to local DB
-                    //first delete and insert CM SERVICES
-                    Log.i("LOCAL", "onResponse: " + dbHelper.eventDAO().getNumberOfEvents());
-                    dbHelper.serviceInfoModelDAO().deleteCMServices();
-                    dbHelper.serviceInfoModelDAO().insertAll(pmServiceListModel.getItems());
-                 //   Toast.makeText(getContext(), dbHelper.eventDAO().getNumberOfEvents() + " events", Toast.LENGTH_SHORT).show();
-                 //   Toast.makeText(getContext(), dbHelper.serviceInfoModelDAO().getNumberOfServices() + " services", Toast.LENGTH_SHORT).show();
-                   // Log.i("LOCAl", "onResponse: " + dbHelper.serviceInfoModelDAO().getNumberOfEvents());
                 }
             }
 
@@ -342,14 +327,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
                         tvPMCount.setText(tempCount+"");
                     } else
                         tvPMCount.setText("99+");
-
-                    //store pm services to local DB
-                    //first delete and insert PM SERVICES
-                    dbHelper.serviceInfoModelDAO().deletePMServices();
-                    dbHelper.serviceInfoModelDAO().insertAll(pmServiceListModel.getItems());
-                  //  Toast.makeText(getContext(), dbHelper.serviceInfoModelDAO().getNumberOfServices() + " services", Toast.LENGTH_SHORT).show();
-                    Log.i("LOCAl_DB", "onResponse: " + dbHelper.serviceInfoModelDAO().getNumberOfServices());
-
                 }
             }
 
@@ -358,16 +335,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
             }
         });
     }
-    /*
-    private void getServiceOrdersForLocalDB(String enumValue, List<String> temp, int page) {
-        filterModelBody = FilterModelBody.createFilterModel(filterExpression, PM, temp, page);
-        Call<PMServiceListModel> call = apiInterface.getPMServiceOrders("Bearer " + mSharePreference.getToken(), filterModelBody);
 
-    }
-
-    private void getCMServiceOrdersForLocalDB() {
-
-    }*/
 
     private void getServiceOrders() {
         filterModelBody = FilterModelBody.createFilterModel(filterExpression, enumValue, textValueList, page);

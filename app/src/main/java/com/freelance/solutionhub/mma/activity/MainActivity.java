@@ -161,8 +161,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         boolean isScreenOn = pm.isInteractive();
         if (isScreenOn)
             stopHandler();
-        else
-            mSharedPreferences.setLock(true);
+        mSharedPreferences.setLock(true);
     }
 
     @Override
@@ -260,13 +259,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Log.i("Websocket",  e.getMessage() + "\n" + e.getLocalizedMessage());
         }
 
-    }
-
-    @Override
-    protected void onUserLeaveHint() {
-        super.onUserLeaveHint();
-        Log.i("LOCKSCREENUserLeave", "onResume: " + mSharedPreferences.getLock());
-        mSharedPreferences.setLock(true);
     }
 
     private void setupToolbar() {

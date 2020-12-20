@@ -37,6 +37,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.freelance.solutionhub.mma.DB.InitializeDatabase;
 import com.freelance.solutionhub.mma.R;
+import com.freelance.solutionhub.mma.activity.CMActivity;
 import com.freelance.solutionhub.mma.activity.CaptureActivityPotrait;
 import com.freelance.solutionhub.mma.model.Code_Description;
 import com.freelance.solutionhub.mma.activity.OtherActivity;
@@ -658,7 +659,8 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
           //  if (postModelList.size() > 1 && postModelList.size() < 6) {
                 Log.v("BEFORE_JOIN", "Before joining");
           //  Toast.makeText(getContext(), events.size() + " events In getPHOTOEvents" , Toast.LENGTH_SHORT).show();
-                new LoadImage(events).execute(uploadPhoto(postModelList));
+            ((CMActivity)getActivity()).showProgressBar();
+            new LoadImage(events).execute(uploadPhoto(postModelList));
 
         }else {
 
@@ -828,8 +830,8 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
                         public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
                             if (response.isSuccessful()) {
                                 Toast.makeText(getContext(),  response.body().getStatus()+ f.size() + ":ALL EVENTS UPLOADED" , Toast.LENGTH_SHORT).show();
-
                                 mSharePreference.userClickCMStepTwo(true);
+                                ((CMActivity)getActivity()).hideProgressBar();
                                 f.clear();
                             } else {
                                 Toast.makeText(getContext(), "response " + response.code(), Toast.LENGTH_LONG).show();

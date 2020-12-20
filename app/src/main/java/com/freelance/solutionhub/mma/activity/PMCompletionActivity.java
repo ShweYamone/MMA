@@ -80,8 +80,7 @@ public class PMCompletionActivity extends AppCompatActivity implements View.OnCl
         boolean isScreenOn = pm.isInteractive();
         if (isScreenOn)
             stopHandler();
-        else
-            sharePreferenceHelper.setLock(true);
+        sharePreferenceHelper.setLock(true);
     }
 
     @Override
@@ -114,13 +113,6 @@ public class PMCompletionActivity extends AppCompatActivity implements View.OnCl
     }
 
     @Override
-    protected void onUserLeaveHint() {
-        super.onUserLeaveHint();
-        sharePreferenceHelper.setLock(true);
-    }
-
-
-    @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btnClose:
@@ -128,5 +120,11 @@ public class PMCompletionActivity extends AppCompatActivity implements View.OnCl
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        sharePreferenceHelper.setLock(false);
     }
 }

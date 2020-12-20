@@ -114,6 +114,7 @@ public class NFCReadingActivity extends AppCompatActivity {
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mSharedPreference.setLock(false);
                 finish();
             }
         });
@@ -164,6 +165,9 @@ public class NFCReadingActivity extends AppCompatActivity {
             eventBody = new UpdateEventBody(
                     mSharedPreference.getUserName(), mSharedPreference.getUserId(), currentDateTime, serviceOrderId, events
             );
+            Log.i("ACKACKACK", "perFormTagEvent: " + serviceOrderId);
+            Log.i("ACKACKACK", "perFormTagEvent: " + currentDateTime);
+
 
             Call<ReturnStatus> call = apiInterface.updateEvent("Bearer " + mSharedPreference.getToken(), eventBody);
             call.enqueue(new Callback<ReturnStatus>() {
@@ -231,8 +235,7 @@ public class NFCReadingActivity extends AppCompatActivity {
         boolean isScreenOn = pm.isInteractive();
         if (isScreenOn)
             stopHandler();
-        else
-            mSharedPreference.setLock(true);
+        mSharedPreference.setLock(true);
     }
 
     @Override
@@ -266,15 +269,6 @@ public class NFCReadingActivity extends AppCompatActivity {
         if (nfcAdapter != null) {
             nfcAdapter.enableForegroundDispatch(this, pendingIntent, null, null);
         }
-    }
-
-
-
-    @Override
-    protected void onUserLeaveHint() {
-        Log.i("LOCKSCREEN", "onResume: " + mSharedPreference.getLock());
-        super.onUserLeaveHint();
-        mSharedPreference.setLock(true);
     }
 
 
@@ -462,5 +456,11 @@ public class NFCReadingActivity extends AppCompatActivity {
             factor *= 256l;
         }
         return result;
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        mSharedPreference.setLock(false);
     }
 }
