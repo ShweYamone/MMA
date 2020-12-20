@@ -44,7 +44,6 @@
         android:id="@+id/recyclerview_NotiList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
-
     <LinearLayout
         android:id="@+id/layoutEmpty"
         android:visibility="gone"
@@ -54,10 +53,12 @@
         android:orientation="vertical">
 
         <ImageView
-            android:src="@drawable/blank_noti"
+            android:id="@+id/iv_no_internet"
+            android:src="@drawable/icons_without_internet"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
         <TextView
+            android:id="@+id/tv_no_internet"
             android:layout_marginTop="@dimen/margin_small"
             android:text="@string/noti_empty"
             android:layout_width="wrap_content"

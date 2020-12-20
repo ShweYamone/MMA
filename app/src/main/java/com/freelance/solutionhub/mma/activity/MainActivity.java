@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -242,6 +243,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     //  Toast.makeText(getApplicationContext(), "CLOSED: " + envelope.toString(), Toast.LENGTH_SHORT).show();
                     //   tvResult.setText("CLOSED: " + envelope.toString());
                     Log.i("CLOSED", envelope.toString());
+                    final JsonNode user = envelope.getPayload().get("mso_id");
+                    if (user == null || user instanceof NullNode) {
+                        onMessageNoti("An anonymous user entered","");
+                    }
+                    else {
+                        onMessageNoti(envelope.getPayload().get("mso_id")+"","MSO is rejected.");
+                    }
                 }
             });
 
@@ -299,14 +307,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             notificationChannel.enableVibration(true);
             notificationManager.createNotificationChannel(notificationChannel);
         }
+        Intent intent = new Intent(this, NotificationActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID);
         notificationBuilder.setAutoCancel(true)
                 .setDefaults(Notification.DEFAULT_ALL)
                 .setWhen(System.currentTimeMillis())
-                .setSmallIcon(R.drawable.noti_new)
+                .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle(title)
                 .setContentText(type)
-                .setContentInfo("Information");
+                .setStyle(new NotificationCompat.BigTextStyle()
+                        .bigText(type))
+                .setContentInfo("Information")
+                .setContentIntent(pendingIntent);
         notificationManager.notify(1, notificationBuilder.build());
     }
 
@@ -481,7 +496,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void getMSOEvent(){
         count = 0;
-       Call<NotificationReadModel> notificationReadModelCall = apiInterfaceForNotification.getNotificationReadList("Bearer "+mSharedPreferences.getToken(),1,5);
+       Call<NotificationReadModel> notificationReadModelCall = apiInterfaceForNotification.getNotificationReadList("Bearer "+mSharedPreferences.getToken(),1,10);
         notificationReadModelCall.enqueue(new Callback<NotificationReadModel>() {
             @Override
             public void onResponse(Call<NotificationReadModel> call, Response<NotificationReadModel> response) {
