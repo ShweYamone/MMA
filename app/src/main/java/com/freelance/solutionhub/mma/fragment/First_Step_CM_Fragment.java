@@ -24,11 +24,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.freelance.solutionhub.mma.DB.InitializeDatabase;
 import com.freelance.solutionhub.mma.R;
+import com.freelance.solutionhub.mma.activity.CMActivity;
 import com.freelance.solutionhub.mma.adapter.PhotoAdapter;
 import com.freelance.solutionhub.mma.delegate.FirstStepPMFragmentCallback;
 import com.freelance.solutionhub.mma.model.Event;
@@ -157,8 +159,11 @@ public class First_Step_CM_Fragment extends Fragment {
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(prePhotoModels.size() > 0)
+                if(prePhotoModels.size() > 0) {
+                    ((CMActivity)getActivity()).showProgressBar();
                     save();
+                }
+
                 else {
                     mSharePerferenceHelper.userClickCMStepOne(false);
                     new AlertDialog.Builder(getContext())
@@ -415,9 +420,10 @@ public class First_Step_CM_Fragment extends Fragment {
                 public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
                     ReturnStatus returnStatus = response.body();
                     if (response.isSuccessful()) {
-                        Toast.makeText(getContext(), returnStatus.getStatus() + ":URL", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getContext(), returnStatus.getStatus() + ":Events Uploaded", Toast.LENGTH_LONG).show();
                         f.clear();
                         mSharePerferenceHelper.userClickCMStepOne(true);
+                        ((CMActivity)getActivity()).hideProgressBar();
 
                     }
                 }
@@ -450,7 +456,7 @@ public class First_Step_CM_Fragment extends Fragment {
                             count++;
                             if(files.length == count)
                                 uploadEvent();
-                            Toast.makeText(getContext(), returnStatus.getStatus() + ":PHOTO"+count, Toast.LENGTH_SHORT).show();
+                        //    Toast.makeText(getContext(), returnStatus.getStatus() + ":PHOTO"+count, Toast.LENGTH_SHORT).show();
                         } else {
                             Toast.makeText(getContext(), "FAILED", Toast.LENGTH_LONG).show();
                         }

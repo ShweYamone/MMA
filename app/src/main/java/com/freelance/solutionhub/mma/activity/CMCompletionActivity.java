@@ -83,8 +83,7 @@ public class CMCompletionActivity extends AppCompatActivity implements View.OnCl
         boolean isScreenOn = pm.isInteractive();
         if (isScreenOn)
             stopHandler();
-        else
-            sharePreferenceHelper.setLock(true);
+        sharePreferenceHelper.setLock(true);
     }
 
     @Override
@@ -117,9 +116,9 @@ public class CMCompletionActivity extends AppCompatActivity implements View.OnCl
     }
 
     @Override
-    protected void onUserLeaveHint() {
-        super.onUserLeaveHint();
-        sharePreferenceHelper.setLock(true);
+    public void onBackPressed() {
+        super.onBackPressed();
+        sharePreferenceHelper.setLock(false);
     }
 
     @Override

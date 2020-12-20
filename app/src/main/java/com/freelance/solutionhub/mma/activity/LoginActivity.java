@@ -155,17 +155,8 @@ public class LoginActivity extends AppCompatActivity {
         boolean isScreenOn = pm.isInteractive();
         if (isScreenOn)
             stopHandler();
-        else
-            mSharedPreferance.setLock(true);
-    }
-
-    @Override
-    protected void onUserLeaveHint() {
-        Log.i("Tracing......", "onUserLeaveHint: ");
-        super.onUserLeaveHint();
         mSharedPreferance.setLock(true);
     }
-
 
     private void setupToolbar() {
 

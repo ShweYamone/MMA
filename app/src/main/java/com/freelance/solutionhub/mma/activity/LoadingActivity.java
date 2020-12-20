@@ -82,8 +82,7 @@ public class LoadingActivity extends AppCompatActivity {
         boolean isScreenOn = pm.isInteractive();
         if (isScreenOn)
             stopHandler();
-        else
-            mSharePrefrence.setLock(true);
+        mSharePrefrence.setLock(true);
     }
 
     @Override
@@ -115,12 +114,6 @@ public class LoadingActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onUserLeaveHint() {
-        super.onUserLeaveHint();
-        mSharePrefrence.setLock(true);
-    }
-
     private void getServieOrderbyId(String id) {
         Call<PMServiceInfoDetailModel> call = apiInterface.getPMServiceOrderByID("Bearer " + mSharePrefrence.getToken() , id);
         call.enqueue(new Callback<PMServiceInfoDetailModel>() {
@@ -147,5 +140,11 @@ public class LoadingActivity extends AppCompatActivity {
                 Log.i("SERVICEORDER", id+"failure");
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        mSharePrefrence.setLock(false);
     }
 }

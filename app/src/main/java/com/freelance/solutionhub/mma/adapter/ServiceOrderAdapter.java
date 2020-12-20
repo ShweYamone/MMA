@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -61,7 +62,20 @@ public class ServiceOrderAdapter extends RecyclerView.Adapter<ServiceOrderAdapte
                 @Override
                 public void onClick(View v) {
 
-                 //   Toast.makeText(v.getContext(), "click", Toast.LENGTH_SHORT).show();
+                    if (tvStatus.getText().toString().equals(APPR)) {
+                        if (callback.hasUserId()) {
+                            callback.update_ARRP_To_ACK(service.getCreationDate(), service.getId(), getAdapterPosition());
+                        }
+                    }
+                    else {
+                        if (callback.hasUserId()) {
+                            Intent intent = new Intent(mContext, NFCReadingActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            intent.putExtra("id", service.getId());
+                            mContext.startActivity(intent);
+                        }
+                    }
+
                 }
             });
 
@@ -78,56 +92,11 @@ public class ServiceOrderAdapter extends RecyclerView.Adapter<ServiceOrderAdapte
             if (service.getId().startsWith(cm)) {
                 if (status.equals(APPR)){
                     Glide.with(mContext).load(R.drawable.ack).into(ivLanding);
-                    ivLanding.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            if (callback.hasUserId()) {
-                                callback.update_ARRP_To_ACK(service.getCreationDate(), service.getId(), position);
-                              //  Glide.with(mContext).load(R.drawable.landing_cm).into(ivLanding);
-                                ivLanding.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-
-                                        Intent intent = new Intent(mContext, NFCReadingActivity.class);
-                                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                        intent.putExtra("id", service.getId());
-
-                                        mContext.startActivity(intent);
-
-                                    }
-                                });
-                            }
-
-                        }
-                    });
-                } else {
+                } else
                     Glide.with(mContext).load(R.drawable.landing_cm).into(ivLanding);
-                    ivLanding.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            if (callback.hasUserId()) {
-                                Intent intent = new Intent(mContext, NFCReadingActivity.class);
-                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                intent.putExtra("id", service.getId());
-                                mContext.startActivity(intent);
-                            }
 
-                        }
-                    });
-                }
             } else {
                 Glide.with(mContext).load(R.drawable.landing_pm).into(ivLanding);
-                ivLanding.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        if (callback.hasUserId()) {
-                            Intent intent = new Intent(mContext, NFCReadingActivity.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            intent.putExtra("id", service.getId());
-                            mContext.startActivity(intent);
-                        }
-                    }
-                });
             }
 
             if (status.equals(APPR))
@@ -169,4 +138,5 @@ public class ServiceOrderAdapter extends RecyclerView.Adapter<ServiceOrderAdapte
     public int getItemCount() {
         return serviceInfoModelList.size();
     }
+
 }

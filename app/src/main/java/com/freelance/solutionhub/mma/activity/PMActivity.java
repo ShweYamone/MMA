@@ -17,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.freelance.solutionhub.mma.R;
@@ -29,9 +30,14 @@ import com.google.android.material.tabs.TabLayout;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+
 import static com.freelance.solutionhub.mma.util.AppConstant.user_inactivity_time;
 
 public class PMActivity extends AppCompatActivity {
+
+    @BindView(R.id.progress_bar)
+    RelativeLayout progressBar;
 
     private TabLayout tabLayout;
     private ViewPager viewPager;
@@ -95,6 +101,14 @@ public class PMActivity extends AppCompatActivity {
 
     }
 
+
+    public void showProgressBar() {
+        progressBar.setVisibility(View.VISIBLE);
+    }
+    public void hideProgressBar() {
+        progressBar.setVisibility(View.GONE);
+    }
+
     @Override
     protected void onStop() {
         super.onStop();
@@ -102,8 +116,7 @@ public class PMActivity extends AppCompatActivity {
         boolean isScreenOn = pm.isInteractive();
         if (isScreenOn)
             stopHandler();
-        else
-            sharePreferenceHelper.setLock(true);
+        sharePreferenceHelper.setLock(true);
     }
 
     @Override
@@ -136,12 +149,6 @@ public class PMActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onUserLeaveHint() {
-        super.onUserLeaveHint();
-        sharePreferenceHelper.setLock(true);
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.pm_cm_menu, menu);
@@ -159,6 +166,7 @@ public class PMActivity extends AppCompatActivity {
                 finish();
                 break;
             case android.R.id.home:
+                sharePreferenceHelper.setLock(false);
                 finish();
                 return true;
         }
@@ -202,5 +210,11 @@ public class PMActivity extends AppCompatActivity {
         public CharSequence getPageTitle(int position) {
             return mFragmentTitleList.get(position);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        sharePreferenceHelper.setLock(false);
     }
 }

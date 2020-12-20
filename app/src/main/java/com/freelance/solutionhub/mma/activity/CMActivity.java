@@ -17,6 +17,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.freelance.solutionhub.mma.R;
@@ -36,9 +38,15 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 import static com.freelance.solutionhub.mma.util.AppConstant.user_inactivity_time;
 
 public class CMActivity extends AppCompatActivity {
+
+    @BindView(R.id.progress_bar)
+    RelativeLayout progressBar;
 
     private TabLayout tabLayout;
     private ViewPager viewPager;
@@ -60,6 +68,7 @@ public class CMActivity extends AppCompatActivity {
         pmServiceInfoDetailModel = (PMServiceInfoDetailModel)(getIntent().getSerializableExtra("object"));
 
         setContentView(R.layout.activity_c_m);
+        ButterKnife.bind(this);
         mSharedPreference = new SharePreferenceHelper(this);
         mSharedPreference.setLock(false);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -106,6 +115,13 @@ public class CMActivity extends AppCompatActivity {
         };
     }
 
+    public void showProgressBar() {
+        progressBar.setVisibility(View.VISIBLE);
+    }
+    public void hideProgressBar() {
+        progressBar.setVisibility(View.GONE);
+    }
+
     @Override
     protected void onStop() {
         super.onStop();
@@ -114,8 +130,7 @@ public class CMActivity extends AppCompatActivity {
         boolean isScreenOn = pm.isInteractive();
         if (isScreenOn)
             stopHandler();
-        else
-            mSharedPreference.setLock(true);
+        mSharedPreference.setLock(true);
     }
 
     @Override
@@ -149,10 +164,9 @@ public class CMActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onUserLeaveHint() {
-        super.onUserLeaveHint();
-        Log.i("Tracing......", "onUserLeaveHint: " + mSharedPreference.getLock());
-        mSharedPreference.setLock(true);
+    public void onBackPressed() {
+        super.onBackPressed();
+        mSharedPreference.setLock(false);
     }
 
     // Add steps' fragment to view pager
@@ -212,6 +226,7 @@ public class CMActivity extends AppCompatActivity {
                 finish();
                 break;
             case android.R.id.home:
+                mSharedPreference.setLock(false);
                 finish();
                 return true;
         }

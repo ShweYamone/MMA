@@ -36,6 +36,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="right"
+                    android:layout_marginRight="@dimen/margin_small"
                     android:textColor="@color/colorBlack"
                     android:text="@string/mso_status"
                     android:textSize="@dimen/txt_size_normal"/>
@@ -45,8 +46,9 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.7"
-                    android:textSize="@dimen/txt_size_small"
-                    android:textColor="@color/colorPrimary"
+                    android:textStyle="bold"
+                    android:textColor="@color/colorOrange"
+                    android:padding="@dimen/padding_8"
                     android:background="@drawable/round_rect_shape_progress"
                     android:gravity="center"/>
 
@@ -56,6 +58,7 @@
                 android:id="@+id/ll_general_design"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_small"
                 android:weightSum="4"
                 android:orientation="horizontal"
                 android:background="@drawable/round_rect_shape">

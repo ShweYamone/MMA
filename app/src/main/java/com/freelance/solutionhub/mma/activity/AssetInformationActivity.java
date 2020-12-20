@@ -112,8 +112,7 @@ public class AssetInformationActivity extends AppCompatActivity implements View.
         boolean isScreenOn = pm.isInteractive();
         if (isScreenOn)
             stopHandler();
-        else
-            mSharedPreference.setLock(true);
+        mSharedPreference.setLock(true);
     }
 
     @Override
@@ -147,12 +146,6 @@ public class AssetInformationActivity extends AppCompatActivity implements View.
         }
     }
 
-    @Override
-    protected void onUserLeaveHint() {
-        super.onUserLeaveHint();
-        Log.i("LOCKSCREENUserLeave", "onResume: " + mSharedPreference.getLock());
-        mSharedPreference.setLock(true);
-    }
 
     //Getting the scan results
     @Override

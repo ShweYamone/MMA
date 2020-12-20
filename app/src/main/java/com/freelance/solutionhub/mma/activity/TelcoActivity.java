@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.freelance.solutionhub.mma.DB.InitializeDatabase;
@@ -84,6 +85,9 @@ public class TelcoActivity extends AppCompatActivity implements View.OnClickList
 
     @BindView(R.id.btn_save)
     Button save;
+
+    @BindView(R.id.progress_bar)
+    RelativeLayout progressBar;
 
     private SharePreferenceHelper mSharePreferenceHelper;
     private ApiInterface apiInterface;
@@ -161,8 +165,7 @@ public class TelcoActivity extends AppCompatActivity implements View.OnClickList
         boolean isScreenOn = pm.isInteractive();
         if (isScreenOn)
             stopHandler();
-        else
-            sharePreferenceHelper.setLock(true);
+        sharePreferenceHelper.setLock(true);
     }
 
     @Override
@@ -193,13 +196,6 @@ public class TelcoActivity extends AppCompatActivity implements View.OnClickList
             startHandler();
         }
     }
-
-    @Override
-    protected void onUserLeaveHint() {
-        super.onUserLeaveHint();
-        sharePreferenceHelper.setLock(true);
-    }
-
 
     @Override
     public void onClick(View v) {
@@ -265,6 +261,7 @@ public class TelcoActivity extends AppCompatActivity implements View.OnClickList
 
             UpdateEventBody updateEventBody;
             if (network.isNetworkAvailable()) {
+                showProgressBar();
                 updateEventBody = new UpdateEventBody(mSharePreferenceHelper.getUserName(),
                         mSharePreferenceHelper.getUserId(),
                         actualDateTime,
@@ -279,7 +276,9 @@ public class TelcoActivity extends AppCompatActivity implements View.OnClickList
                         if (response.isSuccessful()) {
                             Log.v("SUCCESS","success");
                             Toast.makeText(getApplicationContext(), returnStatus.getStatus() + "", Toast.LENGTH_LONG).show();
-
+                            hideProgressBar();
+                            mSharePreferenceHelper.setLock(false);
+                            finish();
                         }
                     }
 
@@ -299,6 +298,8 @@ public class TelcoActivity extends AppCompatActivity implements View.OnClickList
                 for (Event event: eventLists)
                     event.setUpdateEventBodyKey(key);
                 dbHelper.eventDAO().insertAll(eventLists);
+                mSharePreferenceHelper.setLock(false);
+                finish();
 
             }
 
@@ -371,5 +372,19 @@ public class TelcoActivity extends AppCompatActivity implements View.OnClickList
     }
     private boolean isEmpty(EditText etText) {
         return etText.getText().toString().trim().length() == 0;
+    }
+
+
+    public void showProgressBar() {
+        progressBar.setVisibility(View.VISIBLE);
+    }
+    public void hideProgressBar() {
+        progressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        sharePreferenceHelper.setLock(false);
     }
 }
