@@ -12,7 +12,6 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -45,11 +44,11 @@ import com.freelance.solutionhub.mma.R;
 import com.freelance.solutionhub.mma.fragment.AboutFragment;
 import com.freelance.solutionhub.mma.fragment.HomeFragment;
 import com.freelance.solutionhub.mma.model.Item;
-import com.freelance.solutionhub.mma.model.NotificationModel;
 import com.freelance.solutionhub.mma.model.NotificationReadModel;
-import com.freelance.solutionhub.mma.model.Payload;
 import com.freelance.solutionhub.mma.util.ApiClient;
+import com.freelance.solutionhub.mma.util.ApiClientForNotification;
 import com.freelance.solutionhub.mma.util.ApiInterface;
+import com.freelance.solutionhub.mma.util.ApiInterfaceForNotification;
 import com.freelance.solutionhub.mma.util.SharePreferenceHelper;
 import com.freelance.solutionhub.mma.util.WebSocketUtils;
 import com.google.android.material.navigation.NavigationView;
@@ -59,14 +58,10 @@ import org.phoenixframework.channels.Envelope;
 import org.phoenixframework.channels.IMessageCallback;
 import org.phoenixframework.channels.Socket;
 
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -93,6 +88,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private Runnable runnable;
     private int passcode;
     private ApiInterface apiInterface;
+    private ApiInterfaceForNotification apiInterfaceForNotification;
     private Handler handler;
     private Runnable r;
     private boolean startHandler = true;
@@ -119,6 +115,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // lotout txtview is here
         tvLogout.setOnClickListener(this);
         apiInterface = ApiClient.getClient(this);
+        apiInterfaceForNotification = ApiClientForNotification.getClient().create(ApiInterfaceForNotification.class);
         webSocketUtils = new WebSocketUtils(this);
 
         /**
@@ -298,8 +295,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         notificationBuilder.setAutoCancel(true)
                 .setDefaults(Notification.DEFAULT_ALL)
                 .setWhen(System.currentTimeMillis())
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setTicker("Tutorialspoint")
+                .setSmallIcon(R.drawable.noti_new)
                 .setContentTitle(title)
                 .setContentText(type)
                 .setContentInfo("Information");
@@ -477,7 +473,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void getMSOEvent(){
         count = 0;
-        Call<NotificationReadModel> notificationReadModelCall = apiInterface.getNotificationReadList("Bearer "+mSharedPreferences.getToken(),1,5);
+       Call<NotificationReadModel> notificationReadModelCall = apiInterfaceForNotification.getNotificationReadList("Bearer "+mSharedPreferences.getToken(),1,5);
         notificationReadModelCall.enqueue(new Callback<NotificationReadModel>() {
             @Override
             public void onResponse(Call<NotificationReadModel> call, Response<NotificationReadModel> response) {
@@ -502,6 +498,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Log.i("ERROR",t.getLocalizedMessage());
             }
         });
+
+
     }
     /**
      * Encode photo string to decode string

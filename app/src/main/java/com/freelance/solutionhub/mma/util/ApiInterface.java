@@ -68,10 +68,6 @@ public interface ApiInterface {
     @GET("https://hz35b2raaj.execute-api.ap-southeast-1.amazonaws.com/dev/component/{qrCode}")
     Call<QRReturnBody> getAssetInformation(@Header("Authorization") String auth, @Path("qrCode") String qrCode);
 
-    //GET Notification Data
-    @GET("http://hub-nightly-public-alb-1826126491.ap-southeast-1.elb.amazonaws.com/api/notifications")
-    Call<NotificationReadModel> getNotificationReadList(@Header("Authorization") String auth, @Query("page_number") int pageNumber, @Query("page_size") int pageSize);
-
     //Get check list
     @GET("service-orders/{service_order_id}/pm-check-list")
     Call<List<CheckListModel>> getCheckList(@Header("Authorization") String auth, @Path("service_order_id") String serviceOrderId);

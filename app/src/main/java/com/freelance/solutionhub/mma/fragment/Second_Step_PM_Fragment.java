@@ -120,7 +120,7 @@ public class Second_Step_PM_Fragment extends Fragment implements View.OnClickLis
                     new AlertDialog.Builder(this.getContext())
                             .setIcon(R.drawable.warning)
                             .setTitle("Unsaved Work")
-                            .setMessage("You need to save works in Step 1.")
+                            .setMessage("You have unsaved works in Step 1.")
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
