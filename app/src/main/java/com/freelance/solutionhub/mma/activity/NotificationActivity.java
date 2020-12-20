@@ -41,7 +41,9 @@ import com.freelance.solutionhub.mma.model.NotificationReadModel;
 import com.freelance.solutionhub.mma.model.PMServiceListModel;
 import com.freelance.solutionhub.mma.model.Payload;
 import com.freelance.solutionhub.mma.util.ApiClient;
+import com.freelance.solutionhub.mma.util.ApiClientForNotification;
 import com.freelance.solutionhub.mma.util.ApiInterface;
+import com.freelance.solutionhub.mma.util.ApiInterfaceForNotification;
 import com.freelance.solutionhub.mma.util.SharePreferenceHelper;
 import com.freelance.solutionhub.mma.util.WebSocketUtils;
 
@@ -86,7 +88,7 @@ public class NotificationActivity extends AppCompatActivity  {
     private Socket socket;
     private Channel channel;
     private SharePreferenceHelper mSharedPreference;
-    private ApiInterface apiInterface;
+    private ApiInterfaceForNotification apiInterface;
     private String urlStr, channelStr;
     private Timestamp timestamp;
     private Date date;
@@ -105,7 +107,7 @@ public class NotificationActivity extends AppCompatActivity  {
         setContentView(R.layout.activity_notification);
         ButterKnife.bind(this);
         setupToolbar();
-        apiInterface = ApiClient.getClient(this);
+        apiInterface = ApiClientForNotification.getClient().create(ApiInterfaceForNotification.class);
         mSharedPreference = new SharePreferenceHelper(this);
         mSharedPreference.setLock(false);
 
