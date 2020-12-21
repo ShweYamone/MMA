@@ -18,8 +18,14 @@ public interface EventDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAll(List<Event> eventList);
 
+    @Query("Update Event Set alreadyUploaded=:uploaded where updateEventBodyKey=:updateEventBodyKey")
+    void update(String uploaded, String updateEventBodyKey);
+
     @Query("SELECT * from Event where updateEventBodyKey=:key")
-    List<Event> getEvents(int key);
+    List<Event> getEvents(String key);
+
+    @Query("Select count(*) from Event where event_id=:eventId")
+    int getSpecifiedEventCount(String eventId);
 
     @Query("Select count(*) from Event")
     int getNumberOfEvents();

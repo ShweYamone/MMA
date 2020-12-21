@@ -6,13 +6,14 @@
     android:layout_marginTop="@dimen/margin_small"
     android:layout_marginBottom="@dimen/margin_small">
     <LinearLayout
+        android:id="@+id/layoutBack"
         android:paddingLeft="@dimen/padding_4"
         android:paddingRight="@dimen/padding_4"
         android:paddingBottom="@dimen/padding_4"
+        android:layout_marginTop="@dimen/margin_small"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_status_border"
-        android:foreground="?attr/selectableItemBackground"
+        android:background="@drawable/bg_mso_border"
         android:orientation="vertical">
         <LinearLayout
             android:layout_marginTop="@dimen/margin_small"
@@ -118,10 +119,8 @@
 
     <TextView
         android:id="@+id/tvTime"
-        android:foreground="?attr/selectableItemBackground"
         android:paddingLeft="@dimen/padding_4"
         android:paddingRight="@dimen/padding_4"
-        android:layout_marginTop="@dimen/margin_small"
         android:layout_marginRight="48dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

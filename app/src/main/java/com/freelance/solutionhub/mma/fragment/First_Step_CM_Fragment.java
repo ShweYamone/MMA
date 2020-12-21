@@ -63,6 +63,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.freelance.solutionhub.mma.util.AppConstant.CM_Step_ONE;
+
 public class First_Step_CM_Fragment extends Fragment {
 
     @BindView(R.id.tv_mso_status)
@@ -122,6 +124,8 @@ public class First_Step_CM_Fragment extends Fragment {
     private ApiInterface apiInterface;
     private Network mNetwork;
     public InitializeDatabase dbHelper;
+    String dialogTitle = "";
+    String dialogBody = "";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -139,6 +143,16 @@ public class First_Step_CM_Fragment extends Fragment {
         dbHelper = InitializeDatabase.getInstance(getContext());
         ButterKnife.bind(this, view);
         displayMSOInformation();
+        setDataAdapter();
+
+        if (dbHelper.updateEventBodyDAO().getNumberOfUpdateEventsById(CM_Step_ONE) > 0) {
+            prePhotoModels.clear();
+           // int imaCount = dbHelper.uploadPhotoDAO().getNumberOfPhotosToUpload();
+            for (UploadPhotoModel uploadPhotoModel: dbHelper.uploadPhotoDAO().getPhotosToUpload()) {
+                prePhotoModels.add(new PhotoModel(uploadPhotoModel.getEncodedPhotoString(), 1));
+            }
+            prePhotoAdapter.notifyDataSetChanged();
+        }
 
         preMaintenancePhoto.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -159,60 +173,81 @@ public class First_Step_CM_Fragment extends Fragment {
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(prePhotoModels.size() > 0) {
-                    ((CMActivity)getActivity()).showProgressBar();
+                if (prePhotoModels.size() == 0) {
+                    dialogTitle = "Mandatory Fields:";
+                    dialogBody = "Attach Premaintenance Photos.";
+                    showDialog();
+                } else {
                     save();
-                }
-
-                else {
-                    mSharePerferenceHelper.userClickCMStepOne(false);
-                    new AlertDialog.Builder(getContext())
-                            .setIcon(R.drawable.warning)
-                            .setTitle("Mandatory Fields:")
-                            .setMessage("Attach Premaintenance Photos.")
-                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                }
-
-                            })
-                            .show();
                 }
 
             }
         });
-        setDataAdapter();
+
         return view;
     }
+    /**
+    * show dialog for mandatory fields
+     */
+    private void showDialog() {
+        mSharePerferenceHelper.userClickCMStepOne(false);
+        new AlertDialog.Builder(getContext())
+                .setIcon(R.drawable.warning)
+                .setTitle(dialogTitle)
+                .setMessage(dialogBody)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+
+                })
+                .show();
+    }
+
     /**
      * Update event for all
      */
     public void save(){
-            //For no photo upload
 
-            Log.v("BEFORE_SIZE", "No zero");
-            if( mNetwork.isNetworkAvailable() ) {
-                if (prePhotoModels.size() > 1 && prePhotoModels.size() < 6) {
-                    Log.v("JOIN", preEventList.size() + "");
-                    //Upload photos to server
-                    new LoadImage(preEventList).execute(uploadPhoto(prePhotoModels));
+        if (prePhotoModels.size() > 1 && prePhotoModels.size() < 6) {
 
-                } else {
-                    new AlertDialog.Builder(this.getContext())
-                            .setIcon(R.drawable.warning)
-                            .setTitle("Photo")
-                            .setMessage("Your photos must be minimum 2 and maximum 5.")
-                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
+            Log.v("JOIN", preEventList.size() + "");
+            date = new Date();
+            Timestamp timestamp = new Timestamp(date.getTime());
+            String currentDateTime = new SimpleDateFormat("yyyyMMddHH:mm:ss").format(timestamp);
+            UpdateEventBody updateEventBody = new UpdateEventBody(
+                    mSharePerferenceHelper.getUserName(),
+                    mSharePerferenceHelper.getUserId(),
+                    currentDateTime,
+                    pmServiceInfoModel.getId()
+            );
 
+            updateEventBody.setId(CM_Step_ONE);
+            dbHelper.updateEventBodyDAO().insert(updateEventBody);
 
-                                }
+            dbHelper.uploadPhotoDAO().deleteById(CM_Step_ONE);
+            for (PhotoModel photoModel: prePhotoModels) {
+                saveEncodePhotoToDatabase(CM_Step_ONE, "pids-pre-maintenance-photo", photoModel.getImage());
+            }
+            Toast.makeText(this.getContext(), dbHelper.uploadPhotoDAO().getNumberOfPhotosToUpload()+" photos have been saved.", Toast.LENGTH_SHORT).show();
+        }
+        else {
+            dialogTitle = "Photo";
+            dialogBody = "Your photos must be minimum 2 and maximum 5.";
+            showDialog();
+        }
+    }
 
-                            })
-                            .show();
-                }
-            }//Network end
+    /**
+     * //To Do save to database photo
+     */
+    private void saveEncodePhotoToDatabase(String updateEventKey, String bucketName, String sPhoto){
+        byte[] bytes = sPhoto.getBytes();
+        String encodeToString = Base64.encodeToString(bytes,Base64.DEFAULT);
+        Log.v("ENCODE",encodeToString);
+        dbHelper.uploadPhotoDAO().insert(new UploadPhotoModel(
+                updateEventKey, bucketName, encodeToString
+        ));
 
     }
 
@@ -223,14 +258,12 @@ public class First_Step_CM_Fragment extends Fragment {
         tvFaultType.setText(pmServiceInfoModel.getReportedProblem());
         tvMsoPriority.setText(pmServiceInfoModel.getPriorityLevel());
 
-
         tvAllowableResolutionDT.setText(pmServiceInfoModel.getTargetEndDate());
         tvAllowableRespondDT.setText(pmServiceInfoModel.getTargetResponseDate());
         tvFaultDetectedDT.setText(pmServiceInfoModel.getFaultDetectedDate());
         tvMsoNotifiedDT.setText(pmServiceInfoModel.getNotificationDate());
         tvBusStopNumber.setText(pmServiceInfoModel.getBusStopId());
         tvLocation.setText(pmServiceInfoModel.getBusStopLocation());
-
 
     }
 
@@ -276,7 +309,7 @@ public class First_Step_CM_Fragment extends Fragment {
         Log.i("Tracing......", "onActivityResult: " + mSharePerferenceHelper.getLock());
         if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK)
         {
-               theImage = (Bitmap) data.getExtras().get("data");
+                theImage = (Bitmap) data.getExtras().get("data");
                 photo = getEncodedString(theImage);
                 Log.v("ORI",photo);
                 prePhotoModels.add(new PhotoModel(photo, 1));
@@ -364,27 +397,9 @@ public class First_Step_CM_Fragment extends Fragment {
 
         Bitmap img = BitmapFactory.decodeByteArray(arr, 0, arr.length);
         return img;
-
-
     }
 
-    /**
-     * //To Do save to database photo
-     */
-    private void saveEncodePhotoToDatabase(String bucketName, String sPhoto){
-        byte[] bytes = sPhoto.getBytes();
-        /**
-         * encodeToString is encoded string
-         */
 
-        date = new Date();
-        Timestamp timestamp = new Timestamp(date.getTime());
-        String actualDateTime = new SimpleDateFormat("yyyyMMddHH:mm:ss").format(timestamp);
-        String encodeToString = Base64.encodeToString(bytes,Base64.DEFAULT);
-        dbHelper.uploadPhotoDAO().insert(new UploadPhotoModel(bucketName, encodeToString,actualDateTime));
-        Log.v("ENCODE",encodeToString);
-
-    }
 
     class LoadImage extends AsyncTask<File, Void, Boolean> {
 

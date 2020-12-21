@@ -20,7 +20,7 @@ public interface UpdateEventBodyDAO {
     void insertAll(List<UpdateEventBody> eventBodyList);
 
     @Query("Delete from UpdateEventBody where id=:id")
-    void deleteById(int id);
+    void deleteById(String id);
 
     @Query("Delete from UpdateEventBody")
     void deleteAll();
@@ -31,6 +31,9 @@ public interface UpdateEventBodyDAO {
     @Query("Select count(*) from UpdateEventBody")
     int getNumberOfUpdateEventBody();
 
+    @Query("Select count(*) from UpdateEventBody where id=:id")
+    int getNumberOfUpdateEventsById(String id);
+
     @Query("Update UpdateEventBody Set date=:date where id=:id")
-    void update(String date, int id);
+    void update(String date, String id);
 }

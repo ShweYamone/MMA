@@ -161,7 +161,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
             }
         });
 
-        mAdapter = new ServiceOrderAdapter(this.getContext().getApplicationContext(), serviceInfoModelList, this);
+        mAdapter = new ServiceOrderAdapter(this.getContext().getApplicationContext(), serviceInfoModelList, this, mSharePreference);
 
         recyclerViewMaintenance.setHasFixedSize(true);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(view.getContext());

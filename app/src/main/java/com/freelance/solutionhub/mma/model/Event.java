@@ -11,9 +11,8 @@ import static androidx.room.ForeignKey.CASCADE;
 @Entity(tableName = "Event")
 public class Event {
 
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "event_id")
-    public int event_id;
+    @ColumnInfo(name = "event_id") // eventType + key
+    public String event_id;
 
     @ColumnInfo(name = "updateEventBodyKey")
     public String updateEventBodyKey;
@@ -27,19 +26,21 @@ public class Event {
     @ColumnInfo(name = "value")
     public String value;
 
-    public Event(int event_id, String updateEventBodyKey, String eventType, String key, String value) {
-        this.event_id = event_id;
-        this.updateEventBodyKey = updateEventBodyKey;
+    @ColumnInfo(name = "alreadyUploaded", defaultValue = "NO")
+    public String alreadyUploaded;
+
+    public Event(String eventType, String key, String value) {
         this.eventType = eventType;
         this.key = key;
         this.value = value;
     }
 
-    @Ignore
-    public Event(String eventType, String key, String value) {
-        this.eventType = eventType;
-        this.key = key;
-        this.value = value;
+    public String getEvent_id() {
+        return event_id;
+    }
+
+    public void setEvent_id(String event_id) {
+        this.event_id = event_id;
     }
 
     public String getUpdateEventBodyKey() {
@@ -72,5 +73,13 @@ public class Event {
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    public String getAlreadyUploaded() {
+        return alreadyUploaded;
+    }
+
+    public void setAlreadyUploaded(String alreadyUploaded) {
+        this.alreadyUploaded = alreadyUploaded;
     }
 }
