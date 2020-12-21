@@ -67,7 +67,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             if(notification.isRead())
                 isRead.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.read_message));
             tvMessageHead.setText(notification.getMessageHead());
-            tvMessageBody.setText(notification.getId());
+            tvMessageBody.setText(notification.getMessageBody());
             tvDateTime.setText(notification.getMessageDateTime());
 
         }

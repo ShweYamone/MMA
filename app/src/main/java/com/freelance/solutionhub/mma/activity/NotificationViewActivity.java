@@ -25,6 +25,7 @@ import com.freelance.solutionhub.mma.model.Event;
 import com.freelance.solutionhub.mma.model.NotificationModel;
 import com.freelance.solutionhub.mma.model.ReturnStatus;
 import com.freelance.solutionhub.mma.model.UpdateEventBody;
+import com.freelance.solutionhub.mma.util.Network;
 import com.freelance.solutionhub.mma.util.SharePreferenceHelper;
 
 import org.phoenixframework.channels.Channel;
@@ -67,6 +68,7 @@ public class NotificationViewActivity extends AppCompatActivity {
     private Channel channel;
     private NotificationModel notificationModel;
     private boolean startHandler = true;
+    private Network network;
     private SharePreferenceHelper sharePreferenceHelper;
 
     @Override
@@ -74,6 +76,9 @@ public class NotificationViewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notification_view);
         ButterKnife.bind(this);
+        network = new Network(this);
+        if(!network.isNetworkAvailable())
+            finish();
         sharePreferenceHelper = new SharePreferenceHelper(this);
         sharePreferenceHelper.setLock(false);
 

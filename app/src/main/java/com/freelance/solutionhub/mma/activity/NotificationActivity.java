@@ -6,6 +6,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.NotificationCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -16,6 +17,7 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -23,6 +25,9 @@ import android.os.Handler;
 import android.os.PowerManager;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,6 +49,7 @@ import com.freelance.solutionhub.mma.util.ApiClient;
 import com.freelance.solutionhub.mma.util.ApiClientForNotification;
 import com.freelance.solutionhub.mma.util.ApiInterface;
 import com.freelance.solutionhub.mma.util.ApiInterfaceForNotification;
+import com.freelance.solutionhub.mma.util.Network;
 import com.freelance.solutionhub.mma.util.SharePreferenceHelper;
 import com.freelance.solutionhub.mma.util.WebSocketUtils;
 
@@ -82,6 +88,13 @@ public class NotificationActivity extends AppCompatActivity  {
     @BindView(R.id.tvMessage)
     TextView tvMessage;
 
+    @BindView(R.id.iv_no_internet)
+    ImageView ivNoInternet;
+    @BindView(R.id.tv_no_internet)
+    TextView tvNoInternet;
+    @BindView(R.id.layoutEmpty)
+    LinearLayout llEmpty;
+
     private NotificationAdapter mAdapter;
     private List<NotificationModel> notificationList = new ArrayList<>();
 
@@ -99,6 +112,7 @@ public class NotificationActivity extends AppCompatActivity  {
     private Runnable r;
     private boolean startHandler = true;
     private boolean lockScreen = false;
+    private Network network;
 
     private static final String TAG = "NotificationActivity";
     @Override
@@ -107,31 +121,40 @@ public class NotificationActivity extends AppCompatActivity  {
         setContentView(R.layout.activity_notification);
         ButterKnife.bind(this);
         setupToolbar();
-        apiInterface = ApiClientForNotification.getClient().create(ApiInterfaceForNotification.class);
-        mSharedPreference = new SharePreferenceHelper(this);
-        mSharedPreference.setLock(false);
 
-        mSmartScrollListener = new SmartScrollListener(new SmartScrollListener.OnSmartScrollListener() {
-            @Override
-            public void onListEndReach() {
+        network = new Network(this);
+        if(network.isNetworkAvailable()) {
+            apiInterface = ApiClientForNotification.getClient().create(ApiInterfaceForNotification.class);
+            mSharedPreference = new SharePreferenceHelper(this);
+            mSharedPreference.setLock(false);
 
-                page++;
-                Toast.makeText(getApplicationContext(), "Page " + page, Toast.LENGTH_SHORT).show();
-                if (page <= totalPages)
-                    getServiceOrders();
-            }
-        });
+            mSmartScrollListener = new SmartScrollListener(new SmartScrollListener.OnSmartScrollListener() {
+                @Override
+                public void onListEndReach() {
 
-
-        mAdapter = new NotificationAdapter(this, notificationList);
-        recyclerView.setHasFixedSize(true);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.addOnScrollListener(mSmartScrollListener);
-        recyclerView.setAdapter(mAdapter);
+                    page++;
+                    Toast.makeText(getApplicationContext(), "Page " + page, Toast.LENGTH_SHORT).show();
+                    if (page <= totalPages)
+                        getServiceOrders();
+                }
+            });
 
 
-        getMSOEvent();
+            mAdapter = new NotificationAdapter(this, notificationList);
+            recyclerView.setHasFixedSize(true);
+            RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
+            recyclerView.setLayoutManager(mLayoutManager);
+            recyclerView.addOnScrollListener(mSmartScrollListener);
+            recyclerView.setAdapter(mAdapter);
+
+
+            getMSOEvent();
+        }else {
+            recyclerView.setVisibility(View.GONE);
+            tvNoInternet.setText("No internet connection!");
+            ivNoInternet.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.icons_without_internet));
+            llEmpty.setVisibility(View.VISIBLE);
+        }
         /**
          after certain amount of user inactivity, asks for passcode
          */
@@ -181,14 +204,15 @@ public class NotificationActivity extends AppCompatActivity  {
     @Override
     protected void onResume() {
         super.onResume();
-        if (mSharedPreference.getLock()) {
-            Intent intent = new Intent(NotificationActivity.this, PasscodeActivity.class);
-            intent.putExtra("workInMiddle", "work");
-            startActivity(intent);
-        } else {
-            startHandler = true;
-            startHandler();
-        }
+        if(network.isNetworkAvailable()) {
+            if (mSharedPreference.getLock()) {
+                Intent intent = new Intent(NotificationActivity.this, PasscodeActivity.class);
+                intent.putExtra("workInMiddle", "work");
+                startActivity(intent);
+            } else {
+                startHandler = true;
+                startHandler();
+            }
 //        if(notificationList.size()>=11){
 //            Log.i("LIST10","WORK");
 //            for(int i = 1,j=notificationList.size()-1;i<11;i++,j--){
@@ -200,55 +224,56 @@ public class NotificationActivity extends AppCompatActivity  {
 //
 //        }
 
-        /************WebScoket***************/
-        Uri.Builder url = Uri.parse( "ws://hub-nightly-public-alb-1826126491.ap-southeast-1.elb.amazonaws.com/socket/websocket" ).buildUpon();
-        // url.appendQueryParameter("vsn", "2.0.0");
-        url.appendQueryParameter( "token", mSharedPreference.getToken());
-        try {
-            //    Log.i("Websocket", url.toString());
-            socket = new Socket(url.build().toString());
-            socket.connect();
-            if(socket.isConnected()){
-                Log.i("SOCKET_CONNECT","SUCCESS");
-            }
-
-            channel = socket.chan("notification", null);
-
-            channel.join()
-                    .receive("ok", new IMessageCallback() {
-                        @Override
-                        public void onMessage(Envelope envelope) {
-                            Log.i("JOINED_WITH", "Joined with " + envelope.toString());
-                            Log.i("ON_MESSAGE", "onMessage: " + socket.isConnected());
-                        }
-                    })
-                    .receive("error", new IMessageCallback() {
-                        @Override
-                        public void onMessage(Envelope envelope) {
-                            Log.i("Websocket", "NOT Joined with ");
-                        }
-                    });
-            channel.on("mso_created", new IMessageCallback() {
-                @Override
-                public void onMessage(Envelope envelope) {
-                    Log.i("NEW_MESSAGE",envelope.toString());
-                    final JsonNode user = envelope.getPayload().get("mso_id");
-                    if (user == null || user instanceof NullNode) {
-                    }
-                    else {
-                    }
-
+            /************WebScoket***************/
+            Uri.Builder url = Uri.parse("ws://hub-nightly-public-alb-1826126491.ap-southeast-1.elb.amazonaws.com/socket/websocket").buildUpon();
+            // url.appendQueryParameter("vsn", "2.0.0");
+            url.appendQueryParameter("token", mSharedPreference.getToken());
+            try {
+                //    Log.i("Websocket", url.toString());
+                socket = new Socket(url.build().toString());
+                socket.connect();
+                if (socket.isConnected()) {
+                    Log.i("SOCKET_CONNECT", "SUCCESS");
                 }
-            });
 
-            channel.on("mso_rejected", new IMessageCallback() {
-                @Override
-                public void onMessage(Envelope envelope) {
-                    //  Toast.makeText(getApplicationContext(), "CLOSED: " + envelope.toString(), Toast.LENGTH_SHORT).show();
-                    //   tvResult.setText("CLOSED: " + envelope.toString());
-                    Log.i("CLOSED", envelope.toString());
-                }
-            });
+                channel = socket.chan("notification", null);
+
+                channel.join()
+                        .receive("ok", new IMessageCallback() {
+                            @Override
+                            public void onMessage(Envelope envelope) {
+                                Log.i("JOINED_WITH", "Joined with " + envelope.toString());
+                                Log.i("ON_MESSAGE", "onMessage: " + socket.isConnected());
+                            }
+                        })
+                        .receive("error", new IMessageCallback() {
+                            @Override
+                            public void onMessage(Envelope envelope) {
+                                Log.i("Websocket", "NOT Joined with ");
+                            }
+                        });
+                channel.on("mso_created", new IMessageCallback() {
+                    @Override
+                    public void onMessage(Envelope envelope) {
+                        Log.i("NEW_MESSAGE", envelope.toString());
+                        final JsonNode user = envelope.getPayload().get("mso_id");
+                        if (user == null || user instanceof NullNode) {
+                            onMessageNoti("An anonymous user entered", "");
+                        } else {
+                            onMessageNoti(envelope.getPayload().get("mso_id") + "", "MSO is created.");
+                        }
+
+                    }
+                });
+
+                channel.on("mso_rejected", new IMessageCallback() {
+                    @Override
+                    public void onMessage(Envelope envelope) {
+                        //  Toast.makeText(getApplicationContext(), "CLOSED: " + envelope.toString(), Toast.LENGTH_SHORT).show();
+                        //   tvResult.setText("CLOSED: " + envelope.toString());
+                        Log.i("CLOSED", envelope.toString());
+                    }
+                });
 
 
 //Sending a message. This library uses Jackson for JSON serialization
@@ -257,9 +282,10 @@ public class NotificationActivity extends AppCompatActivity  {
 //                    .put("body", "Hello");
 //
 //            channel.push("new:msg", node);
-        } catch (Exception e) {
-            Toast.makeText(getApplicationContext(), "Exception" + e.getMessage(), Toast.LENGTH_SHORT).show();
-            Log.i("Websocket",  e.getMessage() + "\n" + e.getLocalizedMessage());
+            } catch (Exception e) {
+                Toast.makeText(getApplicationContext(), "Exception" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.i("Websocket", e.getMessage() + "\n" + e.getLocalizedMessage());
+            }
         }
     }
 
@@ -282,9 +308,9 @@ public class NotificationActivity extends AppCompatActivity  {
                         timestamp = new Timestamp(date.getTime());
                         String actualDateTime = new SimpleDateFormat("dd.MM.yyyy/HH:mm aa").format(timestamp);
                         if(payload.getMso_type().equals("PM")) {
-                            notificationList.add(new NotificationModel(items.get(i).getId(),"PM-MSO xxxx","You received an PM MSO Alert.",actualDateTime,items.get(i).isIs_read()));
+                            notificationList.add(new NotificationModel(items.get(i).getId(),"PM-MSO "+items.get(i).getPayload().getMso_id(),"You received an PM MSO Alert.",actualDateTime,items.get(i).isIs_read()));
                         }else {
-                            notificationList.add(new NotificationModel(items.get(i).getId(),"CM-MSO xxxx","You received an CM MSO Alert.",actualDateTime, items.get(i).isIs_read()));
+                            notificationList.add(new NotificationModel(items.get(i).getId(),"CM-MSO "+items.get(i).getPayload().getMso_id(),"You received an CM MSO Alert.",actualDateTime, items.get(i).isIs_read()));
                         }
 
                     }
@@ -309,6 +335,51 @@ public class NotificationActivity extends AppCompatActivity  {
         //ab.setHomeAsUpIndicator(R.drawable.ic_menu);
         ab.setDisplayHomeAsUpEnabled(true);
     }
+    public void onMessageNoti(String envolope,String mso_type){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                getMSOCreatedEvent();
+            }
+        });
+    }
+
+    private void getMSOCreatedEvent(){
+        Call<NotificationReadModel> notificationReadModelCall = apiInterface.getNotificationReadList("Bearer "+mSharedPreference.getToken(),1,1);
+        notificationReadModelCall.enqueue(new Callback<NotificationReadModel>() {
+            @Override
+            public void onResponse(Call<NotificationReadModel> call, Response<NotificationReadModel> response) {
+
+                if(response.isSuccessful()){
+                    NotificationReadModel readModel = response.body();
+                    //  totalPages = readModel.getTotalPages();
+                    totalPages = 10;
+                    ArrayList<Item> items = new ArrayList<>();
+                    items.addAll(readModel.getItems());
+                    //   Toast.makeText(getApplicationContext(),"SUCCESS:"+items.size(),Toast.LENGTH_SHORT).show();
+                    for(int i = 0;i<items.size();i++){
+                        Log.i("NOTI",items.get(i).isIs_read()+":"+i);
+                        Payload payload = items.get(i).getPayload();
+                        date = items.get(i).getInserted_at();
+                        timestamp = new Timestamp(date.getTime());
+                        String actualDateTime = new SimpleDateFormat("dd.MM.yyyy/HH:mm aa").format(timestamp);
+                        if(payload.getMso_type().equals("PM")) {
+                            notificationList.add(i,new NotificationModel(items.get(i).getId(),"PM-MSO "+items.get(i).getPayload().getMso_id(),"You received an PM MSO Alert.",actualDateTime,false));
+                        }else {
+                            notificationList.add(i,new NotificationModel(items.get(i).getId(),"CM-MSO "+items.get(i).getPayload().getMso_id(),"You received an CM MSO Alert.",actualDateTime,false));
+                        }
+
+                    }
+                    mAdapter.notifyItemInserted(0);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<NotificationReadModel> call, Throwable t) {
+                Log.i("ERROR",t.getLocalizedMessage());
+            }
+        });
+    }
 
     private void getMSOEvent(){
         Call<NotificationReadModel> notificationReadModelCall = apiInterface.getNotificationReadList("Bearer "+mSharedPreference.getToken(),1,10);
@@ -322,6 +393,12 @@ public class NotificationActivity extends AppCompatActivity  {
                     totalPages = 10;
                     ArrayList<Item> items = new ArrayList<>();
                     items.addAll(readModel.getItems());
+                    if(items.size() == 0){
+                        recyclerView.setVisibility(View.GONE);
+                        tvNoInternet.setText("No notification!");
+                        ivNoInternet.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.bell));
+                        llEmpty.setVisibility(View.VISIBLE);
+                    }
                  //   Toast.makeText(getApplicationContext(),"SUCCESS:"+items.size(),Toast.LENGTH_SHORT).show();
                     for(int i = 0;i<items.size();i++){
                         Log.i("Is_read",items.get(i).isIs_read()+":"+i);
@@ -330,9 +407,9 @@ public class NotificationActivity extends AppCompatActivity  {
                         timestamp = new Timestamp(date.getTime());
                         String actualDateTime = new SimpleDateFormat("dd.MM.yyyy/HH:mm aa").format(timestamp);
                         if(payload.getMso_type().equals("PM")) {
-                            notificationList.add(new NotificationModel(items.get(i).getId(),"PM-MSO xxxx","You received an PM MSO Alert.",actualDateTime,items.get(i).isIs_read()));
+                            notificationList.add(new NotificationModel(items.get(i).getId(),"PM-MSO "+items.get(i).getPayload().getMso_id(),"You received an PM MSO Alert.",actualDateTime,items.get(i).isIs_read()));
                         }else {
-                            notificationList.add(new NotificationModel(items.get(i).getId(),"CM-MSO xxxx","You received an CM MSO Alert.",actualDateTime,items.get(i).isIs_read()));
+                            notificationList.add(new NotificationModel(items.get(i).getId(),"CM-MSO "+items.get(i).getPayload().getMso_id(),"You received an CM MSO Alert.",actualDateTime,items.get(i).isIs_read()));
                         }
 
                     }
