@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,6 +17,7 @@ import com.freelance.solutionhub.mma.R;
 import com.freelance.solutionhub.mma.activity.NFCReadingActivity;
 import com.freelance.solutionhub.mma.delegate.HomeFragmentCallback;
 import com.freelance.solutionhub.mma.model.ServiceInfoModel;
+import com.freelance.solutionhub.mma.util.SharePreferenceHelper;
 
 import java.util.List;
 
@@ -33,6 +35,7 @@ public class ServiceOrderAdapter extends RecyclerView.Adapter<ServiceOrderAdapte
     private Context mContext;
     private List<ServiceInfoModel> serviceInfoModelList;
     private HomeFragmentCallback callback;
+    private SharePreferenceHelper sharePreferenceHelper;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.tvMSONumber)
@@ -53,11 +56,15 @@ public class ServiceOrderAdapter extends RecyclerView.Adapter<ServiceOrderAdapte
         @BindView(R.id.ivLanding)
         ImageView ivLanding;
 
+        @BindView(R.id.layoutBack)
+        LinearLayout layoutBack;
+
         private ServiceInfoModel service;
 
         public MyViewHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);
+
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -83,6 +90,12 @@ public class ServiceOrderAdapter extends RecyclerView.Adapter<ServiceOrderAdapte
 
         public void bindView(ServiceInfoModel service, int position){
             this.service = service;
+
+            if (service.getId().equals(sharePreferenceHelper.getCurrentMSOID()))
+                layoutBack.setBackground(mContext.getDrawable(R.drawable.bg_mso_selected_border));
+            else
+                layoutBack.setBackground(mContext.getDrawable(R.drawable.bg_mso_border));
+
             tvTime.setText(service.getCreationDate());
             tvMsoNumber.setText(service.getId());
             String status = service.getServiceOrderStatus();
@@ -114,10 +127,11 @@ public class ServiceOrderAdapter extends RecyclerView.Adapter<ServiceOrderAdapte
         }
     }
 
-    public ServiceOrderAdapter(Context mContext, List<ServiceInfoModel> serviceInfoModelList, HomeFragmentCallback callback) {
+    public ServiceOrderAdapter(Context mContext, List<ServiceInfoModel> serviceInfoModelList, HomeFragmentCallback callback, SharePreferenceHelper sharePreferenceHelper) {
         this.mContext = mContext;
         this.serviceInfoModelList = serviceInfoModelList;
         this.callback = callback;
+        this.sharePreferenceHelper = sharePreferenceHelper;
     }
 
     @Override

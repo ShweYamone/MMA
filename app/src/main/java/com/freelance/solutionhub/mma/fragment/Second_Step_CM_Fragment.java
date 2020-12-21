@@ -18,6 +18,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Update;
 
 import android.util.Base64;
 import android.util.Log;
@@ -85,6 +86,8 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static com.freelance.solutionhub.mma.util.AppConstant.CM_Step_TWO;
 
 public class Second_Step_CM_Fragment extends Fragment implements View.OnClickListener{
 
@@ -198,8 +201,8 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
 
     private boolean qrScan1Click = true;
     private boolean isMandatoryFieldLeft = false;
-
     private String mandatoryFieldsLeft = "";
+
     Intent intent;
     public Second_Step_CM_Fragment() {
         // Required empty public constructor
@@ -443,68 +446,29 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
                 getQREvent();
                 if (isMandatoryFieldLeft && postModelList.size() == 0) {
                     mSharePreference.userClickCMStepTwo(false);
-                    new AlertDialog.Builder(getContext())
-                            .setIcon(R.drawable.warning)
-                            .setTitle("Mandatory Fields")
-                            .setMessage(mandatoryFieldsLeft + "\nAttach Post-Maintenance Photos")
-                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                }
-
-                            })
-                            .show();
+                    mandatoryFieldsLeft += "\nAttach Post-Maintenance Photos";
+                    showDialog();
                 } else if (isMandatoryFieldLeft) {
                     mSharePreference.userClickCMStepTwo(false);
-                        new AlertDialog.Builder(getContext())
-                                .setIcon(R.drawable.warning)
-                                .setTitle("Mandatory Fields:")
-                                .setMessage(mandatoryFieldsLeft)
-                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                    }
-
-                                })
-                                .show();
+                    showDialog();
                 } else if (postModelList.size() == 0) {
                     mSharePreference.userClickCMStepTwo(false);
-                    new AlertDialog.Builder(getContext())
-                            .setIcon(R.drawable.warning)
-                            .setTitle("Mandatory Fields:")
-                            .setMessage("Attach post-maintenance photos(min(2) and max(5)")
-                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                }
-
-                            })
-                            .show();
+                    mandatoryFieldsLeft = "\nAttach Post-Maintenance Photos";
+                    showDialog();
                 }
                 else if (postModelList.size() < 2 || postModelList.size() > 6){
                     mSharePreference.userClickCMStepTwo(false);
-                    new AlertDialog.Builder(this.getContext())
-                            .setIcon(R.drawable.warning)
-                            .setTitle("Photo")
-                            .setMessage("Your photos must be minimum 2 and maximum 5.")
-                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-
-
-                                }
-
-                            })
-                            .show();
+                    mandatoryFieldsLeft = "Your photos must be minimum 2 and maximum 5.";
+                    showDialog();
                 }
                 else {
                     //Mandatory QR and Problem event are choosen, can update events.......
                     //Mandatory Photos are attached, can update events.......
-                    getPhotoEvents();
-                  //  uploadEvents();
-
+                  //  getPhotoEvents();
+                    uploadEvents();
                 }
                 break;
+
             case R.id.iv_attach_post_maintenance_photo:
                 if (getActivity().checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
                 {
@@ -538,19 +502,49 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
 
     private void uploadEvents(){
         //network unavailable, store to local db
+        date = new Date();
+        Timestamp timestamp = new Timestamp(date.getTime());
+        String actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
+        UpdateEventBody eventBody = new UpdateEventBody(
+            mSharePreference.getUserName(),
+            mSharePreference.getUserId(),
+            actualDateTime,
+            pmServiceInfoModel.getId()
+        );
+        eventBody.setId(CM_Step_TWO);
+        dbHelper.updateEventBodyDAO().insert(eventBody);
+        dbHelper.eventDAO().insertAll(events);
+
+        if (network.isNetworkAvailable()) {
+            eventBody.setEvents(events);
+            ((CMActivity)getActivity()).showProgressBar();
+            Call<ReturnStatus> call = apiInterface.updateEvent("Bearer " + mSharePreference.getToken(), eventBody);
+            call.enqueue(new Callback<ReturnStatus>() {
+                @Override
+                public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
+                    if (response.isSuccessful()) {
+                        events.clear();
+                        Toast.makeText(getContext(), "Events Uploaded!", Toast.LENGTH_SHORT).show();
+                        dbHelper.eventDAO().update("YES", CM_Step_TWO);
+                        ((CMActivity)getActivity()).hideProgressBar();
+                    } else {
+                        Toast.makeText(getContext(), response.code()+ "" , Toast.LENGTH_SHORT).show();
+                        ((CMActivity)getActivity()).hideProgressBar();
+                    }
+
+                }
+
+                @Override
+                public void onFailure(Call<ReturnStatus> call, Throwable t) {
+                    Toast.makeText(getContext(), "Failure" , Toast.LENGTH_SHORT).show();
+                    ((CMActivity)getActivity()).hideProgressBar();
+                }
+            });
+        }
+
+
+        /*
         if(!network.isNetworkAvailable()) {
-            Log.i("DB","Save events to local database.");
-            date = new Date();
-            Timestamp timestamp = new Timestamp(date.getTime());
-            String actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
-            UpdateEventBody eventBody = new UpdateEventBody(
-                    mSharePreference.getUserName(),
-                    mSharePreference.getUserId(),
-                    actualDateTime,
-                    pmServiceInfoModel.getId()
-            );
-            String key = mSharePreference.getUserId() + pmServiceInfoModel.getId() + actualDateTime;
-            eventBody.setId(key);
             dbHelper.updateEventBodyDAO().insert(eventBody);
             for (Event event : events) {
                 event.setUpdateEventBodyKey(key);
@@ -561,7 +555,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
             Log.e("EventSize", "uploadEvents" + events.size());
             if(events.size() != 0)
                 new LoadImage(events).execute(new File[0]);
-        }
+        }*/
     }
 
     private void getQREvent() {
@@ -609,11 +603,18 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
 
     public void getProblemCodeEvent() {
 
-        events.add(new Event(
+        Event tempEvent = new Event(
                 "SERVICE_ORDER_UPDATE",
                 "reportedProblem",
                 "" + pmServiceInfoModel.getReportedProblem()
-        ));
+        );
+        tempEvent.setEvent_id("SERVICE_ORDER_UPDATE" + "reportedProblem");
+       // events.add(tempEvent);
+        if (dbHelper.eventDAO().getSpecifiedEventCount("SERVICE_ORDER_UPDATE" + "reportedProblem")==0) {
+            dbHelper.eventDAO().insert(tempEvent);
+        }
+
+
         Log.i("EventHappenend", "GETReprotedProblemPlain" +  pmServiceInfoModel.getReportedProblem());
         if (spinnerActualProbleCode.getSelectedItemPosition() > 0) {
 
@@ -622,6 +623,8 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
                     "actualProblem" ,
                     actualProblem));
             Log.i("EventHappenend",  actualProblem);
+
+
         } else {
             mandatoryFieldsLeft += "\nSelect Actual Problem Code";
             isMandatoryFieldLeft = true;
@@ -727,6 +730,21 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
         postPhotoAdapter = new PhotoAdapter(getContext(), postModelList);
         postRecyclerView.setAdapter(postPhotoAdapter);
 
+    }
+
+
+    private void showDialog() {
+        new AlertDialog.Builder(getContext())
+                .setIcon(R.drawable.warning)
+                .setTitle("Mandatory Fields")
+                .setMessage(mandatoryFieldsLeft + "\nAttach Post-Maintenance Photos")
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+
+                })
+                .show();
     }
 
     /**

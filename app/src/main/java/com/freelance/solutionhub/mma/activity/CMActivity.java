@@ -21,6 +21,7 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.freelance.solutionhub.mma.DB.InitializeDatabase;
 import com.freelance.solutionhub.mma.R;
 import com.freelance.solutionhub.mma.fragment.First_Step_CM_Fragment;
 import com.freelance.solutionhub.mma.fragment.Second_Step_CM_Fragment;
@@ -61,6 +62,7 @@ public class CMActivity extends AppCompatActivity {
     private boolean startHandler = true;
     private boolean lockScreen = false;
     private SharePreferenceHelper mSharedPreference;
+    private InitializeDatabase dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +71,7 @@ public class CMActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_c_m);
         ButterKnife.bind(this);
+        dbHelper = InitializeDatabase.getInstance(this);
         mSharedPreference = new SharePreferenceHelper(this);
         mSharedPreference.setLock(false);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -95,6 +98,15 @@ public class CMActivity extends AppCompatActivity {
         first_step_cm_fragment.setArguments(bundle);
         second_step_cm_fragment.setArguments(bundle);
         third_step_cm_fragment.setArguments(bundle);
+
+        //get current working msoId
+        if (!pmServiceInfoDetailModel.getId().equals(mSharedPreference.getCurrentMSOID())) {
+
+            dbHelper.updateEventBodyDAO().deleteAll();
+            dbHelper.eventDAO().deleteAll();
+            dbHelper.uploadPhotoDAO().deleteAll();
+            mSharedPreference.setCurrentMSOID(pmServiceInfoDetailModel.getId());
+        }
 
 
         /**

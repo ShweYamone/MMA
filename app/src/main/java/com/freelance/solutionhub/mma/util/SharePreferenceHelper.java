@@ -23,6 +23,18 @@ public class SharePreferenceHelper {
  	private static String CMStepTwoClick = "CMStepTwo";
  	private static String PMStepOneClick = "PMStepOne";
 
+ 	private static String CurrentMSOID = "CurrentMSOId";
+
+ 	public void setCurrentMSOID(String msoid) {
+ 		SharedPreferences.Editor editor = sharedPreference.edit();
+ 		editor.putString(CurrentMSOID, msoid);
+ 		editor.commit();
+	}
+
+	public String getCurrentMSOID() {
+ 		return sharedPreference.getString(CurrentMSOID, "");
+	}
+
  	public void userClickCMStepOne(boolean click) {
  		SharedPreferences.Editor editor = sharedPreference.edit();
  		editor.putBoolean(CMStepOneClick, click);

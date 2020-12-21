@@ -17,8 +17,8 @@ public interface UploadPhotoDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAll(List<UploadPhotoModel> uploadPhotoModels);
 
-    @Query("Delete from UploadPhotoModel where id=:id")
-    void deleteById(int id);
+    @Query("Delete from UploadPhotoModel where updateEventBodyKey=:updateEventBodyKey")
+    void deleteById(String updateEventBodyKey);
 
     @Query("Delete from UploadPhotoModel")
     void deleteAll();

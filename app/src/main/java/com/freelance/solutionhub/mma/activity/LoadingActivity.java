@@ -26,7 +26,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static com.freelance.solutionhub.mma.util.AppConstant.token;
 import static com.freelance.solutionhub.mma.util.AppConstant.user_inactivity_time;
 
 public class LoadingActivity extends AppCompatActivity {
