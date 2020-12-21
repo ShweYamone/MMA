@@ -12,27 +12,19 @@ public class UploadPhotoModel implements Serializable {
     @ColumnInfo(name = "id")
     int id;
 
+    @ColumnInfo(name = "updateEventBodyKey")
+    public String updateEventBodyKey;
+
     @ColumnInfo(name = "bucketName")
     String bucketName;
 
     @ColumnInfo(name = "encodedPhotoString")
     String encodedPhotoString;
 
-    @ColumnInfo(name = "dateForPhotoName")
-    String dateForPhoto;
-
-    public UploadPhotoModel(String bucketName, String encodedPhotoString,String dateForPhoto) {
+    public UploadPhotoModel(String updateEventBodyKey, String bucketName, String encodedPhotoString) {
+        this.updateEventBodyKey = updateEventBodyKey;
         this.bucketName = bucketName;
         this.encodedPhotoString = encodedPhotoString;
-        this.dateForPhoto = dateForPhoto;
-    }
-
-    public String getDateForPhoto() {
-        return dateForPhoto;
-    }
-
-    public void setDateForPhoto(String dateForPhoto) {
-        this.dateForPhoto = dateForPhoto;
     }
 
     public int getId() {
@@ -41,6 +33,14 @@ public class UploadPhotoModel implements Serializable {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getUpdateEventBodyKey() {
+        return updateEventBodyKey;
+    }
+
+    public void setUpdateEventBodyKey(String updateEventBodyKey) {
+        this.updateEventBodyKey = updateEventBodyKey;
     }
 
     public String getBucketName() {

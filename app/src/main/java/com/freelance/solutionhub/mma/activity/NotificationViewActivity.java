@@ -189,8 +189,7 @@ public class NotificationViewActivity extends AppCompatActivity {
         boolean isScreenOn = pm.isInteractive();
         if (isScreenOn)
             stopHandler();
-        else
-            sharePreferenceHelper.setLock(true);
+        sharePreferenceHelper.setLock(true);
     }
 
     @Override
@@ -224,10 +223,11 @@ public class NotificationViewActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onUserLeaveHint() {
-        super.onUserLeaveHint();
-        sharePreferenceHelper.setLock(true);
+    public void onBackPressed() {
+        super.onBackPressed();
+        sharePreferenceHelper.setLock(false);
     }
+
     class LoadImage extends AsyncTask<Boolean, Void, Boolean> {
 
         public LoadImage() {

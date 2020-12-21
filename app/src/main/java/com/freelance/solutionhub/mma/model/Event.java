@@ -16,7 +16,6 @@ public class Event {
     public int event_id;
 
     @ColumnInfo(name = "updateEventBodyKey")
-    @ForeignKey(entity = UpdateEventBody.class, parentColumns = "id", childColumns = "updateEventBodyKey", onDelete = CASCADE)
     public String updateEventBodyKey;
 
     @ColumnInfo(name = "eventType")

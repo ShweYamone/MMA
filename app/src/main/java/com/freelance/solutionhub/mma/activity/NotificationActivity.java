@@ -159,8 +159,7 @@ public class NotificationActivity extends AppCompatActivity  {
         boolean isScreenOn = pm.isInteractive();
         if (isScreenOn)
             stopHandler();
-        else
-            mSharedPreference.setLock(true);
+        mSharedPreference.setLock(true);
     }
 
     @Override
@@ -264,13 +263,6 @@ public class NotificationActivity extends AppCompatActivity  {
         }
     }
 
-    @Override
-    protected void onUserLeaveHint() {
-        super.onUserLeaveHint();
-        mSharedPreference.setLock(true);
-    }
-
-
     private void getServiceOrders() {
         Call<NotificationReadModel> notificationReadModelCall = apiInterface.getNotificationReadList("Bearer "+mSharedPreference.getToken(),page,10);
         notificationReadModelCall.enqueue(new Callback<NotificationReadModel>() {
@@ -360,6 +352,7 @@ public class NotificationActivity extends AppCompatActivity  {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
+                mSharedPreference.setLock(true);
                 finish();
                 return true;
         }
@@ -369,7 +362,9 @@ public class NotificationActivity extends AppCompatActivity  {
     }
 
     @Override
-    public void onBackPressed(){
+    public void onBackPressed() {
+        super.onBackPressed();
+        mSharedPreference.setLock(false);
         finish();
     }
 }

@@ -16,7 +16,7 @@ public class UpdateEventBody implements Serializable {
     @PrimaryKey()
     @ColumnInfo(name = "id")
     @NonNull
-    private String id; //userid + "-" + service_order_id + "-" + datetime
+    private String id; //service_order_id + "-" + datetime
 
     @ColumnInfo(name = "actor")
     private String actor;
