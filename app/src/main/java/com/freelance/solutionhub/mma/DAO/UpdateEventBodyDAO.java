@@ -25,8 +25,8 @@ public interface UpdateEventBodyDAO {
     @Query("Delete from UpdateEventBody")
     void deleteAll();
 
-    @Query("Select * from UpdateEventBody")
-    List<UpdateEventBody> getUpdateEventBodyList();
+    @Query("Select * from UpdateEventBody where id=:id")
+    UpdateEventBody getUpdateEventBodyByID(String id);
 
     @Query("Select count(*) from UpdateEventBody")
     int getNumberOfUpdateEventBody();

@@ -1,5 +1,6 @@
 package com.freelance.solutionhub.mma.model;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
@@ -7,12 +8,15 @@ import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import static androidx.room.ForeignKey.CASCADE;
+import static com.freelance.solutionhub.mma.util.AppConstant.NO;
 
 @Entity(tableName = "Event")
 public class Event {
 
-    @ColumnInfo(name = "event_id") // eventType + key
-    public String event_id;
+    @PrimaryKey
+    @ColumnInfo(name = "event_id")
+    @NonNull
+    public String event_id; // eventType + eventKey
 
     @ColumnInfo(name = "updateEventBodyKey")
     public String updateEventBodyKey;
@@ -20,13 +24,13 @@ public class Event {
     @ColumnInfo(name = "eventType")
     public String eventType;
 
-    @ColumnInfo(name = "key")
+    @ColumnInfo(name = "eventKey")
     public String key;
 
     @ColumnInfo(name = "value")
     public String value;
 
-    @ColumnInfo(name = "alreadyUploaded", defaultValue = "NO")
+    @ColumnInfo(name = "alreadyUploaded", defaultValue = NO)
     public String alreadyUploaded;
 
     public Event(String eventType, String key, String value) {

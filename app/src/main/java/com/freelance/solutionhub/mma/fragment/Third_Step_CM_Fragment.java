@@ -3,12 +3,16 @@ package com.freelance.solutionhub.mma.fragment;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import android.provider.MediaStore;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,28 +25,44 @@ import android.widget.Toast;
 
 import com.freelance.solutionhub.mma.DB.InitializeDatabase;
 import com.freelance.solutionhub.mma.R;
+import com.freelance.solutionhub.mma.activity.CMActivity;
 import com.freelance.solutionhub.mma.activity.CMCompletionActivity;
 import com.freelance.solutionhub.mma.activity.PMCompletionActivity;
+import com.freelance.solutionhub.mma.model.Event;
 import com.freelance.solutionhub.mma.model.PMServiceInfoDetailModel;
+import com.freelance.solutionhub.mma.model.PhotoModel;
 import com.freelance.solutionhub.mma.model.ReturnStatus;
 import com.freelance.solutionhub.mma.model.UpdateEventBody;
+import com.freelance.solutionhub.mma.model.UploadPhotoModel;
 import com.freelance.solutionhub.mma.model.VerificationReturnBody;
 import com.freelance.solutionhub.mma.util.ApiClient;
 import com.freelance.solutionhub.mma.util.ApiInterface;
 import com.freelance.solutionhub.mma.util.Network;
 import com.freelance.solutionhub.mma.util.SharePreferenceHelper;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Random;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.freelance.solutionhub.mma.util.AppConstant.CM;
+import static com.freelance.solutionhub.mma.util.AppConstant.CM_Step_ONE;
 import static com.freelance.solutionhub.mma.util.AppConstant.JOBDONE;
+import static com.freelance.solutionhub.mma.util.AppConstant.PRE_BUCKET_NAME;
 
 public class Third_Step_CM_Fragment extends Fragment implements View.OnClickListener{
 
@@ -68,6 +88,11 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
     private PMServiceInfoDetailModel pmServiceInfoDetailModel;
     private String actualDateTime;
     private String remarksString;
+
+    private String dialogTitle = "";
+    private String dialogBody = "";
+
+    private UpdateEventBody updateEventBody;
 
     public Third_Step_CM_Fragment() {
         // Required empty public constructor
@@ -118,41 +143,17 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
             case R.id.btn_verify:
 
                 if (!mSharePreferenceHelper.userClickStepOneOrNot() && !mSharePreferenceHelper.userClickStepTwoOrNot() ) {
-                    new AlertDialog.Builder(getContext())
-                            .setIcon(R.drawable.warning)
-                            .setTitle("Unsaved Works")
-                            .setMessage("You have unsaved changes in Step One and Two.")
-                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                }
-
-                            })
-                            .show();
+                    dialogTitle = "Unsaved Works";
+                    dialogBody = "You have unsaved changes in Step One and Two.";
+                    showDialog();
                 } else if (!mSharePreferenceHelper.userClickStepOneOrNot()) {
-                    new AlertDialog.Builder(getContext())
-                            .setIcon(R.drawable.warning)
-                            .setTitle("Unsaved Works")
-                            .setMessage("You have unsaved changes in Step One.")
-                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                }
-
-                            })
-                            .show();
+                    dialogTitle = "Unsaved Works";
+                    dialogBody = "You have unsaved changes in Step One.";
+                    showDialog();
                 } else if (!mSharePreferenceHelper.userClickStepTwoOrNot()) {
-                    new AlertDialog.Builder(getContext())
-                            .setIcon(R.drawable.warning)
-                            .setTitle("Unsaved Works")
-                            .setMessage("You have unsaved changes in Step and Two.")
-                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                }
-
-                            })
-                            .show();
+                    dialogTitle = "Unsaved Works";
+                    dialogBody = "You have unsaved changes in Step and Two.";
+                    showDialog();
                 } else {
 
 
@@ -189,14 +190,29 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
 
             case R.id.btn_job_done :
                 updateEvent();
+                /*
                 Intent intent = new Intent(this.getContext(), CMCompletionActivity.class);
                 intent.putExtra("start_time", getArguments().getString("start_time"));
                 intent.putExtra("end_time", actualDateTime);
                 intent.putExtra("acknowledge_time", pmServiceInfoDetailModel.getAcknowledgementDate());
                 intent.putExtra("remarks", remarksString);
                 startActivity(intent);
-                getActivity().finish();
+                getActivity().finish();*/
         }
+    }
+
+    private void showDialog() {
+        new AlertDialog.Builder(getContext())
+                .setIcon(R.drawable.warning)
+                .setTitle(dialogTitle)
+                .setMessage(dialogBody)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+
+                })
+                .show();
     }
 
 
@@ -209,43 +225,180 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
         actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
         UpdateEventBody updateEventBody;
         if (network.isNetworkAvailable()) {
-            updateEventBody = new
-                    UpdateEventBody(mSharePreferenceHelper.getUserName(),
-                    mSharePreferenceHelper.getUserId(),
-                    actualDateTime,
-                    pmServiceInfoDetailModel.getId(),
-                    "JOBDONE",
-                    remarksString,
-                    weather);
-            Call<ReturnStatus> jobDoneCall = apiInterface.updateStatusEvent("Bearer "+mSharePreferenceHelper.getToken(), updateEventBody);
-            jobDoneCall.enqueue(new Callback<ReturnStatus>() {
-                @Override
-                public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
-                    ReturnStatus returnStatus = response.body();
-                    if(response.isSuccessful()) {
-                        Toast.makeText(getContext(), returnStatus.getStatus(), Toast.LENGTH_LONG).show();
-                    }
-                }
 
-                @Override
-                public void onFailure(Call<ReturnStatus> call, Throwable t) {
 
-                }
-            });
-        } else {
-            updateEventBody = new UpdateEventBody(
-                    mSharePreferenceHelper.getUserName(),
-                    mSharePreferenceHelper.getUserId(),
-                    actualDateTime,
-                    pmServiceInfoDetailModel.getId()
-            );
-            updateEventBody.setServiceOrderStatus(JOBDONE);
-            updateEventBody.setRemark(remarksString);
-            updateEventBody.setWeatherCondition(weather);
-            updateEventBody.setId(mSharePreferenceHelper.getUserId() + pmServiceInfoDetailModel.getId() + actualDateTime);
-            dbHelper.updateEventBodyDAO().insert(updateEventBody);
+            ArrayList<PhotoModel>  prePhotoModels = new ArrayList<>();
+            List<UploadPhotoModel> uploadPhotoModels = dbHelper.uploadPhotoDAO().getPhotosToUploadByBucketName(PRE_BUCKET_NAME);
+            for (UploadPhotoModel photoModel: uploadPhotoModels) {
+                prePhotoModels.add(new PhotoModel(getDecodedString(photoModel.getEncodedPhotoString()), 1));
+            }
+            new LoadImage(dbHelper.eventDAO().getEventsToUpload(CM_Step_ONE)).execute(uploadPhoto(
+                    prePhotoModels
+            ));
         }
 
+    }
+
+    /**
+     *Upload one photo to server and get url id
+     */
+    private File[] uploadPhoto(ArrayList<PhotoModel> p) {
+        File[] files = new File[p.size()];
+        for(int i = 0 ; i < p.size(); i++) {
+            File filesDir = getContext().getFilesDir();
+            File fileName = new File(filesDir, mSharePreferenceHelper.getUserId()+getSaltString() + ".jpg");
+
+            Log.i("FILE_NAME", fileName.toString());
+            OutputStream os;
+            try {
+                os = new FileOutputStream(fileName);
+                getBitmapFromEncodedString(p.get(i).getImage()).compress(Bitmap.CompressFormat.JPEG, 100, os);
+                os.flush();
+                os.close();
+            } catch (Exception e) {
+                Log.e("PHOTO", "Error writing bitmap", e);
+            }
+            files[i]= fileName;
+        }
+
+        return files;
+    }
+
+    private Bitmap getBitmapFromEncodedString(String encodedString){
+
+        byte[] arr = Base64.decode(encodedString, Base64.URL_SAFE);
+
+        Bitmap img = BitmapFactory.decodeByteArray(arr, 0, arr.length);
+        return img;
+
+
+    }
+
+    protected String getSaltString() {
+        String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+        StringBuilder salt = new StringBuilder();
+        Random rnd = new Random();
+        while (salt.length() < 7) { // length of the random string.
+            int index = (int) (rnd.nextFloat() * SALTCHARS.length());
+            salt.append(SALTCHARS.charAt(index));
+        }
+        String saltStr = salt.toString();
+        return saltStr;
+
+    }
+
+    class LoadImage extends AsyncTask<File, Void, Boolean> {
+
+        private List<Event> f;
+        private int count = 0;
+
+        public LoadImage(List<Event> f) {
+            this.f = f;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aVoid) {
+            super.onPostExecute(aVoid);
+            if(f.size() == count  ){
+
+            }
+        }
+
+        private void updateEvents() {
+            date = new Date();
+            Timestamp timestamp = new Timestamp(date.getTime());
+            String actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
+
+            if (f.size() > 0) {
+                /*
+                UpdateEventBody eventBody = new UpdateEventBody(
+                        mSharePreference.getUserName(),
+                        mSharePreference.getUserId(),
+                        actualDateTime,
+                        pmServiceInfoModel.getId(),
+                        f
+                );*/
+
+                updateEventBody = dbHelper.updateEventBodyDAO().getUpdateEventBodyByID(CM_Step_ONE);
+                updateEventBody.setEvents(dbHelper.eventDAO().getEventsToUpload(CM_Step_ONE));
+
+                Call<ReturnStatus> call = apiInterface.updateEvent("Bearer " + mSharePreferenceHelper.getToken(),
+                        updateEventBody);
+                call.enqueue(new Callback<ReturnStatus>() {
+                    @Override
+                    public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
+                        if (response.isSuccessful()) {
+                            Toast.makeText(getContext(),  response.body().getStatus()+ f.size() + ":ALL EVENTS UPLOADED" , Toast.LENGTH_SHORT).show();
+                            mSharePreferenceHelper.userClickCMStepTwo(true);
+                            ((CMActivity)getActivity()).hideProgressBar();
+                            f.clear();
+                        } else {
+                            Toast.makeText(getContext(), "response " + response.code(), Toast.LENGTH_LONG).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ReturnStatus> call, Throwable t) {
+
+                    }
+                });
+
+            }
+
+        }
+
+        @Override
+        protected Boolean doInBackground(File... files) {
+            for (File fileName : files) {
+                MultipartBody.Builder builder = new MultipartBody.Builder();
+                builder.setType(MultipartBody.FORM);
+                builder.addFormDataPart("file", fileName.getName(), RequestBody.create(MediaType.parse("multipart/form-data"), fileName));
+                MultipartBody requestBody = builder.build();
+
+                Call<ReturnStatus> returnStatusCall = apiInterface.uploadPhoto(PRE_BUCKET_NAME, requestBody);
+                returnStatusCall.enqueue(new Callback<ReturnStatus>() {
+                    @Override
+                    public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
+                        ReturnStatus returnStatus = response.body();
+                        if (response.isSuccessful()) {
+                            Log.v("PRE_EVENT", "Added post event");
+                            f.add(new Event("PRE_MAINTENANCE_PHOTO_UPDATE", "preMaintenancePhotoUpdate", returnStatus.getData().getFileUrl()));
+                            count++;
+                            if(files.length == count)
+                                updateEvents();
+                            Toast.makeText(getContext(), returnStatus.getStatus() + ":PHOTO"+count, Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(getContext(), "FAILED:" + response.code(), Toast.LENGTH_LONG).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ReturnStatus> call, Throwable t) {
+
+                    }
+                });
+            }
+
+
+            if(files.length == count) {
+                if(f.size() != 0) {
+                    updateEvents();
+                }
+
+                return true;
+            }
+            return false;
+        }
+
+    }
+    /**
+     * Encode photo string to decode string
+     */
+    private String getDecodedString(String s){
+        byte[] data = Base64.decode(s,Base64.DEFAULT);
+        String s1 = new String(data);
+        Log.v("DECODE", s1);
+        return s1;
     }
 
 }

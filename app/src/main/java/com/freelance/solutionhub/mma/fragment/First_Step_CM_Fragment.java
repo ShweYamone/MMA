@@ -64,6 +64,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import static com.freelance.solutionhub.mma.util.AppConstant.CM_Step_ONE;
+import static com.freelance.solutionhub.mma.util.AppConstant.PRE_BUCKET_NAME;
 
 public class First_Step_CM_Fragment extends Fragment {
 
@@ -148,8 +149,8 @@ public class First_Step_CM_Fragment extends Fragment {
         if (dbHelper.updateEventBodyDAO().getNumberOfUpdateEventsById(CM_Step_ONE) > 0) {
             prePhotoModels.clear();
            // int imaCount = dbHelper.uploadPhotoDAO().getNumberOfPhotosToUpload();
-            for (UploadPhotoModel uploadPhotoModel: dbHelper.uploadPhotoDAO().getPhotosToUpload()) {
-                prePhotoModels.add(new PhotoModel(uploadPhotoModel.getEncodedPhotoString(), 1));
+            for (UploadPhotoModel uploadPhotoModel: dbHelper.uploadPhotoDAO().getPhotosToUploadByBucketName(PRE_BUCKET_NAME)) {
+                prePhotoModels.add(new PhotoModel(getDecodedString(uploadPhotoModel.getEncodedPhotoString()), 1));
             }
             prePhotoAdapter.notifyDataSetChanged();
         }
@@ -210,6 +211,7 @@ public class First_Step_CM_Fragment extends Fragment {
     public void save(){
 
         if (prePhotoModels.size() > 1 && prePhotoModels.size() < 6) {
+            mSharePerferenceHelper.userClickCMStepOne(true);
 
             Log.v("JOIN", preEventList.size() + "");
             date = new Date();
@@ -227,7 +229,7 @@ public class First_Step_CM_Fragment extends Fragment {
 
             dbHelper.uploadPhotoDAO().deleteById(CM_Step_ONE);
             for (PhotoModel photoModel: prePhotoModels) {
-                saveEncodePhotoToDatabase(CM_Step_ONE, "pids-pre-maintenance-photo", photoModel.getImage());
+                saveEncodePhotoToDatabase(CM_Step_ONE, PRE_BUCKET_NAME, photoModel.getImage());
             }
             Toast.makeText(this.getContext(), dbHelper.uploadPhotoDAO().getNumberOfPhotosToUpload()+" photos have been saved.", Toast.LENGTH_SHORT).show();
         }
@@ -491,6 +493,16 @@ public class First_Step_CM_Fragment extends Fragment {
             return false;
         }
 
+    }
+
+    /**
+     * Encode photo string to decode string
+     */
+    private String getDecodedString(String s){
+        byte[] data = Base64.decode(s,Base64.DEFAULT);
+        String s1 = new String(data);
+        Log.v("DECODE", s1);
+        return s1;
     }
 
 }

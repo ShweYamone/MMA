@@ -398,6 +398,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/edittext_height"
                         android:textSize="@dimen/txt_size_normal"
+                        android:textColor="@color/colorPrimaryDark"
                         android:textAlignment="center"/>
                 </LinearLayout>
 
@@ -500,6 +501,7 @@
                                 android:gravity="center"
                                 android:layout_width="match_parent"
                                 android:layout_height="@dimen/edittext_height"
+                                android:textColor="@color/colorPrimaryDark"
                                 android:textAlignment="center"
                                 android:textSize="@dimen/txt_size_normal"/>
                         </LinearLayout>
