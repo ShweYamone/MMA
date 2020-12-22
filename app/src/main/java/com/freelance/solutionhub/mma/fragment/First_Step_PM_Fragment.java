@@ -599,7 +599,8 @@ public class First_Step_PM_Fragment extends Fragment {
                 MultipartBody requestBody = builder.build();
 
 
-                Call<ReturnStatus> returnStatusCall = apiInterface.uploadPhoto("pids-post-maintenance-photo", requestBody);
+                Call<ReturnStatus> returnStatusCall = apiInterface.uploadPhoto("Bearer " + mSharePerferenceHelper.getToken(),
+                        "pids-post-maintenance-photo", requestBody);
                 returnStatusCall.enqueue(new Callback<ReturnStatus>() {
                     @Override
                     public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {

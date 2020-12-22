@@ -23,11 +23,13 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.freelance.solutionhub.mma.DAO.UpdateEventBodyDAO;
 import com.freelance.solutionhub.mma.DB.InitializeDatabase;
 import com.freelance.solutionhub.mma.R;
 import com.freelance.solutionhub.mma.activity.CMActivity;
 import com.freelance.solutionhub.mma.activity.CMCompletionActivity;
 import com.freelance.solutionhub.mma.activity.PMCompletionActivity;
+import com.freelance.solutionhub.mma.model.ErrorReturnBody;
 import com.freelance.solutionhub.mma.model.Event;
 import com.freelance.solutionhub.mma.model.PMServiceInfoDetailModel;
 import com.freelance.solutionhub.mma.model.PhotoModel;
@@ -42,6 +44,7 @@ import com.freelance.solutionhub.mma.util.SharePreferenceHelper;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -55,14 +58,19 @@ import butterknife.ButterKnife;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 import static com.freelance.solutionhub.mma.util.AppConstant.CM;
 import static com.freelance.solutionhub.mma.util.AppConstant.CM_Step_ONE;
+import static com.freelance.solutionhub.mma.util.AppConstant.CM_Step_THREE;
+import static com.freelance.solutionhub.mma.util.AppConstant.CM_Step_TWO;
 import static com.freelance.solutionhub.mma.util.AppConstant.JOBDONE;
+import static com.freelance.solutionhub.mma.util.AppConstant.POST_BUCKET_NAME;
 import static com.freelance.solutionhub.mma.util.AppConstant.PRE_BUCKET_NAME;
+import static com.freelance.solutionhub.mma.util.AppConstant.YES;
 
 public class Third_Step_CM_Fragment extends Fragment implements View.OnClickListener{
 
@@ -74,6 +82,18 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
 
     @BindView(R.id.radioGroup)
     RadioGroup radioGroup;
+
+    @BindView(R.id.rbCloudy)
+    RadioButton rbCloudy;
+
+    @BindView(R.id.rbHeavyRaining)
+    RadioButton rbHeavyRaining;
+
+    @BindView(R.id.rbRaining)
+    RadioButton rbRaining;
+
+    @BindView(R.id.rbSunny)
+    RadioButton rbSunny;
 
     @BindView(R.id.btn_verify)
     Button btnVerify;
@@ -87,7 +107,9 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
     private ApiInterface apiInterface;
     private PMServiceInfoDetailModel pmServiceInfoDetailModel;
     private String actualDateTime;
-    private String remarksString;
+
+    private boolean stepOneUploaded = false;
+    private boolean stepTwoUploaded = false;
 
     private String dialogTitle = "";
     private String dialogBody = "";
@@ -135,6 +157,17 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
                                               }
         );
 
+        if (dbHelper.updateEventBodyDAO().getNumberOfUpdateEventsById(CM_Step_THREE) > 0) {
+            UpdateEventBody temp = dbHelper.updateEventBodyDAO().getUpdateEventBodyByID(CM_Step_THREE);
+            remarks.setText(temp.getRemark() + "");
+            switch (temp.getWeatherCondition()) {
+                case "Sunny" : rbSunny.setChecked(true);break;
+                case "Cloudy" : rbCloudy.setChecked(true);break;
+                case "Raining" : rbRaining.setChecked(true);break;
+                case "Heavy Rain": rbHeavyRaining.setChecked(true);break;
+            }
+        }
+
         return view;
     }
     @Override
@@ -155,6 +188,21 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
                     dialogBody = "You have unsaved changes in Step and Two.";
                     showDialog();
                 } else {
+                    date = new Date();
+                    Timestamp timestamp = new Timestamp(date.getTime());
+                    actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
+                    UpdateEventBody updateEventBody = new UpdateEventBody(
+                            mSharePreferenceHelper.getUserName(),
+                            mSharePreferenceHelper.getUserId(),
+                            actualDateTime,
+                            pmServiceInfoDetailModel.getId()
+                    );
+
+                    updateEventBody.setId(CM_Step_THREE);
+                    updateEventBody.setServiceOrderStatus(JOBDONE);
+                    updateEventBody.setRemark(remarks.getText().toString());
+                    updateEventBody.setWeatherCondition(weather);
+                    dbHelper.updateEventBodyDAO().insert(updateEventBody);
 
 
                     Call<VerificationReturnBody> call = apiInterface.verifyWorks("Bearer " + mSharePreferenceHelper.getToken(), "CM20205B6923C2");
@@ -182,6 +230,8 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
 
                         }
                     });
+                    jobDone.setClickable(true);
+                    jobDone.setBackground(getResources().getDrawable(R.drawable.round_rect_shape_button));
                 }
 
 
@@ -190,14 +240,6 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
 
             case R.id.btn_job_done :
                 updateEvent();
-                /*
-                Intent intent = new Intent(this.getContext(), CMCompletionActivity.class);
-                intent.putExtra("start_time", getArguments().getString("start_time"));
-                intent.putExtra("end_time", actualDateTime);
-                intent.putExtra("acknowledge_time", pmServiceInfoDetailModel.getAcknowledgementDate());
-                intent.putExtra("remarks", remarksString);
-                startActivity(intent);
-                getActivity().finish();*/
         }
     }
 
@@ -217,24 +259,24 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
 
 
     public void updateEvent(){
-        remarksString = "";
-        if(remarks.getText() != null)
-            remarksString = remarks.getText().toString();
-        date = new Date();
-        Timestamp timestamp = new Timestamp(date.getTime());
-        actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
-        UpdateEventBody updateEventBody;
+
         if (network.isNetworkAvailable()) {
 
-
+            /**  STEP_ONE EVENT UPDATE */
             ArrayList<PhotoModel>  prePhotoModels = new ArrayList<>();
             List<UploadPhotoModel> uploadPhotoModels = dbHelper.uploadPhotoDAO().getPhotosToUploadByBucketName(PRE_BUCKET_NAME);
             for (UploadPhotoModel photoModel: uploadPhotoModels) {
                 prePhotoModels.add(new PhotoModel(getDecodedString(photoModel.getEncodedPhotoString()), 1));
             }
-            new LoadImage(dbHelper.eventDAO().getEventsToUpload(CM_Step_ONE)).execute(uploadPhoto(
-                    prePhotoModels
-            ));
+
+            ((CMActivity)getActivity()).showProgressBar();
+            List<Event> events = new ArrayList<>();
+            new LoadPREImage(
+                    events,
+                    PRE_BUCKET_NAME,
+                    dbHelper.updateEventBodyDAO().getUpdateEventBodyByID(CM_Step_ONE))
+                    .execute(uploadPhoto(prePhotoModels));
+
         }
 
     }
@@ -287,13 +329,17 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
 
     }
 
-    class LoadImage extends AsyncTask<File, Void, Boolean> {
+    class LoadPREImage extends AsyncTask<File, Void, Boolean> {
 
         private List<Event> f;
         private int count = 0;
+        private String buckerName;
+        private UpdateEventBody updateEventBody;
 
-        public LoadImage(List<Event> f) {
+        public LoadPREImage(List<Event> f, String buckerName, UpdateEventBody updateEventBody) {
             this.f = f;
+            this.buckerName = buckerName;
+            this.updateEventBody = updateEventBody;
         }
 
         @Override
@@ -304,42 +350,53 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
             }
         }
 
-        private void updateEvents() {
-            date = new Date();
-            Timestamp timestamp = new Timestamp(date.getTime());
-            String actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
+        private void updatePreEvents() {
 
             if (f.size() > 0) {
-                /*
-                UpdateEventBody eventBody = new UpdateEventBody(
-                        mSharePreference.getUserName(),
-                        mSharePreference.getUserId(),
-                        actualDateTime,
-                        pmServiceInfoModel.getId(),
-                        f
-                );*/
+                updateEventBody.setEvents(f);
 
-                updateEventBody = dbHelper.updateEventBodyDAO().getUpdateEventBodyByID(CM_Step_ONE);
-                updateEventBody.setEvents(dbHelper.eventDAO().getEventsToUpload(CM_Step_ONE));
-
+                Log.e("UPLOAD_ERROR", "updateEvents: " +
+                        dbHelper.updateEventBodyDAO().getNumberOfUpdateEventsById(CM_Step_TWO));
                 Call<ReturnStatus> call = apiInterface.updateEvent("Bearer " + mSharePreferenceHelper.getToken(),
                         updateEventBody);
                 call.enqueue(new Callback<ReturnStatus>() {
                     @Override
                     public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
                         if (response.isSuccessful()) {
-                            Toast.makeText(getContext(),  response.body().getStatus()+ f.size() + ":ALL EVENTS UPLOADED" , Toast.LENGTH_SHORT).show();
-                            mSharePreferenceHelper.userClickCMStepTwo(true);
-                            ((CMActivity)getActivity()).hideProgressBar();
+                            Toast.makeText(getContext(),  response.body().getStatus()+ ", " + f.size() + " PRE_EVENTS UPLOADED" , Toast.LENGTH_SHORT).show();
+
+                            mSharePreferenceHelper.userClickCMStepOne(true);
+                            dbHelper.eventDAO().update(YES, CM_Step_ONE);
                             f.clear();
+
+
+                            /**  STEP_TWO EVENT UPDATE */
+                            ArrayList<PhotoModel>  postPhotoModels = new ArrayList<>();
+                            List<UploadPhotoModel> uploadPhotoModels = dbHelper.uploadPhotoDAO().getPhotosToUploadByBucketName(POST_BUCKET_NAME);
+                            for (UploadPhotoModel photoModel: uploadPhotoModels) {
+                                postPhotoModels.add(new PhotoModel(getDecodedString(photoModel.getEncodedPhotoString()), 1));
+                            }
+                            new LoadPOSTImage(
+                                    dbHelper.eventDAO().getEventsToUpload(CM_Step_TWO),
+                                    POST_BUCKET_NAME,
+                                    dbHelper.updateEventBodyDAO().getUpdateEventBodyByID(CM_Step_TWO))
+                                    .execute(uploadPhoto(postPhotoModels));
+
                         } else {
-                            Toast.makeText(getContext(), "response " + response.code(), Toast.LENGTH_LONG).show();
+                            ResponseBody errorReturnBody = response.errorBody();
+                            try {
+                                Log.e("UPLOAD_ERROR", "onResponse: " + errorReturnBody.string());
+                                Toast.makeText(getContext(), "response " + response.code(), Toast.LENGTH_LONG).show();
+                                ((CMActivity)getActivity()).hideProgressBar();
+                            } catch (IOException e) {
+
+                            }
                         }
                     }
 
                     @Override
                     public void onFailure(Call<ReturnStatus> call, Throwable t) {
-
+                        ((CMActivity)getActivity()).hideProgressBar();
                     }
                 });
 
@@ -354,20 +411,23 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
                 builder.setType(MultipartBody.FORM);
                 builder.addFormDataPart("file", fileName.getName(), RequestBody.create(MediaType.parse("multipart/form-data"), fileName));
                 MultipartBody requestBody = builder.build();
+                Log.i("PhotoUpload", "doInBackground: " + requestBody.type());
 
-                Call<ReturnStatus> returnStatusCall = apiInterface.uploadPhoto(PRE_BUCKET_NAME, requestBody);
+                Call<ReturnStatus> returnStatusCall = apiInterface.uploadPhoto("Bearer " + mSharePreferenceHelper.getToken(),
+                        buckerName, requestBody);
                 returnStatusCall.enqueue(new Callback<ReturnStatus>() {
                     @Override
                     public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
                         ReturnStatus returnStatus = response.body();
                         if (response.isSuccessful()) {
-                            Log.v("PRE_EVENT", "Added post event");
                             f.add(new Event("PRE_MAINTENANCE_PHOTO_UPDATE", "preMaintenancePhotoUpdate", returnStatus.getData().getFileUrl()));
+
                             count++;
                             if(files.length == count)
-                                updateEvents();
+                                updatePreEvents();
                             Toast.makeText(getContext(), returnStatus.getStatus() + ":PHOTO"+count, Toast.LENGTH_SHORT).show();
                         } else {
+                            Log.i("PhotoUpload", "doInBackground: " + response.message() + response.headers());
                             Toast.makeText(getContext(), "FAILED:" + response.code(), Toast.LENGTH_LONG).show();
                         }
                     }
@@ -382,15 +442,179 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
 
             if(files.length == count) {
                 if(f.size() != 0) {
-                    updateEvents();
+                    updatePreEvents();
                 }
-
                 return true;
             }
             return false;
         }
 
     }
+
+    class LoadPOSTImage extends AsyncTask<File, Void, Boolean> {
+
+        private List<Event> f;
+        private int count = 0;
+        private String buckerName;
+        private UpdateEventBody updateEventBody;
+
+        public LoadPOSTImage(List<Event> f, String buckerName, UpdateEventBody updateEventBody) {
+            this.f = f;
+            this.buckerName = buckerName;
+            this.updateEventBody = updateEventBody;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aVoid) {
+            super.onPostExecute(aVoid);
+            if(f.size() == count  ){
+
+            }
+        }
+
+        private void updatePreEvents() {
+
+            if (f.size() > 0) {
+                updateEventBody.setEvents(f);
+
+                Log.e("UPLOAD_ERROR", "updateEvents: " +
+                        dbHelper.updateEventBodyDAO().getNumberOfUpdateEventsById(CM_Step_TWO));
+                Call<ReturnStatus> call = apiInterface.updateEvent("Bearer " + mSharePreferenceHelper.getToken(),
+                        updateEventBody);
+                call.enqueue(new Callback<ReturnStatus>() {
+                    @Override
+                    public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
+                        if (response.isSuccessful()) {
+                            Toast.makeText(getContext(),  response.body().getStatus()+ ", " + f.size() + " POST_EVENTS UPLOADED" , Toast.LENGTH_SHORT).show();
+
+                            mSharePreferenceHelper.userClickCMStepTwo(true);
+                            dbHelper.eventDAO().update(YES, CM_Step_TWO);
+                            ((CMActivity)getActivity()).hideProgressBar();
+                            f.clear();
+                            updateSTEP_Three();
+
+                        } else {
+                            ResponseBody errorReturnBody = response.errorBody();
+                            try {
+                                Log.e("UPLOAD_ERROR", "onResponse: " + errorReturnBody.string());
+                                Toast.makeText(getContext(), "response " + response.code(), Toast.LENGTH_LONG).show();
+                                ((CMActivity)getActivity()).hideProgressBar();
+                            } catch (IOException e) {
+
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ReturnStatus> call, Throwable t) {
+                        ((CMActivity)getActivity()).hideProgressBar();
+                    }
+                });
+
+            }
+
+        }
+
+        @Override
+        protected Boolean doInBackground(File... files) {
+            for (File fileName : files) {
+                MultipartBody.Builder builder = new MultipartBody.Builder();
+                builder.setType(MultipartBody.FORM);
+                builder.addFormDataPart("file", fileName.getName(), RequestBody.create(MediaType.parse("multipart/form-data"), fileName));
+                MultipartBody requestBody = builder.build();
+                Log.i("PhotoUpload", "doInBackground: " + requestBody.type());
+
+                Call<ReturnStatus> returnStatusCall = apiInterface.uploadPhoto("Bearer " + mSharePreferenceHelper.getToken(),
+                        buckerName, requestBody);
+                returnStatusCall.enqueue(new Callback<ReturnStatus>() {
+                    @Override
+                    public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
+                        ReturnStatus returnStatus = response.body();
+                        if (response.isSuccessful()) {
+                            f.add(new Event("POST_MAINTENANCE_PHOTO_UPDATE", "postMaintenancePhotoUpdate", returnStatus.getData().getFileUrl()));
+
+                            count++;
+                            if(files.length == count)
+                                updatePreEvents();
+                            Toast.makeText(getContext(), returnStatus.getStatus() + ":PHOTO"+count, Toast.LENGTH_SHORT).show();
+                        } else {
+                            Log.i("PhotoUpload", "doInBackground: " + response.message() + response.headers());
+                            Toast.makeText(getContext(), "FAILED:" + response.code(), Toast.LENGTH_LONG).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ReturnStatus> call, Throwable t) {
+
+                    }
+                });
+            }
+
+
+            if(files.length == count) {
+                if(f.size() != 0) {
+                    updatePreEvents();
+                }
+                return true;
+            }
+            return false;
+        }
+
+    }
+
+    private void updateSTEP_Three() {
+      //  completeWork();
+        /** STEP_THREE EVENT UPDATE */
+        Call<ReturnStatus> call = apiInterface.updateStatusEvent("Bearer " + mSharePreferenceHelper.getToken(),
+                dbHelper.updateEventBodyDAO().getUpdateEventBodyByID(CM_Step_THREE));
+        call.enqueue(new Callback<ReturnStatus>() {
+            @Override
+            public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(getContext(),response.body().getStatus() + " Step Three Event Uploaded.",Toast.LENGTH_SHORT).show();
+                    ((CMActivity)getActivity()).hideProgressBar();
+                    deleteWorkingData();
+                    completeWork();
+                } else {
+                    Toast.makeText(getContext(), "response " + response.code(), Toast.LENGTH_LONG).show();
+                    ResponseBody errorReturnBody = response.errorBody();
+                    try {
+                        Log.e("UPLOAD_ERROR", "onResponse: " + errorReturnBody.string());
+                        ((CMActivity)getActivity()).hideProgressBar();
+
+
+                    } catch (IOException e) {
+
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ReturnStatus> call, Throwable t) {
+                Toast.makeText(getContext(), "response " + "FAILURE", Toast.LENGTH_LONG).show();
+                ((CMActivity)getActivity()).hideProgressBar();
+                Log.e("UPLOAD_ERROR", "onResponse: " + t.getMessage());
+            }
+        });
+    }
+
+    private void deleteWorkingData() {
+        dbHelper.updateEventBodyDAO().deleteAll();
+        dbHelper.uploadPhotoDAO().deleteAll();
+        dbHelper.eventDAO().deleteAll();
+    }
+
+    private void completeWork() {
+        Intent intent = new Intent(this.getContext(), CMCompletionActivity.class);
+        intent.putExtra("start_time", getArguments().getString("start_time"));
+        intent.putExtra("end_time", actualDateTime);
+        intent.putExtra("acknowledge_time", pmServiceInfoDetailModel.getAcknowledgementDate());
+        intent.putExtra("remarks", remarks.getText().toString()+"");
+        startActivity(intent);
+        getActivity().finish();
+
+    }
+
     /**
      * Encode photo string to decode string
      */

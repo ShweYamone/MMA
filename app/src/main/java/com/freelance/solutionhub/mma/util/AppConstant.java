@@ -34,6 +34,7 @@ public class AppConstant {
 
     public static final String CM_Step_ONE = "CM_STEP_ONE";
     public static final String CM_Step_TWO = "CM_STEP_TWO";
+    public static final String CM_Step_THREE = "CM_STEP_THREE";
     public static final String PM_Step_ONE = "PM_STEP_ONE";
 
     public static final String PRE_BUCKET_NAME = "pids-pre-maintenance-photo";
