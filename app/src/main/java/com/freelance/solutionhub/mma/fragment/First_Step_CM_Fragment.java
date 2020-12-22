@@ -64,6 +64,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import static com.freelance.solutionhub.mma.util.AppConstant.CM_Step_ONE;
+import static com.freelance.solutionhub.mma.util.AppConstant.PRE_BUCKET_NAME;
 
 public class First_Step_CM_Fragment extends Fragment {
 
@@ -148,7 +149,7 @@ public class First_Step_CM_Fragment extends Fragment {
         if (dbHelper.updateEventBodyDAO().getNumberOfUpdateEventsById(CM_Step_ONE) > 0) {
             prePhotoModels.clear();
            // int imaCount = dbHelper.uploadPhotoDAO().getNumberOfPhotosToUpload();
-            for (UploadPhotoModel uploadPhotoModel: dbHelper.uploadPhotoDAO().getPhotosToUpload()) {
+            for (UploadPhotoModel uploadPhotoModel: dbHelper.uploadPhotoDAO().getPhotosToUploadByBucketName(PRE_BUCKET_NAME)) {
                 prePhotoModels.add(new PhotoModel(uploadPhotoModel.getEncodedPhotoString(), 1));
             }
             prePhotoAdapter.notifyDataSetChanged();
@@ -227,7 +228,7 @@ public class First_Step_CM_Fragment extends Fragment {
 
             dbHelper.uploadPhotoDAO().deleteById(CM_Step_ONE);
             for (PhotoModel photoModel: prePhotoModels) {
-                saveEncodePhotoToDatabase(CM_Step_ONE, "pids-pre-maintenance-photo", photoModel.getImage());
+                saveEncodePhotoToDatabase(CM_Step_ONE, PRE_BUCKET_NAME, photoModel.getImage());
             }
             Toast.makeText(this.getContext(), dbHelper.uploadPhotoDAO().getNumberOfPhotosToUpload()+" photos have been saved.", Toast.LENGTH_SHORT).show();
         }

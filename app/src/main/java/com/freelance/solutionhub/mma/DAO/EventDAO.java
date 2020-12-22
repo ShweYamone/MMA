@@ -24,11 +24,20 @@ public interface EventDAO {
     @Query("SELECT * from Event where updateEventBodyKey=:key")
     List<Event> getEvents(String key);
 
-    @Query("Select count(*) from Event where event_id=:eventId")
-    int getSpecifiedEventCount(String eventId);
+    @Query("Select value from Event where eventType=:eventType AND eventKey=:key")
+    String getEventValue(String eventType, String key);
+
+    @Query("Select count(*) from Event where eventType=:eventType AND eventKey=:eventKey")
+    int getEventValueCount(String eventType, String eventKey);
 
     @Query("Select count(*) from Event")
     int getNumberOfEvents();
+
+    @Query("Select * from Event where updateEventBodyKey=:key AND alreadyUploaded='no'")
+    List<Event> getEventsToUpload(String key);
+
+    @Query("Select count(*) from Event where updateEventBodyKey=:key AND alreadyUploaded='no'")
+    int getNumberEventsToUpload(String key);
 
     @Query("Delete from Event where updateEventBodyKey=:key")
     void deleteByUpdateEventBodyKey(int key);

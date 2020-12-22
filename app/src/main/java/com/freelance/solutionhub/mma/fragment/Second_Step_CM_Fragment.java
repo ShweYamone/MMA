@@ -72,6 +72,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.IllegalFormatCodePointException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -87,7 +88,23 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.freelance.solutionhub.mma.util.AppConstant.ACTUAL_PROBLEM;
+import static com.freelance.solutionhub.mma.util.AppConstant.CAUSE;
+import static com.freelance.solutionhub.mma.util.AppConstant.CM;
+import static com.freelance.solutionhub.mma.util.AppConstant.CM_Step_ONE;
 import static com.freelance.solutionhub.mma.util.AppConstant.CM_Step_TWO;
+import static com.freelance.solutionhub.mma.util.AppConstant.COMMENT;
+import static com.freelance.solutionhub.mma.util.AppConstant.FAULT_PART_CODE;
+import static com.freelance.solutionhub.mma.util.AppConstant.NO;
+import static com.freelance.solutionhub.mma.util.AppConstant.PART_REPLACEMENT_UPDATE;
+import static com.freelance.solutionhub.mma.util.AppConstant.POST_BUCKET_NAME;
+import static com.freelance.solutionhub.mma.util.AppConstant.PRE_BUCKET_NAME;
+import static com.freelance.solutionhub.mma.util.AppConstant.REMEDY;
+import static com.freelance.solutionhub.mma.util.AppConstant.REPLACEMENT_PART_CODE;
+import static com.freelance.solutionhub.mma.util.AppConstant.REPORTED_PROBLEM;
+import static com.freelance.solutionhub.mma.util.AppConstant.SERVICE_ORDER_UPDATE;
+import static com.freelance.solutionhub.mma.util.AppConstant.THIRD_PARTY_COMMENT_UPDATE;
+import static com.freelance.solutionhub.mma.util.AppConstant.YES;
 
 public class Second_Step_CM_Fragment extends Fragment implements View.OnClickListener{
 
@@ -184,16 +201,15 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
     //qr code scanner object
     private IntentIntegrator qrScan;
 
-    private ArrayList<Event> events = new ArrayList<>();
 
 
     List<Code_Description> problemList = new ArrayList<>();
     Map<String,List<Code_Description>> problemCauseMap = new HashMap<>();
     Map<String,List<Code_Description>> causeRemedyMap = new HashMap<>();
 
-    List<String> problemArr = new ArrayList<>(); String[] actualProblemCode = new String[0];
-    List<String> causeArr = new ArrayList<>(); String[] causeProblemCode = new String[0];
-    List<String> remedyArr = new ArrayList<>(); String[] remedyProblemCode = new String[0];
+    List<String> problemArr = new ArrayList<>(); List<String> actualProblemCode = new ArrayList<>();
+    List<String> causeArr = new ArrayList<>(); List<String> causeProblemCode = new ArrayList<>();
+    List<String> remedyArr = new ArrayList<>(); List<String> remedyProblemCode = new ArrayList<>();
 
     private String actualProblem, causeCode, remedyCode = "";
     private boolean thirdPartyShow = true;
@@ -202,6 +218,15 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
     private boolean qrScan1Click = true;
     private boolean isMandatoryFieldLeft = false;
     private String mandatoryFieldsLeft = "";
+
+    private String preActualProblemCode = "";
+    private String preCauseCode = "";
+    private String preRemedyCode = "";
+    private String preScan1Result = "";
+    private String preScan2Result = "";
+    private String preThirdPartyComment = "";
+    private boolean spinnerCauseAutoSelect = false;
+    private boolean spinnerRemedyAutoSelect = false;
 
     Intent intent;
     public Second_Step_CM_Fragment() {
@@ -227,6 +252,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
         postModelList = new ArrayList<>();
         setDataAdapter();
 
+
         actualProblemArrAdapter = new ArrayAdapter(this.getContext(), android.R.layout.simple_spinner_item, problemArr);
         causeProblemArrAdapter = new ArrayAdapter(this.getContext(), android.R.layout.simple_spinner_item, causeArr);
         remedyArrAdapter = new ArrayAdapter(this.getContext(), android.R.layout.simple_spinner_item, remedyArr);
@@ -241,29 +267,38 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
         spinnerActualProbleCode.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                causeArr.clear();
-                if (problemCauseMap.containsKey(actualProblemCode[i])) {
-                    causeProblemCode = new String[problemCauseMap.get(actualProblemCode[i]).size() + 1];
-
+                causeArr.clear(); causeProblemCode.clear();
+                if (problemCauseMap.containsKey(actualProblemCode.get(i))) {
+                 //   causeProblemCode = new String[];
+                    int size = problemCauseMap.get(actualProblemCode.get(i)).size();
                     Code_Description temp;
-                    causeProblemCode[0] = "";
-                    for (int k = 0; k < causeProblemCode.length-1; k++) {
-                        temp = problemCauseMap.get(actualProblemCode[i]).get(k);
-                        causeProblemCode[k + 1] = temp.getCode();
+                 //   causeProblemCode.add(0, "");
+                    for (int k = 0; k < size; k++) {
+                        temp = problemCauseMap.get(actualProblemCode.get(i))
+                                .get(k);
+                        causeProblemCode.add(temp.getCode());
                         causeArr.add(temp.getDescription());
                     }
-                } else {
-                    causeProblemCode = new String[1];
                 }
-                causeProblemCode[0] = "Select Cause Code";
+                causeProblemCode.add(0, "Select Cause Code");
                 causeArr.add(0, "Select Cause Code");
                 causeProblemArrAdapter.notifyDataSetChanged();
-                remedyArr.clear();
+
+                remedyArr.clear();remedyProblemCode.clear();
+                remedyProblemCode.add(0,"Select Remedy Code");
                 remedyArr.add(0, "Select Remedy Code");
                 remedyArrAdapter.notifyDataSetChanged();
-                spinnerCauseCode.setSelection(0, true);
-                spinnerRemedyCode.setSelection(0,true);
-                actualProblem = actualProblemCode[i];
+
+                if (spinnerCauseAutoSelect) {
+                    spinnerCauseCode.setSelection(causeProblemCode.indexOf(preCauseCode));
+                    spinnerCauseAutoSelect = false;
+                } else {
+                    spinnerCauseCode.setSelection(0);
+                }
+
+
+                actualProblem = actualProblemCode.get(i);
+                Log.i("spinner", "onCreateView: " + causeProblemCode.size());
             }
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
@@ -272,23 +307,28 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
         spinnerCauseCode.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                remedyArr.clear();
-                if (causeRemedyMap.containsKey(causeProblemCode[i])) {
-                    remedyProblemCode = new String[causeRemedyMap.get(causeProblemCode[i]).size() + 1];
+                Log.i("SPINNER__", "onItemSelected: " + causeProblemCode.get(i));
+                remedyArr.clear();remedyProblemCode.clear();
+                if (causeRemedyMap.containsKey(causeProblemCode.get(i))) {
+                   // remedyProblemCode = new String[causeRemedyMap.get(causeProblemCode).size() + 1];
                     Code_Description temp;
-                    for (int k = 0; k < causeRemedyMap.get(causeProblemCode[i]).size(); k++) {
-                        temp = causeRemedyMap.get(causeProblemCode[i]).get(k);
-                        remedyProblemCode[k+1] = temp.getCode();
+                    for (int k = 0; k < causeRemedyMap.get(causeProblemCode.get(i)).size(); k++) {
+                        temp = causeRemedyMap.get(causeProblemCode.get(i)).get(k);
+                        remedyProblemCode.add(temp.getCode());
                         remedyArr.add(temp.getDescription());
                     }
-                } else {
-                    remedyProblemCode = new String[1];
                 }
-                remedyProblemCode[0] = "Select Remedy Code";
+                remedyProblemCode.add(0,"Select Remedy Code");
                 remedyArr.add(0, "Select Remedy Code");
                 remedyArrAdapter.notifyDataSetChanged();
-                spinnerRemedyCode.setSelection(0);
-                causeCode = causeProblemCode[i];
+
+                if (spinnerRemedyAutoSelect) {
+                    spinnerRemedyCode.setSelection(remedyProblemCode.indexOf(preRemedyCode));
+                    spinnerRemedyAutoSelect = false;
+                } else {
+                    spinnerRemedyCode.setSelection(0);
+                }
+                causeCode = causeProblemCode.get(i);
             }
 
             @Override
@@ -296,11 +336,10 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
 
             }
         });
-
         spinnerRemedyCode.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                remedyCode = remedyProblemCode[i];
+                remedyCode = remedyProblemCode.get(i);
             }
 
             @Override
@@ -309,8 +348,11 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
             }
         });
 
-
         displayMaintenanceWorkInformation();
+        if (dbHelper.updateEventBodyDAO().getNumberOfUpdateEventsById(CM_Step_TWO) > 0) {
+            displaySavedData();
+            displaySavedImage();
+        }
 
         ivAddThirdPary.setOnClickListener(this);
         ivRequiredPartPlacement.setOnClickListener(this);
@@ -330,6 +372,34 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
         qrScan.setBeepEnabled(true);
         qrScan.setCaptureActivity(CaptureActivityPotrait.class);
         return view;
+    }
+
+    private void displaySavedData() {
+        spinnerCauseAutoSelect = true; spinnerRemedyAutoSelect = true;
+        preActualProblemCode = dbHelper.eventDAO().getEventValue(SERVICE_ORDER_UPDATE, ACTUAL_PROBLEM);
+        preCauseCode = dbHelper.eventDAO().getEventValue(SERVICE_ORDER_UPDATE, CAUSE);
+        preRemedyCode = dbHelper.eventDAO().getEventValue(SERVICE_ORDER_UPDATE, REMEDY);
+        preScan1Result = dbHelper.eventDAO().getEventValue(PART_REPLACEMENT_UPDATE, FAULT_PART_CODE);
+        preScan2Result = dbHelper.eventDAO().getEventValue(PART_REPLACEMENT_UPDATE, REPLACEMENT_PART_CODE);
+
+        if (dbHelper.eventDAO().getEventValueCount(THIRD_PARTY_COMMENT_UPDATE, COMMENT) > 0)
+            preThirdPartyComment = dbHelper.eventDAO().getEventValue(THIRD_PARTY_COMMENT_UPDATE, COMMENT);
+
+
+        spinnerActualProbleCode.setSelection(actualProblemCode.indexOf(preActualProblemCode));
+
+        tvScanFault.setText(preScan1Result);
+        tvScanReplacement.setText(preScan2Result);
+        etThridPartyComment.setText(preThirdPartyComment);
+    }
+
+    private void displaySavedImage() {
+        postModelList.clear();
+        // int imaCount = dbHelper.uploadPhotoDAO().getNumberOfPhotosToUpload();
+        for (UploadPhotoModel uploadPhotoModel: dbHelper.uploadPhotoDAO().getPhotosToUploadByBucketName(POST_BUCKET_NAME)) {
+            postModelList.add(new PhotoModel(uploadPhotoModel.getEncodedPhotoString(), 1));
+        }
+        postPhotoAdapter.notifyDataSetChanged();
     }
 
     private void displayMaintenanceWorkInformation() {
@@ -381,13 +451,13 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
                 causeRemedyMap.put(key, tempList);
             }
 
-            problemArr.clear();
-            actualProblemCode = new String[problemList.size() + 1];
-            actualProblemCode[0] = "";
+            problemArr.clear(); actualProblemCode.clear();
+            //actualProblemCode = new String[problemList.size() + 1];
             for (int i = 0; i < problemList.size(); i++) {
-                actualProblemCode[i+1] = problemList.get(i).getCode();
+                actualProblemCode.add(problemList.get(i).getCode());
                 problemArr.add(problemList.get(i).getDescription());
             }
+            actualProblemCode.add(0, "Select Actual Problem Code");
             problemArr.add(0, "Select Actual Problem Code");
             actualProblemArrAdapter.notifyDataSetChanged();
 
@@ -441,7 +511,6 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
             case R.id.btnSave:
                 isMandatoryFieldLeft = false;
                 mandatoryFieldsLeft = "";
-                events.clear();
                 getProblemCodeEvent();
                 getQREvent();
                 if (isMandatoryFieldLeft && postModelList.size() == 0) {
@@ -464,8 +533,15 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
                 else {
                     //Mandatory QR and Problem event are choosen, can update events.......
                     //Mandatory Photos are attached, can update events.......
-                  //  getPhotoEvents();
+                    savePhotosToDB();
                     uploadEvents();
+                    preActualProblemCode = actualProblem;
+                    preCauseCode = causeCode;
+                    preRemedyCode = remedyCode;
+                    preThirdPartyComment = etThridPartyComment.getText().toString() + "";
+                    preScan1Result = tvScanFault.getText().toString();
+                    preScan2Result = tvScanReplacement.getText().toString();
+
                 }
                 break;
 
@@ -513,79 +589,84 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
         );
         eventBody.setId(CM_Step_TWO);
         dbHelper.updateEventBodyDAO().insert(eventBody);
-        dbHelper.eventDAO().insertAll(events);
 
         if (network.isNetworkAvailable()) {
-            eventBody.setEvents(events);
-            ((CMActivity)getActivity()).showProgressBar();
-            Call<ReturnStatus> call = apiInterface.updateEvent("Bearer " + mSharePreference.getToken(), eventBody);
-            call.enqueue(new Callback<ReturnStatus>() {
-                @Override
-                public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
-                    if (response.isSuccessful()) {
-                        events.clear();
-                        Toast.makeText(getContext(), "Events Uploaded!", Toast.LENGTH_SHORT).show();
-                        dbHelper.eventDAO().update("YES", CM_Step_TWO);
-                        ((CMActivity)getActivity()).hideProgressBar();
-                    } else {
-                        Toast.makeText(getContext(), response.code()+ "" , Toast.LENGTH_SHORT).show();
-                        ((CMActivity)getActivity()).hideProgressBar();
+            if (dbHelper.eventDAO().getNumberEventsToUpload(CM_Step_TWO) > 0) {
+                eventBody.setEvents(dbHelper.eventDAO().getEventsToUpload(CM_Step_TWO));
+                String temp = "";
+                for (Event e: eventBody.getEvents()) {
+                    temp += "\n" + e.getEventType();
+                }
+                Log.i("UploadEvents", "uploadEvents: " + temp);
+
+                ((CMActivity)getActivity()).showProgressBar();
+                Call<ReturnStatus> call = apiInterface.updateEvent("Bearer " + mSharePreference.getToken(), eventBody);
+                call.enqueue(new Callback<ReturnStatus>() {
+                    @Override
+                    public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
+                        if (response.isSuccessful()) {
+                            Toast.makeText(getContext(), eventBody.getEvents().size() + "Events Uploaded!", Toast.LENGTH_SHORT).show();
+                            dbHelper.eventDAO().update(YES, CM_Step_TWO);
+                            ((CMActivity)getActivity()).hideProgressBar();
+                        } else {
+                            Toast.makeText(getContext(), response.code()+ "" , Toast.LENGTH_SHORT).show();
+                            ((CMActivity)getActivity()).hideProgressBar();
+                        }
+
                     }
 
-                }
-
-                @Override
-                public void onFailure(Call<ReturnStatus> call, Throwable t) {
-                    Toast.makeText(getContext(), "Failure" , Toast.LENGTH_SHORT).show();
-                    ((CMActivity)getActivity()).hideProgressBar();
-                }
-            });
-        }
-
-
-        /*
-        if(!network.isNetworkAvailable()) {
-            dbHelper.updateEventBodyDAO().insert(eventBody);
-            for (Event event : events) {
-                event.setUpdateEventBodyKey(key);
+                    @Override
+                    public void onFailure(Call<ReturnStatus> call, Throwable t) {
+                        Toast.makeText(getContext(), "Failure" , Toast.LENGTH_SHORT).show();
+                        ((CMActivity)getActivity()).hideProgressBar();
+                    }
+                });
             }
-            dbHelper.eventDAO().insertAll(events);
-        }else {
-        //    Toast.makeText(getContext(), events.size() + " events" , Toast.LENGTH_SHORT).show();
-            Log.e("EventSize", "uploadEvents" + events.size());
-            if(events.size() != 0)
-                new LoadImage(events).execute(new File[0]);
-        }*/
+
+        }
     }
 
     private void getQREvent() {
 
+        Event tempEvent;
         if (!etThridPartyComment.getText().toString().equals("")) { //third party comment
-            events.add(
-                    new Event("THIRD_PARTY_COMMENT_UPDATE",
-                            "comment",
-                            "" + etThridPartyComment.getText().toString())
-            );
-            Log.i("EventHappenend", "getProblemCodeEvent:Desc " + etThridPartyComment.getText().toString());
+            tempEvent = new Event(THIRD_PARTY_COMMENT_UPDATE,
+                    COMMENT,
+                    "" + etThridPartyComment.getText().toString());
+            tempEvent.setEvent_id(THIRD_PARTY_COMMENT_UPDATE + COMMENT);
+            tempEvent.setUpdateEventBodyKey(CM_Step_TWO);
+
+            if (preThirdPartyComment.equals("") || !preThirdPartyComment.equals(etThridPartyComment.getText().toString())) {
+                tempEvent.setAlreadyUploaded(NO);
+                dbHelper.eventDAO().insert(tempEvent);
+            }
+
         }
         if (!tvScanFault.getText().toString().equals("")) {
-            events.add(
-                    new Event("PART_REPLACEMENT_UPDATE",
-                            "faultPartCode",
-                            tvScanFault.getText().toString())
-            );
-            Log.i("EventHappenend", "getProblemCodeEvent: " + tvScanFault.getText().toString());
+            tempEvent = new Event(PART_REPLACEMENT_UPDATE,
+                    FAULT_PART_CODE,
+                    tvScanFault.getText().toString());
+            tempEvent.setEvent_id(PART_REPLACEMENT_UPDATE + FAULT_PART_CODE);
+            tempEvent.setUpdateEventBodyKey(CM_Step_TWO);
+            if (preScan1Result.equals("") || !preScan1Result.equals(tvScanFault.getText().toString())) {
+                tempEvent.setAlreadyUploaded(NO);
+                dbHelper.eventDAO().insert(tempEvent);
+            }
+
         } else {
             mandatoryFieldsLeft += "\nScan Faulty Component";
             isMandatoryFieldLeft = true;
         }
         if (!tvScanReplacement.getText().toString().equals("")) {
-            events.add(
-                    new Event("PART_REPLACEMENT_UPDATE",
-                    "replacementPartCode",
-                    tvScanReplacement.getText().toString())
-            );
-            Log.i("EventHappenend", "getProblemCodeEvent: " + tvScanReplacement.getText().toString());
+            tempEvent = new Event(PART_REPLACEMENT_UPDATE,
+                    REPLACEMENT_PART_CODE,
+                    tvScanReplacement.getText().toString());
+            tempEvent.setEvent_id(PART_REPLACEMENT_UPDATE + REPLACEMENT_PART_CODE);
+            tempEvent.setUpdateEventBodyKey(CM_Step_TWO);
+            if (preScan2Result.equals("") || !preScan2Result.equals(tvScanReplacement.getText().toString())) {
+                tempEvent.setAlreadyUploaded(NO);
+                dbHelper.eventDAO().insert(tempEvent);
+            }
         } else {
             mandatoryFieldsLeft += "\nScan Replaced Component";
             isMandatoryFieldLeft = true;
@@ -604,70 +685,79 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
     public void getProblemCodeEvent() {
 
         Event tempEvent = new Event(
-                "SERVICE_ORDER_UPDATE",
-                "reportedProblem",
+                SERVICE_ORDER_UPDATE,
+                REPORTED_PROBLEM,
                 "" + pmServiceInfoModel.getReportedProblem()
         );
-        tempEvent.setEvent_id("SERVICE_ORDER_UPDATE" + "reportedProblem");
-       // events.add(tempEvent);
-        if (dbHelper.eventDAO().getSpecifiedEventCount("SERVICE_ORDER_UPDATE" + "reportedProblem")==0) {
+        tempEvent.setEvent_id(SERVICE_ORDER_UPDATE + REPORTED_PROBLEM);
+        tempEvent.setUpdateEventBodyKey(CM_Step_TWO);
+        if (dbHelper.eventDAO().getEventValueCount(SERVICE_ORDER_UPDATE, REPORTED_PROBLEM) == 0) {
+            tempEvent.setAlreadyUploaded(NO);
             dbHelper.eventDAO().insert(tempEvent);
         }
 
-
-        Log.i("EventHappenend", "GETReprotedProblemPlain" +  pmServiceInfoModel.getReportedProblem());
         if (spinnerActualProbleCode.getSelectedItemPosition() > 0) {
-
-            events.add(new Event(
-                    "SERVICE_ORDER_UPDATE",
-                    "actualProblem" ,
-                    actualProblem));
-            Log.i("EventHappenend",  actualProblem);
-
+            tempEvent = new Event(
+                    SERVICE_ORDER_UPDATE,
+                    ACTUAL_PROBLEM ,
+                    actualProblem);
+            tempEvent.setEvent_id(SERVICE_ORDER_UPDATE + ACTUAL_PROBLEM);
+            tempEvent.setUpdateEventBodyKey(CM_Step_TWO);
+            if (preActualProblemCode.equals("") || !preActualProblemCode.equals(actualProblem)) {
+                tempEvent.setAlreadyUploaded(NO);
+                dbHelper.eventDAO().insert(tempEvent);
+            }
 
         } else {
             mandatoryFieldsLeft += "\nSelect Actual Problem Code";
             isMandatoryFieldLeft = true;
         }
+
         if (spinnerCauseCode.getSelectedItemPosition() > 0) {
-            events.add(new Event(
-                    "SERVICE_ORDER_UPDATE",
-                    "cause",
-                    causeCode));
-            Log.i("EventHappenend", causeCode);
+            tempEvent = new Event(
+                    SERVICE_ORDER_UPDATE,
+                    CAUSE,
+                    causeCode);
+            tempEvent.setEvent_id(SERVICE_ORDER_UPDATE + CAUSE);
+            tempEvent.setUpdateEventBodyKey(CM_Step_TWO);
+            if (preCauseCode.equals("") || !preCauseCode.equals(causeCode)) {
+                tempEvent.setAlreadyUploaded(NO);
+                dbHelper.eventDAO().insert(tempEvent);
+            }
+
         } else {
             mandatoryFieldsLeft += "\nSelect Cause Code";
             isMandatoryFieldLeft = true;
         }
+
         if (spinnerRemedyCode.getSelectedItemPosition() > 0) {
-            events.add(new Event(
-                    "SERVICE_ORDER_UPDATE",
-                    "remedy",
-                    remedyCode));
-            Log.i("EventHappenend", remedyCode);
+            tempEvent = new Event(
+                    SERVICE_ORDER_UPDATE,
+                    REMEDY,
+                    remedyCode);
+            tempEvent.setEvent_id(SERVICE_ORDER_UPDATE + REMEDY);
+            tempEvent.setUpdateEventBodyKey(CM_Step_TWO);
+            if (preRemedyCode.equals("") || !preRemedyCode.equals(remedyCode)) {
+                tempEvent.setAlreadyUploaded(NO);
+                dbHelper.eventDAO().insert(tempEvent);
+            }
+
         } else {
             mandatoryFieldsLeft += "\nSelect Remedy Code";
             isMandatoryFieldLeft = true;
         }
-
-
+        
     }
 
     /**
      * Update event for all photos
      */
-    public void getPhotoEvents(){
-        if(network.isNetworkAvailable()) {
-            //Maintenance photos attached ( max - 10 and min 2 )
-          //  if (postModelList.size() > 1 && postModelList.size() < 6) {
-                Log.v("BEFORE_JOIN", "Before joining");
-          //  Toast.makeText(getContext(), events.size() + " events In getPHOTOEvents" , Toast.LENGTH_SHORT).show();
-            ((CMActivity)getActivity()).showProgressBar();
-            new LoadImage(events).execute(uploadPhoto(postModelList));
-
-        }else {
-
+    public void savePhotosToDB(){
+        dbHelper.uploadPhotoDAO().deleteById(CM_Step_TWO);
+        for (PhotoModel photoModel: postModelList) {
+            saveEncodePhotoToDatabase(CM_Step_TWO, POST_BUCKET_NAME, photoModel.getImage());
         }
+        Toast.makeText(this.getContext(), dbHelper.uploadPhotoDAO().getNumberOfPhotosToUpload()+" photos have been saved.", Toast.LENGTH_SHORT).show();
 
     }
 
@@ -923,19 +1013,13 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
     /**
      * //To Do save to database photo
      */
-    private void saveEncodePhotoToDatabase(String buckName, String sPhoto){
+    private void saveEncodePhotoToDatabase(String updateEventKey, String bucketName, String sPhoto){
         byte[] bytes = sPhoto.getBytes();
-        /**
-         * encodeToString is encoded string
-         */
-
-        date = new Date();
-        Timestamp timestamp = new Timestamp(date.getTime());
-        String actualDateTime = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss").format(timestamp);
         String encodeToString = Base64.encodeToString(bytes,Base64.DEFAULT);
         Log.v("ENCODE",encodeToString);
-
-        dbHelper.uploadPhotoDAO().insert(new UploadPhotoModel(buckName, encodeToString,actualDateTime));
+        dbHelper.uploadPhotoDAO().insert(new UploadPhotoModel(
+                updateEventKey, bucketName, encodeToString
+        ));
 
     }
 

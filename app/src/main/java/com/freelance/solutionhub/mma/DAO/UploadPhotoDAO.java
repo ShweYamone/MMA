@@ -23,8 +23,8 @@ public interface UploadPhotoDAO {
     @Query("Delete from UploadPhotoModel")
     void deleteAll();
 
-    @Query("Select * from UploadPhotoModel")
-    List<UploadPhotoModel> getPhotosToUpload();
+    @Query("Select * from UploadPhotoModel where bucketName=:bucketName")
+    List<UploadPhotoModel> getPhotosToUploadByBucketName(String bucketName);
 
     @Query("Select count(*) from UploadPhotoModel")
     int getNumberOfPhotosToUpload();
