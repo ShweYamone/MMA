@@ -7,6 +7,7 @@ import androidx.room.Query;
 
 import com.freelance.solutionhub.mma.model.UploadPhotoModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Dao

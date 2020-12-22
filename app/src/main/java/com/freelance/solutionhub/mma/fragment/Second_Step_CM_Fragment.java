@@ -397,7 +397,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
         postModelList.clear();
         // int imaCount = dbHelper.uploadPhotoDAO().getNumberOfPhotosToUpload();
         for (UploadPhotoModel uploadPhotoModel: dbHelper.uploadPhotoDAO().getPhotosToUploadByBucketName(POST_BUCKET_NAME)) {
-            postModelList.add(new PhotoModel(uploadPhotoModel.getEncodedPhotoString(), 1));
+            postModelList.add(new PhotoModel(getDecodedString(uploadPhotoModel.getEncodedPhotoString()), 1));
         }
         postPhotoAdapter.notifyDataSetChanged();
     }
@@ -589,6 +589,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
         );
         eventBody.setId(CM_Step_TWO);
         dbHelper.updateEventBodyDAO().insert(eventBody);
+        mSharePreference.userClickCMStepTwo(true);
 
         if (network.isNetworkAvailable()) {
             if (dbHelper.eventDAO().getNumberEventsToUpload(CM_Step_TWO) > 0) {
@@ -746,7 +747,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
             mandatoryFieldsLeft += "\nSelect Remedy Code";
             isMandatoryFieldLeft = true;
         }
-        
+
     }
 
     /**
@@ -778,14 +779,14 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
             {
                 mSharePreference.setLock(false);
-                Toast.makeText(getActivity(), "camera permission granted", Toast.LENGTH_LONG).show();
+              //  Toast.makeText(getActivity(), "camera permission granted", Toast.LENGTH_LONG).show();
                 mSharePreference.setLock(false);
                 Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
                 startActivityForResult(cameraIntent, CAMERA_REQUEST);
             }
             else
             {
-                Toast.makeText(getActivity(), "camera permission denied", Toast.LENGTH_LONG).show();
+             //   Toast.makeText(getActivity(), "camera permission denied", Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -856,160 +857,6 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
         return Base64.encodeToString(imageArr, Base64.URL_SAFE);
 
     }
-
-    /**
-     *Upload one photo to server and get url id
-     * @param bitmap
-     * @param name
-     */
-    /**
-     *Upload one photo to server and get url id
-     */
-    private File[] uploadPhoto(ArrayList<PhotoModel> p) {
-        File[] files = new File[p.size()];
-        for(int i = 0 ; i < p.size(); i++) {
-            File filesDir = getContext().getFilesDir();
-            File fileName = new File(filesDir, mSharePreference.getUserId()+getSaltString() + ".jpg");
-
-            Log.i("FILE_NAME", fileName.toString());
-            OutputStream os;
-            try {
-                os = new FileOutputStream(fileName);
-                getBitmapFromEncodedString(p.get(i).getImage()).compress(Bitmap.CompressFormat.JPEG, 100, os);
-                os.flush();
-                os.close();
-            } catch (Exception e) {
-                Log.e("PHOTO", "Error writing bitmap", e);
-            }
-            files[i]= fileName;
-        }
-
-        return files;
-    }
-    protected String getSaltString() {
-        String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
-        StringBuilder salt = new StringBuilder();
-        Random rnd = new Random();
-        while (salt.length() < 7) { // length of the random string.
-            int index = (int) (rnd.nextFloat() * SALTCHARS.length());
-            salt.append(SALTCHARS.charAt(index));
-        }
-        String saltStr = salt.toString();
-        return saltStr;
-
-    }
-    class LoadImage extends AsyncTask<File, Void, Boolean> {
-
-        private ArrayList<Event> f;
-        private int count = 0;
-
-        public LoadImage(ArrayList<Event> f) {
-            this.f = f;
-        }
-
-        @Override
-        protected void onPostExecute(Boolean aVoid) {
-            super.onPostExecute(aVoid);
-            if(f.size() == count  ){
-
-            }
-        }
-
-        private void updateEvents() {
-            Log.i("EVENT_LIST",f.size()+"");
-            date = new Date();
-            Timestamp timestamp = new Timestamp(date.getTime());
-            String actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
-
-            if (f.size() > 0) {
-                UpdateEventBody eventBody = new UpdateEventBody(
-                            mSharePreference.getUserName(),
-                            mSharePreference.getUserId(),
-                            actualDateTime,
-                            pmServiceInfoModel.getId(),
-                            f
-                    );
-
-
-                    Call<ReturnStatus> call = apiInterface.updateEvent("Bearer " + mSharePreference.getToken(),
-                            eventBody);
-                    call.enqueue(new Callback<ReturnStatus>() {
-                        @Override
-                        public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
-                            if (response.isSuccessful()) {
-                                Toast.makeText(getContext(),  response.body().getStatus()+ f.size() + ":ALL EVENTS UPLOADED" , Toast.LENGTH_SHORT).show();
-                                mSharePreference.userClickCMStepTwo(true);
-                                ((CMActivity)getActivity()).hideProgressBar();
-                                f.clear();
-                            } else {
-                                Toast.makeText(getContext(), "response " + response.code(), Toast.LENGTH_LONG).show();
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<ReturnStatus> call, Throwable t) {
-
-                        }
-                    });
-
-            }
-
-        }
-
-        @Override
-        protected Boolean doInBackground(File... files) {
-            for (File fileName : files) {
-                MultipartBody.Builder builder = new MultipartBody.Builder();
-                builder.setType(MultipartBody.FORM);
-                builder.addFormDataPart("file", fileName.getName(), RequestBody.create(MediaType.parse("multipart/form-data"), fileName));
-                MultipartBody requestBody = builder.build();
-
-                Call<ReturnStatus> returnStatusCall = apiInterface.uploadPhoto("pids-post-maintenance-photo", requestBody);
-                returnStatusCall.enqueue(new Callback<ReturnStatus>() {
-                    @Override
-                    public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
-                        ReturnStatus returnStatus = response.body();
-                        if (response.isSuccessful()) {
-                            Log.v("PRE_EVENT", "Added post event");
-                            f.add(new Event("POST_MAINTENANCE_PHOTO_UPDATE", "postMaintenancePhotoUpdate", returnStatus.getData().getFileUrl()));
-                            count++;
-                            if(files.length == count)
-                                updateEvents();
-                            Toast.makeText(getContext(), returnStatus.getStatus() + ":PHOTO"+count, Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(getContext(), "FAILED", Toast.LENGTH_LONG).show();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<ReturnStatus> call, Throwable t) {
-
-                    }
-                });
-            }
-
-
-            if(files.length == count) {
-                if(f.size() != 0) {
-                    updateEvents();
-                }
-
-                return true;
-            }
-            return false;
-        }
-
-    }
-
-    private Bitmap getBitmapFromEncodedString(String encodedString){
-
-        byte[] arr = Base64.decode(encodedString, Base64.URL_SAFE);
-
-        Bitmap img = BitmapFactory.decodeByteArray(arr, 0, arr.length);
-        return img;
-
-
-    }
     /**
      * //To Do save to database photo
      */
@@ -1021,6 +868,16 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
                 updateEventKey, bucketName, encodeToString
         ));
 
+    }
+
+    /**
+     * Encode photo string to decode string
+     */
+    private String getDecodedString(String s){
+        byte[] data = Base64.decode(s,Base64.DEFAULT);
+        String s1 = new String(data);
+        Log.v("DECODE", s1);
+        return s1;
     }
 
 }

@@ -8,6 +8,7 @@ import androidx.room.Query;
 
 import com.freelance.solutionhub.mma.model.Event;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Dao
