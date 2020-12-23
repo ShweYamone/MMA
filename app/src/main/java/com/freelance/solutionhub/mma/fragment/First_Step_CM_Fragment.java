@@ -35,7 +35,9 @@ import com.freelance.solutionhub.mma.adapter.PhotoAdapter;
 import com.freelance.solutionhub.mma.delegate.FirstStepPMFragmentCallback;
 import com.freelance.solutionhub.mma.model.Event;
 import com.freelance.solutionhub.mma.model.PMServiceInfoDetailModel;
+import com.freelance.solutionhub.mma.model.PhotoAttachementModel;
 import com.freelance.solutionhub.mma.model.PhotoModel;
+import com.freelance.solutionhub.mma.model.PreMaintenance;
 import com.freelance.solutionhub.mma.model.ReturnStatus;
 import com.freelance.solutionhub.mma.model.UpdateEventBody;
 import com.freelance.solutionhub.mma.model.UploadPhotoModel;
@@ -52,6 +54,7 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 
 import butterknife.BindView;
@@ -171,6 +174,28 @@ public class First_Step_CM_Fragment extends Fragment {
             }
         });
 
+        Call<PhotoAttachementModel> photoAttachementModelCall = apiInterface.getPhotoAttachment("Bearer "+mSharePerferenceHelper.getToken(), pmServiceInfoModel.getId());
+        photoAttachementModelCall.enqueue(new Callback<PhotoAttachementModel>() {
+            @Override
+            public void onResponse(Call<PhotoAttachementModel> call, Response<PhotoAttachementModel> response) {
+                PhotoAttachementModel photoAttachementModel = response.body();
+                if(response.isSuccessful()){
+                    List<PreMaintenance> preMaintenances = photoAttachementModel.getPreMaintenance();
+                    if(preMaintenances != null) for(PreMaintenance e : preMaintenances){
+                        Log.e("filepath",e.getFilePath());
+                        prePhotoModels.add(new PhotoModel(e.getFileName(),2));
+                    }
+                    prePhotoAdapter.notifyDataSetChanged();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<PhotoAttachementModel> call, Throwable t) {
+
+            }
+        });
+
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -229,7 +254,8 @@ public class First_Step_CM_Fragment extends Fragment {
 
             dbHelper.uploadPhotoDAO().deleteById(CM_Step_ONE);
             for (PhotoModel photoModel: prePhotoModels) {
-                saveEncodePhotoToDatabase(CM_Step_ONE, PRE_BUCKET_NAME, photoModel.getImage());
+                if(photoModel.getUid()==1)
+                    saveEncodePhotoToDatabase(CM_Step_ONE, PRE_BUCKET_NAME, photoModel.getImage());
             }
             Toast.makeText(this.getContext(), dbHelper.uploadPhotoDAO().getNumberOfPhotosToUpload()+" photos have been saved.", Toast.LENGTH_SHORT).show();
         }

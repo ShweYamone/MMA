@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Base64;
@@ -17,28 +19,50 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.freelance.solutionhub.mma.R;
+import com.freelance.solutionhub.mma.activity.CMActivity;
 import com.freelance.solutionhub.mma.activity.FullScreenActivity;
 import com.freelance.solutionhub.mma.activity.PMActivity;
 import com.freelance.solutionhub.mma.delegate.FirstStepPMFragmentCallback;
+import com.freelance.solutionhub.mma.model.Event;
 import com.freelance.solutionhub.mma.model.PhotoModel;
+import com.freelance.solutionhub.mma.model.ReturnStatus;
+import com.freelance.solutionhub.mma.model.UpdateEventBody;
+import com.freelance.solutionhub.mma.util.ApiClient;
+import com.freelance.solutionhub.mma.util.ApiInterface;
+import com.freelance.solutionhub.mma.util.SharePreferenceHelper;
 
+import java.io.File;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
-import static android.content.ContentValues.TAG;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.MyViewHolder>{
     Context context;
     ArrayList<PhotoModel> singleRowArrayList;
     SQLiteDatabase db;
+    private ApiInterface apiInterface;
+    private SharePreferenceHelper mSharedPreferences;
     public PhotoAdapter(Context context, ArrayList<PhotoModel> singleRowArrayList) {
         this.context = context;
         this.singleRowArrayList = singleRowArrayList;
+        apiInterface = ApiClient.getClient(context);
+        mSharedPreferences = new SharePreferenceHelper(context);
 
     }
 
@@ -52,7 +76,35 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.MyViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, final int i) {
-        myViewHolder.newsImage.setImageBitmap(getBitmapFromEncodedString(singleRowArrayList.get(i).getImage()));
+        if(singleRowArrayList.get(i).getUid() == 1){
+            myViewHolder.newsImage.setImageBitmap(getBitmapFromEncodedString(singleRowArrayList.get(i).getImage()));
+        }else {
+        //    myViewHolder.delete.setVisibility(View.GONE);
+            Call<ResponseBody> imageCall = apiInterface.downloadPhoto("Bearer "+mSharedPreferences.getToken(),singleRowArrayList.get(i).getImage());
+            imageCall.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
+                    Log.i("photo","HI");
+                    if (response.isSuccessful()) {
+                        if (response.body() != null) {
+                            // display the image data in a ImageView or save it
+                            Bitmap bmp = BitmapFactory.decodeStream(response.body().byteStream());
+                            myViewHolder.newsImage.setImageBitmap(bmp);
+                        } else {
+                            // TODO
+                        }
+                    } else {
+                        // TODO
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+                }
+            });
+        }
 
         myViewHolder.newsImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,7 +116,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.MyViewHolder
                 context.startActivity(intent);
             }
         });
-        //  myViewHolder.id.setText(singleRowArrayList.get(i).uid);
+
         myViewHolder.delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -112,6 +164,40 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.MyViewHolder
                 .show();
     }
 
+    class LoadImage extends AsyncTask<File, Void, Boolean> {
+
+        private ArrayList<Event> f;
+        private int count = 0;
+
+        public LoadImage(ArrayList<Event> f) {
+            this.f = f;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aVoid) {
+            super.onPostExecute(aVoid);
+            if(f.size() == count  ){
+
+            }
+        }
+
+        @Override
+        protected Boolean doInBackground(File... files) {
+            for (File fileName : files) {
+                MultipartBody.Builder builder = new MultipartBody.Builder();
+                builder.setType(MultipartBody.FORM);
+                builder.addFormDataPart("file", fileName.getName(), RequestBody.create(MediaType.parse("multipart/form-data"), fileName));
+                MultipartBody requestBody = builder.build();
+            }
+
+
+            if(files.length == count) {
+                return true;
+            }
+            return false;
+        }
+
+    }
     private Bitmap getBitmapFromEncodedString(String encodedString){
 
         byte[] arr = Base64.decode(encodedString, Base64.URL_SAFE);

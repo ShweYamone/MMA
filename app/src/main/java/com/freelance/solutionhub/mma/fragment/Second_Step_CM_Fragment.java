@@ -756,7 +756,8 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
     public void savePhotosToDB(){
         dbHelper.uploadPhotoDAO().deleteById(CM_Step_TWO);
         for (PhotoModel photoModel: postModelList) {
-            saveEncodePhotoToDatabase(CM_Step_TWO, POST_BUCKET_NAME, photoModel.getImage());
+            if(photoModel.getUid() == 1)
+                saveEncodePhotoToDatabase(CM_Step_TWO, POST_BUCKET_NAME, photoModel.getImage());
         }
         Toast.makeText(this.getContext(), dbHelper.uploadPhotoDAO().getNumberOfPhotosToUpload()+" photos have been saved.", Toast.LENGTH_SHORT).show();
 
@@ -807,7 +808,6 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
             photo = getEncodedString(bitmap);
             postModelList.add(new PhotoModel(photo, 1));
             postPhotoAdapter.notifyDataSetChanged();
-
         }
     }
 

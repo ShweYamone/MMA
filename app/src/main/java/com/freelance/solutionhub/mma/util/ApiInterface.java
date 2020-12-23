@@ -77,7 +77,12 @@ public interface ApiInterface {
     @GET("http://control-center-nightly-alb-906188569.ap-southeast-1.elb.amazonaws.com/control/fault-status")
     Call<VerificationReturnBody> verifyWorks(@Header("Authorization") String auth, @Query("id") String serviceOrderId);
 
+    //Get photo attachment from serviceOrderId
     @GET("https://oiyryh245h.execute-api.ap-southeast-1.amazonaws.com/dev/service-orders/{service_order_id}/file-attachments")
-    Call<PhotoAttachementModel> getPhotoAttachement(@Header("Authorization") String auth, @Path("service_order_id") String ServiceOrderId);
+    Call<PhotoAttachementModel> getPhotoAttachment(@Header("Authorization") String auth, @Path("service_order_id") String serviceOrderId);
+
+    //Get download photo
+    @GET("https://ufqzjtxo67.execute-api.ap-southeast-1.amazonaws.com/dev{photo_filename}")
+    Call<ResponseBody> downloadPhoto(@Header("Authorization") String auth, @Path("photo_filename") String fileName );
 }
 

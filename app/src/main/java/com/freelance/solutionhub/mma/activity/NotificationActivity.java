@@ -272,6 +272,12 @@ public class NotificationActivity extends AppCompatActivity  {
                         //  Toast.makeText(getApplicationContext(), "CLOSED: " + envelope.toString(), Toast.LENGTH_SHORT).show();
                         //   tvResult.setText("CLOSED: " + envelope.toString());
                         Log.i("CLOSED", envelope.toString());
+                        final JsonNode user = envelope.getPayload().get("mso_id");
+                        if (user == null || user instanceof NullNode) {
+                            onMessageNoti("An anonymous user entered", "");
+                        } else {
+                            onMessageNoti(envelope.getPayload().get("mso_id") + "", "MSO is rejected.");
+                        }
                     }
                 });
 
