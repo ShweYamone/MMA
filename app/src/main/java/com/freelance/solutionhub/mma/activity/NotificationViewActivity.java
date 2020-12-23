@@ -179,6 +179,7 @@ public class NotificationViewActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
+                sharePreferenceHelper.setLock(false);
                 finish();
                 return true;
         }

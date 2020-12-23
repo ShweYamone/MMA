@@ -34,6 +34,8 @@ public interface EventDAO {
     @Query("Select * from Event where eventType=:eventType AND alreadyUploaded='no'")
     List<Event> getEventsToUploadByEventType(String eventType);
 
+    @Query("Select * from Event where eventType=:eventType")
+    List<Event> getEventsByEventType(String eventType);
 
     @Query("Select value from Event where eventType=:eventType AND eventKey=:key")
     String getEventValue(String eventType, String key);

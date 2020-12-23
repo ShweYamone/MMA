@@ -297,10 +297,9 @@ public class TelcoActivity extends AppCompatActivity implements View.OnClickList
                 returnStatusCallEvent.enqueue(new Callback<ReturnStatus>() {
                     @Override
                     public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
-                        ReturnStatus returnStatus = response.body();
-                        Log.v("SUCCESS","error");
+
                         if (response.isSuccessful()) {
-                            Log.v("SUCCESS","success");
+
                             Toast.makeText(getApplicationContext(), dbHelper.eventDAO().getNumOfEventsToUploadByEventType(TELCO_UPDATE)+" events uploaded", Toast.LENGTH_LONG).show();
                             dbHelper.eventDAO().updateByThirdParty(YES, CM_Step_TWO, TELCO_UPDATE);
                             hideProgressBar();
@@ -320,18 +319,6 @@ public class TelcoActivity extends AppCompatActivity implements View.OnClickList
                 mSharePreferenceHelper.setLock(false);
                 finish();
             }
-            preTelcoNo = telcoNo.getText().toString()+"";
-            preDockerNo = dockerNo.getText().toString()+"";
-            preCTPersonnel = ctPersonnel.getText().toString()+"";
-            preReferDate = referDateTime.getText().toString() + "";
-            preCompletionDate = expectedCompletionDateTime.getText().toString() + "";
-            preClearanceDate = clearanceDateTime.getText().toString() + "";
-            preFaultStatus = telcoFaultStatus.getText().toString() + "";
-            preOfficer = telcoOfficer.getText().toString() + "";
-            preDetectedDate = faultDetectedDateTime.getText().toString()+"";
-            preActionDate = actionDateTime.getText().toString() + "";
-            preActionTaken = actionTaken.getText().toString() + "";
-
 
         }
 
@@ -339,38 +326,50 @@ public class TelcoActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void displaySavedData() {
+
         if (dbHelper.eventDAO().getEventValueCount(TELCO_UPDATE , THIRD_PARTY_NUMBER) > 0) {
-            telcoNo.setText(dbHelper.eventDAO().getEventValue(TELCO_UPDATE , THIRD_PARTY_NUMBER));
+            preTelcoNo = dbHelper.eventDAO().getEventValue(TELCO_UPDATE , THIRD_PARTY_NUMBER);
+            telcoNo.setText(preTelcoNo);
         }
         if (dbHelper.eventDAO().getEventValueCount(TELCO_UPDATE, DOCKET_NUMBER) > 0) {
-            dockerNo.setText(dbHelper.eventDAO().getEventValue(TELCO_UPDATE, DOCKET_NUMBER));
+            preDockerNo = dbHelper.eventDAO().getEventValue(TELCO_UPDATE, DOCKET_NUMBER);
+            dockerNo.setText(preDockerNo);
         }
         if (dbHelper.eventDAO().getEventValueCount(TELCO_UPDATE, CT_PERSONNEL) > 0) {
-            ctPersonnel.setText(dbHelper.eventDAO().getEventValue(TELCO_UPDATE, CT_PERSONNEL));
+            preCTPersonnel = dbHelper.eventDAO().getEventValue(TELCO_UPDATE, CT_PERSONNEL);
+            ctPersonnel.setText(preCTPersonnel);
         }
         if (dbHelper.eventDAO().getEventValueCount(TELCO_UPDATE, REFER_DATE) > 0) {
-            referDateTime.setText(dbHelper.eventDAO().getEventValue(TELCO_UPDATE, REFER_DATE));
+            preReferDate = dbHelper.eventDAO().getEventValue(TELCO_UPDATE, REFER_DATE);
+            referDateTime.setText(preReferDate);
         }
         if (dbHelper.eventDAO().getEventValueCount(TELCO_UPDATE, EXPECTED_COMPLETION_DATE) > 0) {
-            expectedCompletionDateTime.setText(dbHelper.eventDAO().getEventValue(TELCO_UPDATE, EXPECTED_COMPLETION_DATE));
+            preCompletionDate = dbHelper.eventDAO().getEventValue(TELCO_UPDATE, EXPECTED_COMPLETION_DATE);
+            expectedCompletionDateTime.setText(preCompletionDate);
         }
         if (dbHelper.eventDAO().getEventValueCount(TELCO_UPDATE, CLEARANCE_DATE) > 0) {
-            clearanceDateTime.setText(dbHelper.eventDAO().getEventValue(TELCO_UPDATE, CLEARANCE_DATE));
+            preClearanceDate = dbHelper.eventDAO().getEventValue(TELCO_UPDATE, CLEARANCE_DATE);
+            clearanceDateTime.setText(preClearanceDate);
         }
         if (dbHelper.eventDAO().getEventValueCount(TELCO_UPDATE, FAULT_STATUS) > 0) {
-            telcoFaultStatus.setText(dbHelper.eventDAO().getEventValue(TELCO_UPDATE, FAULT_STATUS));
+            preFaultStatus = dbHelper.eventDAO().getEventValue(TELCO_UPDATE, FAULT_STATUS);
+            telcoFaultStatus.setText(preFaultStatus);
         }
         if (dbHelper.eventDAO().getEventValueCount(TELCO_UPDATE, OFFICER) > 0) {
-            telcoOfficer.setText(dbHelper.eventDAO().getEventValue(TELCO_UPDATE, OFFICER));
+            preOfficer = dbHelper.eventDAO().getEventValue(TELCO_UPDATE, OFFICER);
+            telcoOfficer.setText(preOfficer);
         }
         if (dbHelper.eventDAO().getEventValueCount(TELCO_UPDATE, FAULT_DETECTED_DATE) > 0) {
-            faultDetectedDateTime.setText(dbHelper.eventDAO().getEventValue(TELCO_UPDATE, FAULT_DETECTED_DATE));
+            preDetectedDate = dbHelper.eventDAO().getEventValue(TELCO_UPDATE, FAULT_DETECTED_DATE);
+            faultDetectedDateTime.setText(preDetectedDate);
         }
         if (dbHelper.eventDAO().getEventValueCount(TELCO_UPDATE, ACTION_DATE) > 0) {
-            actionDateTime.setText(dbHelper.eventDAO().getEventValue(TELCO_UPDATE, ACTION_DATE));
+            preActionDate = dbHelper.eventDAO().getEventValue(TELCO_UPDATE, ACTION_DATE);
+            actionDateTime.setText(preActionDate);
         }
         if (dbHelper.eventDAO().getEventValueCount(TELCO_UPDATE, ACTION_TAKEN) > 0) {
-            actionTaken.setText(dbHelper.eventDAO().getEventValue(TELCO_UPDATE, ACTION_TAKEN));
+            preActionTaken = dbHelper.eventDAO().getEventValue(TELCO_UPDATE, ACTION_TAKEN);
+            actionTaken.setText(preActionTaken);
         }
     }
     private void addEvents(){
@@ -507,6 +506,7 @@ public class TelcoActivity extends AppCompatActivity implements View.OnClickList
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
+                mSharePreferenceHelper.setLock(false);
                 finish();
                 return true;
 

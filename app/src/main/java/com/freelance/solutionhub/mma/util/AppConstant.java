@@ -30,7 +30,10 @@ public class AppConstant {
     public static final String ACTUAL_PROBLEM = "actualProblem";
     public static final String CAUSE = "cause";
     public static final String REMEDY = "remedy";
+
+
     public static final String TELCO_UPDATE = "TELCO_UPDATE";
+    public static final String POWER_GRIP_UPDATE = "POWER_GRIP_UPDATE";
     public static final String THIRD_PARTY_NUMBER= "thirdPartyNumber";
     public static final String DOCKET_NUMBER = "docketNumber";
     public static final String CT_PERSONNEL= "ctPersonnel";
@@ -42,6 +45,7 @@ public class AppConstant {
     public static final String FAULT_DETECTED_DATE = "faultDetectedDate";
     public static final String ACTION_DATE = "actionDate";
     public static final String ACTION_TAKEN = "actionTaken";
+    public static final String REMARKS_ON_FAULT = "remarkOnFault";
 
     public static final String YES = "yes";
     public static final String NO = "no";

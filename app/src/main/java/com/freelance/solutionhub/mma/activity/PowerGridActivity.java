@@ -29,6 +29,7 @@ import com.freelance.solutionhub.mma.util.ApiInterface;
 import com.freelance.solutionhub.mma.util.Network;
 import com.freelance.solutionhub.mma.util.SharePreferenceHelper;
 
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -36,10 +37,27 @@ import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.freelance.solutionhub.mma.util.AppConstant.ACTION_DATE;
+import static com.freelance.solutionhub.mma.util.AppConstant.ACTION_TAKEN;
+import static com.freelance.solutionhub.mma.util.AppConstant.CLEARANCE_DATE;
+import static com.freelance.solutionhub.mma.util.AppConstant.CM_Step_TWO;
+import static com.freelance.solutionhub.mma.util.AppConstant.CT_PERSONNEL;
+import static com.freelance.solutionhub.mma.util.AppConstant.EXPECTED_COMPLETION_DATE;
+import static com.freelance.solutionhub.mma.util.AppConstant.FAULT_DETECTED_DATE;
+import static com.freelance.solutionhub.mma.util.AppConstant.FAULT_STATUS;
+import static com.freelance.solutionhub.mma.util.AppConstant.NO;
+import static com.freelance.solutionhub.mma.util.AppConstant.OFFICER;
+import static com.freelance.solutionhub.mma.util.AppConstant.POWER_GRIP_UPDATE;
+import static com.freelance.solutionhub.mma.util.AppConstant.REFER_DATE;
+import static com.freelance.solutionhub.mma.util.AppConstant.REMARKS_ON_FAULT;
+import static com.freelance.solutionhub.mma.util.AppConstant.TELCO_UPDATE;
+import static com.freelance.solutionhub.mma.util.AppConstant.THIRD_PARTY_NUMBER;
+import static com.freelance.solutionhub.mma.util.AppConstant.YES;
 import static com.freelance.solutionhub.mma.util.AppConstant.user_inactivity_time;
 
 public class PowerGridActivity extends AppCompatActivity implements View.OnClickListener{
@@ -102,6 +120,18 @@ public class PowerGridActivity extends AppCompatActivity implements View.OnClick
     private boolean isMandatoryFieldLeft = false;
     private String mandatoryFieldsLeft = "";
 
+    private String prePowerGridNo = "";
+    private String preCTpersonnel = "";
+    private String preReferDate = "";
+    private String preExpectedCompletionDate = "";
+    private String preClearanceDate = "";
+    private String preFaultStatus = "";
+    private String preRemarks = "";
+    private String preOfficer = "";
+    private String preFaultDetectedDate = "";
+    private String preActionDate = "";
+    private String preActionTaken = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -137,6 +167,10 @@ public class PowerGridActivity extends AppCompatActivity implements View.OnClick
         actionDateTime.setOnClickListener(this);
         save.setOnClickListener(this);
 
+        if (dbHelper.eventDAO().getNumOfEventsByEventType(POWER_GRIP_UPDATE) > 0) {
+            displaySavedData();
+        }
+
         /**
          after certain amount of user inactivity, asks for passcode
          */
@@ -153,6 +187,45 @@ public class PowerGridActivity extends AppCompatActivity implements View.OnClick
                 stopHandler();
             }
         };
+    }
+
+    private void displaySavedData() {
+        if (dbHelper.eventDAO().getEventValueCount(POWER_GRIP_UPDATE, THIRD_PARTY_NUMBER) > 0) {
+            prePowerGridNo = dbHelper.eventDAO().getEventValue(POWER_GRIP_UPDATE, THIRD_PARTY_NUMBER);
+            powerGridNo.setText(prePowerGridNo);
+        }
+        if (dbHelper.eventDAO().getEventValueCount(POWER_GRIP_UPDATE, CT_PERSONNEL) > 0){
+            preCTpersonnel = dbHelper.eventDAO().getEventValue(POWER_GRIP_UPDATE, CT_PERSONNEL);
+            ctPersonnel.setText(preCTpersonnel);
+        }
+        if (dbHelper.eventDAO().getEventValueCount(POWER_GRIP_UPDATE, REFER_DATE) > 0) {
+            preReferDate = dbHelper.eventDAO().getEventValue(POWER_GRIP_UPDATE, REFER_DATE);referDateTime.setText(preReferDate);
+        }
+        if (dbHelper.eventDAO().getEventValueCount(POWER_GRIP_UPDATE, EXPECTED_COMPLETION_DATE) > 0) {
+            preExpectedCompletionDate = dbHelper.eventDAO().getEventValue(POWER_GRIP_UPDATE, EXPECTED_COMPLETION_DATE);expectedCompletionDateTime.setText(preExpectedCompletionDate);
+        }
+        if (dbHelper.eventDAO().getEventValueCount(POWER_GRIP_UPDATE, CLEARANCE_DATE) > 0) {
+            preClearanceDate = dbHelper.eventDAO().getEventValue(POWER_GRIP_UPDATE, CLEARANCE_DATE); clearanceDateTime.setText(preClearanceDate);
+        }
+        if (dbHelper.eventDAO().getEventValueCount(POWER_GRIP_UPDATE, FAULT_STATUS) > 0) {
+            preFaultStatus = dbHelper.eventDAO().getEventValue(POWER_GRIP_UPDATE, FAULT_STATUS); powerGridFaultStatus.setText(preFaultStatus);
+        }
+        if (dbHelper.eventDAO().getEventValueCount(POWER_GRIP_UPDATE, REMARKS_ON_FAULT) > 0) {
+            preRemarks = dbHelper.eventDAO().getEventValue(POWER_GRIP_UPDATE, REMARKS_ON_FAULT); remarksOnTelcoFault.setText(preRemarks);
+        }
+        if (dbHelper.eventDAO().getEventValueCount(POWER_GRIP_UPDATE, OFFICER) > 0) {
+            preOfficer = dbHelper.eventDAO().getEventValue(POWER_GRIP_UPDATE, OFFICER); powerGridOfficer.setText(preOfficer);
+        }
+        if (dbHelper.eventDAO().getEventValueCount(POWER_GRIP_UPDATE, FAULT_DETECTED_DATE) > 0) {
+            preFaultDetectedDate = dbHelper.eventDAO().getEventValue(POWER_GRIP_UPDATE, FAULT_DETECTED_DATE); faultDetectedDateTime.setText(preFaultDetectedDate);
+        }
+        if (dbHelper.eventDAO().getEventValueCount(POWER_GRIP_UPDATE, ACTION_DATE) > 0) {
+            preActionDate = dbHelper.eventDAO().getEventValue(POWER_GRIP_UPDATE, ACTION_DATE); actionDateTime.setText(preActionDate);
+        }
+        if (dbHelper.eventDAO().getEventValueCount(POWER_GRIP_UPDATE, ACTION_TAKEN) > 0) {
+            preActionTaken = dbHelper.eventDAO().getEventValue(POWER_GRIP_UPDATE, ACTION_TAKEN); actionTaken.setText(preActionTaken);
+
+        }
     }
 
 
@@ -264,26 +337,37 @@ public class PowerGridActivity extends AppCompatActivity implements View.OnClick
             String actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
             UpdateEventBody updateEventBody;
 
-            if (network.isNetworkAvailable()) {
+            if (network.isNetworkAvailable() && dbHelper.eventDAO().getNumOfEventsToUploadByEventType(POWER_GRIP_UPDATE) > 0) {
+                Log.i("POWER_Grid", "save: " + dbHelper.eventDAO().getNumOfEventsToUploadByEventType(POWER_GRIP_UPDATE));
                 showProgressBar();
                 updateEventBody = new UpdateEventBody(mSharePreferenceHelper.getUserName(),
                         mSharePreferenceHelper.getUserId(),
                         actualDateTime,
                         cmID,
-                        eventLists);
+                        dbHelper.eventDAO().getEventsToUploadByEventType(POWER_GRIP_UPDATE));
 
                 Call<ReturnStatus> returnStatusCallEvent = apiInterface.updateEvent("Bearer " + mSharePreferenceHelper.getToken(), updateEventBody);
                 returnStatusCallEvent.enqueue(new Callback<ReturnStatus>() {
                     @Override
                     public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
                         ReturnStatus returnStatus = response.body();
-                        Log.v("SUCCESS","error");
+
                         if (response.isSuccessful()) {
-                            Log.v("SUCCESS","success");
-                            Toast.makeText(getApplicationContext(), returnStatus.getStatus() + "", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(), dbHelper.eventDAO().getNumOfEventsToUploadByEventType(POWER_GRIP_UPDATE)+" events uploaded", Toast.LENGTH_LONG).show();
+                            dbHelper.eventDAO().updateByThirdParty(YES, CM_Step_TWO, POWER_GRIP_UPDATE);
                             hideProgressBar();
                             mSharePreferenceHelper.setLock(false);
                             finish();
+                        }
+                        else {
+                            ResponseBody errorReturnBody = response.errorBody();
+                            try {
+                                Log.e("POWER_Grid", "onResponse: " + errorReturnBody.string());
+                                Toast.makeText(getApplicationContext(), "response " + response.code(), Toast.LENGTH_LONG).show();
+                                hideProgressBar();
+                            } catch (IOException e) {
+
+                            }
                         }
                     }
 
@@ -293,66 +377,131 @@ public class PowerGridActivity extends AppCompatActivity implements View.OnClick
                     }
                 });
             } else {
-                updateEventBody = new UpdateEventBody(
-                        mSharePreferenceHelper.getUserName(),
-                        mSharePreferenceHelper.getUserId(),
-                        actualDateTime,
-                        cmID
-                );
-                String key = mSharePreferenceHelper.getUserId() + cmID + actualDateTime;
-                updateEventBody.setId(key);
-                dbHelper.updateEventBodyDAO().insert(updateEventBody);
-                for (Event event: eventLists) {
-                    event.setUpdateEventBodyKey(key);
-                }
-                dbHelper.eventDAO().insertAll(eventLists);
                 mSharePreferenceHelper.setLock(false);
                 finish();
             }
-
-            eventLists.clear();
         }
 
 
 
     }
     private void addEvents(){
-        if(!isEmpty(powerGridNo))
-            eventLists.add(new Event("POWER_GRIP_UPDATE","thirdPartyNumber", powerGridNo.getText().toString()));
-        else {
+        Event tempEvent;
+        String tempStr;
+        if(!isEmpty(powerGridNo)) {
+            tempStr = powerGridNo.getText().toString();
+            tempEvent = new Event(POWER_GRIP_UPDATE, THIRD_PARTY_NUMBER, tempStr);
+            tempEvent.setEvent_id(POWER_GRIP_UPDATE + THIRD_PARTY_NUMBER);
+            tempEvent.setUpdateEventBodyKey(CM_Step_TWO);
+            if (prePowerGridNo.equals("") || !prePowerGridNo.equals(tempStr)) {
+                tempEvent.setAlreadyUploaded(NO);
+                dbHelper.eventDAO().insert(tempEvent);
+            }
+        } else {
             isMandatoryFieldLeft = true;
             mandatoryFieldsLeft += "\nPower Grip Number";
         }
 
         if(!isEmpty(ctPersonnel)) {
-            eventLists.add(new Event("POWER_GRIP_UPDATE", "ctPersonnel", ctPersonnel.getText().toString()));
+            tempStr = ctPersonnel.getText().toString();
+            tempEvent = new Event(POWER_GRIP_UPDATE, CT_PERSONNEL, tempStr);
+            tempEvent.setEvent_id(POWER_GRIP_UPDATE + CT_PERSONNEL);
+            tempEvent.setUpdateEventBodyKey(CM_Step_TWO);
+            if (preCTpersonnel.equals("") || !preCTpersonnel.equals(tempStr)) {
+                tempEvent.setAlreadyUploaded(NO);
+                dbHelper.eventDAO().insert(tempEvent);
+            }
         } else {
             isMandatoryFieldLeft = true;
             mandatoryFieldsLeft += "\nCT Personnel";
         }
 
-        eventLists.add(new Event("POWER_GRIP_UPDATE", "referDate",referDateTime.getText().toString()));
-        eventLists.add(new Event("POWER_GRIP_UPDATE", "expectedCompletionDate",expectedCompletionDateTime.getText().toString()));
-        eventLists.add(new Event("POWER_GRIP_UPDATE", "clearanceDate",clearanceDateTime.getText().toString()));
-
-        if(!isEmpty(powerGridFaultStatus))
-            eventLists.add(new Event("POWER_GRIP_UPDATE", "faultStatus",powerGridFaultStatus.getText().toString()));
+        tempStr = referDateTime.getText().toString();
+        tempEvent = new Event(POWER_GRIP_UPDATE, REFER_DATE, tempStr);
+        tempEvent.setEvent_id(POWER_GRIP_UPDATE + REFER_DATE);
+        tempEvent.setUpdateEventBodyKey(CM_Step_TWO);
+        if (preReferDate.equals("") || !preReferDate.equals(tempStr)) {
+            tempEvent.setAlreadyUploaded(NO);
+            dbHelper.eventDAO().insert(tempEvent);
+        }
+        tempStr = expectedCompletionDateTime.getText().toString();
+        tempEvent = new Event(POWER_GRIP_UPDATE, EXPECTED_COMPLETION_DATE, tempStr);
+        tempEvent.setEvent_id(POWER_GRIP_UPDATE + EXPECTED_COMPLETION_DATE);
+        tempEvent.setUpdateEventBodyKey(CM_Step_TWO);
+        if (preExpectedCompletionDate.equals("") || !preExpectedCompletionDate.equals(tempStr)) {
+            tempEvent.setAlreadyUploaded(NO);
+            dbHelper.eventDAO().insert(tempEvent);
+        }
+        tempStr = clearanceDateTime.getText().toString();
+        tempEvent = new Event(POWER_GRIP_UPDATE, CLEARANCE_DATE, tempStr);
+        tempEvent.setEvent_id(POWER_GRIP_UPDATE + CLEARANCE_DATE);
+        tempEvent.setUpdateEventBodyKey(CM_Step_TWO);
+        if (preClearanceDate.equals("") || !preClearanceDate.equals(tempStr)) {
+            tempEvent.setAlreadyUploaded(NO);
+            dbHelper.eventDAO().insert(tempEvent);
+        }
+        if(!isEmpty(powerGridFaultStatus)) {
+            tempStr = powerGridFaultStatus.getText().toString();
+            tempEvent = new Event(POWER_GRIP_UPDATE, FAULT_STATUS, tempStr);
+            tempEvent.setEvent_id(POWER_GRIP_UPDATE + FAULT_STATUS);
+            tempEvent.setUpdateEventBodyKey(CM_Step_TWO);
+            if (preFaultStatus.equals("") || !preFaultStatus.equals(tempStr)) {
+                tempEvent.setAlreadyUploaded(NO);
+                dbHelper.eventDAO().insert(tempEvent);
+            }
+        }
         else {
             isMandatoryFieldLeft = true;
             mandatoryFieldsLeft += "\nPower Grip Fault Status";
         }
 
-        if(!isEmpty(remarksOnTelcoFault))
-            eventLists.add(new Event("POWER_GRIP_UPDATE","remarkOnFault",remarksOnTelcoFault.getText().toString()));
+        if(!isEmpty(remarksOnTelcoFault)) {
+            tempStr = remarksOnTelcoFault.getText().toString();
+            tempEvent = new Event(POWER_GRIP_UPDATE, REMARKS_ON_FAULT, tempStr);
+            tempEvent.setEvent_id(POWER_GRIP_UPDATE + REMARKS_ON_FAULT);
+            tempEvent.setUpdateEventBodyKey(CM_Step_TWO);
+            if (preRemarks.equals("") || !preRemarks.equals(tempStr)) {
+                tempEvent.setAlreadyUploaded(NO);
+                dbHelper.eventDAO().insert(tempEvent);
+            }
+        }
+        if(!isEmpty(powerGridOfficer)) {
+            tempStr = powerGridOfficer.getText().toString();
+            tempEvent = new Event(POWER_GRIP_UPDATE, OFFICER, tempStr);
+            tempEvent.setEvent_id(POWER_GRIP_UPDATE + OFFICER);
+            tempEvent.setUpdateEventBodyKey(CM_Step_TWO);
+            if (preOfficer.equals("") || !preOfficer.equals(tempStr)) {
+                tempEvent.setAlreadyUploaded(NO);
+                dbHelper.eventDAO().insert(tempEvent);
+            }
+        }
+        tempStr = faultDetectedDateTime.getText().toString();
+        tempEvent = new Event(POWER_GRIP_UPDATE, FAULT_DETECTED_DATE, tempStr);
+        tempEvent.setEvent_id(POWER_GRIP_UPDATE + FAULT_DETECTED_DATE);
+        tempEvent.setUpdateEventBodyKey(CM_Step_TWO);
+        if (preFaultDetectedDate.equals("") || !preFaultDetectedDate.equals(tempStr)) {
+            tempEvent.setAlreadyUploaded(NO);
+            dbHelper.eventDAO().insert(tempEvent);
+        }
 
-        if(!isEmpty(powerGridOfficer))
-            eventLists.add(new Event("POWER_GRIP_UPDATE", "officer",powerGridOfficer.getText().toString()));
-        eventLists.add(new Event("POWER_GRIP_UPDATE", "faultDetectedDate",faultDetectedDateTime.getText().toString()));
-        eventLists.add(new Event("POWER_GRIP_UPDATE", "actionDate",actionDateTime.getText().toString()));
-
-        if(!isEmpty(actionTaken))
-            eventLists.add(new Event("POWER_GRIP_UPDATE", "actionTaken",actionTaken.getText().toString()));
-        else {
+        tempStr = actionDateTime.getText().toString();
+        tempEvent = new Event(POWER_GRIP_UPDATE, ACTION_DATE, tempStr);
+        tempEvent.setEvent_id(POWER_GRIP_UPDATE + ACTION_DATE);
+        tempEvent.setUpdateEventBodyKey(CM_Step_TWO);
+        if (preActionDate.equals("") || !preActionDate.equals(tempStr)) {
+            tempEvent.setAlreadyUploaded(NO);
+            dbHelper.eventDAO().insert(tempEvent);
+        }
+        if(!isEmpty(actionTaken)) {
+            tempStr = actionTaken.getText().toString();
+            tempEvent = new Event(POWER_GRIP_UPDATE, ACTION_TAKEN, tempStr);
+            tempEvent.setEvent_id(POWER_GRIP_UPDATE + ACTION_TAKEN);
+            tempEvent.setUpdateEventBodyKey(CM_Step_TWO);
+            if (preActionTaken.equals("") || !preActionTaken.equals(tempStr)) {
+                tempEvent.setAlreadyUploaded(NO);
+                dbHelper.eventDAO().insert(tempEvent);
+            }
+        }else {
             isMandatoryFieldLeft = true;
             mandatoryFieldsLeft += "\nAction Taken by Power Grid";
         }
@@ -365,6 +514,7 @@ public class PowerGridActivity extends AppCompatActivity implements View.OnClick
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
+                mSharePreferenceHelper.setLock(false);
                 finish();
                 return true;
 

@@ -429,7 +429,7 @@ public class NotificationActivity extends AppCompatActivity  {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                mSharedPreference.setLock(true);
+                mSharedPreference.setLock(false);
                 finish();
                 return true;
         }

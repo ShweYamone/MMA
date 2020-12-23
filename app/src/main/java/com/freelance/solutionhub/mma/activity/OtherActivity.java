@@ -222,6 +222,7 @@ public class OtherActivity extends AppCompatActivity implements View.OnClickList
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
+                mSharePreferenceHelper.setLock(false);
                 finish();
                 return true;
 
