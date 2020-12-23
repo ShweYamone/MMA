@@ -314,7 +314,6 @@ public class PowerGridActivity extends AppCompatActivity implements View.OnClick
 
         isMandatoryFieldLeft = false;
         mandatoryFieldsLeft = "";
-        eventLists.clear();
         addEvents();
 
         if (isMandatoryFieldLeft) {
@@ -351,7 +350,6 @@ public class PowerGridActivity extends AppCompatActivity implements View.OnClick
                 returnStatusCallEvent.enqueue(new Callback<ReturnStatus>() {
                     @Override
                     public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
-                        ReturnStatus returnStatus = response.body();
 
                         if (response.isSuccessful()) {
                             Toast.makeText(getApplicationContext(), dbHelper.eventDAO().getNumOfEventsToUploadByEventType(POWER_GRIP_UPDATE)+" events uploaded", Toast.LENGTH_LONG).show();
@@ -374,6 +372,7 @@ public class PowerGridActivity extends AppCompatActivity implements View.OnClick
 
                     @Override
                     public void onFailure(Call<ReturnStatus> call, Throwable t) {
+                        hideProgressBar();
                         Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });

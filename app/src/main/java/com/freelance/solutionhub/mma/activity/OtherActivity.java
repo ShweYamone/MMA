@@ -29,21 +29,36 @@ import com.freelance.solutionhub.mma.util.ApiInterface;
 import com.freelance.solutionhub.mma.util.Network;
 import com.freelance.solutionhub.mma.util.SharePreferenceHelper;
 
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.chrono.IsoChronology;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.freelance.solutionhub.mma.util.AppConstant.ACTION_DATE;
+import static com.freelance.solutionhub.mma.util.AppConstant.ACTION_TAKEN;
+import static com.freelance.solutionhub.mma.util.AppConstant.CLEARANCE_DATE;
+import static com.freelance.solutionhub.mma.util.AppConstant.CM_Step_TWO;
+import static com.freelance.solutionhub.mma.util.AppConstant.COMPANY_NAME;
+import static com.freelance.solutionhub.mma.util.AppConstant.CONTACT_NUMBER;
+import static com.freelance.solutionhub.mma.util.AppConstant.EXPECTED_COMPLETION_DATE;
+import static com.freelance.solutionhub.mma.util.AppConstant.FAULT_DETECTED_DATE;
+import static com.freelance.solutionhub.mma.util.AppConstant.FAULT_STATUS;
+import static com.freelance.solutionhub.mma.util.AppConstant.NO;
+import static com.freelance.solutionhub.mma.util.AppConstant.OFFICER;
 import static com.freelance.solutionhub.mma.util.AppConstant.OTHER_CONTRACTOR_UPDATE;
-import static com.freelance.solutionhub.mma.util.AppConstant.POWER_GRIP_UPDATE;
 import static com.freelance.solutionhub.mma.util.AppConstant.REFER_DATE;
+import static com.freelance.solutionhub.mma.util.AppConstant.REMARKS_ON_FAULT;
+import static com.freelance.solutionhub.mma.util.AppConstant.YES;
 import static com.freelance.solutionhub.mma.util.AppConstant.user_inactivity_time;
 
 public class OtherActivity extends AppCompatActivity implements View.OnClickListener{
@@ -151,7 +166,7 @@ public class OtherActivity extends AppCompatActivity implements View.OnClickList
         save.setOnClickListener(this);
 
         /**show data from DB if have */
-        if (dbHelper.eventDAO().getNumOfEventsByEventType(POWER_GRIP_UPDATE) > 0) {
+        if (dbHelper.eventDAO().getNumOfEventsByEventType(OTHER_CONTRACTOR_UPDATE) > 0) {
             displaySavedData();
         }
 
@@ -174,6 +189,50 @@ public class OtherActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void displaySavedData() {
+        if (dbHelper.eventDAO().getEventValueCount(OTHER_CONTRACTOR_UPDATE, REFER_DATE) > 0) {
+            preReferDate = dbHelper.eventDAO().getEventValue(OTHER_CONTRACTOR_UPDATE, REFER_DATE);
+            referDateTime.setText(preReferDate);
+        }
+        if (dbHelper.eventDAO().getEventValueCount(OTHER_CONTRACTOR_UPDATE, EXPECTED_COMPLETION_DATE) > 0) {
+            preCompletionDate = dbHelper.eventDAO().getEventValue(OTHER_CONTRACTOR_UPDATE, EXPECTED_COMPLETION_DATE);
+            expectedCompletionDateTime.setText(preCompletionDate);
+        }
+        if (dbHelper.eventDAO().getEventValueCount(OTHER_CONTRACTOR_UPDATE, CLEARANCE_DATE) > 0) {
+            preClearanceDate = dbHelper.eventDAO().getEventValue(OTHER_CONTRACTOR_UPDATE, CLEARANCE_DATE);
+            clearanceDateTime.setText(preClearanceDate);
+        }
+        if (dbHelper.eventDAO().getEventValueCount(OTHER_CONTRACTOR_UPDATE, FAULT_STATUS) > 0) {
+            preFaultStatus = dbHelper.eventDAO().getEventValue(OTHER_CONTRACTOR_UPDATE, FAULT_STATUS);
+            faultStatus.setText(preFaultStatus);
+        }
+        if (dbHelper.eventDAO().getEventValueCount(OTHER_CONTRACTOR_UPDATE, REMARKS_ON_FAULT) > 0) {
+            preRemarks = dbHelper.eventDAO().getEventValue(OTHER_CONTRACTOR_UPDATE, REMARKS_ON_FAULT);
+            remarks.setText(preRemarks);
+        }
+        if (dbHelper.eventDAO().getEventValueCount(OTHER_CONTRACTOR_UPDATE, COMPANY_NAME) > 0) {
+            preCompanyName = dbHelper.eventDAO().getEventValue(OTHER_CONTRACTOR_UPDATE, COMPANY_NAME);
+            thirdPartyCompanyName.setText(preCompanyName);
+        }
+        if (dbHelper.eventDAO().getEventValueCount(OTHER_CONTRACTOR_UPDATE, OFFICER) > 0) {
+            preContractorName = dbHelper.eventDAO().getEventValue(OTHER_CONTRACTOR_UPDATE, OFFICER);
+            thirdPartyContractorName.setText(preContractorName);
+        }
+        if (dbHelper.eventDAO().getEventValueCount(OTHER_CONTRACTOR_UPDATE, CONTACT_NUMBER) > 0) {
+            preContractorNo = dbHelper.eventDAO().getEventValue(OTHER_CONTRACTOR_UPDATE, CONTACT_NUMBER);
+            thirdPartyContractorNo.setText(preContractorNo);
+        }
+        if (dbHelper.eventDAO().getEventValueCount(OTHER_CONTRACTOR_UPDATE, FAULT_DETECTED_DATE) > 0) {
+            preDetectedDate = dbHelper.eventDAO().getEventValue(OTHER_CONTRACTOR_UPDATE, FAULT_DETECTED_DATE);
+            faultDetectedDateTime.setText(preDetectedDate);
+        }
+        if (dbHelper.eventDAO().getEventValueCount(OTHER_CONTRACTOR_UPDATE, ACTION_DATE) > 0) {
+            preActionDate = dbHelper.eventDAO().getEventValue(OTHER_CONTRACTOR_UPDATE, ACTION_DATE);
+            actionDateTime.setText(preActionDate);
+        }
+        if (dbHelper.eventDAO().getEventValueCount(OTHER_CONTRACTOR_UPDATE, ACTION_TAKEN) > 0) {
+            preActionTaken = dbHelper.eventDAO().getEventValue(OTHER_CONTRACTOR_UPDATE, ACTION_TAKEN);
+            actionTaken.setText(preActionTaken);
+        }
     }
 
 
@@ -272,7 +331,6 @@ public class OtherActivity extends AppCompatActivity implements View.OnClickList
 
         isMandatoryFieldLeft = false;
         mandatoryFieldsLeft = "";
-        eventLists.clear();
         addEvents();
 
         if (isMandatoryFieldLeft) {
@@ -288,61 +346,62 @@ public class OtherActivity extends AppCompatActivity implements View.OnClickList
                     })
                     .show();
         } else {
-            Log.v("BEFORE_JOIN", "Before joining");
-            Log.v("JOIN", eventLists.size() + "");
 
             date = new Date();
             Timestamp timestamp = new Timestamp(date.getTime());
             String actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
             UpdateEventBody updateEventBody;
-            if (network.isNetworkAvailable()) {
+            Log.i("Other", "save: " + dbHelper.eventDAO().getNumberOfEvents());
+            List<Event> events = dbHelper.eventDAO().getEventsByEventType(OTHER_CONTRACTOR_UPDATE);
+            String temp = "";
+            for(Event e: events) {
+                temp += e.getEvent_id() + " - " + e.getValue() + " - " + e.getAlreadyUploaded() + "\n";
+            }
+            Log.i("Other", "save: " + temp);
+
+
+            if (network.isNetworkAvailable() && dbHelper.eventDAO().getNumOfEventsToUploadByEventType(OTHER_CONTRACTOR_UPDATE) > 0) {
                 showProgressBar();
                 updateEventBody = new UpdateEventBody(mSharePreferenceHelper.getUserName(),
                         mSharePreferenceHelper.getUserId(),
                         actualDateTime,
                         cmID,
-                        eventLists);
+                        dbHelper.eventDAO().getEventsToUploadByEventType(OTHER_CONTRACTOR_UPDATE));
 
                 Call<ReturnStatus> returnStatusCallEvent = apiInterface.updateEvent("Bearer " + mSharePreferenceHelper.getToken(), updateEventBody);
                 returnStatusCallEvent.enqueue(new Callback<ReturnStatus>() {
                     @Override
                     public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
-                        ReturnStatus returnStatus = response.body();
-                        Log.v("SUCCESS","error");
                         if (response.isSuccessful()) {
-                            Log.v("SUCCESS","success");
-                            Toast.makeText(getApplicationContext(), returnStatus.getStatus() + "", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(), dbHelper.eventDAO().getNumOfEventsToUploadByEventType(OTHER_CONTRACTOR_UPDATE)+" events uploaded", Toast.LENGTH_LONG).show();
+                            dbHelper.eventDAO().updateByThirdParty(YES, CM_Step_TWO, OTHER_CONTRACTOR_UPDATE);
                             hideProgressBar();
                             mSharePreferenceHelper.setLock(false);
                             finish();
+                        }
+                        else {
+                            hideProgressBar();
+                            ResponseBody errorReturnBody = response.errorBody();
+                            try {
+                                Log.e("OTHER", "onResponse: " + errorReturnBody.string());
+                                Toast.makeText(getApplicationContext(), "response " + response.code(), Toast.LENGTH_LONG).show();
+                            } catch (IOException e) {
+
+                            }
                         }
                     }
 
                     @Override
                     public void onFailure(Call<ReturnStatus> call, Throwable t) {
+                        hideProgressBar();
                         Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
             } else {
-                updateEventBody = new UpdateEventBody(
-                        mSharePreferenceHelper.getUserName(),
-                        mSharePreferenceHelper.getUserId(),
-                        actualDateTime,
-                        cmID
-                );
-                String key = mSharePreferenceHelper.getUserId() + cmID + actualDateTime;
-                updateEventBody.setId(key);
-                dbHelper.updateEventBodyDAO().insert(updateEventBody);
-                for (Event event: eventLists) {
-                    event.setUpdateEventBodyKey(key);
-                }
-                dbHelper.eventDAO().insertAll(eventLists);
                 mSharePreferenceHelper.setLock(false);
                 finish();
             }
 
-
-            eventLists.clear();
 
         }
 
@@ -351,47 +410,130 @@ public class OtherActivity extends AppCompatActivity implements View.OnClickList
     private void addEvents(){
         Event tempEvent;
         String tempStr;
-      //  tempEvent = new Event(OTHER_CONTRACTOR_UPDATE, REFER_DATE)
 
+        tempStr = referDateTime.getText().toString();
+        tempEvent = new Event(OTHER_CONTRACTOR_UPDATE, REFER_DATE, tempStr);
+        tempEvent.setEvent_id(OTHER_CONTRACTOR_UPDATE + REFER_DATE);
+        tempEvent.setUpdateEventBodyKey(CM_Step_TWO);
+        if (preReferDate.equals("") || !preReferDate.equals(tempStr)) {
+            tempEvent.setAlreadyUploaded(NO);
+            dbHelper.eventDAO().insert(tempEvent);
+        }
 
-        eventLists.add(new Event("OTHER_CONTRACTOR_UPDATE", "referDate",referDateTime.getText().toString()));
-        eventLists.add(new Event("OTHER_CONTRACTOR_UPDATE", "expectedCompletionDate",expectedCompletionDateTime.getText().toString()));
-        eventLists.add(new Event("OTHER_CONTRACTOR_UPDATE", "clearanceDate",clearanceDateTime.getText().toString()));
-        if(!isEmpty(faultStatus))
-            eventLists.add(new Event("OTHER_CONTRACTOR_UPDATE", "faultStatus",faultStatus.getText().toString()));
-        else {
+        tempStr = expectedCompletionDateTime.getText().toString();
+        tempEvent = new Event(OTHER_CONTRACTOR_UPDATE, EXPECTED_COMPLETION_DATE, tempStr);
+        tempEvent.setEvent_id(OTHER_CONTRACTOR_UPDATE + EXPECTED_COMPLETION_DATE);
+        tempEvent.setUpdateEventBodyKey(CM_Step_TWO);
+        if (preCompletionDate.equals("") || !preCompletionDate.equals(tempStr)) {
+            tempEvent.setAlreadyUploaded(NO);
+            dbHelper.eventDAO().insert(tempEvent);
+        }
+
+        tempStr = clearanceDateTime.getText().toString();
+        tempEvent = new Event(OTHER_CONTRACTOR_UPDATE, CLEARANCE_DATE, tempStr);
+        tempEvent.setEvent_id(OTHER_CONTRACTOR_UPDATE + CLEARANCE_DATE);
+        tempEvent.setUpdateEventBodyKey(CM_Step_TWO);
+        if (preClearanceDate.equals("") || !preClearanceDate.equals(tempStr)) {
+            tempEvent.setAlreadyUploaded(NO);
+            dbHelper.eventDAO().insert(tempEvent);
+        }
+
+        if(!isEmpty(faultStatus)) {
+            tempStr = faultStatus.getText().toString();
+            tempEvent = new Event(OTHER_CONTRACTOR_UPDATE, FAULT_STATUS, tempStr);
+            tempEvent.setEvent_id(OTHER_CONTRACTOR_UPDATE + FAULT_STATUS);
+            tempEvent.setUpdateEventBodyKey(CM_Step_TWO);
+            if (preFaultStatus.equals("") || !preFaultStatus.equals(tempStr)) {
+                tempEvent.setAlreadyUploaded(NO);
+                dbHelper.eventDAO().insert(tempEvent);
+            }
+        }else {
             isMandatoryFieldLeft = true;
             mandatoryFieldsLeft += "\nFault Status";
         }
-        if(!isEmpty(remarks))
-            eventLists.add(new Event("OTHER_CONTRACTOR_UPDATE","remarkOnFault",remarks.getText().toString()));
 
-        if(!isEmpty(thirdPartyContractorName))
-            eventLists.add(new Event("OTHER_CONTRACTOR_UPDATE", "officer",thirdPartyContractorName.getText().toString()));
+        if(!isEmpty(remarks)) {
+            tempStr = remarks.getText().toString();
+            tempEvent = new Event(OTHER_CONTRACTOR_UPDATE, REMARKS_ON_FAULT, tempStr);
+            tempEvent.setEvent_id(OTHER_CONTRACTOR_UPDATE + REMARKS_ON_FAULT);
+            tempEvent.setUpdateEventBodyKey(CM_Step_TWO);
+            if (preRemarks.equals("") || !preRemarks.equals(tempStr)) {
+                tempEvent.setAlreadyUploaded(NO);
+                dbHelper.eventDAO().insert(tempEvent);
+            }
+        }
+
+        if(!isEmpty(thirdPartyCompanyName)) {
+            tempStr = thirdPartyCompanyName.getText().toString();
+            tempEvent = new Event(OTHER_CONTRACTOR_UPDATE, COMPANY_NAME, tempStr);
+            tempEvent.setEvent_id(OTHER_CONTRACTOR_UPDATE + COMPANY_NAME);
+            tempEvent.setUpdateEventBodyKey(CM_Step_TWO);
+            if (preCompanyName.equals("") || !preCompanyName.equals(tempStr)) {
+                tempEvent.setAlreadyUploaded(NO);
+                dbHelper.eventDAO().insert(tempEvent);
+            }
+        } else {
+            isMandatoryFieldLeft = true;
+            mandatoryFieldsLeft += "\n3rd Party Company Name";
+        }
+
+        if(!isEmpty(thirdPartyContractorName)) {
+            tempStr = thirdPartyContractorName.getText().toString();
+            tempEvent = new Event(OTHER_CONTRACTOR_UPDATE, OFFICER, tempStr);
+            tempEvent.setEvent_id(OTHER_CONTRACTOR_UPDATE + OFFICER);
+            tempEvent.setUpdateEventBodyKey(CM_Step_TWO);
+            if (preContractorName.equals("") || !preContractorName.equals(tempStr)) {
+                tempEvent.setAlreadyUploaded(NO);
+                dbHelper.eventDAO().insert(tempEvent);
+            }
+        }
         else {
             isMandatoryFieldLeft = true;
             mandatoryFieldsLeft += "\n3rd Party Contractor Name";
         }
 
-        if(!isEmpty(thirdPartyCompanyName))
-            eventLists.add(new Event("OTHER_CONTRACTOR_UPDATE", "companyName",thirdPartyCompanyName.getText().toString()));
-        else {
-            isMandatoryFieldLeft = true;
-            mandatoryFieldsLeft += "\n3rd Party Company Name";
-        }
-
-        if(!isEmpty(thirdPartyContractorNo))
-            eventLists.add(new Event("OTHER_CONTRACTOR_UPDATE", "contactNumber",thirdPartyContractorNo.getText().toString()));
-        else {
+        if(!isEmpty(thirdPartyContractorNo)) {
+            tempStr = thirdPartyContractorNo.getText().toString();
+            tempEvent = new Event(OTHER_CONTRACTOR_UPDATE, CONTACT_NUMBER, tempStr);
+            tempEvent.setEvent_id(OTHER_CONTRACTOR_UPDATE + CONTACT_NUMBER);
+            tempEvent.setUpdateEventBodyKey(CM_Step_TWO);
+            if (preContractorNo.equals("") || !preContractorNo.equals(tempStr)) {
+                tempEvent.setAlreadyUploaded(NO);
+                dbHelper.eventDAO().insert(tempEvent);
+            }
+        } else {
             isMandatoryFieldLeft = true;
             mandatoryFieldsLeft += "\n3rd Party Contractor No";
         }
 
-        eventLists.add(new Event("OTHER_CONTRACTOR_UPDATE", "faultDetectedDate",faultDetectedDateTime.getText().toString()));
-        eventLists.add(new Event("OTHER_CONTRACTOR_UPDATE", "actionDate",actionDateTime.getText().toString()));
+        tempStr = faultDetectedDateTime.getText().toString();
+        tempEvent = new Event(OTHER_CONTRACTOR_UPDATE, FAULT_DETECTED_DATE, tempStr);
+        tempEvent.setEvent_id(OTHER_CONTRACTOR_UPDATE + FAULT_DETECTED_DATE);
+        tempEvent.setUpdateEventBodyKey(CM_Step_TWO);
+        if (preDetectedDate.equals("") || !preDetectedDate.equals(tempStr)) {
+            tempEvent.setAlreadyUploaded(NO);
+            dbHelper.eventDAO().insert(tempEvent);
+        }
 
-        if(!isEmpty(actionTaken))
-            eventLists.add(new Event("OTHER_CONTRACTOR_UPDATE", "actionTaken",actionTaken.getText().toString()));
+        tempStr = actionDateTime.getText().toString();
+        tempEvent = new Event(OTHER_CONTRACTOR_UPDATE, ACTION_DATE, tempStr);
+        tempEvent.setEvent_id(OTHER_CONTRACTOR_UPDATE + ACTION_DATE);
+        tempEvent.setUpdateEventBodyKey(CM_Step_TWO);
+        if (preActionDate.equals("") || !preActionDate.equals(tempStr)) {
+            tempEvent.setAlreadyUploaded(NO);
+            dbHelper.eventDAO().insert(tempEvent);
+        }
+
+        if(!isEmpty(actionTaken)) {
+            tempStr = actionTaken.getText().toString();
+            tempEvent = new Event(OTHER_CONTRACTOR_UPDATE, ACTION_TAKEN, tempStr);
+            tempEvent.setEvent_id(OTHER_CONTRACTOR_UPDATE + ACTION_TAKEN);
+            tempEvent.setUpdateEventBodyKey(CM_Step_TWO);
+            if (preActionTaken.equals("") || !preActionTaken.equals(tempStr)) {
+                tempEvent.setAlreadyUploaded(NO);
+                dbHelper.eventDAO().insert(tempEvent);
+            }
+        }
         else {
             isMandatoryFieldLeft = true;
             mandatoryFieldsLeft += "\nAction Taken By Contractor";

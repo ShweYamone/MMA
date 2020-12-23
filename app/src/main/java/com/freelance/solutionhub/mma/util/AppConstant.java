@@ -48,6 +48,9 @@ public class AppConstant {
     public static final String ACTION_DATE = "actionDate";
     public static final String ACTION_TAKEN = "actionTaken";
     public static final String REMARKS_ON_FAULT = "remarkOnFault";
+    public static final String COMPANY_NAME = "companyName";
+    public static final String CONTACT_NUMBER = "contactNumber";
+
 
     public static final String YES = "yes";
     public static final String NO = "no";

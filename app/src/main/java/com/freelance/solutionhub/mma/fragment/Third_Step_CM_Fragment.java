@@ -188,22 +188,23 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
                     dialogBody = "You have unsaved changes in Step and Two.";
                     showDialog();
                 } else {
+                    UpdateEventBody updateEventBody = new UpdateEventBody(
+                            mSharePreferenceHelper.getUserName(),
+                            mSharePreferenceHelper.getUserId(),
+                            actualDateTime,
+                            pmServiceInfoDetailModel.getId()
+                    );
+
+                    updateEventBody.setId(CM_Step_THREE);
+                    updateEventBody.setServiceOrderStatus(JOBDONE);
+                    updateEventBody.setRemark(remarks.getText().toString());
+                    updateEventBody.setWeatherCondition(weather);
+                    dbHelper.updateEventBodyDAO().insert(updateEventBody);
+
                     if(network.isNetworkAvailable()) {
                         date = new Date();
                         Timestamp timestamp = new Timestamp(date.getTime());
                         actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
-                        UpdateEventBody updateEventBody = new UpdateEventBody(
-                                mSharePreferenceHelper.getUserName(),
-                                mSharePreferenceHelper.getUserId(),
-                                actualDateTime,
-                                pmServiceInfoDetailModel.getId()
-                        );
-
-                        updateEventBody.setId(CM_Step_THREE);
-                        updateEventBody.setServiceOrderStatus(JOBDONE);
-                        updateEventBody.setRemark(remarks.getText().toString());
-                        updateEventBody.setWeatherCondition(weather);
-                        dbHelper.updateEventBodyDAO().insert(updateEventBody);
 
 
                         Call<VerificationReturnBody> call = apiInterface.verifyWorks("Bearer " + mSharePreferenceHelper.getToken(), "CM20205B6923C2");
