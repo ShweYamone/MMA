@@ -146,6 +146,7 @@ public class First_Step_CM_Fragment extends Fragment {
         ButterKnife.bind(this, view);
         displayMSOInformation();
         setDataAdapter();
+        Log.i(CM_Step_ONE, "onCreateView: " + dbHelper.updateEventBodyDAO().getNumberOfUpdateEventsById(CM_Step_ONE));
 
         if (dbHelper.updateEventBodyDAO().getNumberOfUpdateEventsById(CM_Step_ONE) > 0) {
             prePhotoModels.clear();
@@ -327,7 +328,7 @@ public class First_Step_CM_Fragment extends Fragment {
      * Set two recycler view with adapter
      */
     private void setDataAdapter() {
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getContext(),3  );
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getContext(),3);
         //Pre Maintenance Photo Adapter Setup
         prePhoto.setLayoutManager(layoutManager);
         prePhotoAdapter = new PhotoAdapter(getContext(), prePhotoModels);

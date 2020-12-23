@@ -237,8 +237,6 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
                         showDialog();
                     }
 
-                  //  jobDone.setClickable(true);
-                  //  jobDone.setBackground(getResources().getDrawable(R.drawable.round_rect_shape_button));
                 }
 
 

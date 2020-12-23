@@ -43,6 +43,21 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.freelance.solutionhub.mma.util.AppConstant.ACTION_DATE;
+import static com.freelance.solutionhub.mma.util.AppConstant.ACTION_TAKEN;
+import static com.freelance.solutionhub.mma.util.AppConstant.CLEARANCE_DATE;
+import static com.freelance.solutionhub.mma.util.AppConstant.CM_Step_TWO;
+import static com.freelance.solutionhub.mma.util.AppConstant.CT_PERSONNEL;
+import static com.freelance.solutionhub.mma.util.AppConstant.DOCKET_NUMBER;
+import static com.freelance.solutionhub.mma.util.AppConstant.EXPECTED_COMPLETION_DATE;
+import static com.freelance.solutionhub.mma.util.AppConstant.FAULT_DETECTED_DATE;
+import static com.freelance.solutionhub.mma.util.AppConstant.FAULT_STATUS;
+import static com.freelance.solutionhub.mma.util.AppConstant.NO;
+import static com.freelance.solutionhub.mma.util.AppConstant.OFFICER;
+import static com.freelance.solutionhub.mma.util.AppConstant.REFER_DATE;
+import static com.freelance.solutionhub.mma.util.AppConstant.TELCO_UPDATE;
+import static com.freelance.solutionhub.mma.util.AppConstant.THIRD_PARTY_NUMBER;
+import static com.freelance.solutionhub.mma.util.AppConstant.YES;
 import static com.freelance.solutionhub.mma.util.AppConstant.user_inactivity_time;
 
 public class TelcoActivity extends AppCompatActivity implements View.OnClickListener{
@@ -104,6 +119,18 @@ public class TelcoActivity extends AppCompatActivity implements View.OnClickList
     private boolean isMandatoryFieldLeft = false;
     private String mandatoryFieldsLeft = "";
 
+    private String preTelcoNo = "";
+    private String preDockerNo = "";
+    private String preCTPersonnel = "";
+    private String preReferDate = "";
+    private String preCompletionDate = "";
+    private String preClearanceDate = "";
+    private String preFaultStatus = "";
+    private String preOfficer = "";
+    private String preDetectedDate = "";
+    private String preActionDate = "";
+    private String preActionTaken = "";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,6 +166,11 @@ public class TelcoActivity extends AppCompatActivity implements View.OnClickList
         actionDateTime.setOnClickListener(this);
         save.setOnClickListener(this);
 
+        if (dbHelper.eventDAO().getNumOfEventsByEventType(TELCO_UPDATE) > 0) {
+            displaySavedData();
+        }
+
+
         /**
          after certain amount of user inactivity, asks for passcode
          */
@@ -156,8 +188,6 @@ public class TelcoActivity extends AppCompatActivity implements View.OnClickList
             }
         };
     }
-
-
     @Override
     protected void onStop() {
         super.onStop();
@@ -167,7 +197,6 @@ public class TelcoActivity extends AppCompatActivity implements View.OnClickList
             stopHandler();
         sharePreferenceHelper.setLock(true);
     }
-
     @Override
     public void onUserInteraction() {
         // TODO Auto-generated method stub
@@ -183,7 +212,6 @@ public class TelcoActivity extends AppCompatActivity implements View.OnClickList
     public void startHandler() {
         handler.postDelayed(r, user_inactivity_time); //for 3 minutes
     }
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -196,7 +224,6 @@ public class TelcoActivity extends AppCompatActivity implements View.OnClickList
             startHandler();
         }
     }
-
     @Override
     public void onClick(View v) {
         switch (v.getId()){
@@ -220,7 +247,6 @@ public class TelcoActivity extends AppCompatActivity implements View.OnClickList
                 break;
         }
     }
-
     private void setDateTimeButton(){
         Timestamp timestamp = new Timestamp(date.getTime());
         String actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
@@ -260,13 +286,13 @@ public class TelcoActivity extends AppCompatActivity implements View.OnClickList
             String actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
 
             UpdateEventBody updateEventBody;
-            if (network.isNetworkAvailable()) {
+            if (network.isNetworkAvailable() && dbHelper.eventDAO().getNumOfEventsToUploadByEventType(TELCO_UPDATE) > 0) {
                 showProgressBar();
                 updateEventBody = new UpdateEventBody(mSharePreferenceHelper.getUserName(),
                         mSharePreferenceHelper.getUserId(),
                         actualDateTime,
                         cmID,
-                        eventLists);
+                        dbHelper.eventDAO().getEventsToUploadByEventType(TELCO_UPDATE));
                 Call<ReturnStatus> returnStatusCallEvent = apiInterface.updateEvent("Bearer " + mSharePreferenceHelper.getToken(), updateEventBody);
                 returnStatusCallEvent.enqueue(new Callback<ReturnStatus>() {
                     @Override
@@ -275,10 +301,13 @@ public class TelcoActivity extends AppCompatActivity implements View.OnClickList
                         Log.v("SUCCESS","error");
                         if (response.isSuccessful()) {
                             Log.v("SUCCESS","success");
-                            Toast.makeText(getApplicationContext(), returnStatus.getStatus() + "", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(), dbHelper.eventDAO().getNumOfEventsToUploadByEventType(TELCO_UPDATE)+" events uploaded", Toast.LENGTH_LONG).show();
+                            dbHelper.eventDAO().updateByThirdParty(YES, CM_Step_TWO, TELCO_UPDATE);
                             hideProgressBar();
                             mSharePreferenceHelper.setLock(false);
                             finish();
+                        } else {
+                            Toast.makeText(getApplicationContext(), response.errorBody()+"", Toast.LENGTH_SHORT).show();
                         }
                     }
 
@@ -288,71 +317,186 @@ public class TelcoActivity extends AppCompatActivity implements View.OnClickList
                     }
                 });
             } else {
-                updateEventBody = new UpdateEventBody(mSharePreferenceHelper.getUserName(),
-                        mSharePreferenceHelper.getUserId(),
-                        actualDateTime,
-                        cmID);
-                String key = mSharePreferenceHelper.getUserId() + cmID + actualDateTime;
-                updateEventBody.setId(key);
-                dbHelper.updateEventBodyDAO().insert(updateEventBody);
-                for (Event event: eventLists)
-                    event.setUpdateEventBodyKey(key);
-                dbHelper.eventDAO().insertAll(eventLists);
                 mSharePreferenceHelper.setLock(false);
                 finish();
-
             }
+            preTelcoNo = telcoNo.getText().toString()+"";
+            preDockerNo = dockerNo.getText().toString()+"";
+            preCTPersonnel = ctPersonnel.getText().toString()+"";
+            preReferDate = referDateTime.getText().toString() + "";
+            preCompletionDate = expectedCompletionDateTime.getText().toString() + "";
+            preClearanceDate = clearanceDateTime.getText().toString() + "";
+            preFaultStatus = telcoFaultStatus.getText().toString() + "";
+            preOfficer = telcoOfficer.getText().toString() + "";
+            preDetectedDate = faultDetectedDateTime.getText().toString()+"";
+            preActionDate = actionDateTime.getText().toString() + "";
+            preActionTaken = actionTaken.getText().toString() + "";
 
 
-            eventLists.clear();
         }
 
 
     }
 
+    private void displaySavedData() {
+        if (dbHelper.eventDAO().getEventValueCount(TELCO_UPDATE , THIRD_PARTY_NUMBER) > 0) {
+            telcoNo.setText(dbHelper.eventDAO().getEventValue(TELCO_UPDATE , THIRD_PARTY_NUMBER));
+        }
+        if (dbHelper.eventDAO().getEventValueCount(TELCO_UPDATE, DOCKET_NUMBER) > 0) {
+            dockerNo.setText(dbHelper.eventDAO().getEventValue(TELCO_UPDATE, DOCKET_NUMBER));
+        }
+        if (dbHelper.eventDAO().getEventValueCount(TELCO_UPDATE, CT_PERSONNEL) > 0) {
+            ctPersonnel.setText(dbHelper.eventDAO().getEventValue(TELCO_UPDATE, CT_PERSONNEL));
+        }
+        if (dbHelper.eventDAO().getEventValueCount(TELCO_UPDATE, REFER_DATE) > 0) {
+            referDateTime.setText(dbHelper.eventDAO().getEventValue(TELCO_UPDATE, REFER_DATE));
+        }
+        if (dbHelper.eventDAO().getEventValueCount(TELCO_UPDATE, EXPECTED_COMPLETION_DATE) > 0) {
+            expectedCompletionDateTime.setText(dbHelper.eventDAO().getEventValue(TELCO_UPDATE, EXPECTED_COMPLETION_DATE));
+        }
+        if (dbHelper.eventDAO().getEventValueCount(TELCO_UPDATE, CLEARANCE_DATE) > 0) {
+            clearanceDateTime.setText(dbHelper.eventDAO().getEventValue(TELCO_UPDATE, CLEARANCE_DATE));
+        }
+        if (dbHelper.eventDAO().getEventValueCount(TELCO_UPDATE, FAULT_STATUS) > 0) {
+            telcoFaultStatus.setText(dbHelper.eventDAO().getEventValue(TELCO_UPDATE, FAULT_STATUS));
+        }
+        if (dbHelper.eventDAO().getEventValueCount(TELCO_UPDATE, OFFICER) > 0) {
+            telcoOfficer.setText(dbHelper.eventDAO().getEventValue(TELCO_UPDATE, OFFICER));
+        }
+        if (dbHelper.eventDAO().getEventValueCount(TELCO_UPDATE, FAULT_DETECTED_DATE) > 0) {
+            faultDetectedDateTime.setText(dbHelper.eventDAO().getEventValue(TELCO_UPDATE, FAULT_DETECTED_DATE));
+        }
+        if (dbHelper.eventDAO().getEventValueCount(TELCO_UPDATE, ACTION_DATE) > 0) {
+            actionDateTime.setText(dbHelper.eventDAO().getEventValue(TELCO_UPDATE, ACTION_DATE));
+        }
+        if (dbHelper.eventDAO().getEventValueCount(TELCO_UPDATE, ACTION_TAKEN) > 0) {
+            actionTaken.setText(dbHelper.eventDAO().getEventValue(TELCO_UPDATE, ACTION_TAKEN));
+        }
+    }
     private void addEvents(){
         Log.v("TELCO","H"+telcoNo.getText().toString()+"H");
-        if(!isEmpty(telcoNo))
-            eventLists.add(new Event("TELCO_UPDATE","thirdPartyNumber", telcoNo.getText().toString()));
+        Event tempEvent; String tempStr;
+        if(!isEmpty(telcoNo)) {
+            tempStr = telcoNo.getText().toString();
+            tempEvent = new Event(TELCO_UPDATE,THIRD_PARTY_NUMBER, tempStr);
+            tempEvent.setEvent_id(TELCO_UPDATE + THIRD_PARTY_NUMBER);
+            tempEvent.setUpdateEventBodyKey(CM_Step_TWO);
+            if (preTelcoNo.equals("") || !preTelcoNo.equals(tempStr)) {
+                tempEvent.setAlreadyUploaded(NO);
+                dbHelper.eventDAO().insert(tempEvent);
+            }
+        }
         else {
             isMandatoryFieldLeft = true;
             mandatoryFieldsLeft += "\nTelco No";
         }
-
-        if(!isEmpty(dockerNo))
-            eventLists.add(new Event("TELCO_UPDATE", "docketNumber",dockerNo.getText().toString()));
+        if(!isEmpty(dockerNo)) {
+            tempStr = dockerNo.getText().toString();
+            tempEvent = new Event(TELCO_UPDATE, DOCKET_NUMBER, tempStr);
+            tempEvent.setEvent_id(TELCO_UPDATE + DOCKET_NUMBER);
+            tempEvent.setUpdateEventBodyKey(CM_Step_TWO);
+            if (preDockerNo.equals("") || !preDockerNo.equals(tempStr)) {
+                tempEvent.setAlreadyUploaded(NO);
+                dbHelper.eventDAO().insert(tempEvent);
+            }
+        }
         else {
             isMandatoryFieldLeft  = true;
             mandatoryFieldsLeft += "\nDocker No";
         }
-
-        if(!isEmpty(ctPersonnel))
-            eventLists.add(new Event("TELCO_UPDATE", "ctPersonnel",ctPersonnel.getText().toString()));
+        if(!isEmpty(ctPersonnel)) {
+            tempStr = ctPersonnel.getText().toString();
+            tempEvent = new Event(TELCO_UPDATE, CT_PERSONNEL, tempStr);
+            tempEvent.setEvent_id(TELCO_UPDATE + CT_PERSONNEL);
+            tempEvent.setUpdateEventBodyKey(CM_Step_TWO);
+            if (preCTPersonnel.equals("") || !preCTPersonnel.equals(tempStr)) {
+                tempEvent.setAlreadyUploaded(NO);
+                dbHelper.eventDAO().insert(tempEvent);
+            }
+        }
         else {
             isMandatoryFieldLeft = true;
             mandatoryFieldsLeft += "\nCT Personnel";
         }
+        tempStr = referDateTime.getText().toString();
+        tempEvent = new Event(TELCO_UPDATE, REFER_DATE, tempStr);
+        tempEvent.setEvent_id(TELCO_UPDATE + REFER_DATE);
+        tempEvent.setUpdateEventBodyKey(CM_Step_TWO);
+        if (preReferDate.equals("") || !preReferDate.equals(tempStr)) {
+            tempEvent.setAlreadyUploaded(NO);
+            dbHelper.eventDAO().insert(tempEvent);
+        }
+        tempStr = expectedCompletionDateTime.getText().toString();
+        tempEvent = new Event(TELCO_UPDATE, EXPECTED_COMPLETION_DATE,tempStr);
+        tempEvent.setEvent_id(TELCO_UPDATE + EXPECTED_COMPLETION_DATE);
+        tempEvent.setUpdateEventBodyKey(CM_Step_TWO);
+        if (preCompletionDate.equals("") || !preCompletionDate.equals(tempStr)) {
+            tempEvent.setAlreadyUploaded(NO);
+            dbHelper.eventDAO().insert(tempEvent);
+        }
+        tempStr = clearanceDateTime.getText().toString();
+        tempEvent = new Event(TELCO_UPDATE, CLEARANCE_DATE, tempStr);
+        tempEvent.setEvent_id(TELCO_UPDATE + CLEARANCE_DATE);
+        tempEvent.setUpdateEventBodyKey(CM_Step_TWO);
+        if (preClearanceDate.equals("") || !preClearanceDate.equals(tempStr)) {
+            tempEvent.setAlreadyUploaded(NO);
+            dbHelper.eventDAO().insert(tempEvent);
+        }
 
-        eventLists.add(new Event("TELCO_UPDATE", "referDate",referDateTime.getText().toString()));
-        eventLists.add(new Event("TELCO_UPDATE", "expectedCompletionDate",expectedCompletionDateTime.getText().toString()));
-        eventLists.add(new Event("TELCO_UPDATE", "clearanceDate",clearanceDateTime.getText().toString()));
-
-
-        if(!isEmpty(telcoFaultStatus))
-            eventLists.add(new Event("TELCO_UPDATE", "faultStatus",telcoFaultStatus.getText().toString()));
+        if(!isEmpty(telcoFaultStatus)) {
+            tempStr = telcoFaultStatus.getText().toString();
+            tempEvent = new Event(TELCO_UPDATE, FAULT_STATUS, tempStr);
+            tempEvent.setEvent_id(TELCO_UPDATE + FAULT_STATUS);
+            tempEvent.setUpdateEventBodyKey(CM_Step_TWO);
+            if (preFaultStatus.equals("") || !preFaultStatus.equals(tempStr)) {
+                tempEvent.setAlreadyUploaded(NO);
+                dbHelper.eventDAO().insert(tempEvent);
+            }
+        }
         else {
             isMandatoryFieldLeft = true;
             mandatoryFieldsLeft += "\nFault Status";
         }
 
-        if(!isEmpty(telcoOfficer))
-            eventLists.add(new Event("TELCO_UPDATE", "officer",telcoOfficer.getText().toString()));
+        if(!isEmpty(telcoOfficer)) {
+            tempStr = telcoOfficer.getText().toString();
+            tempEvent = new Event(TELCO_UPDATE, OFFICER, tempStr);
+            tempEvent.setEvent_id(TELCO_UPDATE + OFFICER);
+            tempEvent.setUpdateEventBodyKey(CM_Step_TWO);
+            if (preOfficer.equals("") || !preOfficer.equals(tempStr)) {
+                tempEvent.setAlreadyUploaded(NO);
+                dbHelper.eventDAO().insert(tempEvent);
+            }
+        }
 
-        eventLists.add(new Event("TELCO_UPDATE", "faultDetectedDate",faultDetectedDateTime.getText().toString()));
-        eventLists.add(new Event("TELCO_UPDATE", "actionDate",actionDateTime.getText().toString()));
+        tempStr = faultDetectedDateTime.getText().toString();
+        tempEvent = new Event(TELCO_UPDATE, FAULT_DETECTED_DATE, tempStr);
+        tempEvent.setEvent_id(TELCO_UPDATE + FAULT_DETECTED_DATE);
+        tempEvent.setUpdateEventBodyKey(CM_Step_TWO);
+        if (preDetectedDate.equals("") || !preDetectedDate.equals(tempStr)) {
+            tempEvent.setAlreadyUploaded(NO);
+            dbHelper.eventDAO().insert(tempEvent);
+        }
 
-        if(!isEmpty(actionTaken))
-            eventLists.add(new Event("TELCO_UPDATE", "actionTaken",actionTaken.getText().toString()));
+        tempStr = actionDateTime.getText().toString();
+        tempEvent = new Event(TELCO_UPDATE, ACTION_DATE, tempStr);
+        tempEvent.setEvent_id(TELCO_UPDATE + ACTION_DATE);
+        tempEvent.setUpdateEventBodyKey(CM_Step_TWO);
+        if (preActionDate.equals("") || !preActionDate.equals(tempStr)) {
+            tempEvent.setAlreadyUploaded(NO);
+            dbHelper.eventDAO().insert(tempEvent);
+        }
+
+        if(!isEmpty(actionTaken)) {
+            tempStr = actionTaken.getText().toString();
+            tempEvent = new Event(TELCO_UPDATE, ACTION_TAKEN, tempStr);
+            tempEvent.setEvent_id(TELCO_UPDATE + ACTION_TAKEN);
+            tempEvent.setUpdateEventBodyKey(CM_Step_TWO);
+            if (preActionTaken.equals("") || !preActionTaken.equals(tempStr)) {
+                tempEvent.setAlreadyUploaded(NO);
+                dbHelper.eventDAO().insert(tempEvent);
+            }
+        }
         else {
             isMandatoryFieldLeft = true;
             mandatoryFieldsLeft += "\nAction Taken By Telco";

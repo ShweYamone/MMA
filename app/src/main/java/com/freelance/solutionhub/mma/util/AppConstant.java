@@ -1,5 +1,7 @@
 package com.freelance.solutionhub.mma.util;
 
+import java.security.PublicKey;
+
 import retrofit2.http.PUT;
 
 public class AppConstant {
@@ -28,6 +30,18 @@ public class AppConstant {
     public static final String ACTUAL_PROBLEM = "actualProblem";
     public static final String CAUSE = "cause";
     public static final String REMEDY = "remedy";
+    public static final String TELCO_UPDATE = "TELCO_UPDATE";
+    public static final String THIRD_PARTY_NUMBER= "thirdPartyNumber";
+    public static final String DOCKET_NUMBER = "docketNumber";
+    public static final String CT_PERSONNEL= "ctPersonnel";
+    public static final String REFER_DATE = "referDate";
+    public static final String EXPECTED_COMPLETION_DATE = "expectedCompletionDate";
+    public static final String CLEARANCE_DATE = "clearanceDate";
+    public static final String FAULT_STATUS = "faultStatus";
+    public static final String OFFICER = "officer";
+    public static final String FAULT_DETECTED_DATE = "faultDetectedDate";
+    public static final String ACTION_DATE = "actionDate";
+    public static final String ACTION_TAKEN = "actionTaken";
 
     public static final String YES = "yes";
     public static final String NO = "no";

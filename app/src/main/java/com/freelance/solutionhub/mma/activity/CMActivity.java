@@ -85,6 +85,7 @@ public class CMActivity extends AppCompatActivity {
         third_step_cm_fragment = new Third_Step_CM_Fragment();
 
         viewPager = findViewById(R.id.viewpager);
+        viewPager.setOffscreenPageLimit(2);
         addTabs(viewPager);
 
         tabLayout = findViewById(R.id.tabs);
