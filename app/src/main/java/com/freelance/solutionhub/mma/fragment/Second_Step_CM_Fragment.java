@@ -269,10 +269,10 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 causeArr.clear(); causeProblemCode.clear();
                 if (problemCauseMap.containsKey(actualProblemCode.get(i))) {
-                 //   causeProblemCode = new String[];
+                    //   causeProblemCode = new String[];
                     int size = problemCauseMap.get(actualProblemCode.get(i)).size();
                     Code_Description temp;
-                 //   causeProblemCode.add(0, "");
+                    //   causeProblemCode.add(0, "");
                     for (int k = 0; k < size; k++) {
                         temp = problemCauseMap.get(actualProblemCode.get(i))
                                 .get(k);
@@ -310,7 +310,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
                 Log.i("SPINNER__", "onItemSelected: " + causeProblemCode.get(i));
                 remedyArr.clear();remedyProblemCode.clear();
                 if (causeRemedyMap.containsKey(causeProblemCode.get(i))) {
-                   // remedyProblemCode = new String[causeRemedyMap.get(causeProblemCode).size() + 1];
+                    // remedyProblemCode = new String[causeRemedyMap.get(causeProblemCode).size() + 1];
                     Code_Description temp;
                     for (int k = 0; k < causeRemedyMap.get(causeProblemCode.get(i)).size(); k++) {
                         temp = causeRemedyMap.get(causeProblemCode.get(i)).get(k);
@@ -582,23 +582,19 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
         Timestamp timestamp = new Timestamp(date.getTime());
         String actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
         UpdateEventBody eventBody = new UpdateEventBody(
-            mSharePreference.getUserName(),
-            mSharePreference.getUserId(),
-            actualDateTime,
-            pmServiceInfoModel.getId()
+                mSharePreference.getUserName(),
+                mSharePreference.getUserId(),
+                actualDateTime,
+                pmServiceInfoModel.getId()
         );
         eventBody.setId(CM_Step_TWO);
         dbHelper.updateEventBodyDAO().insert(eventBody);
         mSharePreference.userClickCMStepTwo(true);
 
+        Log.i("EventsUpload", "uploadEvents: " + dbHelper.eventDAO().getEventsToUpload(CM_Step_TWO));
         if (network.isNetworkAvailable()) {
             if (dbHelper.eventDAO().getNumberEventsToUpload(CM_Step_TWO) > 0) {
                 eventBody.setEvents(dbHelper.eventDAO().getEventsToUpload(CM_Step_TWO));
-                String temp = "";
-                for (Event e: eventBody.getEvents()) {
-                    temp += "\n" + e.getEventType();
-                }
-                Log.i("UploadEvents", "uploadEvents: " + temp);
 
                 ((CMActivity)getActivity()).showProgressBar();
                 Call<ReturnStatus> call = apiInterface.updateEvent("Bearer " + mSharePreference.getToken(), eventBody);
@@ -608,9 +604,17 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
                         if (response.isSuccessful()) {
                             Toast.makeText(getContext(), eventBody.getEvents().size() + "Events Uploaded!", Toast.LENGTH_SHORT).show();
                             dbHelper.eventDAO().update(YES, CM_Step_TWO);
+                          //  Toast.makeText(getContext(), dbHelper.eventDAO().getEvents(CM_Step_TWO).get(0).alreadyUploaded , Toast.LENGTH_SHORT).show();
                             ((CMActivity)getActivity()).hideProgressBar();
                         } else {
-                            Toast.makeText(getContext(), response.code()+ "" , Toast.LENGTH_SHORT).show();
+                            ResponseBody errorReturnBody = response.errorBody();
+                            try {
+                                Log.e("UPLOAD_ERROR", "onResponse: " + errorReturnBody.string());
+                                Toast.makeText(getContext(), "response " + response.code(), Toast.LENGTH_LONG).show();
+                                ((CMActivity)getActivity()).hideProgressBar();
+                            } catch (IOException e) {
+
+                            }
                             ((CMActivity)getActivity()).hideProgressBar();
                         }
 
@@ -780,14 +784,14 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
             {
                 mSharePreference.setLock(false);
-              //  Toast.makeText(getActivity(), "camera permission granted", Toast.LENGTH_LONG).show();
+                //  Toast.makeText(getActivity(), "camera permission granted", Toast.LENGTH_LONG).show();
                 mSharePreference.setLock(false);
                 Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
                 startActivityForResult(cameraIntent, CAMERA_REQUEST);
             }
             else
             {
-             //   Toast.makeText(getActivity(), "camera permission denied", Toast.LENGTH_LONG).show();
+                //   Toast.makeText(getActivity(), "camera permission denied", Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -828,7 +832,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
         new AlertDialog.Builder(getContext())
                 .setIcon(R.drawable.warning)
                 .setTitle("Mandatory Fields")
-                .setMessage(mandatoryFieldsLeft + "\nAttach Post-Maintenance Photos")
+                .setMessage(mandatoryFieldsLeft)
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -851,7 +855,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
 
        /* or use below if you want 32 bit images
 
-        bitmap.compress(Bitmap.CompressFormat.PNG, (0–100 compression), os);*/
+        bitmap.compress(Bitmap.CompressFormat.PNG, (0â€“100 compression), os);*/
         byte[] imageArr = os.toByteArray();
 
         return Base64.encodeToString(imageArr, Base64.URL_SAFE);

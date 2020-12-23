@@ -77,7 +77,7 @@
     <string name="acknowledge_date_time">Acknowledge Date/Time</string>
     <string name="first_respond_date_time">1st Respond Date/Time</string>
     <string name="reported_problem_code">Reported Problem Code:</string>
-    <string name="actual_problem_code">Choose Actual Problem Code:</string>
+    <string name="actual_problem_code">Actual Problem Code:</string>
     <string name="cause_code">Cause Code:</string>
     <string name="remedy_code">Remedy Code:</string>
     <string name="other_fault">Other Fault:</string>
@@ -86,7 +86,8 @@
     <string name="add_third_party_information">Add 3rd Party Information</string>
     <string name="part_replacement">Part Replacement:</string>
     <string name="required_part_placement">Required Part placement</string>
-    <string name="scan_faulty_parts">Scan Faulty Parts:</string>
+    <string name="scan_faulty_parts">Scan Faulty Part:</string>
+    <string name="scan_replacement_parts">Scan Replacement Part:</string>
     <string name="component_id">Component ID:</string>
 
     <!-- CM value for step-2 (third party information) Telco -->

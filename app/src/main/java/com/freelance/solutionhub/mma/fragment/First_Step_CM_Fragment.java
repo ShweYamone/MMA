@@ -148,10 +148,11 @@ public class First_Step_CM_Fragment extends Fragment {
         ButterKnife.bind(this, view);
         displayMSOInformation();
         setDataAdapter();
+        Log.i(CM_Step_ONE, "onCreateView: " + dbHelper.updateEventBodyDAO().getNumberOfUpdateEventsById(CM_Step_ONE));
 
         if (dbHelper.updateEventBodyDAO().getNumberOfUpdateEventsById(CM_Step_ONE) > 0) {
             prePhotoModels.clear();
-           // int imaCount = dbHelper.uploadPhotoDAO().getNumberOfPhotosToUpload();
+            // int imaCount = dbHelper.uploadPhotoDAO().getNumberOfPhotosToUpload();
             for (UploadPhotoModel uploadPhotoModel: dbHelper.uploadPhotoDAO().getPhotosToUploadByBucketName(PRE_BUCKET_NAME)) {
                 prePhotoModels.add(new PhotoModel(getDecodedString(uploadPhotoModel.getEncodedPhotoString()), 1));
             }
@@ -213,7 +214,7 @@ public class First_Step_CM_Fragment extends Fragment {
         return view;
     }
     /**
-    * show dialog for mandatory fields
+     * show dialog for mandatory fields
      */
     private void showDialog() {
         mSharePerferenceHelper.userClickCMStepOne(false);
@@ -241,11 +242,11 @@ public class First_Step_CM_Fragment extends Fragment {
             Log.v("JOIN", preEventList.size() + "");
             date = new Date();
             Timestamp timestamp = new Timestamp(date.getTime());
-            String currentDateTime = new SimpleDateFormat("yyyyMMddHH:mm:ss").format(timestamp);
+            String actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
             UpdateEventBody updateEventBody = new UpdateEventBody(
                     mSharePerferenceHelper.getUserName(),
                     mSharePerferenceHelper.getUserId(),
-                    currentDateTime,
+                    actualDateTime,
                     pmServiceInfoModel.getId()
             );
 
@@ -312,7 +313,7 @@ public class First_Step_CM_Fragment extends Fragment {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
             {
                 Log.i("Tracing......", "PermissionResultGranted: " + mSharePerferenceHelper.getLock());
-               // Toast.makeText(getActivity(), "camera permission granted", Toast.LENGTH_LONG).show();
+                // Toast.makeText(getActivity(), "camera permission granted", Toast.LENGTH_LONG).show();
                 mSharePerferenceHelper.setLock(false);
                 Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
                 startActivityForResult(cameraIntent, CAMERA_REQUEST);
@@ -337,11 +338,11 @@ public class First_Step_CM_Fragment extends Fragment {
         Log.i("Tracing......", "onActivityResult: " + mSharePerferenceHelper.getLock());
         if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK)
         {
-                theImage = (Bitmap) data.getExtras().get("data");
-                photo = getEncodedString(theImage);
-                Log.v("ORI",photo);
-                prePhotoModels.add(new PhotoModel(photo, 1));
-                prePhotoAdapter.notifyDataSetChanged();
+            theImage = (Bitmap) data.getExtras().get("data");
+            photo = getEncodedString(theImage);
+            Log.v("ORI",photo);
+            prePhotoModels.add(new PhotoModel(photo, 1));
+            prePhotoAdapter.notifyDataSetChanged();
 
         }
     }
@@ -351,7 +352,7 @@ public class First_Step_CM_Fragment extends Fragment {
      * Set two recycler view with adapter
      */
     private void setDataAdapter() {
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getContext(),3  );
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getContext(),3);
         //Pre Maintenance Photo Adapter Setup
         prePhoto.setLayoutManager(layoutManager);
         prePhotoAdapter = new PhotoAdapter(getContext(), prePhotoModels);
@@ -372,152 +373,10 @@ public class First_Step_CM_Fragment extends Fragment {
 
        /* or use below if you want 32 bit images
 
-        bitmap.compress(Bitmap.CompressFormat.PNG, (0–100 compression), os);*/
+        bitmap.compress(Bitmap.CompressFormat.PNG, (0â€“100 compression), os);*/
         byte[] imageArr = os.toByteArray();
 
         return Base64.encodeToString(imageArr, Base64.URL_SAFE);
-
-    }
-
-    /**
-     *Upload one photo to server and get url id
-     */
-    private File[] uploadPhoto(ArrayList<PhotoModel> p) {
-        File[] files = new File[p.size()];
-        for(int i = 0 ; i < p.size(); i++) {
-            File filesDir = getContext().getFilesDir();
-            File fileName = new File(filesDir, mSharePerferenceHelper.getUserId()+getSaltString() + ".jpg");
-
-            Log.i("FILE_NAME", fileName.toString());
-            OutputStream os;
-            try {
-                os = new FileOutputStream(fileName);
-                getBitmapFromEncodedString(p.get(i).getImage()).compress(Bitmap.CompressFormat.JPEG, 100, os);
-                os.flush();
-                os.close();
-            } catch (Exception e) {
-                Log.e("PHOTO", "Error writing bitmap", e);
-            }
-            files[i]= fileName;
-        }
-
-        return files;
-    }
-
-    protected String getSaltString() {
-        String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
-        StringBuilder salt = new StringBuilder();
-        Random rnd = new Random();
-        while (salt.length() < 7) { // length of the random string.
-            int index = (int) (rnd.nextFloat() * SALTCHARS.length());
-            salt.append(SALTCHARS.charAt(index));
-        }
-        String saltStr = salt.toString();
-        return saltStr;
-
-    }
-
-
-
-    private Bitmap getBitmapFromEncodedString(String encodedString){
-
-        byte[] arr = Base64.decode(encodedString, Base64.URL_SAFE);
-
-        Bitmap img = BitmapFactory.decodeByteArray(arr, 0, arr.length);
-        return img;
-    }
-
-
-
-    class LoadImage extends AsyncTask<File, Void, Boolean> {
-
-        private ArrayList<Event> f;
-        private int count = 0;
-
-        public LoadImage(ArrayList<Event> f) {
-            this.f = f;
-        }
-
-        @Override
-        protected void onPostExecute(Boolean aVoid) {
-            super.onPostExecute(aVoid);
-            if(f.size() == count  ){
-
-            }
-        }
-
-        private void uploadEvent(){
-            Log.i("ALLPH","onPostExecute"+f.size());
-            date = new Date();
-            Timestamp timestamp = new Timestamp(date.getTime());
-            String actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
-            UpdateEventBody updateEventBody = new UpdateEventBody(mSharePerferenceHelper.getUserName(),
-                    mSharePerferenceHelper.getUserId(),
-                    actualDateTime,
-                    pmServiceInfoModel.getId(),
-                    f);
-
-            Call<ReturnStatus> returnStatusCallEvent = apiInterface.updateEvent("Bearer " + mSharePerferenceHelper.getToken(), updateEventBody);
-            returnStatusCallEvent.enqueue(new Callback<ReturnStatus>() {
-                @Override
-                public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
-                    ReturnStatus returnStatus = response.body();
-                    if (response.isSuccessful()) {
-                        Toast.makeText(getContext(), returnStatus.getStatus() + ":Events Uploaded", Toast.LENGTH_LONG).show();
-                        f.clear();
-                        mSharePerferenceHelper.userClickCMStepOne(true);
-                        ((CMActivity)getActivity()).hideProgressBar();
-
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<ReturnStatus> call, Throwable t) {
-                    Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            });
-
-        }
-
-        @Override
-        protected Boolean doInBackground(File... files) {
-            for (File fileName : files) {
-                MultipartBody.Builder builder = new MultipartBody.Builder();
-                builder.setType(MultipartBody.FORM);
-                builder.addFormDataPart("file", fileName.getName(), RequestBody.create(MediaType.parse("multipart/form-data"), fileName));
-                MultipartBody requestBody = builder.build();
-
-
-                Call<ReturnStatus> returnStatusCall = apiInterface.uploadPhoto("pids-pre-maintenance-photo", requestBody);
-                returnStatusCall.enqueue(new Callback<ReturnStatus>() {
-                    @Override
-                    public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
-                        ReturnStatus returnStatus = response.body();
-                        if (response.isSuccessful()) {
-                            Log.v("PRE_EVENT", "Added pre event");
-                            f.add(new Event("PRE_MAINTENANCE_PHOTO_UPDATE", "preMaintenancePhotoUpdate", returnStatus.getData().getFileUrl()));
-                            count++;
-                            if(files.length == count)
-                                uploadEvent();
-                        //    Toast.makeText(getContext(), returnStatus.getStatus() + ":PHOTO"+count, Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(getContext(), "FAILED", Toast.LENGTH_LONG).show();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<ReturnStatus> call, Throwable t) {
-
-                    }
-                });
-            }
-
-
-            if(files.length == count) {
-                return true;
-            }
-            return false;
-        }
 
     }
 

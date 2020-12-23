@@ -63,7 +63,7 @@ public interface ApiInterface {
 
     //Upload Photo
     @POST("https://ufqzjtxo67.execute-api.ap-southeast-1.amazonaws.com/dev/upload/{bucketName}")
-    Call<ReturnStatus> uploadPhoto(@Path("bucketName") String bucketName, @Body RequestBody file);
+    Call<ReturnStatus> uploadPhoto(@Header("Authorization") String auth, @Path("bucketName") String bucketName, @Body RequestBody file);
 
     //GET Data with QRCode
     @GET("https://hz35b2raaj.execute-api.ap-southeast-1.amazonaws.com/dev/component/{qrCode}")

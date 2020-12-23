@@ -126,13 +126,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
     private String textValue;
     private String filterExpression;
     private InitializeDatabase dbHelper;
-    private int totalPMPages = 0;
-    private int totalCMPages = 0;
 
     PMServiceListModel pmServiceListModel;
     List<ServiceInfoModel> serviceInfoModels;
     List<String> textValueList = new ArrayList<>();
-    List<ServiceInfoModel> tempServices = new ArrayList<>(); // temp list for local DB
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -290,7 +287,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
                 if (response.isSuccessful()) {
                     pmServiceListModel = response.body();
                     int tempCount = pmServiceListModel.getTotalElements();
-                    totalCMPages = pmServiceListModel.getTotalPages();
                     if (tempCount == 0) {
                         tvCMCount.setText("0");
                     } else if (tempCount < 10) {
@@ -317,7 +313,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
 
                 if (response.isSuccessful()) {
                     pmServiceListModel = response.body();
-                    totalPMPages = pmServiceListModel.getTotalPages();
                     int tempCount = pmServiceListModel.getTotalElements();
                     if (tempCount == 0) {
                         tvPMCount.setText("0");
