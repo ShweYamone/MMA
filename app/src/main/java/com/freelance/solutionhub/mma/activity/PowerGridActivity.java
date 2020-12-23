@@ -167,6 +167,7 @@ public class PowerGridActivity extends AppCompatActivity implements View.OnClick
         actionDateTime.setOnClickListener(this);
         save.setOnClickListener(this);
 
+        /**show data from DB if have */
         if (dbHelper.eventDAO().getNumOfEventsByEventType(POWER_GRIP_UPDATE) > 0) {
             displaySavedData();
         }

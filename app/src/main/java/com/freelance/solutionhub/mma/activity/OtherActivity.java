@@ -41,6 +41,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.freelance.solutionhub.mma.util.AppConstant.OTHER_CONTRACTOR_UPDATE;
+import static com.freelance.solutionhub.mma.util.AppConstant.POWER_GRIP_UPDATE;
+import static com.freelance.solutionhub.mma.util.AppConstant.REFER_DATE;
 import static com.freelance.solutionhub.mma.util.AppConstant.user_inactivity_time;
 
 public class OtherActivity extends AppCompatActivity implements View.OnClickListener{
@@ -98,9 +101,20 @@ public class OtherActivity extends AppCompatActivity implements View.OnClickList
     private Handler handler;
     private Runnable r;
     private boolean startHandler = true;
-    private boolean lockScreen = false;
     private boolean isMandatoryFieldLeft = false;
     private String mandatoryFieldsLeft = "";
+
+    private String preReferDate = "";
+    private String preCompletionDate = "";
+    private String preClearanceDate = "";
+    private String preFaultStatus = "";
+    private String preRemarks = "";
+    private String preCompanyName = "";
+    private String preContractorName = "";
+    private String preContractorNo = "";
+    private String preDetectedDate = "";
+    private String preActionDate = "";
+    private String preActionTaken = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,6 +150,11 @@ public class OtherActivity extends AppCompatActivity implements View.OnClickList
         actionDateTime.setOnClickListener(this);
         save.setOnClickListener(this);
 
+        /**show data from DB if have */
+        if (dbHelper.eventDAO().getNumOfEventsByEventType(POWER_GRIP_UPDATE) > 0) {
+            displaySavedData();
+        }
+
         /**
          after certain amount of user inactivity, asks for passcode
          */
@@ -152,6 +171,9 @@ public class OtherActivity extends AppCompatActivity implements View.OnClickList
                 stopHandler();
             }
         };
+    }
+
+    private void displaySavedData() {
     }
 
 
@@ -327,6 +349,11 @@ public class OtherActivity extends AppCompatActivity implements View.OnClickList
 
     }
     private void addEvents(){
+        Event tempEvent;
+        String tempStr;
+      //  tempEvent = new Event(OTHER_CONTRACTOR_UPDATE, REFER_DATE)
+
+
         eventLists.add(new Event("OTHER_CONTRACTOR_UPDATE", "referDate",referDateTime.getText().toString()));
         eventLists.add(new Event("OTHER_CONTRACTOR_UPDATE", "expectedCompletionDate",expectedCompletionDateTime.getText().toString()));
         eventLists.add(new Event("OTHER_CONTRACTOR_UPDATE", "clearanceDate",clearanceDateTime.getText().toString()));

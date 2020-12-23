@@ -34,6 +34,8 @@ public class AppConstant {
 
     public static final String TELCO_UPDATE = "TELCO_UPDATE";
     public static final String POWER_GRIP_UPDATE = "POWER_GRIP_UPDATE";
+    public static final String OTHER_CONTRACTOR_UPDATE = "OTHER_CONTRACTOR_UPDATE";
+
     public static final String THIRD_PARTY_NUMBER= "thirdPartyNumber";
     public static final String DOCKET_NUMBER = "docketNumber";
     public static final String CT_PERSONNEL= "ctPersonnel";
