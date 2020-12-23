@@ -137,7 +137,7 @@ public class NFCReadingActivity extends AppCompatActivity {
         /*********************/
         /////////////////////////////////////
 
-        perFormTagEvent();
+       // perFormTagEvent();
         if(nfcAdapter == null){
             Toast.makeText(this, "No NFC", Toast.LENGTH_SHORT).show();
             //finish();

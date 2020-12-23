@@ -832,7 +832,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
         new AlertDialog.Builder(getContext())
                 .setIcon(R.drawable.warning)
                 .setTitle("Mandatory Fields")
-                .setMessage(mandatoryFieldsLeft + "\nAttach Post-Maintenance Photos")
+                .setMessage(mandatoryFieldsLeft)
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

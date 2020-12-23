@@ -188,50 +188,57 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
                     dialogBody = "You have unsaved changes in Step and Two.";
                     showDialog();
                 } else {
-                    date = new Date();
-                    Timestamp timestamp = new Timestamp(date.getTime());
-                    actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
-                    UpdateEventBody updateEventBody = new UpdateEventBody(
-                            mSharePreferenceHelper.getUserName(),
-                            mSharePreferenceHelper.getUserId(),
-                            actualDateTime,
-                            pmServiceInfoDetailModel.getId()
-                    );
+                    if(network.isNetworkAvailable()) {
+                        date = new Date();
+                        Timestamp timestamp = new Timestamp(date.getTime());
+                        actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
+                        UpdateEventBody updateEventBody = new UpdateEventBody(
+                                mSharePreferenceHelper.getUserName(),
+                                mSharePreferenceHelper.getUserId(),
+                                actualDateTime,
+                                pmServiceInfoDetailModel.getId()
+                        );
 
-                    updateEventBody.setId(CM_Step_THREE);
-                    updateEventBody.setServiceOrderStatus(JOBDONE);
-                    updateEventBody.setRemark(remarks.getText().toString());
-                    updateEventBody.setWeatherCondition(weather);
-                    dbHelper.updateEventBodyDAO().insert(updateEventBody);
+                        updateEventBody.setId(CM_Step_THREE);
+                        updateEventBody.setServiceOrderStatus(JOBDONE);
+                        updateEventBody.setRemark(remarks.getText().toString());
+                        updateEventBody.setWeatherCondition(weather);
+                        dbHelper.updateEventBodyDAO().insert(updateEventBody);
 
 
-                    Call<VerificationReturnBody> call = apiInterface.verifyWorks("Bearer " + mSharePreferenceHelper.getToken(), "CM20205B6923C2");
-                    call.enqueue(new Callback<VerificationReturnBody>() {
-                        @Override
-                        public void onResponse(Call<VerificationReturnBody> call, Response<VerificationReturnBody> response) {
-                            if (response.isSuccessful()) {
-                                VerificationReturnBody verificationReturnBody = response.body();
-                                if (verificationReturnBody.isFault_resolved()) {
-                                    jobDone.setClickable(true);
-                                    jobDone.setBackground(getResources().getDrawable(R.drawable.round_rect_shape_button));
-                                } else {
-                                    Toast.makeText(getContext(), "Verification failed", Toast.LENGTH_SHORT).show();
-                                    jobDone.setClickable(false);
-                                    jobDone.setBackground(getResources().getDrawable(R.drawable.round_rectangle_shape_button_grey));
+                        Call<VerificationReturnBody> call = apiInterface.verifyWorks("Bearer " + mSharePreferenceHelper.getToken(), "CM20205B6923C2");
+                        call.enqueue(new Callback<VerificationReturnBody>() {
+                            @Override
+                            public void onResponse(Call<VerificationReturnBody> call, Response<VerificationReturnBody> response) {
+                                if (response.isSuccessful()) {
+                                    VerificationReturnBody verificationReturnBody = response.body();
+                                    if (verificationReturnBody.isFault_resolved()) {
+                                        jobDone.setClickable(true);
+                                        jobDone.setBackground(getResources().getDrawable(R.drawable.round_rect_shape_button));
+                                    } else {
+                                        Toast.makeText(getContext(), "Verification failed", Toast.LENGTH_SHORT).show();
+                                        jobDone.setClickable(false);
+                                        jobDone.setBackground(getResources().getDrawable(R.drawable.round_rectangle_shape_button_grey));
+                                    }
+                                }
+                                else {
+                                    Toast.makeText(getContext(), response.code() + "", Toast.LENGTH_SHORT).show();
                                 }
                             }
-                            else {
-                                Toast.makeText(getContext(), response.code() + "", Toast.LENGTH_SHORT).show();
+
+                            @Override
+                            public void onFailure(Call<VerificationReturnBody> call, Throwable t) {
+
                             }
-                        }
+                        });
+                    } else {
+                        dialogTitle = "Network Connetion";
+                        dialogBody = "The network connection is lost. Please, check your connectivity and try again";
+                        showDialog();
+                    }
 
-                        @Override
-                        public void onFailure(Call<VerificationReturnBody> call, Throwable t) {
-
-                        }
-                    });
-                    jobDone.setClickable(true);
-                    jobDone.setBackground(getResources().getDrawable(R.drawable.round_rect_shape_button));
+                  //  jobDone.setClickable(true);
+                  //  jobDone.setBackground(getResources().getDrawable(R.drawable.round_rect_shape_button));
                 }
 
 
@@ -277,6 +284,10 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
                     dbHelper.updateEventBodyDAO().getUpdateEventBodyByID(CM_Step_ONE))
                     .execute(uploadPhoto(prePhotoModels));
 
+        } else {
+            dialogTitle = "Network Connetion";
+            dialogBody = "The network connection is lost. Please, check your connectivity and try again";
+            showDialog();
         }
 
     }
