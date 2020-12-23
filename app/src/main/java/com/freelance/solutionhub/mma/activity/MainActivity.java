@@ -310,6 +310,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle(title)
                 .setContentText(type)
+                .setNumber(2)
                 .setStyle(new NotificationCompat.BigTextStyle()
                         .bigText(type))
                 .setContentInfo("Information")

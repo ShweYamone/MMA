@@ -7,6 +7,7 @@ import com.freelance.solutionhub.mma.model.PMServiceInfoDetailModel;
 import com.freelance.solutionhub.mma.model.PMServiceListModel;
 
 import com.freelance.solutionhub.mma.model.LoginModel;
+import com.freelance.solutionhub.mma.model.PhotoAttachementModel;
 import com.freelance.solutionhub.mma.model.QRReturnBody;
 import com.freelance.solutionhub.mma.model.UpdateEventBody;
 import com.freelance.solutionhub.mma.model.ReturnStatus;
@@ -75,5 +76,8 @@ public interface ApiInterface {
     //Fault Clearance Verification
     @GET("http://control-center-nightly-alb-906188569.ap-southeast-1.elb.amazonaws.com/control/fault-status")
     Call<VerificationReturnBody> verifyWorks(@Header("Authorization") String auth, @Query("id") String serviceOrderId);
+
+    @GET("https://oiyryh245h.execute-api.ap-southeast-1.amazonaws.com/dev/service-orders/{service_order_id}/file-attachments")
+    Call<PhotoAttachementModel> getPhotoAttachement(@Header("Authorization") String auth, @Path("service_order_id") String ServiceOrderId);
 }
 
