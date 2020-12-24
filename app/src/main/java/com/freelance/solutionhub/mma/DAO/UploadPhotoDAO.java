@@ -30,4 +30,7 @@ public interface UploadPhotoDAO {
     @Query("Select count(*) from UploadPhotoModel")
     int getNumberOfPhotosToUpload();
 
+    @Query("Select count(*) from UploadPhotoModel where updateEventBodyKey=:step")
+    int getNumberOfPhotosByStep(String step);
+
 }

@@ -188,6 +188,9 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
                     dialogBody = "You have unsaved changes in Step and Two.";
                     showDialog();
                 } else {
+                    date = new Date();
+                    Timestamp timestamp = new Timestamp(date.getTime());
+                    actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
                     UpdateEventBody updateEventBody = new UpdateEventBody(
                             mSharePreferenceHelper.getUserName(),
                             mSharePreferenceHelper.getUserId(),
@@ -202,9 +205,6 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
                     dbHelper.updateEventBodyDAO().insert(updateEventBody);
 
                     if(network.isNetworkAvailable()) {
-                        date = new Date();
-                        Timestamp timestamp = new Timestamp(date.getTime());
-                        actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
 
 
                         Call<VerificationReturnBody> call = apiInterface.verifyWorks("Bearer " + mSharePreferenceHelper.getToken(), "CM20205B6923C2");
@@ -575,8 +575,14 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
     private void updateSTEP_Three() {
       //  completeWork();
         /** STEP_THREE EVENT UPDATE */
+        UpdateEventBody updateEventBody = dbHelper.updateEventBodyDAO().getUpdateEventBodyByID(CM_Step_THREE);
+        date = new Date();
+        Timestamp timestamp = new Timestamp(date.getTime());
+        actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
+        updateEventBody.setDate(actualDateTime);
+
         Call<ReturnStatus> call = apiInterface.updateStatusEvent("Bearer " + mSharePreferenceHelper.getToken(),
-                dbHelper.updateEventBodyDAO().getUpdateEventBodyByID(CM_Step_THREE));
+                updateEventBody);
         call.enqueue(new Callback<ReturnStatus>() {
             @Override
             public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {

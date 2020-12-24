@@ -14,27 +14,34 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.freelance.solutionhub.mma.DB.InitializeDatabase;
 import com.freelance.solutionhub.mma.R;
 import com.freelance.solutionhub.mma.delegate.FirstStepPMFragmentCallback;
 import com.freelance.solutionhub.mma.model.CheckListModel;
 import com.freelance.solutionhub.mma.model.Event;
 import com.freelance.solutionhub.mma.model.PhotoModel;
+import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
+
+import static com.freelance.solutionhub.mma.util.AppConstant.PM_CHECK_LIST_DONE;
+import static com.freelance.solutionhub.mma.util.AppConstant.PM_CHECK_LIST_REMARK;
 
 public class CheckListAdapter extends RecyclerView.Adapter<CheckListAdapter.MyViewHolder>{
     Context context;
 
     ArrayList<CheckListModel> checkListModels;
-    ArrayList<Event> checkListEvent;
-    SQLiteDatabase db;
-    public CheckListAdapter(Context context, ArrayList<CheckListModel> checkListModels) {
+    InitializeDatabase dbHelper;
+
+    public CheckListAdapter(Context context, ArrayList<CheckListModel> checkListModels, InitializeDatabase dbHelper) {
         this.context = context;
         this.checkListModels = checkListModels;
-        checkListEvent = new ArrayList<>();
+        this.dbHelper = dbHelper;
 
     }
 
@@ -47,16 +54,14 @@ public class CheckListAdapter extends RecyclerView.Adapter<CheckListAdapter.MyVi
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, final int i) {
-        CheckListModel checkListModel = checkListModels.get(i);
-        Log.i("ArrayList",i+":");
+    public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, final int position) {
+        CheckListModel checkListModel = checkListModels.get(position);
+        Log.i("ArrayList",position+":");
         myViewHolder.bindView(checkListModel);
-        checkListEvent.add(i*2,new Event("PM_CHECK_LIST_DONE",checkListModel.getId()+"",myViewHolder.checkList.isChecked()+""));
-        checkListEvent.add((i*2)+1 ,  new Event("PM_CHECK_LIST_REMARK",checkListModel.getId()+""," "));
         myViewHolder.checkList.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                changeValue(checkListModel.getId(),i,isChecked+"",true);
+                checkListModel.setMaintenanceDone(isChecked);
             }
         });
         myViewHolder.checkListValue.addTextChangedListener(new TextWatcher() {
@@ -67,15 +72,13 @@ public class CheckListAdapter extends RecyclerView.Adapter<CheckListAdapter.MyVi
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if(s.length() != 0){
-                    changeValue(checkListModel.getId(),i,s.toString(),false);
-
-                }
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-
+                if (s.length() != 0)
+                    checkListModel.setMaintenanceRemark(s.toString());
+               // Toast.makeText(context, checkListModel.getId() + "" , Toast.LENGTH_SHORT).show();
             }
         });
         myViewHolder.edit.setOnClickListener(new View.OnClickListener() {
@@ -88,35 +91,11 @@ public class CheckListAdapter extends RecyclerView.Adapter<CheckListAdapter.MyVi
                 }
             }
         });
-//        myViewHolder.delete.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                deletedata(i,singleRowArrayList);
-//            }
-//        });
     }
 
     @Override
     public int getItemCount() {
         return checkListModels.size();
-    }
-
-    private void changeValue(int id, int position,String value,boolean checkBox){
-
-        if(checkBox){
-            checkListEvent.remove(position*2);
-            checkListEvent.add((position*2), new Event("PM_CHECK_LIST_DONE",id+"",value));
-        }else {
-            checkListEvent.remove((position*2)+1);
-            checkListEvent.add((position*2)+1, new Event("PM_CHECK_LIST_REMARK",id+"",value));
-        }
-    }
-    private boolean isEmpty(EditText etText) {
-        return etText.getText().toString().trim().length() == 0;
-    }
-
-    public ArrayList<Event> getCheckListEvent(){
-       return checkListEvent;
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder {
@@ -125,6 +104,7 @@ public class CheckListAdapter extends RecyclerView.Adapter<CheckListAdapter.MyVi
         CheckBox checkList;
         EditText checkListValue;
         LinearLayout linearLayout;
+
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
              checkListDesc = itemView.findViewById(R.id.tv_check_list_desc);
@@ -136,6 +116,12 @@ public class CheckListAdapter extends RecyclerView.Adapter<CheckListAdapter.MyVi
 
         public void bindView(CheckListModel checkListModel){
             checkListDesc.setText(checkListModel.getCheckDescription());
+            checkListValue.setText(checkListModel.getMaintenanceRemark());
+            if (checkListModel.isMaintenanceDone()) {
+                checkList.setChecked(true);
+            } else {
+                checkList.setChecked(false);
+            }
         }
     }
 }

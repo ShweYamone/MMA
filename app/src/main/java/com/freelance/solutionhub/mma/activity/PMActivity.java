@@ -20,6 +20,7 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.freelance.solutionhub.mma.DB.InitializeDatabase;
 import com.freelance.solutionhub.mma.R;
 import com.freelance.solutionhub.mma.fragment.First_Step_PM_Fragment;
 import com.freelance.solutionhub.mma.fragment.Second_Step_PM_Fragment;
@@ -31,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 
 import static com.freelance.solutionhub.mma.util.AppConstant.user_inactivity_time;
 
@@ -49,15 +51,19 @@ public class PMActivity extends AppCompatActivity {
     private Handler handler;
     private boolean startHandler = true;
     private SharePreferenceHelper sharePreferenceHelper;
+    private InitializeDatabase dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_p_m);
+        ButterKnife.bind(this);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
         sharePreferenceHelper = new SharePreferenceHelper(this);
+        dbHelper = InitializeDatabase.getInstance(this);
         sharePreferenceHelper.setLock(false);
         sharePreferenceHelper.userClickPMStepOne(false);
 

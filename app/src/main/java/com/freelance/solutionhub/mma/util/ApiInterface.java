@@ -70,8 +70,8 @@ public interface ApiInterface {
     Call<QRReturnBody> getAssetInformation(@Header("Authorization") String auth, @Path("qrCode") String qrCode);
 
     //Get check list
-    @GET("service-orders/{service_order_id}/pm-check-list")
-    Call<List<CheckListModel>> getCheckList(@Header("Authorization") String auth, @Path("service_order_id") String serviceOrderId);
+    @GET("service-orders/{serviceOrderId}/pm-check-list")
+    Call<List<CheckListModel>> getCheckList(@Header("Authorization") String auth, @Path("serviceOrderId") String serviceOrderId);
 
     //Fault Clearance Verification
     @GET("http://control-center-nightly-alb-906188569.ap-southeast-1.elb.amazonaws.com/control/fault-status")

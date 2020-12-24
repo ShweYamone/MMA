@@ -25,6 +25,9 @@ public interface EventDAO {
     @Query("Update Event Set alreadyUploaded=:uploaded where updateEventBodyKey=:updateEventBodyKey AND eventType=:eventType")
     void updateByThirdParty(String uploaded, String updateEventBodyKey, String eventType);
 
+    @Query("Update Event Set alreadyUploaded=:uploaded where updateEventBodyKey=:updateEventBodyKey AND eventKey=:eventKey")
+    void updateByUpdateEventBodyAndKey(String uploaded, String updateEventBodyKey, String eventKey);
+
     @Query("SELECT count(*) from Event where eventType=:eventType AND alreadyUploaded='no'")
     int getNumOfEventsToUploadByEventType(String eventType);
 
@@ -46,11 +49,17 @@ public interface EventDAO {
     @Query("Select count(*) from Event")
     int getNumberOfEvents();
 
+    @Query("Select count(*) from Event where updateEventBodyKey=:updateEventBodyKey")
+    int getNumberOfEventsByUpdateBodyKey(String updateEventBodyKey);
+
     @Query("Select * from Event where updateEventBodyKey=:key AND alreadyUploaded='no'")
     List<Event> getEventsToUpload(String key);
 
     @Query("Select count(*) from Event where updateEventBodyKey=:key AND alreadyUploaded='no'")
     int getNumberEventsToUpload(String key);
+
+    @Query("Select distinct eventKey from Event where updateEventBodyKey=:updateEventBody AND eventType!=:except")
+    List<String> getUniqueKeyFromEvents(String updateEventBody, String except);
 
     @Query("Delete from Event where updateEventBodyKey=:key")
     void deleteByUpdateEventBodyKey(int key);

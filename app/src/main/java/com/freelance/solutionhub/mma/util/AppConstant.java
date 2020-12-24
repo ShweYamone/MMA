@@ -30,6 +30,7 @@ public class AppConstant {
     public static final String ACTUAL_PROBLEM = "actualProblem";
     public static final String CAUSE = "cause";
     public static final String REMEDY = "remedy";
+    public static final String PM_FAULT_FOUND_UPDATE = "PM_FAULT_FOUND_UPDATE";
 
 
     public static final String TELCO_UPDATE = "TELCO_UPDATE";
@@ -50,7 +51,8 @@ public class AppConstant {
     public static final String REMARKS_ON_FAULT = "remarkOnFault";
     public static final String COMPANY_NAME = "companyName";
     public static final String CONTACT_NUMBER = "contactNumber";
-
+    public static final String PM_CHECK_LIST_DONE = "PM_CHECK_LIST_DONE";
+    public static final String PM_CHECK_LIST_REMARK = "PM_CHECK_LIST_REMARK";
 
     public static final String YES = "yes";
     public static final String NO = "no";
@@ -59,6 +61,7 @@ public class AppConstant {
     public static final String CM_Step_TWO = "CM_STEP_TWO";
     public static final String CM_Step_THREE = "CM_STEP_THREE";
     public static final String PM_Step_ONE = "PM_STEP_ONE";
+    public static final String PM_Step_TWO = "PM_STEP_TWO";
 
     public static final String PRE_BUCKET_NAME = "pids-pre-maintenance-photo";
     public static final String POST_BUCKET_NAME = "pids-post-maintenance-photo";
