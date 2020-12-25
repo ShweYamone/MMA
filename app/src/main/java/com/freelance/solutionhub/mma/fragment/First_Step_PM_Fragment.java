@@ -597,14 +597,4 @@ public class First_Step_PM_Fragment extends Fragment {
     }
 
 
-    private Bitmap getBitmapFromEncodedString(String encodedString){
-
-        byte[] arr = Base64.decode(encodedString, Base64.URL_SAFE);
-
-        Bitmap img = BitmapFactory.decodeByteArray(arr, 0, arr.length);
-        return img;
-
-
-    }
-
 }

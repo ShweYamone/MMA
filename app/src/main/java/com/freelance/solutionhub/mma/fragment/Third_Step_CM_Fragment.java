@@ -28,6 +28,7 @@ import com.freelance.solutionhub.mma.DB.InitializeDatabase;
 import com.freelance.solutionhub.mma.R;
 import com.freelance.solutionhub.mma.activity.CMActivity;
 import com.freelance.solutionhub.mma.activity.CMCompletionActivity;
+import com.freelance.solutionhub.mma.activity.NFCReadingActivity;
 import com.freelance.solutionhub.mma.activity.PMCompletionActivity;
 import com.freelance.solutionhub.mma.model.ErrorReturnBody;
 import com.freelance.solutionhub.mma.model.Event;
@@ -573,7 +574,7 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
     }
 
     private void updateSTEP_Three() {
-      //  completeWork();
+       // completeWork();
         /** STEP_THREE EVENT UPDATE */
         UpdateEventBody updateEventBody = dbHelper.updateEventBodyDAO().getUpdateEventBodyByID(CM_Step_THREE);
         date = new Date();
@@ -589,7 +590,6 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
                 if (response.isSuccessful()) {
                     Toast.makeText(getContext(),response.body().getStatus() + " Step Three Event Uploaded.",Toast.LENGTH_SHORT).show();
                     ((CMActivity)getActivity()).hideProgressBar();
-                    deleteWorkingData();
                     completeWork();
                 } else {
                     Toast.makeText(getContext(), "response " + response.code(), Toast.LENGTH_LONG).show();
@@ -614,16 +614,12 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
         });
     }
 
-    private void deleteWorkingData() {
-        dbHelper.updateEventBodyDAO().deleteAll();
-        dbHelper.uploadPhotoDAO().deleteAll();
-        dbHelper.eventDAO().deleteAll();
-    }
-
     private void completeWork() {
-        Intent intent = new Intent(this.getContext(), CMCompletionActivity.class);
+        Intent intent = new Intent(this.getContext(), NFCReadingActivity.class);
+        intent.putExtra("id", pmServiceInfoDetailModel.getId());
+        intent.putExtra("TAG_OUT", 1);
+        intent.putExtra("JOB_DONE", 1);
         intent.putExtra("start_time", getArguments().getString("start_time"));
-        intent.putExtra("end_time", actualDateTime);
         intent.putExtra("acknowledge_time", pmServiceInfoDetailModel.getAcknowledgementDate());
         intent.putExtra("remarks", remarks.getText().toString()+"");
         startActivity(intent);

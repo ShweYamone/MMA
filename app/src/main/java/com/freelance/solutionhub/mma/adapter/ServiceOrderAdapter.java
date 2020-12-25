@@ -53,6 +53,9 @@ public class ServiceOrderAdapter extends RecyclerView.Adapter<ServiceOrderAdapte
         @BindView(R.id.tv_panel_id)
         TextView tvPanelId;
 
+        @BindView(R.id.tvSchedule)
+        TextView tvSchedule;
+
         @BindView(R.id.ivLanding)
         ImageView ivLanding;
 
@@ -98,6 +101,7 @@ public class ServiceOrderAdapter extends RecyclerView.Adapter<ServiceOrderAdapte
 
             tvTime.setText(service.getCreationDate());
             tvMsoNumber.setText(service.getId());
+            tvSchedule.setText("");
             String status = service.getServiceOrderStatus();
             tvStatus.setText(status);
             tvLocation.setText(service.getBusStopLocation());

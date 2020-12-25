@@ -39,6 +39,7 @@ import static com.freelance.solutionhub.mma.util.AppConstant.NO;
 import static com.freelance.solutionhub.mma.util.AppConstant.PM_CHECK_LIST_DONE;
 import static com.freelance.solutionhub.mma.util.AppConstant.PM_CHECK_LIST_REMARK;
 import static com.freelance.solutionhub.mma.util.AppConstant.PM_Step_ONE;
+import static com.freelance.solutionhub.mma.util.AppConstant.YES;
 import static com.freelance.solutionhub.mma.util.AppConstant.user_inactivity_time;
 
 public class LoadingActivity extends AppCompatActivity {
@@ -77,7 +78,6 @@ public class LoadingActivity extends AppCompatActivity {
             dbHelper.uploadPhotoDAO().deleteAll();
             mSharePrefrence.setCurrentMSOID(msoId);
         }
-
 
         getServieOrderbyId(msoId);
 
@@ -155,7 +155,7 @@ public class LoadingActivity extends AppCompatActivity {
                         );
                         tempEvent.setUpdateEventBodyKey(PM_Step_ONE);
                         tempEvent.setEvent_id(PM_CHECK_LIST_DONE + object.getId());
-                        tempEvent.setAlreadyUploaded(NO);
+                        tempEvent.setAlreadyUploaded(YES);
                         dbHelper.eventDAO().insert(tempEvent);
                         dbHelper.eventDAO().insert(tempEvent);
 
@@ -164,7 +164,7 @@ public class LoadingActivity extends AppCompatActivity {
                         );
                         tempEvent.setUpdateEventBodyKey(PM_Step_ONE);
                         tempEvent.setEvent_id(PM_CHECK_LIST_REMARK + object.getId());
-                        tempEvent.setAlreadyUploaded(NO);
+                        tempEvent.setAlreadyUploaded(YES);
                         dbHelper.eventDAO().insert(tempEvent);
                         //After DB store, go to PM activity
 

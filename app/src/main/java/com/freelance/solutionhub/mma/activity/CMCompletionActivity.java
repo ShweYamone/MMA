@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.freelance.solutionhub.mma.DB.InitializeDatabase;
 import com.freelance.solutionhub.mma.R;
 import com.freelance.solutionhub.mma.util.SharePreferenceHelper;
 
@@ -41,6 +42,7 @@ public class CMCompletionActivity extends AppCompatActivity implements View.OnCl
     private Handler handler;
     private boolean startHandler = true;
     private SharePreferenceHelper sharePreferenceHelper;
+    private InitializeDatabase dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +51,7 @@ public class CMCompletionActivity extends AppCompatActivity implements View.OnCl
         setContentView(R.layout.activity_cmcompletion);
         ButterKnife.bind(this);
         sharePreferenceHelper = new SharePreferenceHelper(this);
+        dbHelper = InitializeDatabase.getInstance(this);
         sharePreferenceHelper.setLock(false);
 
         tvArrivalDateTime.setText(getIntent().getStringExtra("start_time"));
@@ -74,6 +77,12 @@ public class CMCompletionActivity extends AppCompatActivity implements View.OnCl
             }
         };
 
+    }
+
+    private void deleteWorkingData() {
+        dbHelper.updateEventBodyDAO().deleteAll();
+        dbHelper.uploadPhotoDAO().deleteAll();
+        dbHelper.eventDAO().deleteAll();
     }
 
     @Override
@@ -125,6 +134,7 @@ public class CMCompletionActivity extends AppCompatActivity implements View.OnCl
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btnClose:
+                deleteWorkingData();
                 Intent intent = new Intent(CMCompletionActivity.this, MainActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);

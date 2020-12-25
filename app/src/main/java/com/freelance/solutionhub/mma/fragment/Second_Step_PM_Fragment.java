@@ -177,10 +177,6 @@ public class Second_Step_PM_Fragment extends Fragment implements View.OnClickLis
             }
 
             ((PMActivity)getActivity()).showProgressBar();
-            Log.i("PM_Second_Step", "updateEvent:touploadSTepOne " + dbHelper.eventDAO().getNumberEventsToUpload(PM_Step_ONE));
-            Log.i("PM_Second_Step", "updateEvent: Main_One" + dbHelper.updateEventBodyDAO().getNumberOfUpdateEventsById(PM_Step_ONE));
-            Log.i("PM_Second_Step", "updateEvent: Main_Two" + dbHelper.updateEventBodyDAO().getNumberOfUpdateEventsById(PM_Step_TWO));
-            Log.i("PM_Second_Step", "updateEvent: Photosize" + postPhotoModels.size());
             new LoadPOSTImage(
                     dbHelper.eventDAO().getEventsToUpload(PM_Step_ONE),
                     POST_BUCKET_NAME,
@@ -238,8 +234,8 @@ public class Second_Step_PM_Fragment extends Fragment implements View.OnClickLis
     }
 
     private void updateSTEP_Two() {
-
-        /** STEP_TWO EVENT UPDATE */
+        completeWork();
+        /** STEP_TWO EVENT UPDATE
         UpdateEventBody updateEventBody = dbHelper.updateEventBodyDAO().getUpdateEventBodyByID(PM_Step_TWO);
         date = new Date();
         Timestamp timestamp = new Timestamp(date.getTime());
@@ -253,7 +249,7 @@ public class Second_Step_PM_Fragment extends Fragment implements View.OnClickLis
                 if (response.isSuccessful()) {
                     Toast.makeText(getContext(),response.body().getStatus() + ": STEP_TWO_Event Uploaded.",Toast.LENGTH_SHORT).show();
                     ((PMActivity)getActivity()).hideProgressBar();
-                    deleteWorkingData();
+                  //  deleteWorkingData();
                     completeWork();
                 } else {
                     Toast.makeText(getContext(), "response " + response.code(), Toast.LENGTH_LONG).show();
@@ -273,14 +269,10 @@ public class Second_Step_PM_Fragment extends Fragment implements View.OnClickLis
                 ((PMActivity)getActivity()).hideProgressBar();
                 Log.e("UPLOAD_ERROR", "onResponse: " + t.getMessage());
             }
-        });
+        });*/
     }
 
-    private void deleteWorkingData() {
-        dbHelper.updateEventBodyDAO().deleteAll();
-        dbHelper.uploadPhotoDAO().deleteAll();
-        dbHelper.eventDAO().deleteAll();
-    }
+
 
     private void completeWork() {
         Intent intent = new Intent(this.getContext(), PMCompletionActivity.class);
@@ -327,7 +319,7 @@ public class Second_Step_PM_Fragment extends Fragment implements View.OnClickLis
                     @Override
                     public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
                         if (response.isSuccessful()) {
-                            Toast.makeText(getContext(),  response.body().getStatus()+  ": STEP_ONE_EVENTS UPLOADED" , Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(),  response.body().getStatus()+ f.size() + " EVENTS :STEP_ONE UPLOADED" , Toast.LENGTH_SHORT).show();
                             mSharePreferenceHelper.userClickPMStepOne(true);
                             dbHelper.eventDAO().update(YES, PM_Step_ONE);
                             f.clear();
