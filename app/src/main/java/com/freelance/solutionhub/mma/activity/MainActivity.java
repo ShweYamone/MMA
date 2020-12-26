@@ -299,9 +299,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             notificationChannel.enableVibration(true);
             notificationManager.createNotificationChannel(notificationChannel);
         }
-        Intent intent = new Intent(this, NotificationActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+        //Intent intent = new Intent(this, NotificationActivity.class);
+       // intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+       // PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID);
         notificationBuilder.setAutoCancel(true)
@@ -313,8 +313,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .setNumber(count)
                 .setStyle(new NotificationCompat.BigTextStyle()
                         .bigText(type))
-                .setContentInfo("Information")
-                .setContentIntent(pendingIntent);
+                .setContentInfo("Information");
         notificationManager.notify(1, notificationBuilder.build());
     }
 

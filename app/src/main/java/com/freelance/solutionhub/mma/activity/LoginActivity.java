@@ -44,9 +44,6 @@ public class LoginActivity extends AppCompatActivity {
     @BindView(R.id.btnLogin)
     Button btnLogin;
 
-    @BindView(R.id.toolbar)
-
-    Toolbar toolbar;
     private ApiInterface apiInterface;
     private SharePreferenceHelper mSharedPreferance;
 
@@ -65,7 +62,6 @@ public class LoginActivity extends AppCompatActivity {
         mSharedPreferance.setLock(false);
 
         ButterKnife.bind(this);
-        setupToolbar();
 
         apiInterface = ApiClient.getClient(this);
 
@@ -156,12 +152,6 @@ public class LoginActivity extends AppCompatActivity {
         if (isScreenOn)
             stopHandler();
         mSharedPreferance.setLock(true);
-    }
-
-    private void setupToolbar() {
-
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
     }
 
 
