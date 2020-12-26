@@ -74,64 +74,208 @@
                             android:layout_height="5dp"
                             android:src="@drawable/dotted"
                             android:layerType="software" />
-                        <TextView
+                        <LinearLayout
                             android:layout_marginTop="@dimen/margin_large"
                             android:layout_marginBottom="@dimen/margin_xxsmall"
-                            android:gravity="center"
-                            android:text="@string/acknowledge_date_time"
-                            android:textSize="@dimen/txt_size_small"
-                            android:textColor="@color/color_blue"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"/>
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:weightSum="5.5">
+                            <TextView
+                                android:text="@string/mso_number_complete"
+                                android:textSize="@dimen/txt_size_normal"
+                                android:textColor="@color/color_blue"
+                                android:textStyle="bold"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="2"/>
+
+                            <ImageView
+                                android:layout_gravity="center"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="0.4"
+                                android:src="@drawable/two_dots" />
+                            <TextView
+                                android:id="@+id/tvMSONumber"
+                                android:paddingLeft="@dimen/txt_size_normal"
+                                android:text="xxxxxx"
+                                android:textSize="@dimen/txt_size_normal"
+                                android:textColor="@color/colorLightBlack"
+                                android:fontFamily="@font/crimson_text_regular"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="3.1"/>
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_marginTop="@dimen/margin_large"
+                            android:layout_marginBottom="@dimen/margin_xxsmall"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:weightSum="5.5">
+                            <TextView
+                                android:text="@string/panel_id_complete"
+                                android:textSize="@dimen/txt_size_normal"
+                                android:textColor="@color/color_blue"
+                                android:textStyle="bold"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="2"/>
+
+                            <ImageView
+                                android:layout_gravity="center"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="0.4"
+                                android:src="@drawable/two_dots" />
+                            <TextView
+                                android:id="@+id/tv_panel_id"
+                                android:paddingLeft="@dimen/txt_size_normal"
+                                android:text="VMS1 002"
+                                android:textColor="@color/colorLightBlack"
+                                android:fontFamily="@font/crimson_text_regular"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="3.1"/>
+                        </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_marginTop="@dimen/margin_large"
+                        android:layout_marginBottom="@dimen/margin_xxsmall"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="5.5">
+                        <TextView
+                            android:text="@string/schedule_date"
+                            android:textSize="@dimen/txt_size_normal"
+                            android:textStyle="bold"
+                            android:textColor="@color/color_blue"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="2"/>
+
+                        <ImageView
+                            android:layout_gravity="center"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.4"
+                            android:src="@drawable/two_dots" />
                         <TextView
                             android:id="@+id/tvAcknowledgeDateTime"
-                            android:gravity="center"
+                            android:paddingLeft="@dimen/txt_size_normal"
                             android:text="12/05/2019/ 12:00:34"
                             android:textColor="@color/colorLightBlack"
                             android:fontFamily="@font/crimson_text_regular"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"/>
-
-                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="3.1"/>
+                    </LinearLayout>
+                        <LinearLayout
                             android:layout_marginTop="@dimen/margin_large"
                             android:layout_marginBottom="@dimen/margin_xxsmall"
-                            android:gravity="center"
-                            android:text="@string/arrival_date_time"
-                            android:textSize="@dimen/txt_size_small"
-                            android:textColor="@color/color_blue"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"/>
-                        <TextView
-                            android:id="@+id/tvArrivalDateTime"
-                            android:gravity="center"
-                            android:text="12/05/2019/ 12:00:34"
-                            android:textColor="@color/colorLightBlack"
-                            android:fontFamily="@font/crimson_text_regular"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"/>
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:weightSum="5.5">
+                            <TextView
+                                android:text="@string/schedule_type"
+                                android:textSize="@dimen/txt_size_normal"
+                                android:textStyle="bold"
+                                android:textColor="@color/color_blue"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="2"/>
 
-                        <TextView
+                            <ImageView
+                                android:layout_gravity="center"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="0.4"
+                                android:src="@drawable/two_dots" />
+                            <TextView
+                                android:id="@+id/tvScheduleType"
+                                android:paddingLeft="@dimen/txt_size_normal"
+                                android:text="Weekly"
+                                android:textColor="@color/colorLightBlack"
+                                android:fontFamily="@font/crimson_text_regular"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="3.1"/>
+                        </LinearLayout>
+                        <LinearLayout
                             android:layout_marginTop="@dimen/margin_large"
                             android:layout_marginBottom="@dimen/margin_xxsmall"
-                            android:gravity="center"
-                            android:text="@string/job_completion_date_time"
-                            android:textSize="@dimen/txt_size_small"
-                            android:textColor="@color/color_blue"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"/>
-                        <TextView
-                            android:id="@+id/tvJobCompletionDateTime"
-                            android:gravity="center"
-                            android:text="12/05/2019/ 12:00:34"
-                            android:textColor="@color/colorLightBlack"
-                            android:fontFamily="@font/crimson_text_regular"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:weightSum="5.5">
+                            <TextView
+                                android:text="@string/mso_start_date_time"
+                                android:textSize="@dimen/txt_size_normal"
+                                android:textStyle="bold"
+                                android:textColor="@color/color_blue"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="2"/>
+
+                            <ImageView
+                                android:layout_gravity="center"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="0.4"
+                                android:src="@drawable/two_dots" />
+                            <TextView
+                                android:layout_gravity="center"
+                                android:id="@+id/tvArrivalDateTime"
+                                android:paddingLeft="@dimen/txt_size_normal"
+
+                                android:text="12/05/2019/ 12:00:34"
+                                android:textColor="@color/colorLightBlack"
+                                android:fontFamily="@font/crimson_text_regular"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="3.1"/>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_marginTop="@dimen/margin_large"
+                            android:layout_marginBottom="@dimen/margin_xxsmall"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"/>
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:weightSum="5.5">
+                            <TextView
+                                android:text="@string/mso_end_date_time"
+                                android:textSize="@dimen/txt_size_normal"
+                                android:textStyle="bold"
+                                android:textColor="@color/color_blue"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="2"/>
+
+                            <ImageView
+                                android:layout_gravity="center"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="0.4"
+                                android:src="@drawable/two_dots" />
+                            <TextView
+                                android:layout_gravity="center"
+                                android:id="@+id/tvJobCompletionDateTime"
+                                android:paddingLeft="@dimen/txt_size_normal"
+                                android:text="12/05/2019/ 12:00:34"
+                                android:textColor="@color/colorLightBlack"
+                                android:fontFamily="@font/crimson_text_regular"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="3.1"/>
+                        </LinearLayout>
 
                         <TextView
-                            android:layout_marginTop="@dimen/margin_xlarge"
+                            android:layout_marginTop="@dimen/margin_normal"
                             android:layout_marginBottom="@dimen/margin_xsmall"
-                            android:gravity="center"
                             android:text="@string/remarks"
                             android:textStyle="bold"
                             android:textColor="@color/colorLightBlack"

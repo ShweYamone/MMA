@@ -56,6 +56,12 @@
     <string name="component_type">Component Type:</string>
     <string name="component_status">Component Status:</string>
     <string name="component_desc">Component Description</string>
+    <string name="mso_number_complete">MSO Number</string>
+    <string name="panel_id_complete">Panel ID</string>
+    <string name="schedule_date">Schedule Date</string>
+    <string name="schedule_type">Schedule Type</string>
+    <string name="mso_start_date_time">MSO Start Date/Time</string>
+    <string name="mso_end_date_time">MSO End Date/Time</string>
 
     <!-- CM value for step-1 -->
     <string name="mso_information">MSO Information</string>
