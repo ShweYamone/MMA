@@ -362,6 +362,79 @@
                     android:textSize="@dimen/txt_size_large" />
             </RadioGroup>
 
+            <RadioGroup
+                android:visibility="visible"
+                android:layout_marginTop="@dimen/margin_normal"
+                android:layout_marginLeft="@dimen/margin_normal"
+                android:layout_marginRight="@dimen/margin_normal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <RadioButton
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_left"
+                    android:textColor="@color/colorWhite"
+                    android:button="@android:color/transparent"
+                    android:checked="true"
+                    android:gravity="center"
+                    android:text="All"
+                    android:paddingTop="@dimen/padding_4"
+                    android:paddingBottom="@dimen/padding_4"
+                    android:textSize="@dimen/txt_size_large"/>
+
+
+                <RadioButton
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_middle"
+                    android:button="@android:color/transparent"
+                    android:gravity="center"
+                    android:text="Weekly"
+                    android:paddingTop="@dimen/padding_4"
+                    android:paddingBottom="@dimen/padding_4"
+                    android:textSize="@dimen/txt_size_large" />
+
+                <RadioButton
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_middle"
+                    android:button="@android:color/transparent"
+                    android:gravity="center"
+                    android:text="Monthly"
+                    android:paddingTop="@dimen/padding_4"
+                    android:paddingBottom="@dimen/padding_4"
+                    android:textSize="@dimen/txt_size_large" />
+
+                <RadioButton
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_middle"
+                    android:button="@android:color/transparent"
+                    android:gravity="center"
+                    android:text="Quarterly"
+                    android:paddingTop="@dimen/padding_4"
+                    android:paddingBottom="@dimen/padding_4"
+                    android:textSize="@dimen/txt_size_large" />
+
+                <RadioButton
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_right"
+                    android:button="@android:color/transparent"
+                    android:gravity="center"
+                    android:text="Yearly"
+                    android:paddingTop="@dimen/padding_4"
+                    android:paddingBottom="@dimen/padding_4"
+                    android:textSize="@dimen/txt_size_large" />
+            </RadioGroup>
+
             <LinearLayout
                 android:visibility="gone"
                 android:layout_marginTop="@dimen/margin_normal"
