@@ -135,6 +135,12 @@ public class SharePreferenceHelper {
 		editor.commit();
 	}
 
+	public void deletePinCode() {
+ 		SharedPreferences.Editor editor = sharedPreference.edit();
+ 		editor.remove(PIN_CODE);
+ 		editor.commit();
+	}
+
 	public boolean isLogin()
 	{
 		if(sharedPreference.contains(TOKEN) && sharedPreference.contains(USER_NAME_KEY))
