@@ -14,4 +14,7 @@ public interface CheckListDescDAO {
 
     @Query("Select description from CheckListDescModel where keyId=:keyId")
     String getDesc(String keyId);
+
+    @Query("Delete from CheckListDescModel")
+    void deleteAll();
 }

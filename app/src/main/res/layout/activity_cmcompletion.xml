@@ -96,16 +96,17 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="0.4"
                                 android:src="@drawable/two_dots" />
+
                             <TextView
                                 android:id="@+id/tv_mso_number"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="3.1"
+                                android:fontFamily="@font/crimson_text_regular"
                                 android:paddingLeft="@dimen/txt_size_normal"
                                 android:text="xxxxxx"
-                                android:textSize="@dimen/txt_size_normal"
                                 android:textColor="@color/colorLightBlack"
-                                android:fontFamily="@font/crimson_text_regular"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="3.1"/>
+                                android:textSize="@dimen/txt_size_normal" />
                         </LinearLayout>
                         <LinearLayout
                             android:layout_marginTop="@dimen/margin_large"

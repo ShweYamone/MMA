@@ -19,6 +19,12 @@ import com.freelance.solutionhub.mma.util.SharePreferenceHelper;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.freelance.solutionhub.mma.util.AppConstant.OTHER_CONTRACTOR_UPDATE;
+import static com.freelance.solutionhub.mma.util.AppConstant.POWER_GRIP_UPDATE;
+import static com.freelance.solutionhub.mma.util.AppConstant.REMEDY;
+import static com.freelance.solutionhub.mma.util.AppConstant.REPORTED_PROBLEM;
+import static com.freelance.solutionhub.mma.util.AppConstant.SERVICE_ORDER_UPDATE;
+import static com.freelance.solutionhub.mma.util.AppConstant.TELCO_UPDATE;
 import static com.freelance.solutionhub.mma.util.AppConstant.user_inactivity_time;
 
 public class CMCompletionActivity extends AppCompatActivity implements View.OnClickListener {
@@ -66,6 +72,21 @@ public class CMCompletionActivity extends AppCompatActivity implements View.OnCl
         dbHelper = InitializeDatabase.getInstance(this);
         sharePreferenceHelper.setLock(false);
 
+        msoNumber.setText(getIntent().getStringExtra("id"));
+        panelId.setText(getIntent().getStringExtra("panelId"));
+        reportedProblemCode.setText(dbHelper.eventDAO().getEventValue(SERVICE_ORDER_UPDATE, REPORTED_PROBLEM));
+        faultCode.setText("");
+        remedyAction.setText(dbHelper.eventDAO().getEventValue(SERVICE_ORDER_UPDATE, REMEDY));
+        if (dbHelper.eventDAO().getNumOfEventsByEventType(TELCO_UPDATE) > 0) {
+            thirdPartyFault.setText("Telco");
+        } else if (dbHelper.eventDAO().getNumOfEventsByEventType(POWER_GRIP_UPDATE) > 0) {
+            thirdPartyFault.setText("POWER GRIP");
+        } else if (dbHelper.eventDAO().getNumOfEventsByEventType(OTHER_CONTRACTOR_UPDATE) > 0)
+            thirdPartyFault.setText("Other Contractor");
+        else
+            thirdPartyFault.setText("");
+
+        location.setText(getIntent().getStringExtra("location"));
         tvRemarks.setText(getIntent().getStringExtra("remarks"));
         btnClose.setOnClickListener(this);
 
@@ -92,6 +113,7 @@ public class CMCompletionActivity extends AppCompatActivity implements View.OnCl
         dbHelper.updateEventBodyDAO().deleteAll();
         dbHelper.uploadPhotoDAO().deleteAll();
         dbHelper.eventDAO().deleteAll();
+        dbHelper.checkListDescDAO().deleteAll();
     }
 
     @Override

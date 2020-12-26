@@ -56,6 +56,8 @@ import retrofit2.Response;
 
 import static com.freelance.solutionhub.mma.util.AppConstant.CM;
 import static com.freelance.solutionhub.mma.util.AppConstant.NO;
+import static com.freelance.solutionhub.mma.util.AppConstant.PM;
+import static com.freelance.solutionhub.mma.util.AppConstant.pm;
 import static com.freelance.solutionhub.mma.util.AppConstant.user_inactivity_time;
 
 public class NFCReadingActivity extends AppCompatActivity {
@@ -175,14 +177,19 @@ public class NFCReadingActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     Toast.makeText(getApplicationContext(), "LOCAL_TAG_OUT", Toast.LENGTH_SHORT).show();
                     Intent intent;
-                    if (serviceOrderId.startsWith(CM)) {
-                        intent = new Intent(NFCReadingActivity.this, CMCompletionActivity.class);
-                    } else {
+                    if (serviceOrderId.startsWith(pm)) {
                         intent = new Intent(NFCReadingActivity.this, PMCompletionActivity.class);
+
+                        intent.putExtra("schedule_date", getIntent().getStringExtra("schedule_date"));
+                        intent.putExtra("schedule_type", getIntent().getStringExtra("schedule_type"));
+                        intent.putExtra("start_time", getIntent().getStringExtra("start_time"));
+                        intent.putExtra("end_time", currentDateTime);
+                    } else {
+                        intent = new Intent(NFCReadingActivity.this, CMCompletionActivity.class);
+                        intent.putExtra("location", getIntent().getStringExtra("location"));
                     }
-                    intent.putExtra("start_time", getIntent().getStringExtra("start_time"));
-                    intent.putExtra("end_time", currentDateTime);
-                    intent.putExtra("acknowledge_time", getIntent().getStringExtra("acknowledge_time"));
+                    intent.putExtra("id", serviceOrderId);
+                    intent.putExtra("panelId", getIntent().getStringExtra("panelId"));
                     intent.putExtra("remarks", getIntent().getStringExtra("remarks")+"");
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
@@ -230,14 +237,19 @@ public class NFCReadingActivity extends AppCompatActivity {
                                 if (dbHelper.updateEventBodyDAO().getNumberOfUpdateEventsById("TAG_OUT") > 0) {
                                     performLocalTagOutEvent();
                                 } else {
-                                    if (serviceOrderId.startsWith(CM)) {
-                                        intent = new Intent(NFCReadingActivity.this, CMCompletionActivity.class);
-                                    } else {
+                                    if (serviceOrderId.startsWith(pm)) {
                                         intent = new Intent(NFCReadingActivity.this, PMCompletionActivity.class);
+
+                                        intent.putExtra("schedule_date", getIntent().getStringExtra("schedule_date"));
+                                        intent.putExtra("schedule_type", getIntent().getStringExtra("schedule_type"));
+                                        intent.putExtra("start_time", getIntent().getStringExtra("start_time"));
+                                        intent.putExtra("end_time", currentDateTime);
+                                    } else {
+                                        intent = new Intent(NFCReadingActivity.this, CMCompletionActivity.class);
+                                        intent.putExtra("location", getIntent().getStringExtra("location"));
                                     }
-                                    intent.putExtra("start_time", getIntent().getStringExtra("start_time"));
-                                    intent.putExtra("end_time", currentDateTime);
-                                    intent.putExtra("acknowledge_time", getIntent().getStringExtra("acknowledge_time"));
+                                    intent.putExtra("id", serviceOrderId);
+                                    intent.putExtra("panelId", getIntent().getStringExtra("panelId"));
                                     intent.putExtra("remarks", getIntent().getStringExtra("remarks")+"");
                                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                     startActivity(intent);
