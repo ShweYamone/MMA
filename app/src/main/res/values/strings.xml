@@ -62,6 +62,11 @@
     <string name="schedule_type">Schedule Type</string>
     <string name="mso_start_date_time">MSO Start Date/Time</string>
     <string name="mso_end_date_time">MSO End Date/Time</string>
+    <string name="reported_problem_code_complete">Reported Problem Code</string>
+    <string name="fault_code">Fault Code</string>
+    <string name="remedy_action">Remedy Action</string>
+    <string name="third_party_fault_complete">Third Party Fault</string>
+    <string name="location_complete">Location</string>
 
     <!-- CM value for step-1 -->
     <string name="mso_information">MSO Information</string>

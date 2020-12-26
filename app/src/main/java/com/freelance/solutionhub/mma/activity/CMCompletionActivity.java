@@ -26,14 +26,29 @@ public class CMCompletionActivity extends AppCompatActivity implements View.OnCl
     @BindView(R.id.tvAcknowledgeDateTime)
     TextView tvAcknowledgeDateTime;
 
-    @BindView(R.id.tvArrivalDateTime)
-    TextView tvArrivalDateTime;
-
-    @BindView(R.id.tvJobCompletionDateTime)
-    TextView tvJobCompleteDataTime;
-
     @BindView(R.id.tvRemarks)
     TextView tvRemarks;
+
+    @BindView(R.id.tv_mso_number)
+    TextView msoNumber;
+
+    @BindView(R.id.tv_panel_id)
+    TextView panelId;
+
+    @BindView(R.id.tv_reported_problem_code)
+    TextView reportedProblemCode;
+
+    @BindView(R.id.tv_fault_code)
+    TextView faultCode;
+
+    @BindView(R.id.tv_remedy_action)
+    TextView remedyAction;
+
+    @BindView(R.id.tv_third_party_fault)
+    TextView thirdPartyFault;
+
+    @BindView(R.id.tv_location)
+    TextView location;
 
     @BindView(R.id.btnClose)
     Button btnClose;
@@ -54,8 +69,6 @@ public class CMCompletionActivity extends AppCompatActivity implements View.OnCl
         dbHelper = InitializeDatabase.getInstance(this);
         sharePreferenceHelper.setLock(false);
 
-        tvArrivalDateTime.setText(getIntent().getStringExtra("start_time"));
-        tvJobCompleteDataTime.setText(getIntent().getStringExtra("end_time"));
         tvRemarks.setText(getIntent().getStringExtra("remarks"));
         tvAcknowledgeDateTime.setText(getIntent().getStringExtra("acknowledge_time"));
         btnClose.setOnClickListener(this);

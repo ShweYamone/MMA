@@ -73,6 +73,7 @@
                             android:layout_height="5dp"
                             android:src="@drawable/dotted"
                             android:layerType="software" />
+
                         <LinearLayout
                             android:layout_marginTop="@dimen/margin_large"
                             android:layout_marginBottom="@dimen/margin_xxsmall"
@@ -96,7 +97,7 @@
                                 android:layout_weight="0.4"
                                 android:src="@drawable/two_dots" />
                             <TextView
-                                android:id="@+id/tvMSONumber"
+                                android:id="@+id/tv_mso_number"
                                 android:paddingLeft="@dimen/txt_size_normal"
                                 android:text="xxxxxx"
                                 android:textSize="@dimen/txt_size_normal"
@@ -142,12 +143,13 @@
                     <LinearLayout
                         android:layout_marginTop="@dimen/margin_large"
                         android:layout_marginBottom="@dimen/margin_xxsmall"
+                        android:gravity="center"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:weightSum="5.5">
                         <TextView
-                            android:text="@string/schedule_date"
+                            android:text="@string/reported_problem_code_complete"
                             android:textSize="@dimen/txt_size_normal"
                             android:textStyle="bold"
                             android:textColor="@color/color_blue"
@@ -156,15 +158,14 @@
                             android:layout_weight="2"/>
 
                         <ImageView
-                            android:layout_gravity="center"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="0.4"
                             android:src="@drawable/two_dots" />
                         <TextView
-                            android:id="@+id/tvAcknowledgeDateTime"
+                            android:id="@+id/tv_reported_problem_code"
                             android:paddingLeft="@dimen/txt_size_normal"
-                            android:text="12/05/2019/ 12:00:34"
+                            android:text="Modem Repair"
                             android:textColor="@color/colorLightBlack"
                             android:fontFamily="@font/crimson_text_regular"
                             android:layout_width="0dp"
@@ -174,12 +175,13 @@
                         <LinearLayout
                             android:layout_marginTop="@dimen/margin_large"
                             android:layout_marginBottom="@dimen/margin_xxsmall"
+                            android:gravity="center"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
                             android:weightSum="5.5">
                             <TextView
-                                android:text="@string/schedule_type"
+                                android:text="@string/fault_code"
                                 android:textSize="@dimen/txt_size_normal"
                                 android:textStyle="bold"
                                 android:textColor="@color/color_blue"
@@ -188,15 +190,14 @@
                                 android:layout_weight="2"/>
 
                             <ImageView
-                                android:layout_gravity="center"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="0.4"
                                 android:src="@drawable/two_dots" />
                             <TextView
-                                android:id="@+id/tvScheduleType"
+                                android:id="@+id/tv_fault_code"
                                 android:paddingLeft="@dimen/txt_size_normal"
-                                android:text="Weekly"
+                                android:text="xxxxxxxx"
                                 android:textColor="@color/colorLightBlack"
                                 android:fontFamily="@font/crimson_text_regular"
                                 android:layout_width="0dp"
@@ -206,12 +207,13 @@
                         <LinearLayout
                             android:layout_marginTop="@dimen/margin_large"
                             android:layout_marginBottom="@dimen/margin_xxsmall"
+                            android:gravity="center"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
                             android:weightSum="5.5">
                             <TextView
-                                android:text="@string/mso_start_date_time"
+                                android:text="@string/remedy_action"
                                 android:textSize="@dimen/txt_size_normal"
                                 android:textStyle="bold"
                                 android:textColor="@color/color_blue"
@@ -220,16 +222,14 @@
                                 android:layout_weight="2"/>
 
                             <ImageView
-                                android:layout_gravity="center"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="0.4"
                                 android:src="@drawable/two_dots" />
                             <TextView
-                                android:layout_gravity="center"
-                                android:id="@+id/tvArrivalDateTime"
+                                android:id="@+id/tv_remedy_action"
                                 android:paddingLeft="@dimen/txt_size_normal"
-                                android:text="12/05/2019/ 12:00:34"
+                                android:text="Modem Repair"
                                 android:textColor="@color/colorLightBlack"
                                 android:fontFamily="@font/crimson_text_regular"
                                 android:layout_width="0dp"
@@ -240,12 +240,13 @@
                         <LinearLayout
                             android:layout_marginTop="@dimen/margin_large"
                             android:layout_marginBottom="@dimen/margin_xxsmall"
+                            android:gravity="center"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
                             android:weightSum="5.5">
                             <TextView
-                                android:text="@string/mso_end_date_time"
+                                android:text="@string/third_party_fault_complete"
                                 android:textSize="@dimen/txt_size_normal"
                                 android:textStyle="bold"
                                 android:textColor="@color/color_blue"
@@ -254,23 +255,52 @@
                                 android:layout_weight="2"/>
 
                             <ImageView
-                                android:layout_gravity="center"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="0.4"
                                 android:src="@drawable/two_dots" />
                             <TextView
-                                android:layout_gravity="center"
-                                android:id="@+id/tvJobCompletionDateTime"
+                                android:id="@+id/tv_third_party_fault"
                                 android:paddingLeft="@dimen/txt_size_normal"
-                                android:text="12/05/2019/ 12:00:34"
+                                android:text="Telco"
                                 android:textColor="@color/colorLightBlack"
                                 android:fontFamily="@font/crimson_text_regular"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="3.1"/>
                         </LinearLayout>
+                        <LinearLayout
+                            android:layout_marginTop="@dimen/margin_large"
+                            android:layout_marginBottom="@dimen/margin_xxsmall"
+                            android:gravity="center"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:weightSum="5.5">
+                            <TextView
+                                android:text="@string/location_complete"
+                                android:textSize="@dimen/txt_size_normal"
+                                android:textStyle="bold"
+                                android:textColor="@color/color_blue"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="2"/>
 
+                            <ImageView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="0.4"
+                                android:src="@drawable/two_dots" />
+                            <TextView
+                                android:id="@+id/tv_location"
+                                android:paddingLeft="@dimen/txt_size_normal"
+                                android:text="Rochor Rd For Marina Centr"
+                                android:textColor="@color/colorLightBlack"
+                                android:fontFamily="@font/crimson_text_regular"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="3.1"/>
+                        </LinearLayout>
                         <TextView
                             android:layout_marginTop="@dimen/margin_normal"
                             android:layout_marginBottom="@dimen/margin_xsmall"
