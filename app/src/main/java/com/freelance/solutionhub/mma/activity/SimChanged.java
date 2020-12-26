@@ -14,6 +14,8 @@ public class SimChanged extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sim_changed);
+
+        // TODO We must to ask deleting database after OK button click or Not
         new AlertDialog.Builder(this)
                 .setIcon(R.drawable.warning)
                 .setTitle("SIM Card Changed!")
@@ -29,6 +31,11 @@ public class SimChanged extends AppCompatActivity {
 
                 })
                 .show();
+
+    }
+
+    @Override
+    public void onBackPressed() {
 
     }
 }
