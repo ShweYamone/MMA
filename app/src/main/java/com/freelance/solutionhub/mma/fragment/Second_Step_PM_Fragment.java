@@ -279,6 +279,7 @@ public class Second_Step_PM_Fragment extends Fragment implements View.OnClickLis
         intent.putExtra("start_time", getArguments().getString("start_time"));
         intent.putExtra("end_time", actualDateTime);
         intent.putExtra("remarks", remarks.getText().toString()+"");
+        intent.putExtra("schedule_date", pmServiceInfoDetailModel.getAcknowledgementDate());
         startActivity(intent);
         getActivity().finish();
 

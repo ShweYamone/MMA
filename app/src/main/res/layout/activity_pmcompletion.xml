@@ -164,7 +164,7 @@
                                 android:layout_weight="0.4"
                                 android:src="@drawable/two_dots" />
                             <TextView
-                                android:id="@+id/tvAcknowledgeDateTime"
+                                android:id="@+id/tvSchedule"
                                 android:paddingLeft="@dimen/txt_size_normal"
                                 android:text="12/05/2019/ 12:00:34"
                                 android:textColor="@color/colorLightBlack"
