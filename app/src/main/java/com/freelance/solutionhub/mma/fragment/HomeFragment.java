@@ -18,6 +18,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -48,6 +50,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.bind.annotation.W3CDomHandler;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import okhttp3.ResponseBody;
@@ -63,7 +67,7 @@ import static com.freelance.solutionhub.mma.util.AppConstant.INPRG;
 import static com.freelance.solutionhub.mma.util.AppConstant.PM;
 import static com.freelance.solutionhub.mma.util.AppConstant.WSCH;
 
-public class HomeFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemSelectedListener, HomeFragmentCallback {
+public class HomeFragment extends Fragment implements RadioGroup.OnCheckedChangeListener, View.OnClickListener, HomeFragmentCallback {
 
     @BindView(R.id.cvCorrectiveMaintenance)
     CardView cvCorrectiveMaintenance;
@@ -109,6 +113,33 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
 
     @BindView(R.id.progress_bar)
     RelativeLayout progressBar;
+
+    @BindView(R.id.rgPM)
+    RadioGroup rgPM;
+
+    @BindView(R.id.rgCM)
+    RadioGroup rgCM;
+
+    @BindView(R.id.rbPMAll)
+    RadioButton rbPMAll;
+
+    @BindView(R.id.rbPMINPRG)
+    RadioButton rbPMINPRG;
+
+    @BindView(R.id.rbPMWCSH)
+    RadioButton rbPMWCSH;
+
+    @BindView(R.id.rbCMAll)
+    RadioButton rbCMAll;
+
+    @BindView(R.id.rbCMACK)
+    RadioButton rbCMACK;
+
+    @BindView(R.id.rbCMAPPR)
+    RadioButton rbCMAPPR;
+
+    @BindView(R.id.rbCMInprg)
+    RadioButton rbCMInprg;
 
     private String[] list;
     private ArrayAdapter spinnerArrAdaper;
@@ -373,6 +404,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
         serviceInfoModelList.clear();
         mAdapter.notifyDataSetChanged();
         page = 1;
+        filterExpression = "in";
         switch (view.getId()) {
             case R.id.cvCorrectiveMaintenance:
                 layoutMaintenaceCV.setVisibility(View.GONE);
@@ -392,11 +424,13 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
                 break;
         }
 
-        filterExpression = "in"; //textValue = JOBDONE;
-        spinnerArrAdaper = new ArrayAdapter(this.getContext(), android.R.layout.simple_spinner_item, list);
-        spinnerArrAdaper.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerStatus.setAdapter(spinnerArrAdaper);
-        spinnerStatus.setOnItemSelectedListener(this);
+        setRadioButtonColorToBlack();
+        //textValue = JOBDONE;
+        rgCM.setOnCheckedChangeListener(this);
+        rgPM.setOnCheckedChangeListener(this);
+        rbCMAll.setTextColor(getResources().getColor(R.color.colorWhite));
+        rbPMAll.setTextColor(getResources().getColor(R.color.colorWhite));
+
 
     }
 
@@ -408,8 +442,14 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
 
         ivPreventive.setColorFilter(ContextCompat.getColor(this.getContext(), R.color.color_grey_stroke_dark));
         tvPreventive.setTextColor(getResources().getColor(R.color.color_grey_stroke_dark));
+        rgCM.setVisibility(View.VISIBLE);
+        rgPM.setVisibility(View.GONE);
+
         list = new String[]{ALL, APPR, ACK, INPRG};
         textValueList.add(INPRG); textValueList.add(APPR); textValueList.add(ACK);
+        rbCMAll.setChecked(true);
+        rbCMAll.setTextColor(getResources().getColor(R.color.colorWhite));
+        getServiceOrders();
     }
 
     private void showPreventiveMaintenance() {
@@ -420,54 +460,88 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
 
         ivCorrective.setColorFilter(ContextCompat.getColor(this.getContext(), R.color.color_grey_stroke_dark));
         tvCorrective.setTextColor(getResources().getColor(R.color.color_grey_stroke_dark));
+        rgCM.setVisibility(View.GONE);
+        rgPM.setVisibility(View.VISIBLE);
+
         list = new String[]{ALL, WSCH, INPRG};
         textValueList.add(WSCH); textValueList.add(INPRG);
+        rbPMAll.setChecked(true);
+        rbPMAll.setTextColor(getResources().getColor(R.color.colorWhite));
+        getServiceOrders();
     }
 
+    private void setRadioButtonColorToBlack() {
+        rbCMAll.setTextColor(getResources().getColor(R.color.colorBlack));
+        rbCMACK.setTextColor(getResources().getColor(R.color.colorBlack));
+        rbCMAPPR.setTextColor(getResources().getColor(R.color.colorBlack));
+        rbCMInprg.setTextColor(getResources().getColor(R.color.colorBlack));
+        rbPMAll.setTextColor(getResources().getColor(R.color.colorBlack));
+        rbPMWCSH.setTextColor(getResources().getColor(R.color.colorBlack));
+        rbPMINPRG.setTextColor(getResources().getColor(R.color.colorBlack));
+    }
+
+
     @Override
-    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-
+    public void onCheckedChanged(RadioGroup radioGroup, int i) {
         page = 1;
-        switch (list[i]) {
-            case ALL :
-                filterExpression = "in";
-                textValueList.clear();
-                if (enumValue.equals(PM)) {
-                    textValueList.add(WSCH); textValueList.add(INPRG);
-                } else {
+        Log.i("CheckChanged", "onCheckedChanged: " + radioGroup.getId() + "int i = " + i);
+        setRadioButtonColorToBlack();
+        if (radioGroup.getId() == R.id.rgCM) {
+            switch (i) {
+                case R.id.rbCMAll:
+                    filterExpression = "in";
+                    textValueList.clear();
                     textValueList.add(INPRG); textValueList.add(APPR); textValueList.add(ACK);
-                }
-                break;
-            case WSCH :
-                textValueList.clear();
-                filterExpression = "in";
-                textValueList.add(WSCH);
-                break;
-            case INPRG :
-                textValueList.clear();
-                filterExpression = "in";
-                textValueList.add(INPRG);
-                break;
-            case ACK :
-                textValueList.clear();
-                filterExpression = "in";
-                textValueList.add(ACK);
-                break;
-            case APPR:
-                textValueList.clear();
-                filterExpression = "in";
-                textValueList.add(APPR);
-        }
+                    rbCMAll.setTextColor(getResources().getColor(R.color.colorWhite));
+                    break;
+                case R.id.rbCMACK :
+                    textValueList.clear();
+                    filterExpression = "in";
+                    textValueList.add(ACK);
+                    rbCMACK.setTextColor(getResources().getColor(R.color.colorWhite));
+                    break;
+                case R.id.rbCMAPPR:
+                    textValueList.clear();
+                    filterExpression = "in";
+                    textValueList.add(APPR);
+                    rbCMAPPR.setTextColor(getResources().getColor(R.color.colorWhite));
+                    break;
+                case R.id.rbCMInprg:
+                    textValueList.clear();
+                    filterExpression = "in";
+                    textValueList.add(INPRG);
+                    rbCMInprg.setTextColor(getResources().getColor(R.color.colorWhite));
+                    break;
+            }
 
+        } else {
+            switch (i) {
+                case R.id.rbPMAll:
+                    filterExpression = "in";
+                    textValueList.clear();
+                    textValueList.add(WSCH); textValueList.add(INPRG);
+                    rbPMAll.setTextColor(getResources().getColor(R.color.colorWhite));
+                    break;
+                case R.id.rbPMWCSH :
+                    textValueList.clear();
+                    filterExpression = "in";
+                    textValueList.add(WSCH);
+                    rbPMWCSH.setTextColor(getResources().getColor(R.color.colorWhite));
+                    break;
+                case R.id.rbPMINPRG:
+                    textValueList.clear();
+                    filterExpression = "in";
+                    textValueList.add(INPRG);
+                    rbPMINPRG.setTextColor(getResources().getColor(R.color.colorWhite));
+                    break;
+            }
+        }
         serviceInfoModelList.clear();
         mAdapter.notifyDataSetChanged();
         getServiceOrders();
     }
 
-    @Override
-    public void onNothingSelected(AdapterView<?> adapterView) {
 
-    }
 
     @Override
     public void onResume() {

@@ -243,7 +243,127 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
+            <RadioGroup
+                android:visibility="gone"
+                android:layout_marginTop="@dimen/margin_normal"
+                android:layout_marginLeft="@dimen/margin_normal"
+                android:layout_marginRight="@dimen/margin_normal"
+                android:id="@+id/rgPM"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <RadioButton
+                    android:id="@+id/rbPMAll"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_left"
+                    android:textColor="@color/colorWhite"
+                    android:button="@android:color/transparent"
+                    android:checked="true"
+                    android:gravity="center"
+                    android:text="All"
+                    android:paddingTop="@dimen/padding_4"
+                    android:paddingBottom="@dimen/padding_4"
+                    android:textSize="@dimen/txt_size_large"/>
+
+
+                <RadioButton
+                    android:id="@+id/rbPMWCSH"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_middle"
+                    android:button="@android:color/transparent"
+                    android:gravity="center"
+                    android:text="WCSH"
+                    android:paddingTop="@dimen/padding_4"
+                    android:paddingBottom="@dimen/padding_4"
+                    android:textSize="@dimen/txt_size_large" />
+
+                <RadioButton
+                    android:id="@+id/rbPMINPRG"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_right"
+                    android:button="@android:color/transparent"
+                    android:gravity="center"
+                    android:text="INPRG"
+                    android:paddingTop="@dimen/padding_4"
+                    android:paddingBottom="@dimen/padding_4"
+                    android:textSize="@dimen/txt_size_large" />
+            </RadioGroup>
+
+            <RadioGroup
+                android:visibility="visible"
+                android:layout_marginTop="@dimen/margin_normal"
+                android:layout_marginLeft="@dimen/margin_normal"
+                android:layout_marginRight="@dimen/margin_normal"
+                android:id="@+id/rgCM"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <RadioButton
+                    android:id="@+id/rbCMAll"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_left"
+                    android:textColor="@color/colorWhite"
+                    android:button="@android:color/transparent"
+                    android:checked="true"
+                    android:gravity="center"
+                    android:text="All"
+                    android:paddingTop="@dimen/padding_4"
+                    android:paddingBottom="@dimen/padding_4"
+                    android:textSize="@dimen/txt_size_large"/>
+
+
+                <RadioButton
+                    android:id="@+id/rbCMAPPR"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_middle"
+                    android:button="@android:color/transparent"
+                    android:gravity="center"
+                    android:text="APPR"
+                    android:paddingTop="@dimen/padding_4"
+                    android:paddingBottom="@dimen/padding_4"
+                    android:textSize="@dimen/txt_size_large" />
+
+                <RadioButton
+                    android:id="@+id/rbCMACK"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_middle"
+                    android:button="@android:color/transparent"
+                    android:gravity="center"
+                    android:text="ACK"
+                    android:paddingTop="@dimen/padding_4"
+                    android:paddingBottom="@dimen/padding_4"
+                    android:textSize="@dimen/txt_size_large" />
+
+                <RadioButton
+                    android:id="@+id/rbCMInprg"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_right"
+                    android:button="@android:color/transparent"
+                    android:gravity="center"
+                    android:text="INPRG"
+                    android:paddingTop="@dimen/padding_4"
+                    android:paddingBottom="@dimen/padding_4"
+                    android:textSize="@dimen/txt_size_large" />
+            </RadioGroup>
+
             <LinearLayout
+                android:visibility="gone"
                 android:layout_marginTop="@dimen/margin_normal"
                 android:background="@drawable/bg_status_spinner"
                 android:padding="@dimen/padding_8"
