@@ -364,8 +364,9 @@ public class NFCReadingActivity extends AppCompatActivity {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        setIntent(intent);
-        resolveIntent(intent);
+         setIntent(intent);
+         resolveIntent(intent);
+         mSharedPreference.setLock(false);
     }
 
     private void resolveIntent(Intent intent) {
