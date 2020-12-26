@@ -64,6 +64,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.freelance.solutionhub.mma.util.AppConstant.ACTUAL_PROBLEM;
 import static com.freelance.solutionhub.mma.util.AppConstant.CM;
 import static com.freelance.solutionhub.mma.util.AppConstant.CM_Step_ONE;
 import static com.freelance.solutionhub.mma.util.AppConstant.CM_Step_THREE;
@@ -71,6 +72,7 @@ import static com.freelance.solutionhub.mma.util.AppConstant.CM_Step_TWO;
 import static com.freelance.solutionhub.mma.util.AppConstant.JOBDONE;
 import static com.freelance.solutionhub.mma.util.AppConstant.POST_BUCKET_NAME;
 import static com.freelance.solutionhub.mma.util.AppConstant.PRE_BUCKET_NAME;
+import static com.freelance.solutionhub.mma.util.AppConstant.SERVICE_ORDER_UPDATE;
 import static com.freelance.solutionhub.mma.util.AppConstant.YES;
 
 public class Third_Step_CM_Fragment extends Fragment implements View.OnClickListener{
@@ -574,8 +576,8 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
     }
 
     private void updateSTEP_Three() {
-       // completeWork();
-        /** STEP_THREE EVENT UPDATE */
+        completeWork();
+        /** STEP_THREE EVENT UPDATE
         UpdateEventBody updateEventBody = dbHelper.updateEventBodyDAO().getUpdateEventBodyByID(CM_Step_THREE);
         date = new Date();
         Timestamp timestamp = new Timestamp(date.getTime());
@@ -611,17 +613,18 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
                 ((CMActivity)getActivity()).hideProgressBar();
                 Log.e("UPLOAD_ERROR", "onResponse: " + t.getMessage());
             }
-        });
+        });*/
     }
 
     private void completeWork() {
         Intent intent = new Intent(this.getContext(), NFCReadingActivity.class);
         intent.putExtra("id", pmServiceInfoDetailModel.getId());
+        intent.putExtra("panelId", pmServiceInfoDetailModel.getPanelId()+"");
+        intent.putExtra("remarks", remarks.getText().toString()+"");
+        intent.putExtra("location", pmServiceInfoDetailModel.getBusStopLocation()+"");
+
         intent.putExtra("TAG_OUT", 1);
         intent.putExtra("JOB_DONE", 1);
-        intent.putExtra("start_time", getArguments().getString("start_time"));
-        intent.putExtra("acknowledge_time", pmServiceInfoDetailModel.getAcknowledgementDate());
-        intent.putExtra("remarks", remarks.getText().toString()+"");
         startActivity(intent);
         getActivity().finish();
 

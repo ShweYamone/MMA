@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.freelance.solutionhub.mma.DB.InitializeDatabase;
 import com.freelance.solutionhub.mma.R;
+import com.freelance.solutionhub.mma.activity.NFCReadingActivity;
 import com.freelance.solutionhub.mma.activity.PMActivity;
 import com.freelance.solutionhub.mma.activity.PMCompletionActivity;
 import com.freelance.solutionhub.mma.model.Event;
@@ -62,6 +63,7 @@ import static com.freelance.solutionhub.mma.util.AppConstant.PM_Step_ONE;
 import static com.freelance.solutionhub.mma.util.AppConstant.PM_Step_TWO;
 import static com.freelance.solutionhub.mma.util.AppConstant.POST_BUCKET_NAME;
 import static com.freelance.solutionhub.mma.util.AppConstant.YES;
+import static com.freelance.solutionhub.mma.util.AppConstant.pm;
 
 public class Second_Step_PM_Fragment extends Fragment implements View.OnClickListener {
 
@@ -275,11 +277,17 @@ public class Second_Step_PM_Fragment extends Fragment implements View.OnClickLis
 
 
     private void completeWork() {
-        Intent intent = new Intent(this.getContext(), PMCompletionActivity.class);
+        Intent intent = new Intent(this.getContext(), NFCReadingActivity.class);
+        intent.putExtra("id", pmServiceInfoDetailModel.getId());
+        intent.putExtra("panelId", pmServiceInfoDetailModel.getPanelId());
+        intent.putExtra("schedule_date", pmServiceInfoDetailModel.getCreationDate());
+        intent.putExtra("schedule_type", pmServiceInfoDetailModel.getServiceOrderType());
         intent.putExtra("start_time", getArguments().getString("start_time"));
-        intent.putExtra("end_time", actualDateTime);
         intent.putExtra("remarks", remarks.getText().toString()+"");
-        intent.putExtra("schedule_date", pmServiceInfoDetailModel.getAcknowledgementDate());
+
+        intent.putExtra("JOB_DONE", 1);
+        intent.putExtra("TAG_OUT", 1);
+
         startActivity(intent);
         getActivity().finish();
 

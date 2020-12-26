@@ -100,7 +100,7 @@
                             <TextView
                                 android:id="@+id/tvMSONumber"
                                 android:paddingLeft="@dimen/txt_size_normal"
-                                android:text="xxxxxx"
+                                android:text=""
                                 android:textSize="@dimen/txt_size_normal"
                                 android:textColor="@color/colorLightBlack"
                                 android:fontFamily="@font/crimson_text_regular"
@@ -133,7 +133,7 @@
                             <TextView
                                 android:id="@+id/tv_panel_id"
                                 android:paddingLeft="@dimen/txt_size_normal"
-                                android:text="VMS1 002"
+                                android:text=""
                                 android:textColor="@color/colorLightBlack"
                                 android:fontFamily="@font/crimson_text_regular"
                                 android:layout_width="0dp"
@@ -166,7 +166,7 @@
                             <TextView
                                 android:id="@+id/tvSchedule"
                                 android:paddingLeft="@dimen/txt_size_normal"
-                                android:text="12/05/2019/ 12:00:34"
+                                android:text=""
                                 android:textColor="@color/colorLightBlack"
                                 android:fontFamily="@font/crimson_text_regular"
                                 android:layout_width="0dp"
@@ -198,7 +198,7 @@
                             <TextView
                                 android:id="@+id/tvScheduleType"
                                 android:paddingLeft="@dimen/txt_size_normal"
-                                android:text="Weekly"
+                                android:text=""
                                 android:textColor="@color/colorLightBlack"
                                 android:fontFamily="@font/crimson_text_regular"
                                 android:layout_width="0dp"
@@ -230,7 +230,7 @@
                             <TextView
                                 android:id="@+id/tvStartDateTime"
                                 android:paddingLeft="@dimen/txt_size_normal"
-                                android:text="12/05/2019/ 12:00:34"
+                                android:text=""
                                 android:textColor="@color/colorLightBlack"
                                 android:fontFamily="@font/crimson_text_regular"
                                 android:layout_width="0dp"
@@ -263,7 +263,7 @@
                             <TextView
                                 android:id="@+id/tvEndDateTime"
                                 android:paddingLeft="@dimen/txt_size_normal"
-                                android:text="12/05/2019/ 12:00:34"
+                                android:text=""
                                 android:textColor="@color/colorLightBlack"
                                 android:fontFamily="@font/crimson_text_regular"
                                 android:layout_width="0dp"
