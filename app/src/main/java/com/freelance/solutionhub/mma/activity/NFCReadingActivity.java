@@ -324,7 +324,7 @@ public class NFCReadingActivity extends AppCompatActivity {
         boolean isScreenOn = pm.isInteractive();
         if (isScreenOn)
             stopHandler();
-        mSharedPreference.setLock(true);
+    //    mSharedPreference.setLock(true);
     }
 
     @Override
