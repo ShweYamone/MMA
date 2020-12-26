@@ -309,7 +309,7 @@
                 <RadioButton
                     android:id="@+id/rbCMAll"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="32dp"
                     android:layout_weight="1"
                     android:background="@drawable/bg_left"
                     android:textColor="@color/colorWhite"
@@ -325,7 +325,7 @@
                 <RadioButton
                     android:id="@+id/rbCMAPPR"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="32dp"
                     android:layout_weight="1"
                     android:background="@drawable/bg_middle"
                     android:button="@android:color/transparent"
@@ -338,7 +338,7 @@
                 <RadioButton
                     android:id="@+id/rbCMACK"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="32dp"
                     android:layout_weight="1"
                     android:background="@drawable/bg_middle"
                     android:button="@android:color/transparent"
@@ -351,7 +351,7 @@
                 <RadioButton
                     android:id="@+id/rbCMInprg"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="32dp"
                     android:layout_weight="1"
                     android:background="@drawable/bg_right"
                     android:button="@android:color/transparent"
@@ -373,7 +373,7 @@
 
                 <RadioButton
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="32dp"
                     android:layout_weight="1"
                     android:background="@drawable/bg_left"
                     android:textColor="@color/colorWhite"
@@ -388,7 +388,7 @@
 
                 <RadioButton
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="32dp"
                     android:layout_weight="1"
                     android:background="@drawable/bg_middle"
                     android:button="@android:color/transparent"
@@ -400,7 +400,7 @@
 
                 <RadioButton
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="32dp"
                     android:layout_weight="1"
                     android:background="@drawable/bg_middle"
                     android:button="@android:color/transparent"
@@ -412,7 +412,7 @@
 
                 <RadioButton
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="32dp"
                     android:layout_weight="1"
                     android:background="@drawable/bg_middle"
                     android:button="@android:color/transparent"
@@ -424,7 +424,7 @@
 
                 <RadioButton
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="32dp"
                     android:layout_weight="1"
                     android:background="@drawable/bg_right"
                     android:button="@android:color/transparent"

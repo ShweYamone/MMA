@@ -8,20 +8,26 @@ import android.os.Bundle;
 
 import com.freelance.solutionhub.mma.DB.InitializeDatabase;
 import com.freelance.solutionhub.mma.R;
+import com.freelance.solutionhub.mma.util.SharePreferenceHelper;
 
 public class SimChanged extends AppCompatActivity {
 
     InitializeDatabase dbHelper;
+    SharePreferenceHelper sharePreferenceHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sim_changed);
         dbHelper = InitializeDatabase.getInstance(this);
+        sharePreferenceHelper = new SharePreferenceHelper(this);
+        sharePreferenceHelper.logoutSharePreference();
+        sharePreferenceHelper.deletePinCode();
         dbHelper.checkListDescDAO().deleteAll();
         dbHelper.eventDAO().deleteAll();
         dbHelper.updateEventBodyDAO().deleteAll();
         dbHelper.uploadPhotoDAO().deleteAll();
+
 
 
         // TODO We must to ask deleting database after OK button click or Not
