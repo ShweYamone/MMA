@@ -6,14 +6,23 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
+import com.freelance.solutionhub.mma.DB.InitializeDatabase;
 import com.freelance.solutionhub.mma.R;
 
 public class SimChanged extends AppCompatActivity {
+
+    InitializeDatabase dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sim_changed);
+        dbHelper = InitializeDatabase.getInstance(this);
+        dbHelper.checkListDescDAO().deleteAll();
+        dbHelper.eventDAO().deleteAll();
+        dbHelper.updateEventBodyDAO().deleteAll();
+        dbHelper.uploadPhotoDAO().deleteAll();
+
 
         // TODO We must to ask deleting database after OK button click or Not
         new AlertDialog.Builder(this)
