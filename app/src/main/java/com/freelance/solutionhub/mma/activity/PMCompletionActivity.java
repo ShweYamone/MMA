@@ -23,6 +23,18 @@ import static com.freelance.solutionhub.mma.util.AppConstant.user_inactivity_tim
 
 public class PMCompletionActivity extends AppCompatActivity implements View.OnClickListener {
 
+    @BindView(R.id.tvMSONumber)
+    TextView tvMSONumber;
+
+    @BindView(R.id.tv_panel_id)
+    TextView tvPanelId;
+
+    @BindView(R.id.tvSchedule)
+    TextView tvSchedule;
+
+    @BindView(R.id.tvScheduleType)
+    TextView tvScheduleType;
+
     @BindView(R.id.tvStartDateTime)
     TextView tvStartDateTime;
 
@@ -51,6 +63,7 @@ public class PMCompletionActivity extends AppCompatActivity implements View.OnCl
         dbHelper = InitializeDatabase.getInstance(this);
         sharePreferenceHelper.setLock(false);
 
+        tvSchedule.setText(getIntent().getStringExtra("schedule_date"));
         tvStartDateTime.setText(getIntent().getStringExtra("start_time"));
         tvEndDateTime.setText(getIntent().getStringExtra("end_time"));
         tvRemarks.setText(getIntent().getStringExtra("remarks"));
