@@ -175,27 +175,27 @@ public class First_Step_CM_Fragment extends Fragment {
             }
         });
 
-        Call<PhotoAttachementModel> photoAttachementModelCall = apiInterface.getPhotoAttachment("Bearer "+mSharePerferenceHelper.getToken(), pmServiceInfoModel.getId());
-        photoAttachementModelCall.enqueue(new Callback<PhotoAttachementModel>() {
-            @Override
-            public void onResponse(Call<PhotoAttachementModel> call, Response<PhotoAttachementModel> response) {
-                PhotoAttachementModel photoAttachementModel = response.body();
-                if(response.isSuccessful()){
-                    List<PreMaintenance> preMaintenances = photoAttachementModel.getPreMaintenance();
-                    if(preMaintenances != null) for(PreMaintenance e : preMaintenances){
-                        Log.e("filepath",e.getFilePath());
-                        prePhotoModels.add(new PhotoModel(e.getFileName(),2));
-                    }
-                    prePhotoAdapter.notifyDataSetChanged();
-                }
-
-            }
-
-            @Override
-            public void onFailure(Call<PhotoAttachementModel> call, Throwable t) {
-
-            }
-        });
+//        Call<PhotoAttachementModel> photoAttachementModelCall = apiInterface.getPhotoAttachment("Bearer "+mSharePerferenceHelper.getToken(), pmServiceInfoModel.getId());
+//        photoAttachementModelCall.enqueue(new Callback<PhotoAttachementModel>() {
+//            @Override
+//            public void onResponse(Call<PhotoAttachementModel> call, Response<PhotoAttachementModel> response) {
+//                PhotoAttachementModel photoAttachementModel = response.body();
+//                if(response.isSuccessful()){
+//                    List<PreMaintenance> preMaintenances = photoAttachementModel.getPreMaintenance();
+//                    if(preMaintenances != null) for(PreMaintenance e : preMaintenances){
+//                        Log.e("filepath",e.getFilePath());
+//                        prePhotoModels.add(new PhotoModel(e.getFileName(),2));
+//                    }
+//                    prePhotoAdapter.notifyDataSetChanged();
+//                }
+//
+//            }
+//
+//            @Override
+//            public void onFailure(Call<PhotoAttachementModel> call, Throwable t) {
+//
+//            }
+//        });
 
         save.setOnClickListener(new View.OnClickListener() {
             @Override
