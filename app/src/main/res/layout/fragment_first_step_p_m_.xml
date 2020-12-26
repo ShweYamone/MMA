@@ -97,6 +97,7 @@
             <!-- the whole card design -->
             <LinearLayout
                 android:id="@+id/ll_whole_card_design"
+                android:layout_marginTop="@dimen/margin_normal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
