@@ -23,9 +23,6 @@ import static com.freelance.solutionhub.mma.util.AppConstant.user_inactivity_tim
 
 public class CMCompletionActivity extends AppCompatActivity implements View.OnClickListener {
 
-    @BindView(R.id.tvAcknowledgeDateTime)
-    TextView tvAcknowledgeDateTime;
-
     @BindView(R.id.tvRemarks)
     TextView tvRemarks;
 
@@ -70,7 +67,6 @@ public class CMCompletionActivity extends AppCompatActivity implements View.OnCl
         sharePreferenceHelper.setLock(false);
 
         tvRemarks.setText(getIntent().getStringExtra("remarks"));
-        tvAcknowledgeDateTime.setText(getIntent().getStringExtra("acknowledge_time"));
         btnClose.setOnClickListener(this);
 
         /**
