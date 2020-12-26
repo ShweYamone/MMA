@@ -236,8 +236,8 @@ public class Second_Step_PM_Fragment extends Fragment implements View.OnClickLis
     }
 
     private void updateSTEP_Two() {
-        completeWork();
-        /** STEP_TWO EVENT UPDATE
+        //completeWork();
+        /** STEP_TWO EVENT UPDATE*/
         UpdateEventBody updateEventBody = dbHelper.updateEventBodyDAO().getUpdateEventBodyByID(PM_Step_TWO);
         date = new Date();
         Timestamp timestamp = new Timestamp(date.getTime());
@@ -271,7 +271,7 @@ public class Second_Step_PM_Fragment extends Fragment implements View.OnClickLis
                 ((PMActivity)getActivity()).hideProgressBar();
                 Log.e("UPLOAD_ERROR", "onResponse: " + t.getMessage());
             }
-        });*/
+        });
     }
 
 
