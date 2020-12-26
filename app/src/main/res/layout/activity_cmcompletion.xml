@@ -230,7 +230,6 @@
                                 android:layout_gravity="center"
                                 android:id="@+id/tvArrivalDateTime"
                                 android:paddingLeft="@dimen/txt_size_normal"
-
                                 android:text="12/05/2019/ 12:00:34"
                                 android:textColor="@color/colorLightBlack"
                                 android:fontFamily="@font/crimson_text_regular"
