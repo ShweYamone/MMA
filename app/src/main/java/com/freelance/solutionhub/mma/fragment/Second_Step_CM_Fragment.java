@@ -577,7 +577,6 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
     }
 
     private void uploadEvents(){
-        //network unavailable, store to local db
         date = new Date();
         Timestamp timestamp = new Timestamp(date.getTime());
         String actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);

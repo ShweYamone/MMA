@@ -13,19 +13,33 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.freelance.solutionhub.mma.DB.InitializeDatabase;
 import com.freelance.solutionhub.mma.R;
+import com.freelance.solutionhub.mma.model.CheckListDescModel;
+import com.freelance.solutionhub.mma.model.CheckListModel;
+import com.freelance.solutionhub.mma.model.Event;
 import com.freelance.solutionhub.mma.model.PMServiceInfoDetailModel;
 import com.freelance.solutionhub.mma.util.ApiClient;
 import com.freelance.solutionhub.mma.util.ApiInterface;
 import com.freelance.solutionhub.mma.util.SharePreferenceHelper;
 import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.freelance.solutionhub.mma.util.AppConstant.NO;
+import static com.freelance.solutionhub.mma.util.AppConstant.PM_CHECK_LIST_DONE;
+import static com.freelance.solutionhub.mma.util.AppConstant.PM_CHECK_LIST_REMARK;
+import static com.freelance.solutionhub.mma.util.AppConstant.PM_Step_ONE;
+import static com.freelance.solutionhub.mma.util.AppConstant.YES;
 import static com.freelance.solutionhub.mma.util.AppConstant.user_inactivity_time;
 
 public class LoadingActivity extends AppCompatActivity {
@@ -41,19 +55,31 @@ public class LoadingActivity extends AppCompatActivity {
     private Handler handler;
     private Runnable r;
     private boolean startHandler = true;
-    private boolean lockScreen = false;
+    private InitializeDatabase dbHelper;
+    private String msoId = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         apiInterface = ApiClient.getClient(this);
         mSharePrefrence = new SharePreferenceHelper(this);
+        dbHelper = InitializeDatabase.getInstance(this);
         mSharePrefrence.setLock(false);
 
         setContentView(R.layout.activity_loading);
         ButterKnife.bind(this);
 
-        getServieOrderbyId(getIntent().getStringExtra("id"));
+        msoId = getIntent().getStringExtra("id");
+        //check current working mso is changed. if, delete
+        if (!msoId.equals(mSharePrefrence.getCurrentMSOID())) {
+
+            dbHelper.updateEventBodyDAO().deleteAll();
+            dbHelper.eventDAO().deleteAll();
+            dbHelper.uploadPhotoDAO().deleteAll();
+            mSharePrefrence.setCurrentMSOID(msoId);
+        }
+
+        getServieOrderbyId(msoId);
 
         /**
          after certain amount of user inactivity, asks for passcode
@@ -113,6 +139,64 @@ public class LoadingActivity extends AppCompatActivity {
         }
     }
 
+    private void getPMCheckList(PMServiceInfoDetailModel responseBody) {
+        Call<List<CheckListModel>> callCheckList = apiInterface.getCheckList("Bearer "+ mSharePrefrence.getToken(), msoId);
+        callCheckList.enqueue(new Callback<List<CheckListModel>>() {
+            @Override
+            public void onResponse(Call<List<CheckListModel>> call, Response<List<CheckListModel>> response) {
+
+                if(response.isSuccessful()){
+                    List<CheckListModel> checkListModels = response.body();
+
+                    for (CheckListModel object: checkListModels) {
+                        Event tempEvent;
+                        tempEvent = new Event(
+                                PM_CHECK_LIST_DONE, object.getId()+"", object.isMaintenanceDone()+""
+                        );
+                        tempEvent.setUpdateEventBodyKey(PM_Step_ONE);
+                        tempEvent.setEvent_id(PM_CHECK_LIST_DONE + object.getId());
+                        tempEvent.setAlreadyUploaded(YES);
+                        dbHelper.eventDAO().insert(tempEvent);
+                        dbHelper.eventDAO().insert(tempEvent);
+
+                        tempEvent = new Event(
+                                PM_CHECK_LIST_REMARK, object.getId()+"", object.getMaintenanceRemark()+""
+                        );
+                        tempEvent.setUpdateEventBodyKey(PM_Step_ONE);
+                        tempEvent.setEvent_id(PM_CHECK_LIST_REMARK + object.getId());
+                        tempEvent.setAlreadyUploaded(YES);
+                        dbHelper.eventDAO().insert(tempEvent);
+                        //After DB store, go to PM activity
+
+                        dbHelper.checkListDescDAO().insert(
+                                new CheckListDescModel(object.getId()+"", object.getCheckDescription())
+                        );
+                        Log.i("EVENTDAO", "onResponse: " + PM_CHECK_LIST_DONE + object.getId());
+                    }
+                    Intent intent = new Intent(LoadingActivity.this, PMActivity.class);
+                    intent.putExtra("start_time", getIntent().getStringExtra("start_time"));
+                    intent.putExtra("object", responseBody);
+                    startActivity(intent);
+                    finish();
+                } else{
+                    ResponseBody errorReturnBody = response.errorBody();
+                    try {
+                        Log.e("UPLOAD_ERROR", "onResponse: " + errorReturnBody.string());
+                        Toast.makeText(getApplicationContext(), "response " + response.code() + msoId,  Toast.LENGTH_LONG).show();
+                      //  ((CMActivity)getActivity()).hideProgressBar();
+                    } catch (IOException e) {
+
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<CheckListModel>> call, Throwable t) {
+
+            }
+        });
+    }
+
     private void getServieOrderbyId(String id) {
         Call<PMServiceInfoDetailModel> call = apiInterface.getPMServiceOrderByID("Bearer " + mSharePrefrence.getToken() , id);
         call.enqueue(new Callback<PMServiceInfoDetailModel>() {
@@ -123,13 +207,26 @@ public class LoadingActivity extends AppCompatActivity {
                     Intent intent;
                     if (id.startsWith("CM")) {
                         intent = new Intent(LoadingActivity.this, CMActivity.class);
+                        intent.putExtra("start_time", getIntent().getStringExtra("start_time"));
+                        intent.putExtra("object", response.body());
+                        startActivity(intent);
+                        finish();
                     } else {
-                        intent = new Intent(LoadingActivity.this, PMActivity.class);
+                        //first get relevant PM Checklist.........
+                        if (dbHelper.eventDAO().getNumberOfEventsByUpdateBodyKey(PM_Step_ONE) > 0) {
+                            Log.i("logloglog", "Directly go to PM" + dbHelper.eventDAO().getNumberEventsToUpload(PM_Step_ONE));
+                            intent = new Intent(LoadingActivity.this, PMActivity.class);
+                            intent.putExtra("start_time", getIntent().getStringExtra("start_time"));
+                            intent.putExtra("object", response.body());
+                            startActivity(intent);
+                            finish();
+                        } else {
+                            Log.i("logloglog", "can't go to PM" + dbHelper.eventDAO().getNumberEventsToUpload(PM_Step_ONE));
+
+                            getPMCheckList(response.body());
+                        }
                     }
-                    intent.putExtra("start_time", getIntent().getStringExtra("start_time"));
-                    intent.putExtra("object", response.body());
-                    startActivity(intent);
-                    finish();
+
                 } else {
                     Log.i("SERVICEORDER", response.code()+"");
                 }

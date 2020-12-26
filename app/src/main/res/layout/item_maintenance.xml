@@ -103,6 +103,32 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
                 <TextView
+                    android:text="Schedule Type"
+                    android:textSize="@dimen/txt_size_small"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:id="@+id/tvSchedule"
+                    android:text="Rochar Rd Canter Ader Lly"
+                    android:textColor="@color/colorBlack"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_marginLeft="@dimen/margin_small"
+                android:layout_marginBottom="@dimen/margin_small"
+                android:layout_weight="5"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <TextView
                     android:text="Location:"
                     android:textSize="@dimen/txt_size_small"
                     android:layout_width="wrap_content"
@@ -116,6 +142,9 @@
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
+
+
+
 
     <TextView
         android:id="@+id/tvTime"

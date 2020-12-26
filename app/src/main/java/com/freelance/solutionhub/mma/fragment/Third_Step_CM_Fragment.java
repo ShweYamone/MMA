@@ -28,6 +28,7 @@ import com.freelance.solutionhub.mma.DB.InitializeDatabase;
 import com.freelance.solutionhub.mma.R;
 import com.freelance.solutionhub.mma.activity.CMActivity;
 import com.freelance.solutionhub.mma.activity.CMCompletionActivity;
+import com.freelance.solutionhub.mma.activity.NFCReadingActivity;
 import com.freelance.solutionhub.mma.activity.PMCompletionActivity;
 import com.freelance.solutionhub.mma.model.ErrorReturnBody;
 import com.freelance.solutionhub.mma.model.Event;
@@ -188,6 +189,9 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
                     dialogBody = "You have unsaved changes in Step and Two.";
                     showDialog();
                 } else {
+                    date = new Date();
+                    Timestamp timestamp = new Timestamp(date.getTime());
+                    actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
                     UpdateEventBody updateEventBody = new UpdateEventBody(
                             mSharePreferenceHelper.getUserName(),
                             mSharePreferenceHelper.getUserId(),
@@ -202,9 +206,6 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
                     dbHelper.updateEventBodyDAO().insert(updateEventBody);
 
                     if(network.isNetworkAvailable()) {
-                        date = new Date();
-                        Timestamp timestamp = new Timestamp(date.getTime());
-                        actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
 
 
                         Call<VerificationReturnBody> call = apiInterface.verifyWorks("Bearer " + mSharePreferenceHelper.getToken(), "CM20205B6923C2");
@@ -573,17 +574,22 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
     }
 
     private void updateSTEP_Three() {
-      //  completeWork();
+       // completeWork();
         /** STEP_THREE EVENT UPDATE */
+        UpdateEventBody updateEventBody = dbHelper.updateEventBodyDAO().getUpdateEventBodyByID(CM_Step_THREE);
+        date = new Date();
+        Timestamp timestamp = new Timestamp(date.getTime());
+        actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
+        updateEventBody.setDate(actualDateTime);
+
         Call<ReturnStatus> call = apiInterface.updateStatusEvent("Bearer " + mSharePreferenceHelper.getToken(),
-                dbHelper.updateEventBodyDAO().getUpdateEventBodyByID(CM_Step_THREE));
+                updateEventBody);
         call.enqueue(new Callback<ReturnStatus>() {
             @Override
             public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
                 if (response.isSuccessful()) {
                     Toast.makeText(getContext(),response.body().getStatus() + " Step Three Event Uploaded.",Toast.LENGTH_SHORT).show();
                     ((CMActivity)getActivity()).hideProgressBar();
-                    deleteWorkingData();
                     completeWork();
                 } else {
                     Toast.makeText(getContext(), "response " + response.code(), Toast.LENGTH_LONG).show();
@@ -608,16 +614,12 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
         });
     }
 
-    private void deleteWorkingData() {
-        dbHelper.updateEventBodyDAO().deleteAll();
-        dbHelper.uploadPhotoDAO().deleteAll();
-        dbHelper.eventDAO().deleteAll();
-    }
-
     private void completeWork() {
-        Intent intent = new Intent(this.getContext(), CMCompletionActivity.class);
+        Intent intent = new Intent(this.getContext(), NFCReadingActivity.class);
+        intent.putExtra("id", pmServiceInfoDetailModel.getId());
+        intent.putExtra("TAG_OUT", 1);
+        intent.putExtra("JOB_DONE", 1);
         intent.putExtra("start_time", getArguments().getString("start_time"));
-        intent.putExtra("end_time", actualDateTime);
         intent.putExtra("acknowledge_time", pmServiceInfoDetailModel.getAcknowledgementDate());
         intent.putExtra("remarks", remarks.getText().toString()+"");
         startActivity(intent);

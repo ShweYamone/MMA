@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.freelance.solutionhub.mma.DB.InitializeDatabase;
 import com.freelance.solutionhub.mma.R;
 import com.freelance.solutionhub.mma.util.SharePreferenceHelper;
 
@@ -39,6 +40,7 @@ public class PMCompletionActivity extends AppCompatActivity implements View.OnCl
     private boolean startHandler = true;
     private boolean lockScreen = false;
     private SharePreferenceHelper sharePreferenceHelper;
+    private InitializeDatabase dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +48,7 @@ public class PMCompletionActivity extends AppCompatActivity implements View.OnCl
         setContentView(R.layout.activity_pmcompletion);
         ButterKnife.bind(this);
         sharePreferenceHelper = new SharePreferenceHelper(this);
+        dbHelper = InitializeDatabase.getInstance(this);
         sharePreferenceHelper.setLock(false);
 
         tvStartDateTime.setText(getIntent().getStringExtra("start_time"));
@@ -116,6 +119,7 @@ public class PMCompletionActivity extends AppCompatActivity implements View.OnCl
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btnClose:
+                deleteWorkingData();
                 Intent intent = new Intent(PMCompletionActivity.this, MainActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
@@ -126,5 +130,11 @@ public class PMCompletionActivity extends AppCompatActivity implements View.OnCl
     public void onBackPressed() {
         super.onBackPressed();
         sharePreferenceHelper.setLock(false);
+    }
+
+    private void deleteWorkingData() {
+        dbHelper.updateEventBodyDAO().deleteAll();
+        dbHelper.uploadPhotoDAO().deleteAll();
+        dbHelper.eventDAO().deleteAll();
     }
 }

@@ -100,16 +100,6 @@ public class CMActivity extends AppCompatActivity {
         second_step_cm_fragment.setArguments(bundle);
         third_step_cm_fragment.setArguments(bundle);
 
-        //get current working msoId
-        if (!pmServiceInfoDetailModel.getId().equals(mSharedPreference.getCurrentMSOID())) {
-
-            dbHelper.updateEventBodyDAO().deleteAll();
-            dbHelper.eventDAO().deleteAll();
-            dbHelper.uploadPhotoDAO().deleteAll();
-            mSharedPreference.setCurrentMSOID(pmServiceInfoDetailModel.getId());
-        }
-
-
         /**
          after certain amount of user inactivity, asks for passcode
          */

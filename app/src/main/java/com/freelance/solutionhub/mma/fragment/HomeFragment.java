@@ -139,6 +139,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
         mSharePreference = new SharePreferenceHelper(getContext());
         mSharePreference.userClickCMStepOne(false);
         mSharePreference.userClickCMStepTwo(false);
+        mSharePreference.userClickPMStepOne(false);
         apiInterface = ApiClient.getClient(getContext());
         network = new Network(getContext());
         dbHelper = InitializeDatabase.getInstance(getContext());
@@ -422,7 +423,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
         list = new String[]{ALL, WSCH, INPRG};
         textValueList.add(WSCH); textValueList.add(INPRG);
     }
-
 
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {

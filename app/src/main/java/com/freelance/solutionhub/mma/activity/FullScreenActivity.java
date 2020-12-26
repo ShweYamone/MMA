@@ -55,6 +55,7 @@ public class FullScreenActivity extends AppCompatActivity {
 
         imgClose.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                sharePreferenceHelper.setLock(false);
                 finish();
             }
         });
