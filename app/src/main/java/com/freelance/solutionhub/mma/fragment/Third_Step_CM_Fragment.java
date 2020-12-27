@@ -576,8 +576,8 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
     }
 
     private void updateSTEP_Three() {
-        completeWork();
-        /** STEP_THREE EVENT UPDATE
+       // completeWork();
+        /** STEP_THREE EVENT UPDATE*/
         UpdateEventBody updateEventBody = dbHelper.updateEventBodyDAO().getUpdateEventBodyByID(CM_Step_THREE);
         date = new Date();
         Timestamp timestamp = new Timestamp(date.getTime());
@@ -613,7 +613,7 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
                 ((CMActivity)getActivity()).hideProgressBar();
                 Log.e("UPLOAD_ERROR", "onResponse: " + t.getMessage());
             }
-        });*/
+        });
     }
 
     private void completeWork() {

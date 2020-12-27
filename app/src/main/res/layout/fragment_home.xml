@@ -277,7 +277,7 @@
                     android:background="@drawable/bg_middle"
                     android:button="@android:color/transparent"
                     android:gravity="center"
-                    android:text="WCSH"
+                    android:text="WSCH"
                     android:paddingTop="@dimen/padding_4"
                     android:paddingBottom="@dimen/padding_4"
                     android:textSize="@dimen/txt_size_large" />

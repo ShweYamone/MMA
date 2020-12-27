@@ -27,6 +27,7 @@ import com.freelance.solutionhub.mma.fragment.First_Step_CM_Fragment;
 import com.freelance.solutionhub.mma.fragment.Second_Step_CM_Fragment;
 import com.freelance.solutionhub.mma.fragment.Third_Step_CM_Fragment;
 import com.freelance.solutionhub.mma.model.PMServiceInfoDetailModel;
+import com.freelance.solutionhub.mma.model.ThirdPartyModel;
 import com.freelance.solutionhub.mma.util.AppConstant;
 import com.freelance.solutionhub.mma.util.SharePreferenceHelper;
 import com.google.android.material.tabs.TabLayout;
@@ -95,6 +96,21 @@ public class CMActivity extends AppCompatActivity {
         Bundle bundle = new Bundle();
         bundle.putSerializable("object", pmServiceInfoDetailModel);
         bundle.putString("start_time", getIntent().getStringExtra("start_time"));
+        if (getIntent().hasExtra("telco"))
+            bundle.putSerializable("telco" , getIntent().getSerializableExtra("telco"));
+        else
+            bundle.putSerializable("telco", new ThirdPartyModel());
+
+        if (getIntent().hasExtra("powerGrid"))
+            bundle.putSerializable("powerGrid" , getIntent().getSerializableExtra("powerGrid"));
+        else
+            bundle.putSerializable("powerGrid", new ThirdPartyModel());
+
+        if (getIntent().hasExtra("other"))
+            bundle.putSerializable("other" , getIntent().getSerializableExtra("other"));
+        else
+            bundle.putSerializable("other", new ThirdPartyModel());
+
 
         first_step_cm_fragment.setArguments(bundle);
         second_step_cm_fragment.setArguments(bundle);
