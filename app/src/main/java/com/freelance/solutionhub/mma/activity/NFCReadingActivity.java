@@ -131,10 +131,7 @@ public class NFCReadingActivity extends AppCompatActivity {
                 finish();
             }
         });
-
-
         ////////////////////////////////
-
         if (getIntent().hasExtra("TAG_OUT")) {
             tag = true;
             Log.i("TAG_OUT",getIntent().getIntExtra("TAG_OUT",0)+"");
@@ -143,20 +140,17 @@ public class NFCReadingActivity extends AppCompatActivity {
             tag = false;
             events.add(new Event("TAG_IN", "tagIn", "tagIn"));
         }
-
         if (getIntent().hasExtra("JOB_DONE")) {
             toPage = "COMPLETION";
         }
-
-
-        /****To Fix when NFC can read*********/
-        /*********************/
-        /////////////////////////////////////
         if (serviceOrderId.startsWith(pm))
             step = PM_Step_TWO;
         else
             step = CM_Step_THREE;
 
+        /****To Fix when NFC can read*********/
+        /*********************/
+        /////////////////////////////////////
         perFormTagEvent();
 
         if(nfcAdapter == null){
@@ -184,23 +178,12 @@ public class NFCReadingActivity extends AppCompatActivity {
             public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
                 if (response.isSuccessful()) {
                     Toast.makeText(getApplicationContext(), "LOCAL_TAG_OUT", Toast.LENGTH_SHORT).show();
-                    Intent intent;
                     if (serviceOrderId.startsWith(pm)) {
-                        intent = new Intent(NFCReadingActivity.this, PMCompletionActivity.class);
+                        performFinalStepEvent(pm);
 
-                        intent.putExtra("schedule_date", getIntent().getStringExtra("schedule_date"));
-                        intent.putExtra("schedule_type", getIntent().getStringExtra("schedule_type"));
-                        intent.putExtra("start_time", getIntent().getStringExtra("start_time"));
-                        intent.putExtra("end_time", currentDateTime);
                     } else {
-                        intent = new Intent(NFCReadingActivity.this, CMCompletionActivity.class);
-                        intent.putExtra("location", getIntent().getStringExtra("location"));
+                        performFinalStepEvent(cm);
                     }
-                    intent.putExtra("id", serviceOrderId);
-                    intent.putExtra("panelId", getIntent().getStringExtra("panelId"));
-                    intent.putExtra("remarks", getIntent().getStringExtra("remarks")+"");
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(intent);
                 }
                 else {
 
