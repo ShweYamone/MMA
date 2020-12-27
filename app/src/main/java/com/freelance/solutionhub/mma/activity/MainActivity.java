@@ -98,6 +98,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private Channel channel;
     private WebSocketUtils webSocketUtils;
     private Menu menu;
+    private int notiCount = 1;
     private RelativeLayout notificationRelativeLayout;
     private TextView notificationCount;
 
@@ -230,7 +231,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         onMessageNoti("An anonymous user entered","");
                     }
                     else {
-                        onMessageNoti(envelope.getPayload().get("mso_id")+"","MSO is created.");
+                        onMessageNoti(envelope.getPayload().get("mso_id")+"","You received an MSO alert!");
                     }
 
                 }
@@ -247,7 +248,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         onMessageNoti("An anonymous user entered","");
                     }
                     else {
-                        onMessageNoti(envelope.getPayload().get("mso_id")+"","MSO is rejected.");
+                        onMessageNoti(envelope.getPayload().get("mso_id")+"","You received an MSO alert!");
                     }
                 }
             });
@@ -304,17 +305,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
        // PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID);
-        notificationBuilder.setAutoCancel(true)
-                .setDefaults(Notification.DEFAULT_ALL)
+        notificationBuilder
+                .setDefaults(Notification.BADGE_ICON_SMALL)
                 .setWhen(System.currentTimeMillis())
-                .setSmallIcon(R.mipmap.ic_launcher)
+                .setSmallIcon(R.drawable.mma_icon)
                 .setContentTitle(title)
                 .setContentText(type)
                 .setNumber(count)
+                .setAutoCancel(true)
                 .setStyle(new NotificationCompat.BigTextStyle()
-                        .bigText(type))
-                .setContentInfo("Information");
-        notificationManager.notify(1, notificationBuilder.build());
+                        .bigText(type));
+        notificationManager.notify(notiCount++, notificationBuilder.build());
     }
 
 
