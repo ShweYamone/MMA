@@ -256,7 +256,7 @@
                 <RadioButton
                     android:id="@+id/rbPMAll"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="32dp"
                     android:layout_weight="1"
                     android:background="@drawable/bg_left"
                     android:textColor="@color/colorWhite"
@@ -272,7 +272,7 @@
                 <RadioButton
                     android:id="@+id/rbPMWCSH"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="32dp"
                     android:layout_weight="1"
                     android:background="@drawable/bg_middle"
                     android:button="@android:color/transparent"
@@ -285,7 +285,7 @@
                 <RadioButton
                     android:id="@+id/rbPMINPRG"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="32dp"
                     android:layout_weight="1"
                     android:background="@drawable/bg_right"
                     android:button="@android:color/transparent"
@@ -363,7 +363,7 @@
             </RadioGroup>
 
             <RadioGroup
-                android:id="@+id/froPM"
+                android:id="@+id/rgSchedulType"
                 android:visibility="visible"
                 android:layout_marginTop="@dimen/margin_normal"
                 android:layout_marginLeft="@dimen/margin_normal"
@@ -373,6 +373,7 @@
                 android:orientation="horizontal" >
 
                 <RadioButton
+                    android:id="@+id/rbScheduleAll"
                     android:layout_width="0dp"
                     android:layout_height="32dp"
                     android:layout_weight="1"
@@ -388,6 +389,7 @@
 
 
                 <RadioButton
+                    android:id="@+id/rbScheduleWeek"
                     android:layout_width="0dp"
                     android:layout_height="32dp"
                     android:layout_weight="1"
@@ -400,6 +402,7 @@
                     android:textSize="@dimen/txt_size_large" />
 
                 <RadioButton
+                    android:id="@+id/rbScheduleMonth"
                     android:layout_width="0dp"
                     android:layout_height="32dp"
                     android:layout_weight="1"
@@ -412,6 +415,7 @@
                     android:textSize="@dimen/txt_size_large" />
 
                 <RadioButton
+                    android:id="@+id/rbScheduleQuarter"
                     android:layout_width="0dp"
                     android:layout_height="32dp"
                     android:layout_weight="1"
@@ -424,6 +428,7 @@
                     android:textSize="@dimen/txt_size_large" />
 
                 <RadioButton
+                    android:id="@+id/rbScheduleYear"
                     android:layout_width="0dp"
                     android:layout_height="32dp"
                     android:layout_weight="1"

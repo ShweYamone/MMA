@@ -34,6 +34,7 @@ import com.freelance.solutionhub.mma.common.SmartScrollListener;
 import com.freelance.solutionhub.mma.delegate.HomeFragmentCallback;
 import com.freelance.solutionhub.mma.model.Data;
 import com.freelance.solutionhub.mma.model.FaultMappingJSONString;
+import com.freelance.solutionhub.mma.model.Filter;
 import com.freelance.solutionhub.mma.model.FilterModelBody;
 import com.freelance.solutionhub.mma.model.ServiceInfoModel;
 import com.freelance.solutionhub.mma.model.PMServiceListModel;
@@ -64,8 +65,12 @@ import static com.freelance.solutionhub.mma.util.AppConstant.ALL;
 import static com.freelance.solutionhub.mma.util.AppConstant.APPR;
 import static com.freelance.solutionhub.mma.util.AppConstant.CM;
 import static com.freelance.solutionhub.mma.util.AppConstant.INPRG;
+import static com.freelance.solutionhub.mma.util.AppConstant.MONTHLY;
 import static com.freelance.solutionhub.mma.util.AppConstant.PM;
+import static com.freelance.solutionhub.mma.util.AppConstant.QUARTERLY;
+import static com.freelance.solutionhub.mma.util.AppConstant.WEEKLY;
 import static com.freelance.solutionhub.mma.util.AppConstant.WSCH;
+import static com.freelance.solutionhub.mma.util.AppConstant.YEARLY;
 
 public class HomeFragment extends Fragment implements RadioGroup.OnCheckedChangeListener, View.OnClickListener, HomeFragmentCallback {
 
@@ -120,9 +125,6 @@ public class HomeFragment extends Fragment implements RadioGroup.OnCheckedChange
     @BindView(R.id.rgCM)
     RadioGroup rgCM;
 
-    @BindView(R.id.froPM)
-    RadioGroup forPM;
-
     @BindView(R.id.rbPMAll)
     RadioButton rbPMAll;
 
@@ -147,6 +149,24 @@ public class HomeFragment extends Fragment implements RadioGroup.OnCheckedChange
     @BindView(R.id.tvRecord)
     TextView tvRecord;
 
+    @BindView(R.id.rgSchedulType)
+    RadioGroup rgSchedultType;
+
+    @BindView(R.id.rbScheduleAll)
+    RadioButton rbScheduleAll;
+
+    @BindView(R.id.rbScheduleWeek)
+    RadioButton rbScheduleWeek;
+
+    @BindView(R.id.rbScheduleMonth)
+    RadioButton rbScheduleMonth;
+
+    @BindView(R.id.rbScheduleQuarter)
+    RadioButton rbScheduleQuarter;
+
+    @BindView(R.id.rbScheduleYear)
+    RadioButton rbScheduleYear;
+
     private String[] list;
     private ArrayAdapter spinnerArrAdaper;
     private ServiceOrderAdapter mAdapter;
@@ -168,6 +188,7 @@ public class HomeFragment extends Fragment implements RadioGroup.OnCheckedChange
     List<ServiceInfoModel> serviceInfoModels;
     List<String> textValueList = new ArrayList<>();
     private int totalRecords = 0;
+    private String scheduleType = "";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -193,7 +214,7 @@ public class HomeFragment extends Fragment implements RadioGroup.OnCheckedChange
             public void onListEndReach() {
                 page++;
                 if (page <= totalPages)
-                    getServiceOrders();
+                    getServiceOrders(scheduleType);
             }
         });
 
@@ -371,8 +392,11 @@ public class HomeFragment extends Fragment implements RadioGroup.OnCheckedChange
     }
 
 
-    private void getServiceOrders() {
-        filterModelBody = FilterModelBody.createFilterModel(filterExpression, enumValue, textValueList, page);
+    private void getServiceOrders(String scheduleType) {
+        if (scheduleType.equals(""))
+            filterModelBody = FilterModelBody.createFilterModel(filterExpression, enumValue, textValueList, page);
+        else
+            filterModelBody = FilterModelBody.createFilterModelWithScheduleType(scheduleType, filterExpression, enumValue, textValueList, page);
 
         Call<PMServiceListModel> call = apiInterface.getPMServiceOrders("Bearer " + mSharePreference.getToken(), filterModelBody);
 
@@ -436,11 +460,15 @@ public class HomeFragment extends Fragment implements RadioGroup.OnCheckedChange
         }
 
         setRadioButtonColorToBlack();
+        setScheduleRadioButtonColorToBlack();
         //textValue = JOBDONE;
         rgCM.setOnCheckedChangeListener(this);
         rgPM.setOnCheckedChangeListener(this);
+        rgSchedultType.setOnCheckedChangeListener(this);
         rbCMAll.setTextColor(getResources().getColor(R.color.colorWhite));
         rbPMAll.setTextColor(getResources().getColor(R.color.colorWhite));
+        rbScheduleAll.setChecked(true);
+        rbScheduleAll.setTextColor(getResources().getColor(R.color.colorWhite));
 
 
     }
@@ -460,8 +488,9 @@ public class HomeFragment extends Fragment implements RadioGroup.OnCheckedChange
         textValueList.add(INPRG); textValueList.add(APPR); textValueList.add(ACK);
         rbCMAll.setChecked(true);
         rbCMAll.setTextColor(getResources().getColor(R.color.colorWhite));
-        forPM.setVisibility(View.GONE);
-        getServiceOrders();
+        rgSchedultType.setVisibility(View.GONE);
+        scheduleType = "";
+        getServiceOrders(scheduleType);
     }
 
     private void showPreventiveMaintenance() {
@@ -479,8 +508,9 @@ public class HomeFragment extends Fragment implements RadioGroup.OnCheckedChange
         textValueList.add(WSCH); textValueList.add(INPRG);
         rbPMAll.setChecked(true);
         rbPMAll.setTextColor(getResources().getColor(R.color.colorWhite));
-        forPM.setVisibility(View.VISIBLE);
-        getServiceOrders();
+        rgSchedultType.setVisibility(View.VISIBLE);
+        scheduleType = "";
+        getServiceOrders(scheduleType);
     }
 
     private void setRadioButtonColorToBlack() {
@@ -493,13 +523,23 @@ public class HomeFragment extends Fragment implements RadioGroup.OnCheckedChange
         rbPMINPRG.setTextColor(getResources().getColor(R.color.colorBlack));
     }
 
+    private void setScheduleRadioButtonColorToBlack() {
+        rbScheduleAll.setTextColor(getResources().getColor(R.color.colorBlack));
+        rbScheduleWeek.setTextColor(getResources().getColor(R.color.colorBlack));
+        rbScheduleMonth.setTextColor(getResources().getColor(R.color.colorBlack));
+        rbScheduleQuarter.setTextColor(getResources().getColor(R.color.colorBlack));
+        rbScheduleYear.setTextColor(getResources().getColor(R.color.colorBlack));
+    }
+
 
     @Override
     public void onCheckedChanged(RadioGroup radioGroup, int i) {
         page = 1;
         Log.i("CheckChanged", "onCheckedChanged: " + radioGroup.getId() + "int i = " + i);
-        setRadioButtonColorToBlack();
+
         if (radioGroup.getId() == R.id.rgCM) {
+            setRadioButtonColorToBlack();
+            scheduleType = "";
             switch (i) {
                 case R.id.rbCMAll:
                     filterExpression = "in";
@@ -527,7 +567,8 @@ public class HomeFragment extends Fragment implements RadioGroup.OnCheckedChange
                     break;
             }
 
-        } else {
+        } else if (radioGroup.getId() == R.id.rgPM){
+            setRadioButtonColorToBlack();
             switch (i) {
                 case R.id.rbPMAll:
                     filterExpression = "in";
@@ -549,9 +590,30 @@ public class HomeFragment extends Fragment implements RadioGroup.OnCheckedChange
                     break;
             }
         }
+        else {
+            setScheduleRadioButtonColorToBlack();
+            switch (i) {
+                case R.id.rbScheduleAll:
+                    scheduleType = "";
+                    rbScheduleAll.setTextColor(getResources().getColor(R.color.colorWhite));
+                    break;
+                case R.id.rbScheduleWeek: scheduleType = WEEKLY;
+                    rbScheduleWeek.setTextColor(getResources().getColor(R.color.colorWhite));
+                    break;
+                case R.id.rbScheduleMonth: scheduleType = MONTHLY;
+                    rbScheduleMonth.setTextColor(getResources().getColor(R.color.colorWhite));
+                    break;
+                case R.id.rbScheduleQuarter: scheduleType = QUARTERLY;
+                    rbScheduleQuarter.setTextColor(getResources().getColor(R.color.colorWhite));
+                    break;
+                case R.id.rbScheduleYear: scheduleType = YEARLY;
+                    rbScheduleYear.setTextColor(getResources().getColor(R.color.colorWhite));
+                    break;
+            }
+        }
         serviceInfoModelList.clear();
         mAdapter.notifyDataSetChanged();
-        getServiceOrders();
+        getServiceOrders(scheduleType);
     }
 
 
@@ -562,6 +624,6 @@ public class HomeFragment extends Fragment implements RadioGroup.OnCheckedChange
         serviceInfoModelList.clear();
         mAdapter.notifyDataSetChanged();
         page = 1;
-        getServiceOrders();
+        getServiceOrders(scheduleType);
     }
 }
