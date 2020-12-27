@@ -150,7 +150,7 @@ public class NFCReadingActivity extends AppCompatActivity {
         /*********************/
         /////////////////////////////////////
 
-      //  perFormTagEvent();
+        perFormTagEvent();
         if(nfcAdapter == null){
             Toast.makeText(this, "No NFC", Toast.LENGTH_SHORT).show();
             //finish();
@@ -324,7 +324,7 @@ public class NFCReadingActivity extends AppCompatActivity {
         boolean isScreenOn = pm.isInteractive();
         if (isScreenOn)
             stopHandler();
-    //    mSharedPreference.setLock(true);
+        mSharedPreference.setLock(true);
     }
 
     @Override

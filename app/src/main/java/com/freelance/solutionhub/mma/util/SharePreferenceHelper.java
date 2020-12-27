@@ -132,6 +132,16 @@ public class SharePreferenceHelper {
 		editor.remove(TOKEN);
 		editor.remove(USER_DISPLAY_NAME_KEY);
 		editor.remove(USER_ID);
+		editor.remove(CMStepOneClick);
+		editor.remove(CMStepTwoClick);
+		editor.remove(PMStepOneClick);
+		editor.remove(CurrentMSOID);
+
+		/*
+		* sharePreferenceHelper.userClickPMStepOne(false);
+        sharePreferenceHelper.userClickCMStepOne(false);
+        sharePreferenceHelper.userClickCMStepTwo(false);
+        sharePreferenceHelper.setCurrentMSOID("");*/
 		editor.commit();
 	}
 

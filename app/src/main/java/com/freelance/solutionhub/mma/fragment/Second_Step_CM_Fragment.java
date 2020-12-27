@@ -105,6 +105,7 @@ import static com.freelance.solutionhub.mma.util.AppConstant.REPORTED_PROBLEM;
 import static com.freelance.solutionhub.mma.util.AppConstant.SERVICE_ORDER_UPDATE;
 import static com.freelance.solutionhub.mma.util.AppConstant.THIRD_PARTY_COMMENT_UPDATE;
 import static com.freelance.solutionhub.mma.util.AppConstant.YES;
+import static com.freelance.solutionhub.mma.util.AppConstant.pm;
 
 public class Second_Step_CM_Fragment extends Fragment implements View.OnClickListener{
 
@@ -349,10 +350,10 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
         });
 
         displayMaintenanceWorkInformation();
-        if (dbHelper.updateEventBodyDAO().getNumberOfUpdateEventsById(CM_Step_TWO) > 0) {
-            displaySavedData();
-            displaySavedImage();
-        }
+
+        displayData();
+        displayImage();
+
 
         ivAddThirdPary.setOnClickListener(this);
         ivRequiredPartPlacement.setOnClickListener(this);
@@ -374,16 +375,42 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
         return view;
     }
 
-    private void displaySavedData() {
+    private void displayData() {
         spinnerCauseAutoSelect = true; spinnerRemedyAutoSelect = true;
-        preActualProblemCode = dbHelper.eventDAO().getEventValue(SERVICE_ORDER_UPDATE, ACTUAL_PROBLEM);
-        preCauseCode = dbHelper.eventDAO().getEventValue(SERVICE_ORDER_UPDATE, CAUSE);
-        preRemedyCode = dbHelper.eventDAO().getEventValue(SERVICE_ORDER_UPDATE, REMEDY);
-        preScan1Result = dbHelper.eventDAO().getEventValue(PART_REPLACEMENT_UPDATE, FAULT_PART_CODE);
-        preScan2Result = dbHelper.eventDAO().getEventValue(PART_REPLACEMENT_UPDATE, REPLACEMENT_PART_CODE);
+        if (dbHelper.eventDAO().getEventValueCount(SERVICE_ORDER_UPDATE, ACTUAL_PROBLEM) > 0)
+            preActualProblemCode = dbHelper.eventDAO().getEventValue(SERVICE_ORDER_UPDATE, ACTUAL_PROBLEM);
+        else if (pmServiceInfoModel.getActualProblem() != null)
+            preActualProblemCode = pmServiceInfoModel.getActualProblem();
+
+        if (dbHelper.eventDAO().getEventValueCount(SERVICE_ORDER_UPDATE, CAUSE) > 0)
+            preCauseCode = dbHelper.eventDAO().getEventValue(SERVICE_ORDER_UPDATE, CAUSE);
+        else if (pmServiceInfoModel.getCause() != null)
+            preCauseCode = pmServiceInfoModel.getCause();
+
+        if (dbHelper.eventDAO().getEventValueCount(SERVICE_ORDER_UPDATE, REMEDY) > 0)
+            preRemedyCode = dbHelper.eventDAO().getEventValue(SERVICE_ORDER_UPDATE, REMEDY);
+        else if (pmServiceInfoModel.getRemedy() != null)
+            preRemedyCode = pmServiceInfoModel.getRemedy();
+
+        if (dbHelper.eventDAO().getEventValueCount(PART_REPLACEMENT_UPDATE, FAULT_PART_CODE) > 0)
+            preScan1Result = dbHelper.eventDAO().getEventValue(PART_REPLACEMENT_UPDATE, FAULT_PART_CODE);
+        else if (pmServiceInfoModel.isPartReplacement()) {
+            if (pmServiceInfoModel.getPartReplacement().getFaultPartCode() != null) {
+                preScan1Result = pmServiceInfoModel.getPartReplacement().getFaultPartCode()+"";
+            }
+        }
+
+        if (dbHelper.eventDAO().getEventValueCount(PART_REPLACEMENT_UPDATE, REPLACEMENT_PART_CODE) > 0)
+            preScan2Result = dbHelper.eventDAO().getEventValue(PART_REPLACEMENT_UPDATE, REPLACEMENT_PART_CODE);
+        else if (pmServiceInfoModel.isPartReplacement()) {
+            if (pmServiceInfoModel.getPartReplacement().getReplacementPartCode() != null)
+                preScan2Result = pmServiceInfoModel.getPartReplacement().getReplacementPartCode()+"";
+        }
 
         if (dbHelper.eventDAO().getEventValueCount(THIRD_PARTY_COMMENT_UPDATE, COMMENT) > 0)
             preThirdPartyComment = dbHelper.eventDAO().getEventValue(THIRD_PARTY_COMMENT_UPDATE, COMMENT);
+        else if (pmServiceInfoModel.getThirdPartyFaultDescription() != null)
+            preThirdPartyComment = pmServiceInfoModel.getThirdPartyFaultDescription();
 
 
         spinnerActualProbleCode.setSelection(actualProblemCode.indexOf(preActualProblemCode));
@@ -393,7 +420,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
         etThridPartyComment.setText(preThirdPartyComment);
     }
 
-    private void displaySavedImage() {
+    private void displayImage() {
         postModelList.clear();
         // int imaCount = dbHelper.uploadPhotoDAO().getNumberOfPhotosToUpload();
         for (UploadPhotoModel uploadPhotoModel: dbHelper.uploadPhotoDAO().getPhotosToUploadByBucketName(POST_BUCKET_NAME)) {

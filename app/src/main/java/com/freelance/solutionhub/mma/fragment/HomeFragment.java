@@ -120,6 +120,9 @@ public class HomeFragment extends Fragment implements RadioGroup.OnCheckedChange
     @BindView(R.id.rgCM)
     RadioGroup rgCM;
 
+    @BindView(R.id.froPM)
+    RadioGroup forPM;
+
     @BindView(R.id.rbPMAll)
     RadioButton rbPMAll;
 
@@ -141,6 +144,9 @@ public class HomeFragment extends Fragment implements RadioGroup.OnCheckedChange
     @BindView(R.id.rbCMInprg)
     RadioButton rbCMInprg;
 
+    @BindView(R.id.tvRecord)
+    TextView tvRecord;
+
     private String[] list;
     private ArrayAdapter spinnerArrAdaper;
     private ServiceOrderAdapter mAdapter;
@@ -161,6 +167,7 @@ public class HomeFragment extends Fragment implements RadioGroup.OnCheckedChange
     PMServiceListModel pmServiceListModel;
     List<ServiceInfoModel> serviceInfoModels;
     List<String> textValueList = new ArrayList<>();
+    private int totalRecords = 0;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -377,6 +384,10 @@ public class HomeFragment extends Fragment implements RadioGroup.OnCheckedChange
                 if (response.isSuccessful()) {
                     PMServiceListModel pmList = response.body();
                     totalPages = pmList.getTotalPages();
+                    if (page == 1) {
+                        tvRecord.setText("   " + pmList.getTotalElements()+" records   ");
+                    }
+                   // totalRecords = pmList.getNumberOfElements();
                  //   Toast.makeText(getContext(), "totalPages : " + totalPages + ", Current Page:" + page + "->" + pmList.getItems().size(),Toast.LENGTH_SHORT).show();
                     serviceInfoModels = pmList.getItems();
                     serviceInfoModelList.addAll(serviceInfoModels);
@@ -449,6 +460,7 @@ public class HomeFragment extends Fragment implements RadioGroup.OnCheckedChange
         textValueList.add(INPRG); textValueList.add(APPR); textValueList.add(ACK);
         rbCMAll.setChecked(true);
         rbCMAll.setTextColor(getResources().getColor(R.color.colorWhite));
+        forPM.setVisibility(View.GONE);
         getServiceOrders();
     }
 
@@ -467,6 +479,7 @@ public class HomeFragment extends Fragment implements RadioGroup.OnCheckedChange
         textValueList.add(WSCH); textValueList.add(INPRG);
         rbPMAll.setChecked(true);
         rbPMAll.setTextColor(getResources().getColor(R.color.colorWhite));
+        forPM.setVisibility(View.VISIBLE);
         getServiceOrders();
     }
 
