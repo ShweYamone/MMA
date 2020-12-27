@@ -18,7 +18,7 @@
         android:orientation="vertical">
         <TextView
             android:text="Choose Maintenance Service"
-            android:fontFamily="@font/crimson_text_regular"
+            android:textSize="20sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
@@ -39,22 +39,21 @@
                     android:layout_gravity="center"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="3.6"/>
+                    android:layout_weight="3.8"/>
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="7"
+                    android:layout_weight="8"
                     android:orientation="vertical">
                     <TextView
                         android:text="Corrective Maintenance"
-                        android:textSize="@dimen/txt_size_x_large"
+                        android:textSize="16sp"
                         android:textStyle="bold"
                         android:textColor="@color/colorLightBlack"
-                        android:fontFamily="@font/crimson_text_regular"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>
                     <TextView
-                        android:text="maintenace service orders"
+                        android:text="Tap to open CM MSO lists"
                         android:textSize="@dimen/txt_size_small"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>
@@ -64,6 +63,7 @@
                         android:layout_height="wrap_content">
                         <TextView
                             android:text="Total MSO: "
+                            android:textSize="16sp"
                             android:textColor="@color/colorBlack"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"/>
@@ -104,7 +104,7 @@
                     android:layout_gravity="center"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="3.6"/>
+                    android:layout_weight="3.8"/>
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -112,14 +112,13 @@
                     android:orientation="vertical">
                     <TextView
                         android:text="Preventive Maintenance"
-                        android:textSize="@dimen/txt_size_x_large"
+                        android:textSize="16sp"
                         android:textStyle="bold"
                         android:textColor="@color/colorLightBlack"
-                        android:fontFamily="@font/crimson_text_regular"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>
                     <TextView
-                        android:text="maintenance service orders"
+                        android:text="Tap to open PM MSO lists"
                         android:textSize="@dimen/txt_size_small"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>
@@ -129,6 +128,7 @@
                         android:layout_height="wrap_content">
                         <TextView
                             android:text="Total MSO: "
+                            android:textSize="16sp"
                             android:textColor="@color/colorBlack"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"/>
@@ -256,7 +256,7 @@
                 <RadioButton
                     android:id="@+id/rbPMAll"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="32dp"
                     android:layout_weight="1"
                     android:background="@drawable/bg_left"
                     android:textColor="@color/colorWhite"
@@ -272,7 +272,7 @@
                 <RadioButton
                     android:id="@+id/rbPMWCSH"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="32dp"
                     android:layout_weight="1"
                     android:background="@drawable/bg_middle"
                     android:button="@android:color/transparent"
@@ -285,7 +285,7 @@
                 <RadioButton
                     android:id="@+id/rbPMINPRG"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="32dp"
                     android:layout_weight="1"
                     android:background="@drawable/bg_right"
                     android:button="@android:color/transparent"
@@ -363,6 +363,7 @@
             </RadioGroup>
 
             <RadioGroup
+                android:id="@+id/rgSchedulType"
                 android:visibility="visible"
                 android:layout_marginTop="@dimen/margin_normal"
                 android:layout_marginLeft="@dimen/margin_normal"
@@ -372,6 +373,7 @@
                 android:orientation="horizontal" >
 
                 <RadioButton
+                    android:id="@+id/rbScheduleAll"
                     android:layout_width="0dp"
                     android:layout_height="32dp"
                     android:layout_weight="1"
@@ -387,6 +389,7 @@
 
 
                 <RadioButton
+                    android:id="@+id/rbScheduleWeek"
                     android:layout_width="0dp"
                     android:layout_height="32dp"
                     android:layout_weight="1"
@@ -399,6 +402,7 @@
                     android:textSize="@dimen/txt_size_large" />
 
                 <RadioButton
+                    android:id="@+id/rbScheduleMonth"
                     android:layout_width="0dp"
                     android:layout_height="32dp"
                     android:layout_weight="1"
@@ -411,6 +415,7 @@
                     android:textSize="@dimen/txt_size_large" />
 
                 <RadioButton
+                    android:id="@+id/rbScheduleQuarter"
                     android:layout_width="0dp"
                     android:layout_height="32dp"
                     android:layout_weight="1"
@@ -423,6 +428,7 @@
                     android:textSize="@dimen/txt_size_large" />
 
                 <RadioButton
+                    android:id="@+id/rbScheduleYear"
                     android:layout_width="0dp"
                     android:layout_height="32dp"
                     android:layout_weight="1"
@@ -464,13 +470,28 @@
                 </RelativeLayout>
 
             </LinearLayout>
-            <View
+            <RelativeLayout
                 android:layout_marginLeft="@dimen/margin_normal"
                 android:layout_marginRight="@dimen/margin_normal"
                 android:layout_marginTop="@dimen/margin_normal"
+                android:layout_marginBottom="@dimen/margin_small"
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@android:color/darker_gray"/>
+                android:layout_height="wrap_content" >
+                <View
+                    android:layout_centerInParent="true"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@android:color/darker_gray"/>
+                <TextView
+                    android:id="@+id/tvRecord"
+                    android:text="   records   "
+                    android:background="@color/colorWhite"
+                    android:layout_centerInParent="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+            </RelativeLayout>
+
 
             <RelativeLayout
                 android:layout_width="match_parent"

@@ -23,6 +23,7 @@ public class SimChanged extends AppCompatActivity {
         sharePreferenceHelper = new SharePreferenceHelper(this);
         sharePreferenceHelper.logoutSharePreference();
         sharePreferenceHelper.deletePinCode();
+
         dbHelper.checkListDescDAO().deleteAll();
         dbHelper.eventDAO().deleteAll();
         dbHelper.updateEventBodyDAO().deleteAll();

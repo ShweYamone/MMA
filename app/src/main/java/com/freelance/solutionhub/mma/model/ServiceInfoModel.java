@@ -6,77 +6,48 @@ import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import java.io.Serializable;
-@Entity(tableName = "ServiceInfoModel")
+
 public class ServiceInfoModel implements Serializable{
 
-    @PrimaryKey
-    @ColumnInfo
-    @NonNull
     public String id;
-    @ColumnInfo
     public String serviceOrderType;
-    @ColumnInfo
     public String serviceOrderStatus;
-    @ColumnInfo
     public String priorityLevel;
-    @ColumnInfo
     public String panelId;
-    @ColumnInfo
     public String busStopId;
-    @ColumnInfo
     public String busStopLocation;
-    @ColumnInfo
     public String weatherCondition;
-    @ColumnInfo
     public String thirdPartyFault;
-    @ColumnInfo
     public String thirdPartyFaultDescription;
-    @ColumnInfo
     public String reportedProblem;
-    @ColumnInfo
     public String reportedProblemDescription;
-    @ColumnInfo
     public String actualProblem;
-    @ColumnInfo
     public String actualProblemDescription;
-    @ColumnInfo
     public String cause;
-    @ColumnInfo
     public String causeDescription;
-    @ColumnInfo
     public String remedy;
-    @ColumnInfo
     public String remedyDescription;
-    @ColumnInfo
     public String targetResponseDate;
-    @ColumnInfo
     public String targetEndDate;
-    @ColumnInfo
     public String totalResponseTime;
-    @ColumnInfo
     public String totalDownTime;
-    @ColumnInfo
     public String responseTime;
-    @ColumnInfo
     public String resolutionTime;
-    @ColumnInfo
     public String acknowledgementDate;
-    @ColumnInfo
     public String acknowledgedBy;
-    @ColumnInfo
     public String firstResponseDate;
-    @ColumnInfo
     public String creationDate;
-    @ColumnInfo
     public String jobCompletionDate;
-    @ColumnInfo
     public String faultDetectedDate;
-    @ColumnInfo
     public String notificationDate;
-    @ColumnInfo
     public boolean isPartReplacement;
-    @Ignore
     public Object partReplacement;
+
+    public String preventativeMaintenanceServiceTechnician;
+
+    public String parentPreventativeServiceOrderName;
+
+    public String preventativeMaintenanceCheckType;
 
     public String getId() {
         return id;
@@ -340,5 +311,29 @@ public class ServiceInfoModel implements Serializable{
 
     public void setPartReplacement(Object partReplacement) {
         this.partReplacement = partReplacement;
+    }
+
+    public String getPreventativeMaintenanceServiceTechnician() {
+        return preventativeMaintenanceServiceTechnician;
+    }
+
+    public void setPreventativeMaintenanceServiceTechnician(String preventativeMaintenanceServiceTechnician) {
+        this.preventativeMaintenanceServiceTechnician = preventativeMaintenanceServiceTechnician;
+    }
+
+    public String getParentPreventativeServiceOrderName() {
+        return parentPreventativeServiceOrderName;
+    }
+
+    public void setParentPreventativeServiceOrderName(String parentPreventativeServiceOrderName) {
+        this.parentPreventativeServiceOrderName = parentPreventativeServiceOrderName;
+    }
+
+    public String getPreventativeMaintenanceCheckType() {
+        return preventativeMaintenanceCheckType;
+    }
+
+    public void setPreventativeMaintenanceCheckType(String preventativeMaintenanceCheckType) {
+        this.preventativeMaintenanceCheckType = preventativeMaintenanceCheckType;
     }
 }

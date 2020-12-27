@@ -72,7 +72,6 @@ public class LoadingActivity extends AppCompatActivity {
         msoId = getIntent().getStringExtra("id");
         //check current working mso is changed. if, delete
         if (!msoId.equals(mSharePrefrence.getCurrentMSOID())) {
-
             dbHelper.updateEventBodyDAO().deleteAll();
             dbHelper.eventDAO().deleteAll();
             dbHelper.uploadPhotoDAO().deleteAll();

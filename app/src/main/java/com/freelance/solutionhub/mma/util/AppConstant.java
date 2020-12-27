@@ -18,6 +18,11 @@ public class AppConstant {
     public static final String ACK = "ACK";
     public static final String APPR = "APPR";
     public static final String JOBDONE = "JOBDONE";
+    public static final String WEEKLY = "WEEKLY";
+    public static final String MONTHLY = "MONTHLY";
+    public static final String QUARTERLY = "QUARTERLY";
+    public static final String YEARLY = "YEARLY";
+
     public static final long user_inactivity_time = 5 * 60 * 1000; //5 minutes for user inactivity
 
     public static final String THIRD_PARTY_COMMENT_UPDATE = "THIRD_PARTY_COMMENT_UPDATE";

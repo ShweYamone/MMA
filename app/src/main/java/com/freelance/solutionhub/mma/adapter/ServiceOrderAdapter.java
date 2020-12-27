@@ -29,6 +29,7 @@ import static com.freelance.solutionhub.mma.util.AppConstant.APPR;
 import static com.freelance.solutionhub.mma.util.AppConstant.INPRG;
 import static com.freelance.solutionhub.mma.util.AppConstant.WSCH;
 import static com.freelance.solutionhub.mma.util.AppConstant.cm;
+import static com.freelance.solutionhub.mma.util.AppConstant.pm;
 
 public class ServiceOrderAdapter extends RecyclerView.Adapter<ServiceOrderAdapter.MyViewHolder> {
 
@@ -53,11 +54,20 @@ public class ServiceOrderAdapter extends RecyclerView.Adapter<ServiceOrderAdapte
         @BindView(R.id.tv_panel_id)
         TextView tvPanelId;
 
-        @BindView(R.id.tvSchedule)
-        TextView tvSchedule;
+        @BindView(R.id.tvReportedProblem)
+        TextView tvReportedProblem;
+
+        @BindView(R.id.tvPriority)
+        TextView tvPriority;
 
         @BindView(R.id.ivLanding)
         ImageView ivLanding;
+
+        @BindView(R.id.tvProblemorSchedule)
+        TextView tvProblemORSchedule;
+
+        @BindView(R.id.layoutPriority)
+        LinearLayout layoutPriority;
 
         @BindView(R.id.layoutBack)
         LinearLayout layoutBack;
@@ -98,14 +108,25 @@ public class ServiceOrderAdapter extends RecyclerView.Adapter<ServiceOrderAdapte
                 layoutBack.setBackground(mContext.getDrawable(R.drawable.bg_mso_selected_border));
             else
                 layoutBack.setBackground(mContext.getDrawable(R.drawable.bg_mso_border));
+            if (service.getId().startsWith(pm)) {
+                layoutPriority.setVisibility(View.GONE);
+                tvProblemORSchedule.setText("Schedule Type");
+                tvReportedProblem.setText(service.getPreventativeMaintenanceCheckType());
+            } else {
+                layoutPriority.setVisibility(View.VISIBLE);
+                tvProblemORSchedule.setText("Reported Problem");
+                tvReportedProblem.setText(service.getReportedProblemDescription()+"");
+            }
 
             tvTime.setText(service.getCreationDate());
             tvMsoNumber.setText(service.getId());
-            tvSchedule.setText("");
+
             String status = service.getServiceOrderStatus();
             tvStatus.setText(status);
             tvLocation.setText(service.getBusStopLocation());
             tvPanelId.setText(service.getPanelId());
+
+            tvPriority.setText(service.getPriorityLevel()+"");
             if (service.getId().startsWith(cm)) {
                 if (status.equals(APPR)){
                     Glide.with(mContext).load(R.drawable.ack).into(ivLanding);

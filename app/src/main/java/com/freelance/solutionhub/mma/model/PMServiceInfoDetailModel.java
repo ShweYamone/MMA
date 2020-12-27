@@ -11,7 +11,7 @@ public class PMServiceInfoDetailModel implements Serializable {
     public String busStopId;
     public String busStopLocation;
     public String weatherCondition;
-    public String thirdPartyFault;
+    public Object thirdPartyFault;
     public String thirdPartyFaultDescription;
     public String reportedProblem;
     public String reportedProblemDescription;
@@ -25,6 +25,8 @@ public class PMServiceInfoDetailModel implements Serializable {
     public String targetEndDate;
     public double totalResponseTime;
     public double totalDownTime;
+    public String responseTime;
+    public String resolutionTime;
     public String acknowledgementDate;
     public String acknowledgedBy;
     public String firstResponseDate;
@@ -33,7 +35,7 @@ public class PMServiceInfoDetailModel implements Serializable {
     public String faultDetectedDate;
     public String notificationDate;
     public boolean isPartReplacement;
-    public Object partReplacement;
+    public PartReplacement partReplacement;
 
     public String getId() {
         return id;
@@ -99,11 +101,11 @@ public class PMServiceInfoDetailModel implements Serializable {
         this.weatherCondition = weatherCondition;
     }
 
-    public String getThirdPartyFault() {
+    public Object getThirdPartyFault() {
         return thirdPartyFault;
     }
 
-    public void setThirdPartyFault(String thirdPartyFault) {
+    public void setThirdPartyFault(Object thirdPartyFault) {
         this.thirdPartyFault = thirdPartyFault;
     }
 
@@ -203,12 +205,36 @@ public class PMServiceInfoDetailModel implements Serializable {
         this.totalResponseTime = totalResponseTime;
     }
 
-    public double getTotalDownTime() {
+    public Object getTotalDownTime() {
         return totalDownTime;
     }
 
     public void setTotalDownTime(double totalDownTime) {
         this.totalDownTime = totalDownTime;
+    }
+
+    public String getResponseTime() {
+        return responseTime;
+    }
+
+    public String getFaultDetectedDate() {
+        return faultDetectedDate;
+    }
+
+    public void setFaultDetectedDate(String faultDetectedDate) {
+        this.faultDetectedDate = faultDetectedDate;
+    }
+
+    public void setResponseTime(String responseTime) {
+        this.responseTime = responseTime;
+    }
+
+    public String getResolutionTime() {
+        return resolutionTime;
+    }
+
+    public void setResolutionTime(String resolutionTime) {
+        this.resolutionTime = resolutionTime;
     }
 
     public String getAcknowledgementDate() {
@@ -251,13 +277,7 @@ public class PMServiceInfoDetailModel implements Serializable {
         this.jobCompletionDate = jobCompletionDate;
     }
 
-    public String getFaultDetectedDate() {
-        return faultDetectedDate;
-    }
 
-    public void setFaultDetectedDate(String faultDetectedDate) {
-        this.faultDetectedDate = faultDetectedDate;
-    }
 
     public String getNotificationDate() {
         return notificationDate;
@@ -275,11 +295,12 @@ public class PMServiceInfoDetailModel implements Serializable {
         isPartReplacement = partReplacement;
     }
 
-    public Object getPartReplacement() {
+    public PartReplacement getPartReplacement() {
         return partReplacement;
     }
 
-    public void setPartReplacement(Object partReplacement) {
+    public void setPartReplacement(PartReplacement partReplacement) {
         this.partReplacement = partReplacement;
     }
 }
+
