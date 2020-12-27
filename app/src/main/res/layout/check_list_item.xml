@@ -68,6 +68,7 @@
                 android:id="@+id/et_remarks"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:text=""
                 android:layout_weight="5"
                 android:hint="@string/text_here"
                 android:textColor="@color/colorBlack"

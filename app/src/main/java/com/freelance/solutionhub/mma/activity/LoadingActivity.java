@@ -230,9 +230,14 @@ public class LoadingActivity extends AppCompatActivity {
                         dbHelper.eventDAO().insert(tempEvent);
                         dbHelper.eventDAO().insert(tempEvent);
 
-                        tempEvent = new Event(
-                                PM_CHECK_LIST_REMARK, object.getId()+"", object.getMaintenanceRemark()+""
-                        );
+                        if (object.getMaintenanceRemark() != null)
+                            tempEvent = new Event(
+                                    PM_CHECK_LIST_REMARK, object.getId()+"", object.getMaintenanceRemark()+""
+                            );
+                        else
+                            tempEvent = new Event(
+                                    PM_CHECK_LIST_REMARK, object.getId()+"", ""
+                            );
                         tempEvent.setUpdateEventBodyKey(PM_Step_ONE);
                         tempEvent.setEvent_id(PM_CHECK_LIST_REMARK + object.getId());
                         tempEvent.setAlreadyUploaded(YES);

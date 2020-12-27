@@ -206,7 +206,7 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:text="01.10.2019/11:00AM"
-        android:textSize="@dimen/txt_size_small"
+        android:textSize="@dimen/txt_size_ex_small"
         android:background="@color/colorWhite"/>
 
 </RelativeLayout>

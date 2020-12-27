@@ -55,6 +55,7 @@ import com.freelance.solutionhub.mma.util.SharePreferenceHelper;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.Time;
 import java.sql.Timestamp;
@@ -70,6 +71,7 @@ import butterknife.ButterKnife;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -278,7 +280,7 @@ public class First_Step_PM_Fragment extends Fragment {
                 }else {
                     int i = 0; Event tempEvent; String tempStr;
                     tempStr = etFaultFoundRemarks.getText().toString();
-                    Log.i("CheckListData", "onClick: " + preFaultFoundRemarks);
+                    Log.i("CheckListData", "onClick: here" );
 
                     if (!tempStr.equals("")) {
                         tempEvent = new Event(
@@ -293,17 +295,25 @@ public class First_Step_PM_Fragment extends Fragment {
                         }
 
                     }
+                    Log.i("CheckListData", "onClick: there");
+
                     for (CheckListModel object: checkListModels) {
                         CheckListModel preCheckList = preCheckListModels.get(i++);
-                        if (object.getMaintenanceRemark().equals("") || object.getMaintenanceRemark() != preCheckList.getMaintenanceRemark()) {
-                            tempEvent = new Event(
-                                    PM_CHECK_LIST_REMARK, object.getId() + "", object.getMaintenanceRemark() + ""
-                            );
-                            tempEvent.setUpdateEventBodyKey(PM_Step_ONE);
-                            tempEvent.setEvent_id(PM_CHECK_LIST_REMARK + object.getId());
-                            tempEvent.setAlreadyUploaded(NO);
-                            dbHelper.eventDAO().insert(tempEvent);
+                        tempEvent = new Event(
+                                PM_CHECK_LIST_REMARK, object.getId() + "", object.getMaintenanceRemark() + ""
+                        );
+                        tempEvent.setUpdateEventBodyKey(PM_Step_ONE);
+                        tempEvent.setEvent_id(PM_CHECK_LIST_REMARK + object.getId());
+                        if (object.getMaintenanceRemark() == null || object.getMaintenanceRemark().equals("") ||
+                        object.getMaintenanceRemark().equals(preCheckList.getMaintenanceRemark())) {
+                            tempEvent.setAlreadyUploaded(YES);
                         }
+                        else {
+                            tempEvent.setAlreadyUploaded(NO);
+                        }
+                        dbHelper.eventDAO().insert(tempEvent);
+
+
                         if (!preCheckList.isMaintenanceDone()) {
                             tempEvent = new Event(
                                     PM_CHECK_LIST_DONE, object.getId() + "", object.isMaintenanceDone + ""
@@ -366,22 +376,32 @@ public class First_Step_PM_Fragment extends Fragment {
             for (Event event: events) {
                 temp += event.getEventType() + " - " + event.getKey() + " - " + event.getAlreadyUploaded() + "\n";
             }
-            Log.e("Tracing....", "save: " + temp);
+            Log.e("Tring....", "save: " + temp);
 
             dbHelper.updateEventBodyDAO().insert(updateEventBody);
 
             if (mNetwork.isNetworkAvailable() && dbHelper.eventDAO().getNumberEventsToUpload(PM_Step_ONE) > 0) {
                 ((PMActivity)getActivity()).showProgressBar();
+                Log.e("Tracing....", "save: progress");
                 Call<ReturnStatus> call = apiInterface.updateEvent("Bearer " + mSharePerferenceHelper.getToken() ,
                         updateEventBody);
                 call.enqueue(new Callback<ReturnStatus>() {
                     @Override
                     public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
+                        Log.e("Tracing....", "save: " + "response");
                         if(response.isSuccessful()) {
+                            Log.e("Tracing....", "save: " + "success");
                             Toast.makeText(getContext(), dbHelper.eventDAO().getNumberEventsToUpload(PM_Step_ONE)+" events." , Toast.LENGTH_SHORT).show();
                             dbHelper.eventDAO().update(YES, PM_Step_ONE);
-                        } else {
-                            Toast.makeText(getContext(), response.code(), Toast.LENGTH_SHORT).show();
+                        } else{
+                            ResponseBody errorReturnBody = response.errorBody();
+                            try {
+                                Log.e("Tracing....", "onResponse: " + errorReturnBody.string());
+                                Toast.makeText(getContext(), "response " + response.code(),  Toast.LENGTH_LONG).show();
+                                //  ((CMActivity)getActivity()).hideProgressBar();
+                            } catch (IOException e) {
+
+                            }
                         }
                         ((PMActivity)getActivity()).hideProgressBar();
                     }

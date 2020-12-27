@@ -706,11 +706,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
                 tempEvent.setAlreadyUploaded(NO);
                 dbHelper.eventDAO().insert(tempEvent);
             }
-        } else {
-            mandatoryFieldsLeft += "\nScan Replaced Component";
-            isMandatoryFieldLeft = true;
-        }
-
+        } 
     }
 
     public void updateQRCode(String qrCodeStr) {
