@@ -19,6 +19,7 @@ import com.freelance.solutionhub.mma.util.SharePreferenceHelper;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.freelance.solutionhub.mma.util.AppConstant.FAULT_PART_CODE;
 import static com.freelance.solutionhub.mma.util.AppConstant.OTHER_CONTRACTOR_UPDATE;
 import static com.freelance.solutionhub.mma.util.AppConstant.POWER_GRIP_UPDATE;
 import static com.freelance.solutionhub.mma.util.AppConstant.REMEDY;
@@ -75,7 +76,7 @@ public class CMCompletionActivity extends AppCompatActivity implements View.OnCl
         msoNumber.setText(getIntent().getStringExtra("id"));
         panelId.setText(getIntent().getStringExtra("panelId"));
         reportedProblemCode.setText(dbHelper.eventDAO().getEventValue(SERVICE_ORDER_UPDATE, REPORTED_PROBLEM));
-        faultCode.setText("");
+        faultCode.setText(dbHelper.eventDAO().getEventValue(SERVICE_ORDER_UPDATE, FAULT_PART_CODE));
         remedyAction.setText(dbHelper.eventDAO().getEventValue(SERVICE_ORDER_UPDATE, REMEDY));
         if (dbHelper.eventDAO().getNumOfEventsByEventType(TELCO_UPDATE) > 0) {
             thirdPartyFault.setText("Telco");

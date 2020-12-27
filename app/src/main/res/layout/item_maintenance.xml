@@ -31,12 +31,15 @@
                     android:orientation="vertical">
                     <TextView
                         android:text="MSO Number:"
-                        android:textSize="14dp"
+                        android:textSize="12dp"
+                        android:textColor="@color/colorPrimary"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
                     <TextView
                         android:id="@+id/tvMSONumber"
                         android:text="xxxxxx"
+                        android:textSize="14dp"
+                        android:textStyle="bold"
                         android:textColor="@color/colorBlack"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>
@@ -49,12 +52,14 @@
                     android:orientation="vertical">
                     <TextView
                         android:text="Status:"
-                        android:textSize="14dp"
+                        android:textSize="12dp"
+                        android:textColor="@color/colorPrimary"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
                     <TextView
                         android:id="@+id/tvStatus"
                         android:text="APPR"
+                        android:textSize="14dp"
                         android:textStyle="bold"
                         android:textColor="@color/colorBlack"
                         android:layout_width="wrap_content"
@@ -79,39 +84,50 @@
             android:layout_height="wrap_content">
 
             <LinearLayout
-                android:layout_margin="@dimen/margin_small"
+                android:layout_marginLeft="@dimen/margin_small"
+                android:layout_marginRight="@dimen/margin_small"
+                android:layout_marginBottom="@dimen/margin_small"
                 android:layout_weight="3.3"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
                 <TextView
                     android:text="Panel ID:"
-                    android:textSize="14dp"
+                    android:textSize="12dp"
+                    android:textColor="@color/colorPrimary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
                 <TextView
                     android:id="@+id/tv_panel_id"
                     android:text=""
+                    android:textSize="14dp"
+                    android:textStyle="bold"
                     android:textColor="@color/colorBlack"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
             </LinearLayout>
 
             <LinearLayout
-                android:layout_margin="@dimen/margin_small"
+                android:layout_marginLeft="@dimen/margin_small"
+                android:layout_marginRight="@dimen/margin_small"
+                android:layout_marginBottom="@dimen/margin_small"
                 android:layout_weight="5"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
+
                 <TextView
                     android:id="@+id/tvProblemorSchedule"
-                    android:text=""
-                    android:textSize="14dp"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="12dp" />
                 <TextView
                     android:id="@+id/tvReportedProblem"
-                    android:text="Rochar Rd Canter Ader Lly"
+                    android:text=""
+                    android:textSize="14dp"
+                    android:textStyle="bold"
                     android:textColor="@color/colorBlack"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
@@ -126,38 +142,48 @@
             <LinearLayout
                 android:id="@+id/layoutPriority"
                 android:visibility="visible"
-                android:layout_margin="@dimen/margin_small"
+                android:layout_marginLeft="@dimen/margin_small"
+                android:layout_marginRight="@dimen/margin_small"
+                android:layout_marginBottom="@dimen/margin_small"
                 android:layout_weight="3.3"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
                 <TextView
                     android:text="Priority"
-                    android:textSize="14dp"
+                    android:textSize="12dp"
+                    android:textColor="@color/colorPrimary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
                 <TextView
                     android:id="@+id/tvPriority"
                     android:text=""
+                    android:textStyle="bold"
+                    android:textSize="14dp"
                     android:textColor="@color/colorBlack"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
             </LinearLayout>
 
             <LinearLayout
-                android:layout_margin="@dimen/margin_small"
+                android:layout_marginLeft="@dimen/margin_small"
+                android:layout_marginRight="@dimen/margin_small"
+                android:layout_marginBottom="@dimen/margin_small"
                 android:layout_weight="5"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
                 <TextView
                     android:text="Location"
-                    android:textSize="14dp"
+                    android:textSize="12dp"
+                    android:textColor="@color/colorPrimary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
                 <TextView
                     android:id="@+id/tvLocation"
                     android:text="Rochar Rd Canter Ader Lly"
+                    android:textSize="14dp"
+                    android:textStyle="bold"
                     android:textColor="@color/colorBlack"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>

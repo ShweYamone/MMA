@@ -3,6 +3,7 @@ package com.freelance.solutionhub.mma.model;
 import java.io.Serializable;
 
 public class PMServiceInfoDetailModel implements Serializable {
+
     public String id;
     public String serviceOrderType;
     public String serviceOrderStatus;
@@ -11,7 +12,7 @@ public class PMServiceInfoDetailModel implements Serializable {
     public String busStopId;
     public String busStopLocation;
     public String weatherCondition;
-    public Object thirdPartyFault;
+    public String thirdPartyFault;
     public String thirdPartyFaultDescription;
     public String reportedProblem;
     public String reportedProblemDescription;
@@ -36,6 +37,9 @@ public class PMServiceInfoDetailModel implements Serializable {
     public String notificationDate;
     public boolean isPartReplacement;
     public PartReplacement partReplacement;
+    public String preventativeMaintenanceServiceTechnician;
+    public String parentPreventativeServiceOrderName;
+    public String preventativeMaintenanceCheckType;
 
     public String getId() {
         return id;
@@ -101,11 +105,11 @@ public class PMServiceInfoDetailModel implements Serializable {
         this.weatherCondition = weatherCondition;
     }
 
-    public Object getThirdPartyFault() {
+    public String getThirdPartyFault() {
         return thirdPartyFault;
     }
 
-    public void setThirdPartyFault(Object thirdPartyFault) {
+    public void setThirdPartyFault(String thirdPartyFault) {
         this.thirdPartyFault = thirdPartyFault;
     }
 
@@ -205,7 +209,7 @@ public class PMServiceInfoDetailModel implements Serializable {
         this.totalResponseTime = totalResponseTime;
     }
 
-    public Object getTotalDownTime() {
+    public double getTotalDownTime() {
         return totalDownTime;
     }
 
@@ -215,14 +219,6 @@ public class PMServiceInfoDetailModel implements Serializable {
 
     public String getResponseTime() {
         return responseTime;
-    }
-
-    public String getFaultDetectedDate() {
-        return faultDetectedDate;
-    }
-
-    public void setFaultDetectedDate(String faultDetectedDate) {
-        this.faultDetectedDate = faultDetectedDate;
     }
 
     public void setResponseTime(String responseTime) {
@@ -277,7 +273,13 @@ public class PMServiceInfoDetailModel implements Serializable {
         this.jobCompletionDate = jobCompletionDate;
     }
 
+    public String getFaultDetectedDate() {
+        return faultDetectedDate;
+    }
 
+    public void setFaultDetectedDate(String faultDetectedDate) {
+        this.faultDetectedDate = faultDetectedDate;
+    }
 
     public String getNotificationDate() {
         return notificationDate;
@@ -301,6 +303,30 @@ public class PMServiceInfoDetailModel implements Serializable {
 
     public void setPartReplacement(PartReplacement partReplacement) {
         this.partReplacement = partReplacement;
+    }
+
+    public String getPreventativeMaintenanceServiceTechnician() {
+        return preventativeMaintenanceServiceTechnician;
+    }
+
+    public void setPreventativeMaintenanceServiceTechnician(String preventativeMaintenanceServiceTechnician) {
+        this.preventativeMaintenanceServiceTechnician = preventativeMaintenanceServiceTechnician;
+    }
+
+    public String getParentPreventativeServiceOrderName() {
+        return parentPreventativeServiceOrderName;
+    }
+
+    public void setParentPreventativeServiceOrderName(String parentPreventativeServiceOrderName) {
+        this.parentPreventativeServiceOrderName = parentPreventativeServiceOrderName;
+    }
+
+    public String getPreventativeMaintenanceCheckType() {
+        return preventativeMaintenanceCheckType;
+    }
+
+    public void setPreventativeMaintenanceCheckType(String preventativeMaintenanceCheckType) {
+        this.preventativeMaintenanceCheckType = preventativeMaintenanceCheckType;
     }
 }
 

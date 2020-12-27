@@ -153,6 +153,8 @@ public class LoadingActivity extends AppCompatActivity {
 
 
     private void getThirdPartInfo(PMServiceInfoDetailModel responseBody) {
+    //    Toast.makeText(getApplicationContext(), "response enter 2"  + msoId,  Toast.LENGTH_LONG).show();
+
         Call<List<ThirdPartyModel>> callThirdParty = apiInterface.getThirdParties("Bearer " + mSharePrefrence.getToken(), msoId);
         callThirdParty.enqueue(new Callback<List<ThirdPartyModel>>() {
             @Override
@@ -207,6 +209,8 @@ public class LoadingActivity extends AppCompatActivity {
     }
 
     private void getPMCheckList(PMServiceInfoDetailModel responseBody) {
+      //  Toast.makeText(getApplicationContext(), "response checklist", Toast.LENGTH_LONG).show();
+
         Call<List<CheckListModel>> callCheckList = apiInterface.getCheckList("Bearer "+ mSharePrefrence.getToken(), msoId);
         callCheckList.enqueue(new Callback<List<CheckListModel>>() {
             @Override
@@ -265,10 +269,13 @@ public class LoadingActivity extends AppCompatActivity {
     }
 
     private void getServieOrderbyId(String id) {
+      //  Toast.makeText(getApplicationContext(), "response " + "enter", Toast.LENGTH_LONG).show();
+
         Call<PMServiceInfoDetailModel> call = apiInterface.getPMServiceOrderByID("Bearer " + mSharePrefrence.getToken() , id);
         call.enqueue(new Callback<PMServiceInfoDetailModel>() {
             @Override
             public void onResponse(Call<PMServiceInfoDetailModel> call, Response<PMServiceInfoDetailModel> response) {
+             //   Toast.makeText(getApplicationContext(), "response " + response.code(), Toast.LENGTH_LONG).show();
 
                 if (response.isSuccessful()) {
                     Intent intent;
@@ -302,12 +309,22 @@ public class LoadingActivity extends AppCompatActivity {
                     }
 
                 } else {
-                    Log.i("SERVICEORDER", response.code()+"");
+                    Toast.makeText(getApplicationContext(), "response " + response.code(), Toast.LENGTH_LONG).show();
+                    ResponseBody errorReturnBody = response.errorBody();
+                    try {
+                        Log.e("UPLOAD_ERROR", "onResponse: " + errorReturnBody.string());
+                      //  ((CMActivity)getActivity()).hideProgressBar();
+
+
+                    } catch (IOException e) {
+
+                    }
                 }
             }
             @Override
             public void onFailure(Call<PMServiceInfoDetailModel> call, Throwable t) {
-                Log.i("SERVICEORDER", id+"failure");
+                Toast.makeText(getApplicationContext(), id + "response failure order by id", Toast.LENGTH_LONG).show();
+
             }
         });
     }

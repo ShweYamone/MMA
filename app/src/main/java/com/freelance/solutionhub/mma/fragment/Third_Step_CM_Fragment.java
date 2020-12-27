@@ -583,7 +583,11 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
         Timestamp timestamp = new Timestamp(date.getTime());
         actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
         updateEventBody.setDate(actualDateTime);
+        dbHelper.updateEventBodyDAO().insert(updateEventBody);
 
+        ((CMActivity)getActivity()).hideProgressBar();
+        completeWork();
+        /*
         Call<ReturnStatus> call = apiInterface.updateStatusEvent("Bearer " + mSharePreferenceHelper.getToken(),
                 updateEventBody);
         call.enqueue(new Callback<ReturnStatus>() {
@@ -591,8 +595,7 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
             public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
                 if (response.isSuccessful()) {
                     Toast.makeText(getContext(),response.body().getStatus() + " Step Three Event Uploaded.",Toast.LENGTH_SHORT).show();
-                    ((CMActivity)getActivity()).hideProgressBar();
-                    completeWork();
+
                 } else {
                     Toast.makeText(getContext(), "response " + response.code(), Toast.LENGTH_LONG).show();
                     ResponseBody errorReturnBody = response.errorBody();
@@ -613,7 +616,7 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
                 ((CMActivity)getActivity()).hideProgressBar();
                 Log.e("UPLOAD_ERROR", "onResponse: " + t.getMessage());
             }
-        });
+        });*/
     }
 
     private void completeWork() {

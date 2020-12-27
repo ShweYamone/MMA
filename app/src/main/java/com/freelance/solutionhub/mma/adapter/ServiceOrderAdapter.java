@@ -27,7 +27,11 @@ import butterknife.ButterKnife;
 import static com.freelance.solutionhub.mma.util.AppConstant.ACK;
 import static com.freelance.solutionhub.mma.util.AppConstant.APPR;
 import static com.freelance.solutionhub.mma.util.AppConstant.INPRG;
+import static com.freelance.solutionhub.mma.util.AppConstant.MONTHLY;
+import static com.freelance.solutionhub.mma.util.AppConstant.QUARTERLY;
+import static com.freelance.solutionhub.mma.util.AppConstant.WEEKLY;
 import static com.freelance.solutionhub.mma.util.AppConstant.WSCH;
+import static com.freelance.solutionhub.mma.util.AppConstant.YEARLY;
 import static com.freelance.solutionhub.mma.util.AppConstant.cm;
 import static com.freelance.solutionhub.mma.util.AppConstant.pm;
 
@@ -111,11 +115,23 @@ public class ServiceOrderAdapter extends RecyclerView.Adapter<ServiceOrderAdapte
             if (service.getId().startsWith(pm)) {
                 layoutPriority.setVisibility(View.GONE);
                 tvProblemORSchedule.setText("Schedule Type");
+                String checkType = service.getPreventativeMaintenanceCheckType()+"";
                 tvReportedProblem.setText(service.getPreventativeMaintenanceCheckType());
+                if (checkType.equals(WEEKLY))
+                    tvReportedProblem.setTextColor(mContext.getResources().getColor(R.color.green));
+                else if (checkType.equals(MONTHLY))
+                    tvReportedProblem.setTextColor(mContext.getResources().getColor(R.color.blue));
+                else if (checkType.equals(QUARTERLY))
+                    tvReportedProblem.setTextColor(mContext.getResources().getColor(R.color.colorVioletDark));
+                else if (checkType.equals(YEARLY))
+                    tvReportedProblem.setTextColor(mContext.getResources().getColor(R.color.pink));
+                else
+                    tvReportedProblem.setTextColor(mContext.getResources().getColor(R.color.colorBlack));
             } else {
                 layoutPriority.setVisibility(View.VISIBLE);
                 tvProblemORSchedule.setText("Reported Problem");
                 tvReportedProblem.setText(service.getReportedProblemDescription()+"");
+                tvReportedProblem.setTextColor(mContext.getResources().getColor(R.color.colorBlack));
             }
 
             tvTime.setText(service.getCreationDate());

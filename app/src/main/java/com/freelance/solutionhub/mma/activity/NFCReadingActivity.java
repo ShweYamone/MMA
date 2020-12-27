@@ -55,8 +55,11 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import static com.freelance.solutionhub.mma.util.AppConstant.CM;
+import static com.freelance.solutionhub.mma.util.AppConstant.CM_Step_THREE;
 import static com.freelance.solutionhub.mma.util.AppConstant.NO;
 import static com.freelance.solutionhub.mma.util.AppConstant.PM;
+import static com.freelance.solutionhub.mma.util.AppConstant.PM_Step_TWO;
+import static com.freelance.solutionhub.mma.util.AppConstant.cm;
 import static com.freelance.solutionhub.mma.util.AppConstant.pm;
 import static com.freelance.solutionhub.mma.util.AppConstant.user_inactivity_time;
 
@@ -64,6 +67,7 @@ public class NFCReadingActivity extends AppCompatActivity {
 
     @BindView(R.id.btnCancel)
     Button btnCancel;
+
     private NfcAdapter nfcAdapter;
     private PendingIntent pendingIntent;
     private String serviceOrderId;
@@ -83,6 +87,7 @@ public class NFCReadingActivity extends AppCompatActivity {
     private Runnable r;
     private boolean startHandler = true;
     private boolean lockScreen = false;
+    private String step = "";
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -147,8 +152,13 @@ public class NFCReadingActivity extends AppCompatActivity {
         /****To Fix when NFC can read*********/
         /*********************/
         /////////////////////////////////////
+        if (serviceOrderId.startsWith(pm))
+            step = PM_Step_TWO;
+        else
+            step = CM_Step_THREE;
 
         perFormTagEvent();
+
         if(nfcAdapter == null){
             Toast.makeText(this, "No NFC", Toast.LENGTH_SHORT).show();
             //finish();
@@ -196,8 +206,8 @@ public class NFCReadingActivity extends AppCompatActivity {
 
                     ResponseBody errorReturnBody = response.errorBody();
                     try {
-                        Log.e("UPLOAD_ERROR_LOCAL_TAG", "onResponse: " + errorReturnBody.string());
-                        Toast.makeText(getApplicationContext(), "response " + response.code(), Toast.LENGTH_LONG).show();
+                    //    Log.e("UPLOAD_ERROR_LOCAL_TAG", "onResponse: " + );
+                        Toast.makeText(getApplicationContext(), "response " + errorReturnBody.string(), Toast.LENGTH_LONG).show();
 
                     } catch (IOException e) {
 
@@ -208,6 +218,55 @@ public class NFCReadingActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<ReturnStatus> call, Throwable t) {
 
+            }
+        });
+    }
+
+    private void performFinalStepEvent(String pmOrcm) {
+        Call<ReturnStatus> call = apiInterface.updateStatusEvent("Bearer " + mSharedPreference.getToken(),
+                dbHelper.updateEventBodyDAO().getUpdateEventBodyByID(step));
+        call.enqueue(new Callback<ReturnStatus>() {
+            @Override
+            public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
+                if (response.isSuccessful()) {
+                    Intent intent;
+                    Toast.makeText(getApplicationContext(),response.body().getStatus() + " Last Event Uploaded.",Toast.LENGTH_SHORT).show();
+                    if (pmOrcm.equals(pm)) {
+                        intent = new Intent(NFCReadingActivity.this, PMCompletionActivity.class);
+                        intent.putExtra("schedule_date", getIntent().getStringExtra("schedule_date"));
+                        intent.putExtra("schedule_type", getIntent().getStringExtra("schedule_type"));
+                        intent.putExtra("start_time", getIntent().getStringExtra("start_time"));
+                        intent.putExtra("end_time", currentDateTime);
+                    } else {
+                        intent = new Intent(NFCReadingActivity.this, CMCompletionActivity.class);
+                        intent.putExtra("location", getIntent().getStringExtra("location"));
+                    }
+                    intent.putExtra("id", serviceOrderId);
+                    intent.putExtra("panelId", getIntent().getStringExtra("panelId"));
+                    intent.putExtra("remarks", getIntent().getStringExtra("remarks")+"");
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+
+
+                } else {
+                    Toast.makeText(getApplicationContext(), "response " + response.code(), Toast.LENGTH_LONG).show();
+                    ResponseBody errorReturnBody = response.errorBody();
+                    try {
+                        Log.e("UPLOAD_ERROR", "onResponse: " + errorReturnBody.string());
+                      //  ((CMActivity)getActivity()).hideProgressBar();
+
+
+                    } catch (IOException e) {
+
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ReturnStatus> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), "response " + "FAILURE", Toast.LENGTH_LONG).show();
+              //  ((CMActivity)getActivity()).hideProgressBar();
+                Log.e("UPLOAD_ERROR", "onResponse: " + t.getMessage());
             }
         });
     }
@@ -230,40 +289,30 @@ public class NFCReadingActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
                     if (response.isSuccessful()) {
-                        Intent intent;
-                        Toast.makeText(getApplicationContext(), "TAG_" +  response.body().getStatus(), Toast.LENGTH_SHORT).show();
+
+                        Toast.makeText(getApplicationContext(), "TAG_" + tag +  response.body().getStatus(), Toast.LENGTH_SHORT).show();
                         if (tag) {
                             if (toPage.equals("COMPLETION")) {
                                 if (dbHelper.updateEventBodyDAO().getNumberOfUpdateEventsById("TAG_OUT") > 0) {
                                     performLocalTagOutEvent();
                                 } else {
                                     if (serviceOrderId.startsWith(pm)) {
-                                        intent = new Intent(NFCReadingActivity.this, PMCompletionActivity.class);
+                                        performFinalStepEvent(pm);
 
-                                        intent.putExtra("schedule_date", getIntent().getStringExtra("schedule_date"));
-                                        intent.putExtra("schedule_type", getIntent().getStringExtra("schedule_type"));
-                                        intent.putExtra("start_time", getIntent().getStringExtra("start_time"));
-                                        intent.putExtra("end_time", currentDateTime);
                                     } else {
-                                        intent = new Intent(NFCReadingActivity.this, CMCompletionActivity.class);
-                                        intent.putExtra("location", getIntent().getStringExtra("location"));
+                                        performFinalStepEvent(cm);
                                     }
-                                    intent.putExtra("id", serviceOrderId);
-                                    intent.putExtra("panelId", getIntent().getStringExtra("panelId"));
-                                    intent.putExtra("remarks", getIntent().getStringExtra("remarks")+"");
-                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                    startActivity(intent);
 
                                 }
 
                             } else {
-                                intent = new Intent(NFCReadingActivity.this, MainActivity.class);
+                                Intent intent = new Intent(NFCReadingActivity.this, MainActivity.class);
                                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(intent);
                             }
 
                         } else {
-                            intent = new Intent(NFCReadingActivity.this, LoadingActivity.class);
+                            Intent intent = new Intent(NFCReadingActivity.this, LoadingActivity.class);
                             intent.putExtra("id", serviceOrderId);
                             intent.putExtra("start_time", currentDateTime);
                             startActivity(intent);
@@ -273,8 +322,8 @@ public class NFCReadingActivity extends AppCompatActivity {
 
                         ResponseBody errorReturnBody = response.errorBody();
                         try {
-                            Log.e("UPLOAD_ERROR", "onResponse: " + errorReturnBody.string());
-                            Toast.makeText(getApplicationContext(), "response " + response.code(), Toast.LENGTH_LONG).show();
+                            Log.e("UPLOAD_ERROR", "onResponse: ");
+                            Toast.makeText(getApplicationContext(), events.get(0).getKey() + "response " + errorReturnBody.string(), Toast.LENGTH_LONG).show();
 
                         } catch (IOException e) {
 

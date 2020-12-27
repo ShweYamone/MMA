@@ -243,6 +243,12 @@ public class Second_Step_PM_Fragment extends Fragment implements View.OnClickLis
         Timestamp timestamp = new Timestamp(date.getTime());
         actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
         updateEventBody.setDate(actualDateTime);
+        dbHelper.updateEventBodyDAO().insert(updateEventBody);
+        ((PMActivity)getActivity()).hideProgressBar();
+        //  deleteWorkingData();
+        completeWork();
+        /*
+
         Call<ReturnStatus> call = apiInterface.updateStatusEvent("Bearer " + mSharePreferenceHelper.getToken(),
                updateEventBody);
         call.enqueue(new Callback<ReturnStatus>() {
@@ -250,9 +256,7 @@ public class Second_Step_PM_Fragment extends Fragment implements View.OnClickLis
             public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
                 if (response.isSuccessful()) {
                     Toast.makeText(getContext(),response.body().getStatus() + ": STEP_TWO_Event Uploaded.",Toast.LENGTH_SHORT).show();
-                    ((PMActivity)getActivity()).hideProgressBar();
-                  //  deleteWorkingData();
-                    completeWork();
+
                 } else {
                     Toast.makeText(getContext(), "response " + response.code(), Toast.LENGTH_LONG).show();
                     ResponseBody errorReturnBody = response.errorBody();
@@ -271,7 +275,7 @@ public class Second_Step_PM_Fragment extends Fragment implements View.OnClickLis
                 ((PMActivity)getActivity()).hideProgressBar();
                 Log.e("UPLOAD_ERROR", "onResponse: " + t.getMessage());
             }
-        });
+        });*/
     }
 
 
@@ -281,7 +285,7 @@ public class Second_Step_PM_Fragment extends Fragment implements View.OnClickLis
         intent.putExtra("id", pmServiceInfoDetailModel.getId());
         intent.putExtra("panelId", pmServiceInfoDetailModel.getPanelId());
         intent.putExtra("schedule_date", pmServiceInfoDetailModel.getCreationDate());
-        intent.putExtra("schedule_type", pmServiceInfoDetailModel.getServiceOrderType());
+        intent.putExtra("schedule_type", pmServiceInfoDetailModel.getPreventativeMaintenanceCheckType());
         intent.putExtra("start_time", getArguments().getString("start_time"));
         intent.putExtra("remarks", remarks.getText().toString()+"");
 
