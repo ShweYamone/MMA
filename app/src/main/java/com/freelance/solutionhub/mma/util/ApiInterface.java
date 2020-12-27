@@ -9,6 +9,7 @@ import com.freelance.solutionhub.mma.model.PMServiceListModel;
 import com.freelance.solutionhub.mma.model.LoginModel;
 import com.freelance.solutionhub.mma.model.PhotoAttachementModel;
 import com.freelance.solutionhub.mma.model.QRReturnBody;
+import com.freelance.solutionhub.mma.model.ThirdPartyModel;
 import com.freelance.solutionhub.mma.model.UpdateEventBody;
 import com.freelance.solutionhub.mma.model.ReturnStatus;
 import com.freelance.solutionhub.mma.model.UserModel;
@@ -84,5 +85,9 @@ public interface ApiInterface {
     //Get download photo
     @GET("https://ufqzjtxo67.execute-api.ap-southeast-1.amazonaws.com/dev{photo_filename}")
     Call<ResponseBody> downloadPhoto(@Header("Authorization") String auth, @Path("photo_filename") String fileName );
+
+    //Get ThirdParty Info
+    @GET("service-orders/{service_order_id}/third-parties")
+    Call<List<ThirdPartyModel>> getThirdParties(@Header("Authorization") String auth, @Path("service_order_id") String serviceOrderId);
 }
 

@@ -23,6 +23,7 @@ import com.freelance.solutionhub.mma.R;
 import com.freelance.solutionhub.mma.adapter.DateTimePickerAdapter;
 import com.freelance.solutionhub.mma.model.Event;
 import com.freelance.solutionhub.mma.model.ReturnStatus;
+import com.freelance.solutionhub.mma.model.ThirdPartyModel;
 import com.freelance.solutionhub.mma.model.UpdateEventBody;
 import com.freelance.solutionhub.mma.util.ApiClient;
 import com.freelance.solutionhub.mma.util.ApiInterface;
@@ -54,6 +55,7 @@ import static com.freelance.solutionhub.mma.util.AppConstant.EXPECTED_COMPLETION
 import static com.freelance.solutionhub.mma.util.AppConstant.FAULT_DETECTED_DATE;
 import static com.freelance.solutionhub.mma.util.AppConstant.FAULT_STATUS;
 import static com.freelance.solutionhub.mma.util.AppConstant.NO;
+import static com.freelance.solutionhub.mma.util.AppConstant.NO_TYPE;
 import static com.freelance.solutionhub.mma.util.AppConstant.OFFICER;
 import static com.freelance.solutionhub.mma.util.AppConstant.OTHER_CONTRACTOR_UPDATE;
 import static com.freelance.solutionhub.mma.util.AppConstant.REFER_DATE;
@@ -130,6 +132,7 @@ public class OtherActivity extends AppCompatActivity implements View.OnClickList
     private String preDetectedDate = "";
     private String preActionDate = "";
     private String preActionTaken = "";
+    private ThirdPartyModel otherObj = new ThirdPartyModel();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -142,6 +145,7 @@ public class OtherActivity extends AppCompatActivity implements View.OnClickList
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
+        otherObj = (ThirdPartyModel) getIntent().getSerializableExtra("other");
         eventLists = new ArrayList<>();
         apiInterface = ApiClient.getClient(this);
         mSharePreferenceHelper = new SharePreferenceHelper(this);
@@ -165,10 +169,7 @@ public class OtherActivity extends AppCompatActivity implements View.OnClickList
         actionDateTime.setOnClickListener(this);
         save.setOnClickListener(this);
 
-        /**show data from DB if have */
-        if (dbHelper.eventDAO().getNumOfEventsByEventType(OTHER_CONTRACTOR_UPDATE) > 0) {
-            displaySavedData();
-        }
+        displaySavedData();
 
         /**
          after certain amount of user inactivity, asks for passcode
@@ -189,50 +190,90 @@ public class OtherActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void displaySavedData() {
+        boolean hasThirdPartyObj = true;
+        if (otherObj.getThirdPartyType().equals(NO_TYPE))
+            hasThirdPartyObj = false;
+
         if (dbHelper.eventDAO().getEventValueCount(OTHER_CONTRACTOR_UPDATE, REFER_DATE) > 0) {
             preReferDate = dbHelper.eventDAO().getEventValue(OTHER_CONTRACTOR_UPDATE, REFER_DATE);
+        } else if (hasThirdPartyObj && otherObj.getReferDate() != null)
+            preReferDate = otherObj.getReferDate();
+        if (!preReferDate.equals(""))
             referDateTime.setText(preReferDate);
-        }
+
         if (dbHelper.eventDAO().getEventValueCount(OTHER_CONTRACTOR_UPDATE, EXPECTED_COMPLETION_DATE) > 0) {
             preCompletionDate = dbHelper.eventDAO().getEventValue(OTHER_CONTRACTOR_UPDATE, EXPECTED_COMPLETION_DATE);
-            expectedCompletionDateTime.setText(preCompletionDate);
         }
+        else if (hasThirdPartyObj && otherObj.getExpectedCompletionDate() != null)
+            preCompletionDate = otherObj.getExpectedCompletionDate();
+        if (!preCompletionDate.equals(""))
+            expectedCompletionDateTime.setText(preCompletionDate);
+
         if (dbHelper.eventDAO().getEventValueCount(OTHER_CONTRACTOR_UPDATE, CLEARANCE_DATE) > 0) {
             preClearanceDate = dbHelper.eventDAO().getEventValue(OTHER_CONTRACTOR_UPDATE, CLEARANCE_DATE);
-            clearanceDateTime.setText(preClearanceDate);
         }
+        else if (hasThirdPartyObj && otherObj.getClearanceDate() != null)
+            preClearanceDate = otherObj.getClearanceDate();
+        if (!preClearanceDate.equals(""))
+            clearanceDateTime.setText(preClearanceDate);
+
         if (dbHelper.eventDAO().getEventValueCount(OTHER_CONTRACTOR_UPDATE, FAULT_STATUS) > 0) {
             preFaultStatus = dbHelper.eventDAO().getEventValue(OTHER_CONTRACTOR_UPDATE, FAULT_STATUS);
-            faultStatus.setText(preFaultStatus);
         }
+        else if (hasThirdPartyObj && otherObj.getFaultStatus() != null)
+            preFaultStatus = otherObj.getFaultStatus();
+        faultStatus.setText(preFaultStatus);
+
         if (dbHelper.eventDAO().getEventValueCount(OTHER_CONTRACTOR_UPDATE, REMARKS_ON_FAULT) > 0) {
             preRemarks = dbHelper.eventDAO().getEventValue(OTHER_CONTRACTOR_UPDATE, REMARKS_ON_FAULT);
-            remarks.setText(preRemarks);
         }
+        else if (hasThirdPartyObj && otherObj.getRemarkOnFault() != null)
+            preRemarks = otherObj.getRemarkOnFault();
+        remarks.setText(preRemarks);
+
         if (dbHelper.eventDAO().getEventValueCount(OTHER_CONTRACTOR_UPDATE, COMPANY_NAME) > 0) {
             preCompanyName = dbHelper.eventDAO().getEventValue(OTHER_CONTRACTOR_UPDATE, COMPANY_NAME);
-            thirdPartyCompanyName.setText(preCompanyName);
         }
+        else if (hasThirdPartyObj && otherObj.getCompanyName() != null)
+            preCompanyName = otherObj.getCompanyName();
+        thirdPartyCompanyName.setText(preCompanyName);
+
         if (dbHelper.eventDAO().getEventValueCount(OTHER_CONTRACTOR_UPDATE, OFFICER) > 0) {
             preContractorName = dbHelper.eventDAO().getEventValue(OTHER_CONTRACTOR_UPDATE, OFFICER);
-            thirdPartyContractorName.setText(preContractorName);
         }
+        else if (hasThirdPartyObj && otherObj.getOfficer() != null)
+            preContractorName = otherObj.getOfficer();
+        thirdPartyContractorName.setText(preContractorName);
+
         if (dbHelper.eventDAO().getEventValueCount(OTHER_CONTRACTOR_UPDATE, CONTACT_NUMBER) > 0) {
             preContractorNo = dbHelper.eventDAO().getEventValue(OTHER_CONTRACTOR_UPDATE, CONTACT_NUMBER);
-            thirdPartyContractorNo.setText(preContractorNo);
         }
+        else if (hasThirdPartyObj && otherObj.getContactNumber() != null)
+            preContractorNo = otherObj.getContactNumber();
+        thirdPartyContractorNo.setText(preContractorNo);
+
         if (dbHelper.eventDAO().getEventValueCount(OTHER_CONTRACTOR_UPDATE, FAULT_DETECTED_DATE) > 0) {
             preDetectedDate = dbHelper.eventDAO().getEventValue(OTHER_CONTRACTOR_UPDATE, FAULT_DETECTED_DATE);
-            faultDetectedDateTime.setText(preDetectedDate);
         }
+        else if (hasThirdPartyObj && otherObj.getFaultDetectedDate() != null)
+            preDetectedDate = otherObj.getFaultDetectedDate();
+        if (!preDetectedDate.equals(""))
+            faultDetectedDateTime.setText(preDetectedDate);
+
         if (dbHelper.eventDAO().getEventValueCount(OTHER_CONTRACTOR_UPDATE, ACTION_DATE) > 0) {
             preActionDate = dbHelper.eventDAO().getEventValue(OTHER_CONTRACTOR_UPDATE, ACTION_DATE);
-            actionDateTime.setText(preActionDate);
         }
+        else if (hasThirdPartyObj && otherObj.getActionDate() != null)
+            preActionDate = otherObj.getActionDate();
+        if (!preActionDate.equals(""))
+            actionDateTime.setText(preActionDate);
+
         if (dbHelper.eventDAO().getEventValueCount(OTHER_CONTRACTOR_UPDATE, ACTION_TAKEN) > 0) {
             preActionTaken = dbHelper.eventDAO().getEventValue(OTHER_CONTRACTOR_UPDATE, ACTION_TAKEN);
-            actionTaken.setText(preActionTaken);
         }
+        else if (hasThirdPartyObj && otherObj.getActionTaken() != null)
+            preActionTaken = otherObj.getActionTaken();
+        actionTaken.setText(preActionTaken);
     }
 
 

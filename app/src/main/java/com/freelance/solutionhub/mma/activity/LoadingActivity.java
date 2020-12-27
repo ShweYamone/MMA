@@ -19,6 +19,7 @@ import com.freelance.solutionhub.mma.model.CheckListDescModel;
 import com.freelance.solutionhub.mma.model.CheckListModel;
 import com.freelance.solutionhub.mma.model.Event;
 import com.freelance.solutionhub.mma.model.PMServiceInfoDetailModel;
+import com.freelance.solutionhub.mma.model.ThirdPartyModel;
 import com.freelance.solutionhub.mma.util.ApiClient;
 import com.freelance.solutionhub.mma.util.ApiInterface;
 import com.freelance.solutionhub.mma.util.SharePreferenceHelper;
@@ -35,10 +36,18 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.freelance.solutionhub.mma.util.AppConstant.CM_Step_TWO;
 import static com.freelance.solutionhub.mma.util.AppConstant.NO;
+import static com.freelance.solutionhub.mma.util.AppConstant.OTHER_CONTRACTOR;
+import static com.freelance.solutionhub.mma.util.AppConstant.OTHER_CONTRACTOR_UPDATE;
 import static com.freelance.solutionhub.mma.util.AppConstant.PM_CHECK_LIST_DONE;
 import static com.freelance.solutionhub.mma.util.AppConstant.PM_CHECK_LIST_REMARK;
 import static com.freelance.solutionhub.mma.util.AppConstant.PM_Step_ONE;
+import static com.freelance.solutionhub.mma.util.AppConstant.POWER_GRIP;
+import static com.freelance.solutionhub.mma.util.AppConstant.POWER_GRIP_UPDATE;
+import static com.freelance.solutionhub.mma.util.AppConstant.TELCO;
+import static com.freelance.solutionhub.mma.util.AppConstant.TELCO_UPDATE;
+import static com.freelance.solutionhub.mma.util.AppConstant.THIRD_PARTY_NUMBER;
 import static com.freelance.solutionhub.mma.util.AppConstant.YES;
 import static com.freelance.solutionhub.mma.util.AppConstant.user_inactivity_time;
 
@@ -57,6 +66,10 @@ public class LoadingActivity extends AppCompatActivity {
     private boolean startHandler = true;
     private InitializeDatabase dbHelper;
     private String msoId = "";
+    private List<ThirdPartyModel> thirdPartyModels = new ArrayList<>();
+    private ThirdPartyModel telco;
+    private ThirdPartyModel powerGrid;
+    private ThirdPartyModel other;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,6 +151,61 @@ public class LoadingActivity extends AppCompatActivity {
         }
     }
 
+
+    private void getThirdPartInfo(PMServiceInfoDetailModel responseBody) {
+        Call<List<ThirdPartyModel>> callThirdParty = apiInterface.getThirdParties("Bearer " + mSharePrefrence.getToken(), msoId);
+        callThirdParty.enqueue(new Callback<List<ThirdPartyModel>>() {
+            @Override
+            public void onResponse(Call<List<ThirdPartyModel>> call, Response<List<ThirdPartyModel>> response) {
+                Intent intent = new Intent(LoadingActivity.this, CMActivity.class);
+                if (response.isSuccessful()) {
+                    thirdPartyModels = response.body();
+                    storeThirdPartyInfo(thirdPartyModels, intent);
+                    intent.putExtra("start_time", getIntent().getStringExtra("start_time"));
+                    intent.putExtra("object", responseBody);
+                    startActivity(intent);
+                    finish();
+                }
+                else{
+                    ResponseBody errorReturnBody = response.errorBody();
+                    try {
+                        Log.e("UPLOAD_ERROR", "onResponse: " + errorReturnBody.string());
+                        Toast.makeText(getApplicationContext(), "response " + response.code() + msoId,  Toast.LENGTH_LONG).show();
+                        //  ((CMActivity)getActivity()).hideProgressBar();
+                    } catch (IOException e) {
+
+                    }
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<List<ThirdPartyModel>> call, Throwable t) {
+
+            }
+        });
+    }
+
+    private void storeThirdPartyInfo(List<ThirdPartyModel> thirdPartyModels, Intent intent) {
+        for (ThirdPartyModel obj : thirdPartyModels) {
+            if (obj.getThirdPartyType().equals(TELCO)) {
+                intent.putExtra("telco", obj);
+            }
+
+            else if (obj.getThirdPartyType().equals(POWER_GRIP)) {
+                intent.putExtra("powerGrid", obj);
+                powerGrid = obj;
+            }
+
+            else if (obj.getThirdPartyType().equals(OTHER_CONTRACTOR)) {
+                intent.putExtra("other", obj);
+                other = obj;
+            }
+        }
+
+//        Log.i("ThirdParty", "storeThirdPartyInfo: " + telco.getId() + ", " + powerGrid.getId() + ", " + other.getId());
+    }
+
     private void getPMCheckList(PMServiceInfoDetailModel responseBody) {
         Call<List<CheckListModel>> callCheckList = apiInterface.getCheckList("Bearer "+ mSharePrefrence.getToken(), msoId);
         callCheckList.enqueue(new Callback<List<CheckListModel>>() {
@@ -205,11 +273,18 @@ public class LoadingActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     Intent intent;
                     if (id.startsWith("CM")) {
-                        intent = new Intent(LoadingActivity.this, CMActivity.class);
-                        intent.putExtra("start_time", getIntent().getStringExtra("start_time"));
-                        intent.putExtra("object", response.body());
-                        startActivity(intent);
-                        finish();
+                        /*
+                        if (dbHelper.eventDAO().getNumOfEventsByEventType(TELCO_UPDATE) > 0 &&
+                            dbHelper.eventDAO().getNumOfEventsByEventType(POWER_GRIP_UPDATE) > 0 &&
+                            dbHelper.eventDAO().getNumOfEventsByEventType(OTHER_CONTRACTOR_UPDATE) > 0) {
+                            intent = new Intent(LoadingActivity.this, CMActivity.class);
+                            intent.putExtra("start_time", getIntent().getStringExtra("start_time"));
+                            intent.putExtra("object", response.body());
+                            startActivity(intent);
+                            finish();
+                        } else {*/
+                            getThirdPartInfo(response.body());
+                     //   }
                     } else {
                         //first get relevant PM Checklist.........
                         if (dbHelper.eventDAO().getNumberOfEventsByUpdateBodyKey(PM_Step_ONE) > 0) {
@@ -242,4 +317,5 @@ public class LoadingActivity extends AppCompatActivity {
         super.onBackPressed();
         mSharePrefrence.setLock(false);
     }
+
 }

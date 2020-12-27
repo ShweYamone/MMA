@@ -26,6 +26,7 @@ import com.freelance.solutionhub.mma.fragment.Second_Step_PM_Fragment;
 import com.freelance.solutionhub.mma.model.Event;
 import com.freelance.solutionhub.mma.model.PMServiceInfoDetailModel;
 import com.freelance.solutionhub.mma.model.ReturnStatus;
+import com.freelance.solutionhub.mma.model.ThirdPartyModel;
 import com.freelance.solutionhub.mma.model.UpdateEventBody;
 import com.freelance.solutionhub.mma.util.ApiClient;
 import com.freelance.solutionhub.mma.util.ApiInterface;
@@ -53,6 +54,7 @@ import static com.freelance.solutionhub.mma.util.AppConstant.EXPECTED_COMPLETION
 import static com.freelance.solutionhub.mma.util.AppConstant.FAULT_DETECTED_DATE;
 import static com.freelance.solutionhub.mma.util.AppConstant.FAULT_STATUS;
 import static com.freelance.solutionhub.mma.util.AppConstant.NO;
+import static com.freelance.solutionhub.mma.util.AppConstant.NO_TYPE;
 import static com.freelance.solutionhub.mma.util.AppConstant.OFFICER;
 import static com.freelance.solutionhub.mma.util.AppConstant.REFER_DATE;
 import static com.freelance.solutionhub.mma.util.AppConstant.TELCO_UPDATE;
@@ -130,6 +132,7 @@ public class TelcoActivity extends AppCompatActivity implements View.OnClickList
     private String preDetectedDate = "";
     private String preActionDate = "";
     private String preActionTaken = "";
+    private ThirdPartyModel telcoObj = new ThirdPartyModel();
 
 
     @Override
@@ -145,6 +148,7 @@ public class TelcoActivity extends AppCompatActivity implements View.OnClickList
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
+        telcoObj = (ThirdPartyModel)getIntent().getSerializableExtra("telco");
         eventLists = new ArrayList<>();
         apiInterface = ApiClient.getClient(this);
         mSharePreferenceHelper = new SharePreferenceHelper(this);
@@ -166,9 +170,7 @@ public class TelcoActivity extends AppCompatActivity implements View.OnClickList
         actionDateTime.setOnClickListener(this);
         save.setOnClickListener(this);
 
-        if (dbHelper.eventDAO().getNumOfEventsByEventType(TELCO_UPDATE) > 0) {
-            displaySavedData();
-        }
+        displaySavedData();
 
 
         /**
@@ -326,51 +328,82 @@ public class TelcoActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void displaySavedData() {
+        boolean hasThirdPartyObj = true;
+        if (telcoObj.getThirdPartyType().equals(NO_TYPE))
+            hasThirdPartyObj = false;
 
-        if (dbHelper.eventDAO().getEventValueCount(TELCO_UPDATE , THIRD_PARTY_NUMBER) > 0) {
-            preTelcoNo = dbHelper.eventDAO().getEventValue(TELCO_UPDATE , THIRD_PARTY_NUMBER);
-            telcoNo.setText(preTelcoNo);
-        }
-        if (dbHelper.eventDAO().getEventValueCount(TELCO_UPDATE, DOCKET_NUMBER) > 0) {
+        if (dbHelper.eventDAO().getEventValueCount(TELCO_UPDATE , THIRD_PARTY_NUMBER) > 0)
+            preTelcoNo = dbHelper.eventDAO().getEventValue(TELCO_UPDATE, THIRD_PARTY_NUMBER);
+        else if (hasThirdPartyObj && telcoObj.getThirdPartyNumber() != null)
+            preTelcoNo = telcoObj.getThirdPartyNumber();
+        telcoNo.setText(preTelcoNo);
+
+        if (dbHelper.eventDAO().getEventValueCount(TELCO_UPDATE, DOCKET_NUMBER) > 0)
             preDockerNo = dbHelper.eventDAO().getEventValue(TELCO_UPDATE, DOCKET_NUMBER);
-            dockerNo.setText(preDockerNo);
-        }
-        if (dbHelper.eventDAO().getEventValueCount(TELCO_UPDATE, CT_PERSONNEL) > 0) {
+        else if (hasThirdPartyObj && telcoObj.getDocketNumber() != null)
+            preDockerNo = telcoObj.getDocketNumber();
+        dockerNo.setText(preDockerNo);
+
+        if (dbHelper.eventDAO().getEventValueCount(TELCO_UPDATE, CT_PERSONNEL) > 0)
             preCTPersonnel = dbHelper.eventDAO().getEventValue(TELCO_UPDATE, CT_PERSONNEL);
-            ctPersonnel.setText(preCTPersonnel);
-        }
-        if (dbHelper.eventDAO().getEventValueCount(TELCO_UPDATE, REFER_DATE) > 0) {
+        else if (hasThirdPartyObj && telcoObj.getCtPersonnel() != null)
+            preCTPersonnel = telcoObj.getCtPersonnel();
+        ctPersonnel.setText(preCTPersonnel);
+
+
+        if (dbHelper.eventDAO().getEventValueCount(TELCO_UPDATE, REFER_DATE) > 0)
             preReferDate = dbHelper.eventDAO().getEventValue(TELCO_UPDATE, REFER_DATE);
+        else if (hasThirdPartyObj && telcoObj.getReferDate() != null)
+            preReferDate = telcoObj.getReferDate();
+        if (!preReferDate.equals(""))
             referDateTime.setText(preReferDate);
-        }
-        if (dbHelper.eventDAO().getEventValueCount(TELCO_UPDATE, EXPECTED_COMPLETION_DATE) > 0) {
+
+        if (dbHelper.eventDAO().getEventValueCount(TELCO_UPDATE, EXPECTED_COMPLETION_DATE) > 0)
             preCompletionDate = dbHelper.eventDAO().getEventValue(TELCO_UPDATE, EXPECTED_COMPLETION_DATE);
+        else if (hasThirdPartyObj && telcoObj.getExpectedCompletionDate() != null)
+            preCompletionDate = telcoObj.getExpectedCompletionDate();
+        if (!preCompletionDate.equals(""))
             expectedCompletionDateTime.setText(preCompletionDate);
-        }
-        if (dbHelper.eventDAO().getEventValueCount(TELCO_UPDATE, CLEARANCE_DATE) > 0) {
+
+        if (dbHelper.eventDAO().getEventValueCount(TELCO_UPDATE, CLEARANCE_DATE) > 0)
             preClearanceDate = dbHelper.eventDAO().getEventValue(TELCO_UPDATE, CLEARANCE_DATE);
+        else if (hasThirdPartyObj && telcoObj.getClearanceDate() != null)
+            preClearanceDate = telcoObj.getClearanceDate();
+        if (!preClearanceDate.equals(""))
             clearanceDateTime.setText(preClearanceDate);
-        }
-        if (dbHelper.eventDAO().getEventValueCount(TELCO_UPDATE, FAULT_STATUS) > 0) {
+
+        if (dbHelper.eventDAO().getEventValueCount(TELCO_UPDATE, FAULT_STATUS) > 0)
             preFaultStatus = dbHelper.eventDAO().getEventValue(TELCO_UPDATE, FAULT_STATUS);
-            telcoFaultStatus.setText(preFaultStatus);
-        }
-        if (dbHelper.eventDAO().getEventValueCount(TELCO_UPDATE, OFFICER) > 0) {
+        else if (hasThirdPartyObj && telcoObj.getFaultStatus() != null)
+            preFaultStatus = telcoObj.getFaultStatus();
+        telcoFaultStatus.setText(preFaultStatus);
+
+        if (dbHelper.eventDAO().getEventValueCount(TELCO_UPDATE, OFFICER) > 0)
             preOfficer = dbHelper.eventDAO().getEventValue(TELCO_UPDATE, OFFICER);
-            telcoOfficer.setText(preOfficer);
-        }
-        if (dbHelper.eventDAO().getEventValueCount(TELCO_UPDATE, FAULT_DETECTED_DATE) > 0) {
+        else if (hasThirdPartyObj && telcoObj.getOfficer() != null)
+            preOfficer = telcoObj.getOfficer();
+        telcoOfficer.setText(preOfficer);
+
+        if (dbHelper.eventDAO().getEventValueCount(TELCO_UPDATE, FAULT_DETECTED_DATE) > 0)
             preDetectedDate = dbHelper.eventDAO().getEventValue(TELCO_UPDATE, FAULT_DETECTED_DATE);
+        else if (hasThirdPartyObj && telcoObj.getFaultDetectedDate() != null)
+            preDetectedDate = telcoObj.getFaultDetectedDate();
+        if (!preDetectedDate.equals(""))
             faultDetectedDateTime.setText(preDetectedDate);
-        }
-        if (dbHelper.eventDAO().getEventValueCount(TELCO_UPDATE, ACTION_DATE) > 0) {
+
+        if (dbHelper.eventDAO().getEventValueCount(TELCO_UPDATE, ACTION_DATE) > 0)
             preActionDate = dbHelper.eventDAO().getEventValue(TELCO_UPDATE, ACTION_DATE);
+        else if (hasThirdPartyObj && telcoObj.getActionDate() != null)
+            preActionDate = telcoObj.getActionDate();
+        if (!preActionDate.equals(""))
             actionDateTime.setText(preActionDate);
-        }
+
         if (dbHelper.eventDAO().getEventValueCount(TELCO_UPDATE, ACTION_TAKEN) > 0) {
             preActionTaken = dbHelper.eventDAO().getEventValue(TELCO_UPDATE, ACTION_TAKEN);
-            actionTaken.setText(preActionTaken);
         }
+        else if (hasThirdPartyObj && telcoObj.getActionTaken() != null)
+            preActionTaken = telcoObj.getActionTaken();
+        actionTaken.setText(preActionTaken);
     }
     private void addEvents(){
         Log.v("TELCO","H"+telcoNo.getText().toString()+"H");

@@ -127,9 +127,7 @@ public class NFCReadingActivity extends AppCompatActivity {
             }
         });
 
-        date = new Date();
-        ts=new Timestamp(date.getTime());
-        currentDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(ts);
+
         ////////////////////////////////
 
         if (getIntent().hasExtra("TAG_OUT")) {
@@ -215,7 +213,9 @@ public class NFCReadingActivity extends AppCompatActivity {
     }
 
     private void perFormTagEvent() {
-
+        date = new Date();
+        Timestamp timestamp = new Timestamp(date.getTime());
+        currentDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
         UpdateEventBody eventBody;
         eventBody = new UpdateEventBody(
                 mSharedPreference.getUserName(), mSharedPreference.getUserId(), currentDateTime, serviceOrderId, events

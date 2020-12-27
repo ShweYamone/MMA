@@ -50,6 +50,7 @@ import com.freelance.solutionhub.mma.model.Event;
 import com.freelance.solutionhub.mma.model.PMServiceInfoDetailModel;
 import com.freelance.solutionhub.mma.model.PhotoModel;
 import com.freelance.solutionhub.mma.model.ReturnStatus;
+import com.freelance.solutionhub.mma.model.ThirdPartyModel;
 import com.freelance.solutionhub.mma.model.UpdateEventBody;
 import com.freelance.solutionhub.mma.model.UploadPhotoModel;
 import com.freelance.solutionhub.mma.util.ApiClient;
@@ -228,6 +229,10 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
     private String preThirdPartyComment = "";
     private boolean spinnerCauseAutoSelect = false;
     private boolean spinnerRemedyAutoSelect = false;
+
+    private ThirdPartyModel telcoObj = new ThirdPartyModel();
+    private ThirdPartyModel powerGripObj = new ThirdPartyModel();
+    private ThirdPartyModel otherObj = new ThirdPartyModel();
 
     Intent intent;
     public Second_Step_CM_Fragment() {
@@ -412,7 +417,6 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
         else if (pmServiceInfoModel.getThirdPartyFaultDescription() != null)
             preThirdPartyComment = pmServiceInfoModel.getThirdPartyFaultDescription();
 
-
         spinnerActualProbleCode.setSelection(actualProblemCode.indexOf(preActualProblemCode));
 
         tvScanFault.setText(preScan1Result);
@@ -587,16 +591,19 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
             case R.id.ll_telco:
                 intent = new Intent(getContext(), TelcoActivity.class);
                 intent.putExtra("id", pmServiceInfoModel.getId());
+                intent.putExtra("telco", getArguments().getSerializable("telco"));
                 getContext().startActivity(intent);
                 break;
             case R.id.ll_power_grid:
                 intent = new Intent(getContext(), PowerGridActivity.class);
                 intent.putExtra("id", pmServiceInfoModel.getId());
+                intent.putExtra("powerGrid", getArguments().getSerializable("powerGrid"));
                 getContext().startActivity(intent);
                 break;
             case R.id.ll_other:
                 intent = new Intent(getContext(), OtherActivity.class);
                 intent.putExtra("id", pmServiceInfoModel.getId());
+                intent.putExtra("other", getArguments().getSerializable("other"));
                 getContext().startActivity(intent);
                 break;
 
@@ -617,7 +624,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
         dbHelper.updateEventBodyDAO().insert(eventBody);
         mSharePreference.userClickCMStepTwo(true);
 
-        Log.i("EventsUpload", "uploadEvents: " + dbHelper.eventDAO().getEventsToUpload(CM_Step_TWO));
+
         if (network.isNetworkAvailable()) {
             if (dbHelper.eventDAO().getNumberEventsToUpload(CM_Step_TWO) > 0) {
                 eventBody.setEvents(dbHelper.eventDAO().getEventsToUpload(CM_Step_TWO));
@@ -628,7 +635,8 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
                     @Override
                     public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
                         if (response.isSuccessful()) {
-                            Toast.makeText(getContext(), eventBody.getEvents().size() + "Events Uploaded!", Toast.LENGTH_SHORT).show();
+                            Log.i("EventsUpload", "uploadEvents: " );
+                            Toast.makeText(getContext(), eventBody.getEvents().size() + " Events Uploaded!", Toast.LENGTH_SHORT).show();
                             dbHelper.eventDAO().update(YES, CM_Step_TWO);
                           //  Toast.makeText(getContext(), dbHelper.eventDAO().getEvents(CM_Step_TWO).get(0).alreadyUploaded , Toast.LENGTH_SHORT).show();
                             ((CMActivity)getActivity()).hideProgressBar();
@@ -722,7 +730,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
         );
         tempEvent.setEvent_id(SERVICE_ORDER_UPDATE + REPORTED_PROBLEM);
         tempEvent.setUpdateEventBodyKey(CM_Step_TWO);
-        if (dbHelper.eventDAO().getEventValueCount(SERVICE_ORDER_UPDATE, REPORTED_PROBLEM) == 0) {
+        if (preActualProblemCode.equals("") && dbHelper.eventDAO().getEventValueCount(SERVICE_ORDER_UPDATE, REPORTED_PROBLEM) == 0) {
             tempEvent.setAlreadyUploaded(NO);
             dbHelper.eventDAO().insert(tempEvent);
         }
