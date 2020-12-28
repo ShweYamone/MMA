@@ -58,6 +58,7 @@ import static com.freelance.solutionhub.mma.util.AppConstant.NO;
 import static com.freelance.solutionhub.mma.util.AppConstant.NO_TYPE;
 import static com.freelance.solutionhub.mma.util.AppConstant.OFFICER;
 import static com.freelance.solutionhub.mma.util.AppConstant.OTHER_CONTRACTOR_UPDATE;
+import static com.freelance.solutionhub.mma.util.AppConstant.POWER_GRIP_UPDATE;
 import static com.freelance.solutionhub.mma.util.AppConstant.REFER_DATE;
 import static com.freelance.solutionhub.mma.util.AppConstant.REMARKS_ON_FAULT;
 import static com.freelance.solutionhub.mma.util.AppConstant.YES;
@@ -146,6 +147,12 @@ public class OtherActivity extends AppCompatActivity implements View.OnClickList
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         otherObj = (ThirdPartyModel) getIntent().getSerializableExtra("other");
+        if (!otherObj.getThirdPartyType().equals(NO_TYPE)) {
+            Event tempEvent;
+            tempEvent = new Event(OTHER_CONTRACTOR_UPDATE, "", "***");
+            tempEvent.setEvent_id("other_temp");
+        }
+
         eventLists = new ArrayList<>();
         apiInterface = ApiClient.getClient(this);
         mSharePreferenceHelper = new SharePreferenceHelper(this);

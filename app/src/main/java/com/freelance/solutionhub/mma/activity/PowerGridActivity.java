@@ -151,6 +151,13 @@ public class PowerGridActivity extends AppCompatActivity implements View.OnClick
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         powerGridObj = (ThirdPartyModel)getIntent().getSerializableExtra("powerGrid");
+        if (!powerGridObj.getThirdPartyType().equals(NO_TYPE)) {
+            Event tempEvent;
+            tempEvent = new Event(POWER_GRIP_UPDATE, "", "***");
+            tempEvent.setEvent_id("power_temp");
+        }
+
+
         eventLists = new ArrayList<>();
         apiInterface = ApiClient.getClient(this);
         mSharePreferenceHelper = new SharePreferenceHelper(this);

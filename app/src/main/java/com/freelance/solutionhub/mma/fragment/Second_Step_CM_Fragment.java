@@ -576,6 +576,14 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
                     tempEvent.setEvent_id("faultpartcodefaultpartcode");
                     dbHelper.eventDAO().insert(tempEvent);
 
+                    tempEvent = new Event("reported", "reported", tvReportedCode.getText().toString()+"");
+                    tempEvent.setEvent_id("reportedreported");
+                    dbHelper.eventDAO().insert(tempEvent);
+
+                    tempEvent = new Event("remedy", "remedy", preRemedyCode);
+                    tempEvent.setEvent_id("remedyremedy");
+                    dbHelper.eventDAO().insert(tempEvent);
+
 
                 }
                 break;

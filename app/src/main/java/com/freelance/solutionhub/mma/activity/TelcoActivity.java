@@ -149,6 +149,13 @@ public class TelcoActivity extends AppCompatActivity implements View.OnClickList
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         telcoObj = (ThirdPartyModel)getIntent().getSerializableExtra("telco");
+        Event tempEvent;
+        if (!telcoObj.getThirdPartyType().equals(NO_TYPE)) {
+            tempEvent = new Event(TELCO_UPDATE, "", "***");
+            tempEvent.setEvent_id("telco_temp");
+        }
+
+
         eventLists = new ArrayList<>();
         apiInterface = ApiClient.getClient(this);
         mSharePreferenceHelper = new SharePreferenceHelper(this);
