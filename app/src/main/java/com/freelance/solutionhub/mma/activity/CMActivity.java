@@ -75,6 +75,9 @@ public class CMActivity extends AppCompatActivity {
         dbHelper = InitializeDatabase.getInstance(this);
         mSharedPreference = new SharePreferenceHelper(this);
         mSharedPreference.setLock(false);
+        mSharedPreference.userClickCMStepOne(false);
+        mSharedPreference.userClickCMStepTwo(false);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
