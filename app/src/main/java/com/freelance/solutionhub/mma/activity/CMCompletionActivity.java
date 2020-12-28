@@ -179,4 +179,5 @@ public class CMCompletionActivity extends AppCompatActivity implements View.OnCl
                 startActivity(intent);
         }
     }
+
 }
