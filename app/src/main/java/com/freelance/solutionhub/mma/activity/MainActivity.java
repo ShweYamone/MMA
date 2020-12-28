@@ -9,6 +9,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -308,14 +309,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         notificationBuilder
                 .setDefaults(Notification.BADGE_ICON_SMALL)
                 .setWhen(System.currentTimeMillis())
-                .setSmallIcon(R.drawable.mma_icon)
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.mma_icon))
+                .setSmallIcon(R.drawable.mma_ico2,1)
                 .setContentTitle(title)
                 .setContentText(type)
                 .setNumber(count)
                 .setAutoCancel(true)
                 .setStyle(new NotificationCompat.BigTextStyle()
                         .bigText(type));
-        notificationManager.notify(notiCount++, notificationBuilder.build());
+        notificationManager.notify(0, notificationBuilder.build());
     }
 
 
