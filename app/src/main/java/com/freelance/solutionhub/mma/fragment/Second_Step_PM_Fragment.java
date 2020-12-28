@@ -205,9 +205,12 @@ public class Second_Step_PM_Fragment extends Fragment implements View.OnClickLis
      */
     private File[] uploadPhoto(ArrayList<PhotoModel> p) {
         File[] files = new File[p.size()];
+        date = new Date();
+        Timestamp timestamp = new Timestamp(date.getTime());
+        String actualDateTime = new SimpleDateFormat("yyyy-MM-ddHH:mm:ss").format(timestamp);
         for(int i = 0 ; i < p.size(); i++) {
             File filesDir = getContext().getFilesDir();
-            File fileName = new File(filesDir, mSharePreferenceHelper.getUserId()+getSaltString() + ".jpg");
+            File fileName = new File(filesDir, mSharePreferenceHelper.getUserId()+actualDateTime+ getSaltString() + ".jpg");
 
             Log.i("FILE_NAME", fileName.toString());
             OutputStream os;
