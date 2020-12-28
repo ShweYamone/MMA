@@ -572,6 +572,9 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
                     preThirdPartyComment = etThridPartyComment.getText().toString() + "";
                     preScan1Result = tvScanFault.getText().toString();
                     preScan2Result = tvScanReplacement.getText().toString();
+                    Event tempEvent = new Event("faultpartcode", "faultpartcode", preScan1Result);
+                    tempEvent.setEvent_id("faultpartcodefaultpartcode");
+                    dbHelper.eventDAO().insert(tempEvent);
 
 
                 }
