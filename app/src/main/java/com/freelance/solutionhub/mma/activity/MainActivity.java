@@ -309,8 +309,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         notificationBuilder
                 .setDefaults(Notification.BADGE_ICON_SMALL)
                 .setWhen(System.currentTimeMillis())
-                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.mma_icon))
-                .setSmallIcon(R.drawable.mma_ico2,1)
+                .setSmallIcon(R.drawable.mma_notification)
                 .setContentTitle(title)
                 .setContentText(type)
                 .setNumber(count)
