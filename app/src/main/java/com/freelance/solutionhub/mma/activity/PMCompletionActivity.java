@@ -64,12 +64,12 @@ public class PMCompletionActivity extends AppCompatActivity implements View.OnCl
         sharePreferenceHelper.setLock(false);
 
         tvMSONumber.setText(getIntent().getStringExtra("id"));
-        tvPanelId.setText(getIntent().getStringExtra("panelId"));
-        tvSchedule.setText(getIntent().getStringExtra("schedule_date"));
-        tvScheduleType.setText(getIntent().getStringExtra("schedule_type"));
-        tvStartDateTime.setText(getIntent().getStringExtra("start_time"));
+        tvPanelId.setText(dbHelper.eventDAO().getEventValue("panelId", "panelId"));
+        tvSchedule.setText(dbHelper.eventDAO().getEventValue("schedule_date", "schedule_date"));
+        tvScheduleType.setText(dbHelper.eventDAO().getEventValue("schedule_type", "schedule_type"));
+        tvStartDateTime.setText(dbHelper.eventDAO().getEventValue("start_time", "start_time"));
         tvEndDateTime.setText(getIntent().getStringExtra("end_time"));
-        tvRemarks.setText(getIntent().getStringExtra("remarks"));
+        tvRemarks.setText(dbHelper.eventDAO().getEventValue("remarks", "remarks"));
 
         btnClose.setOnClickListener(this);
 

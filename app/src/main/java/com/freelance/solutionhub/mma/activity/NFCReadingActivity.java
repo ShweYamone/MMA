@@ -219,12 +219,17 @@ public class NFCReadingActivity extends AppCompatActivity {
                         intent.putExtra("schedule_date", getIntent().getStringExtra("schedule_date"));
                         intent.putExtra("schedule_type", getIntent().getStringExtra("schedule_type"));
                         intent.putExtra("start_time", getIntent().getStringExtra("start_time"));
+                     //   intent.putExtra("object", getIntent().getSerializableExtra("object"));
                         intent.putExtra("end_time", currentDateTime);
                     } else {
                         intent = new Intent(NFCReadingActivity.this, CMCompletionActivity.class);
+                    //    intent.putExtra("object", getIntent().getSerializableExtra("object"));
                         intent.putExtra("location", getIntent().getStringExtra("location"));
                     }
+                    intent.putExtra("object", getIntent().getSerializableExtra("object"));
                     intent.putExtra("id", serviceOrderId);
+                 //   Toast.makeText(getApplicationContext(), getIntent().getStringExtra("panelId"), Toast.LENGTH_SHORT).show();
+                    Log.i("IntentTracing", "onResponse: " + getIntent().getStringExtra("panelId"));
                     intent.putExtra("panelId", getIntent().getStringExtra("panelId"));
                     intent.putExtra("remarks", getIntent().getStringExtra("remarks")+"");
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

@@ -133,33 +133,43 @@ public class Second_Step_PM_Fragment extends Fragment implements View.OnClickLis
                     updateEventBody.setServiceOrderStatus(JOBDONE);
                     updateEventBody.setRemark(remarks.getText().toString()+"");
                     dbHelper.updateEventBodyDAO().insert(updateEventBody);
-
-                    Call<VerificationReturnBody> call = apiInterface.verifyWorks("Bearer " + mSharePreferenceHelper.getToken(), "CM20205B6923C2");
-                    call.enqueue(new Callback<VerificationReturnBody>() {
-                        @Override
-                        public void onResponse(Call<VerificationReturnBody> call, Response<VerificationReturnBody> response) {
-                            if (response.isSuccessful()) {
-                                VerificationReturnBody verificationReturnBody = response.body();
-                                if (verificationReturnBody.isFault_resolved()) {
+                    if (network.isNetworkAvailable()) {
+                        Call<VerificationReturnBody> call = apiInterface.verifyWorks("Bearer " + mSharePreferenceHelper.getToken(), pmServiceInfoDetailModel.getId());
+                        call.enqueue(new Callback<VerificationReturnBody>() {
+                            @Override
+                            public void onResponse(Call<VerificationReturnBody> call, Response<VerificationReturnBody> response) {
+                                if (response.isSuccessful()) {
+                                    VerificationReturnBody verificationReturnBody = response.body();
+                                    if (verificationReturnBody.isFault_resolved()) {
+                                        btnJobDone.setClickable(true);
+                                        btnJobDone.setBackground(getResources().getDrawable(R.drawable.round_rect_shape_button));
+                                    } else {
+                                        //  Toast.makeText(getContext(), "Verification failed", Toast.LENGTH_SHORT).show();
+                                        showDialog("Verification", "Verification Failed.");
+                                        btnJobDone.setClickable(false);
+                                        btnJobDone.setBackground(getResources().getDrawable(R.drawable.round_rectangle_shape_button_grey));
+                                    }
                                     btnJobDone.setClickable(true);
                                     btnJobDone.setBackground(getResources().getDrawable(R.drawable.round_rect_shape_button));
-                                } else {
-                                    Toast.makeText(getContext(), "Verification failed", Toast.LENGTH_SHORT).show();
-                                    btnJobDone.setClickable(false);
-                                    btnJobDone.setBackground(getResources().getDrawable(R.drawable.round_rectangle_shape_button_grey));
+
+                                }
+                                else {
+                                    Toast.makeText(getContext(), response.code() + "", Toast.LENGTH_SHORT).show();
                                 }
                             }
-                            else {
-                                Toast.makeText(getContext(), response.code() + "", Toast.LENGTH_SHORT).show();
+
+                            @Override
+                            public void onFailure(Call<VerificationReturnBody> call, Throwable t) {
+
                             }
-                        }
+                        });
+                    }else {
+                        showDialog("Network Connetion",
+                                "The network connection is lost. Please, check your connectivity and try again");
+                    }
 
-                        @Override
-                        public void onFailure(Call<VerificationReturnBody> call, Throwable t) {
-
-                        }
-                    });
-                }else {
+                }
+                else {
                     showDialog("Unsaved Work", "You have unsaved works in Step 1.");
                 }
                 break;
@@ -287,7 +297,28 @@ public class Second_Step_PM_Fragment extends Fragment implements View.OnClickLis
         intent.putExtra("schedule_date", pmServiceInfoDetailModel.getCreationDate());
         intent.putExtra("schedule_type", pmServiceInfoDetailModel.getPreventativeMaintenanceCheckType());
         intent.putExtra("start_time", getArguments().getString("start_time"));
+        intent.putExtra("object", pmServiceInfoDetailModel);
         intent.putExtra("remarks", remarks.getText().toString()+"");
+        Event tempEvent;
+        tempEvent = new Event("panelId", "panelId", pmServiceInfoDetailModel.getPanelId()+"");
+        tempEvent.setEvent_id("panelIdpanelId");
+        dbHelper.eventDAO().insert(tempEvent);
+
+        tempEvent = new Event("schedule_date", "schedule_date", pmServiceInfoDetailModel.getCreationDate());
+        tempEvent.setEvent_id("schedule_datescheduledate");
+        dbHelper.eventDAO().insert(tempEvent);
+
+        tempEvent = new Event("schedule_type", "schedule_type", pmServiceInfoDetailModel.getPreventativeMaintenanceCheckType());
+        tempEvent.setEvent_id("typetype");
+        dbHelper.eventDAO().insert(tempEvent);
+
+        tempEvent = new Event("start_time", "start_time", getArguments().getString("start_time"));
+        tempEvent.setEvent_id("start_timestart_time");
+        dbHelper.eventDAO().insert(tempEvent);
+
+        tempEvent = new Event("remarks", "remarks", remarks.getText().toString() + "");
+        tempEvent.setEvent_id("remarks");
+        dbHelper.eventDAO().insert(tempEvent);
 
         intent.putExtra("JOB_DONE", 1);
         intent.putExtra("TAG_OUT", 1);

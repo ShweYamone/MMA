@@ -74,6 +74,7 @@ import static com.freelance.solutionhub.mma.util.AppConstant.POST_BUCKET_NAME;
 import static com.freelance.solutionhub.mma.util.AppConstant.PRE_BUCKET_NAME;
 import static com.freelance.solutionhub.mma.util.AppConstant.SERVICE_ORDER_UPDATE;
 import static com.freelance.solutionhub.mma.util.AppConstant.YES;
+import static com.freelance.solutionhub.mma.util.AppConstant.pm;
 
 public class Third_Step_CM_Fragment extends Fragment implements View.OnClickListener{
 
@@ -179,16 +180,16 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
             case R.id.btn_verify:
 
                 if (!mSharePreferenceHelper.userClickStepOneOrNot() && !mSharePreferenceHelper.userClickStepTwoOrNot() ) {
-                    dialogTitle = "Unsaved Works";
-                    dialogBody = "You have unsaved changes in Step One and Two.";
+                    dialogTitle = "Unsaved Work";
+                    dialogBody = "You have unsaved works in Step One and Two.";
                     showDialog();
                 } else if (!mSharePreferenceHelper.userClickStepOneOrNot()) {
-                    dialogTitle = "Unsaved Works";
-                    dialogBody = "You have unsaved changes in Step One.";
+                    dialogTitle = "Unsaved Work";
+                    dialogBody = "You have unsaved works in Step One.";
                     showDialog();
                 } else if (!mSharePreferenceHelper.userClickStepTwoOrNot()) {
-                    dialogTitle = "Unsaved Works";
-                    dialogBody = "You have unsaved changes in Step and Two.";
+                    dialogTitle = "Unsaved Work";
+                    dialogBody = "You have unsaved works in Step and Two.";
                     showDialog();
                 } else {
                     date = new Date();
@@ -210,7 +211,7 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
                     if(network.isNetworkAvailable()) {
 
 
-                        Call<VerificationReturnBody> call = apiInterface.verifyWorks("Bearer " + mSharePreferenceHelper.getToken(), "CM20205B6923C2");
+                        Call<VerificationReturnBody> call = apiInterface.verifyWorks("Bearer " + mSharePreferenceHelper.getToken(), pmServiceInfoDetailModel.getId());
                         call.enqueue(new Callback<VerificationReturnBody>() {
                             @Override
                             public void onResponse(Call<VerificationReturnBody> call, Response<VerificationReturnBody> response) {
@@ -220,15 +221,22 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
                                         jobDone.setClickable(true);
                                         jobDone.setBackground(getResources().getDrawable(R.drawable.round_rect_shape_button));
                                     } else {
-                                        Toast.makeText(getContext(), "Verification failed", Toast.LENGTH_SHORT).show();
+                                        dialogTitle = "Verification";
+                                        dialogBody = "Verification Failed.";
+                                        showDialog();
+                                       // Toast.makeText(getContext(), "Verification failed", Toast.LENGTH_SHORT).show();
                                         jobDone.setClickable(false);
                                         jobDone.setBackground(getResources().getDrawable(R.drawable.round_rectangle_shape_button_grey));
                                     }
+                                    jobDone.setClickable(true);
+                                    jobDone.setBackground(getResources().getDrawable(R.drawable.round_rectangle_shape_button_grey));
+
                                 }
                                 else {
                                     Toast.makeText(getContext(), response.code() + "", Toast.LENGTH_SHORT).show();
                                 }
                             }
+
 
                             @Override
                             public void onFailure(Call<VerificationReturnBody> call, Throwable t) {
@@ -587,36 +595,6 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
 
         ((CMActivity)getActivity()).hideProgressBar();
         completeWork();
-        /*
-        Call<ReturnStatus> call = apiInterface.updateStatusEvent("Bearer " + mSharePreferenceHelper.getToken(),
-                updateEventBody);
-        call.enqueue(new Callback<ReturnStatus>() {
-            @Override
-            public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
-                if (response.isSuccessful()) {
-                    Toast.makeText(getContext(),response.body().getStatus() + " Step Three Event Uploaded.",Toast.LENGTH_SHORT).show();
-
-                } else {
-                    Toast.makeText(getContext(), "response " + response.code(), Toast.LENGTH_LONG).show();
-                    ResponseBody errorReturnBody = response.errorBody();
-                    try {
-                        Log.e("UPLOAD_ERROR", "onResponse: " + errorReturnBody.string());
-                        ((CMActivity)getActivity()).hideProgressBar();
-
-
-                    } catch (IOException e) {
-
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ReturnStatus> call, Throwable t) {
-                Toast.makeText(getContext(), "response " + "FAILURE", Toast.LENGTH_LONG).show();
-                ((CMActivity)getActivity()).hideProgressBar();
-                Log.e("UPLOAD_ERROR", "onResponse: " + t.getMessage());
-            }
-        });*/
     }
 
     private void completeWork() {
@@ -625,6 +603,17 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
         intent.putExtra("panelId", pmServiceInfoDetailModel.getPanelId()+"");
         intent.putExtra("remarks", remarks.getText().toString()+"");
         intent.putExtra("location", pmServiceInfoDetailModel.getBusStopLocation()+"");
+        intent.putExtra("object", pmServiceInfoDetailModel);
+        Event tempEvent;
+        tempEvent = new Event("panelId", "panelId", pmServiceInfoDetailModel.getPanelId());
+        tempEvent.setEvent_id("panelIdpanelId");
+        dbHelper.eventDAO().insert(tempEvent);
+        tempEvent = new Event("remarks", "remarks", remarks.getText().toString()+"");
+        tempEvent.setEvent_id("remarksremarks");
+        dbHelper.eventDAO().insert(tempEvent);
+        tempEvent = new Event("location", "location", pmServiceInfoDetailModel.getBusStopLocation());
+        tempEvent.setEvent_id("locationlocation");
+        dbHelper.eventDAO().insert(tempEvent);
 
         intent.putExtra("TAG_OUT", 1);
         intent.putExtra("JOB_DONE", 1);

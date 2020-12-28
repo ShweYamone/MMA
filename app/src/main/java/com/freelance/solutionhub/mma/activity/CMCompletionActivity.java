@@ -2,6 +2,7 @@ package com.freelance.solutionhub.mma.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,6 +15,8 @@ import android.widget.Toast;
 
 import com.freelance.solutionhub.mma.DB.InitializeDatabase;
 import com.freelance.solutionhub.mma.R;
+import com.freelance.solutionhub.mma.model.PMServiceInfoDetailModel;
+import com.freelance.solutionhub.mma.model.ServiceInfoModel;
 import com.freelance.solutionhub.mma.util.SharePreferenceHelper;
 
 import butterknife.BindView;
@@ -23,6 +26,7 @@ import static com.freelance.solutionhub.mma.util.AppConstant.FAULT_PART_CODE;
 import static com.freelance.solutionhub.mma.util.AppConstant.OTHER_CONTRACTOR_UPDATE;
 import static com.freelance.solutionhub.mma.util.AppConstant.POWER_GRIP_UPDATE;
 import static com.freelance.solutionhub.mma.util.AppConstant.REMEDY;
+import static com.freelance.solutionhub.mma.util.AppConstant.REPLACEMENT_PART_CODE;
 import static com.freelance.solutionhub.mma.util.AppConstant.REPORTED_PROBLEM;
 import static com.freelance.solutionhub.mma.util.AppConstant.SERVICE_ORDER_UPDATE;
 import static com.freelance.solutionhub.mma.util.AppConstant.TELCO_UPDATE;
@@ -73,10 +77,12 @@ public class CMCompletionActivity extends AppCompatActivity implements View.OnCl
         dbHelper = InitializeDatabase.getInstance(this);
         sharePreferenceHelper.setLock(false);
 
+        PMServiceInfoDetailModel serviceInfoModel = (PMServiceInfoDetailModel)getIntent().getSerializableExtra("object");
+
         msoNumber.setText(getIntent().getStringExtra("id"));
-        panelId.setText(getIntent().getStringExtra("panelId"));
+        panelId.setText(dbHelper.eventDAO().getEventValue("panelId" , "panelId"));
         reportedProblemCode.setText(dbHelper.eventDAO().getEventValue(SERVICE_ORDER_UPDATE, REPORTED_PROBLEM));
-        faultCode.setText(dbHelper.eventDAO().getEventValue(SERVICE_ORDER_UPDATE, FAULT_PART_CODE));
+        faultCode.setText(dbHelper.eventDAO().getEventValue(SERVICE_ORDER_UPDATE, REPLACEMENT_PART_CODE));
         remedyAction.setText(dbHelper.eventDAO().getEventValue(SERVICE_ORDER_UPDATE, REMEDY));
         if (dbHelper.eventDAO().getNumOfEventsByEventType(TELCO_UPDATE) > 0) {
             thirdPartyFault.setText("Telco");
@@ -87,8 +93,8 @@ public class CMCompletionActivity extends AppCompatActivity implements View.OnCl
         else
             thirdPartyFault.setText("");
 
-        location.setText(getIntent().getStringExtra("location"));
-        tvRemarks.setText(getIntent().getStringExtra("remarks"));
+        location.setText(dbHelper.eventDAO().getEventValue("location", "location"));
+        tvRemarks.setText(dbHelper.eventDAO().getEventValue("remarks", "remarks"));
         btnClose.setOnClickListener(this);
 
         /**
