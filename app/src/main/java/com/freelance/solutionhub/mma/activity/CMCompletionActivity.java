@@ -82,7 +82,7 @@ public class CMCompletionActivity extends AppCompatActivity implements View.OnCl
         msoNumber.setText(getIntent().getStringExtra("id"));
         panelId.setText(dbHelper.eventDAO().getEventValue("panelId" , "panelId"));
         reportedProblemCode.setText(dbHelper.eventDAO().getEventValue(SERVICE_ORDER_UPDATE, REPORTED_PROBLEM));
-        faultCode.setText(dbHelper.eventDAO().getEventValue(SERVICE_ORDER_UPDATE, REPLACEMENT_PART_CODE));
+        faultCode.setText(dbHelper.eventDAO().getEventValue(SERVICE_ORDER_UPDATE, FAULT_PART_CODE));
         remedyAction.setText(dbHelper.eventDAO().getEventValue(SERVICE_ORDER_UPDATE, REMEDY));
         if (dbHelper.eventDAO().getNumOfEventsByEventType(TELCO_UPDATE) > 0) {
             thirdPartyFault.setText("Telco");

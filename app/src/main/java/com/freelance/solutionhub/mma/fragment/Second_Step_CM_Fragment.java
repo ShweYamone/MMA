@@ -573,6 +573,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
                     preScan1Result = tvScanFault.getText().toString();
                     preScan2Result = tvScanReplacement.getText().toString();
 
+
                 }
                 break;
 
