@@ -89,7 +89,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.MyViewHolder
             myViewHolder.newsImage.setImageBitmap(getBitmapFromEncodedString(singleRowArrayList.get(i).getImage()));
         }else {
             myViewHolder.delete.setVisibility(View.GONE);
-            url = "http://alb-java-apps-776075049.ap-southeast-1.elb.amazonaws.com:9000/pids-post-maintenance-photo/mobile-12020-12-2912:56:16E4ILD6H_1609223178758.jpg";
+            url = "http://alb-java-apps-776075049.ap-southeast-1.elb.amazonaws.com:9000/"+singleRowArrayList.get(i).getImage();
             glideUrl = new GlideUrl(url,
                     new LazyHeaders.Builder()
                             .addHeader("Authorization", "Bearer " + mSharedPreferences.getToken())
@@ -109,7 +109,13 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.MyViewHolder
             public void onClick(View v) {
                 Intent intent = new Intent(context, FullScreenActivity.class);
                 Bundle extras = new Bundle();
-                extras.putParcelable("imagebitmap", getBitmapFromEncodedString(singleRowArrayList.get(i).getImage()));
+                if(singleRowArrayList.get(i).getUid() == 1){
+                    extras.putParcelable("imagebitmap", getBitmapFromEncodedString(singleRowArrayList.get(i).getImage()));
+                    extras.putBoolean("isRejected",false);
+                }else {
+                    extras.putString("image", singleRowArrayList.get(i).getImage());
+                    extras.putBoolean("isRejected",true);
+                }
                 intent.putExtras(extras);
                 context.startActivity(intent);
             }

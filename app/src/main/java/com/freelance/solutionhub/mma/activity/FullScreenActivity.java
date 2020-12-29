@@ -10,16 +10,23 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PowerManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.model.GlideUrl;
+import com.bumptech.glide.load.model.LazyHeaders;
+import com.bumptech.glide.request.RequestOptions;
 import com.freelance.solutionhub.mma.R;
 import com.freelance.solutionhub.mma.util.SharePreferenceHelper;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
 import static com.freelance.solutionhub.mma.util.AppConstant.user_inactivity_time;
 
 public class FullScreenActivity extends AppCompatActivity {
@@ -34,6 +41,9 @@ public class FullScreenActivity extends AppCompatActivity {
     private Handler handler;
     private boolean startHandler = true;
     private SharePreferenceHelper sharePreferenceHelper;
+    private String url;
+    private GlideUrl glideUrl;
+    private RequestOptions options;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +54,9 @@ public class FullScreenActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
+        options = new RequestOptions()
+                .diskCacheStrategy(DiskCacheStrategy.NONE);
+
         View decorView = getWindow().getDecorView();
 // Hide the status bar.
         int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
@@ -51,7 +64,28 @@ public class FullScreenActivity extends AppCompatActivity {
 // Remember that you should never show the action bar if the
 // status bar is hidden, so hide that too if necessary.
         Bundle extras = getIntent().getExtras();
-        Bitmap bmp = (Bitmap) extras.getParcelable("imagebitmap");
+        boolean isRejected = extras.getBoolean("isRejected");
+        if(isRejected){
+            Log.i("image",extras.getString("image"));
+            url = "http://alb-java-apps-776075049.ap-southeast-1.elb.amazonaws.com:9000"+extras.get("image");
+            glideUrl = new GlideUrl(url,
+                    new LazyHeaders.Builder()
+                            .addHeader("Authorization", "Bearer " + sharePreferenceHelper.getToken())
+                            .build());
+
+
+            Glide.with(this)
+                    .load(glideUrl)
+                    .transition(withCrossFade())
+                    .thumbnail(0.5f)
+                    .apply(options)
+                    .into(imgDisplay);
+
+        }else {
+
+            Bitmap bmp = (Bitmap) extras.getParcelable("imagebitmap");
+            imgDisplay.setImageBitmap(bmp );
+        }
 
         imgClose.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -60,8 +94,6 @@ public class FullScreenActivity extends AppCompatActivity {
             }
         });
 
-
-        imgDisplay.setImageBitmap(bmp );
 
         /**
          after certain amount of user inactivity, asks for passcode

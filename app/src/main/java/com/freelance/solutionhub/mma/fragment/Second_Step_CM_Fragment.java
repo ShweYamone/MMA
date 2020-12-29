@@ -48,7 +48,9 @@ import com.freelance.solutionhub.mma.adapter.PhotoAdapter;
 import com.freelance.solutionhub.mma.delegate.FirstStepPMFragmentCallback;
 import com.freelance.solutionhub.mma.model.Event;
 import com.freelance.solutionhub.mma.model.PMServiceInfoDetailModel;
+import com.freelance.solutionhub.mma.model.PhotoAttachementModel;
 import com.freelance.solutionhub.mma.model.PhotoModel;
+import com.freelance.solutionhub.mma.model.PreMaintenance;
 import com.freelance.solutionhub.mma.model.ReturnStatus;
 import com.freelance.solutionhub.mma.model.ThirdPartyModel;
 import com.freelance.solutionhub.mma.model.UpdateEventBody;
@@ -342,6 +344,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
 
             }
         });
+
         spinnerRemedyCode.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -353,6 +356,32 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
 
             }
         });
+
+        Call<PhotoAttachementModel> photoAttachementModelCall = apiInterface.getPhotoAttachment("Bearer "+mSharePreference.getToken(), pmServiceInfoModel.getId());
+        photoAttachementModelCall.enqueue(new Callback<PhotoAttachementModel>() {
+            @Override
+            public void onResponse(Call<PhotoAttachementModel> call, Response<PhotoAttachementModel> response) {
+                PhotoAttachementModel photoAttachementModel = response.body();
+                if(response.isSuccessful()){
+                    List<PreMaintenance> preMaintenances = photoAttachementModel.getPreMaintenance();
+                    if(preMaintenances != null) {
+                        for (PreMaintenance e : preMaintenances) {
+                            Log.e("filepath", e.getFilePath());
+                            postModelList.add(new PhotoModel(e.getFilePath(), 2));
+
+                        }
+                        postPhotoAdapter.notifyDataSetChanged();
+                    }
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<PhotoAttachementModel> call, Throwable t) {
+
+            }
+        });
+
 
         displayMaintenanceWorkInformation();
 

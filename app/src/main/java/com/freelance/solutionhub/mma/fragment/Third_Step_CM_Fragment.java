@@ -450,6 +450,7 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
                             count++;
                             if(files.length == count)
                                 updatePreEvents();
+                            Log.i("PHOTOPATH",returnStatus.getData().getFileUrl());
                             Toast.makeText(getContext(), returnStatus.getStatus() + ":PHOTO"+count, Toast.LENGTH_SHORT).show();
                         } else {
                             Log.i("PhotoUpload", "doInBackground: " + response.message() + response.headers());

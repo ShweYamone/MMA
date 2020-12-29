@@ -190,11 +190,15 @@ public class First_Step_CM_Fragment extends Fragment {
                 PhotoAttachementModel photoAttachementModel = response.body();
                 if(response.isSuccessful()){
                     List<PreMaintenance> preMaintenances = photoAttachementModel.getPreMaintenance();
-                    if(preMaintenances != null) for(PreMaintenance e : preMaintenances){
-                        Log.e("filepath",e.getFilePath());
-                        prePhotoModels.add(new PhotoModel(e.getFileName(),2));
+                    if(preMaintenances != null) {
+                        preMaintenancePhoto.setClickable(false);
+                        for (PreMaintenance e : preMaintenances) {
+                            Log.e("filepath", e.getFilePath());
+                            prePhotoModels.add(new PhotoModel(e.getFilePath(), 2));
+
+                        }
+                        prePhotoAdapter.notifyDataSetChanged();
                     }
-                    prePhotoAdapter.notifyDataSetChanged();
                 }
 
             }
