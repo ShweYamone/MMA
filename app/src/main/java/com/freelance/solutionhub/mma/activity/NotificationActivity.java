@@ -313,10 +313,14 @@ public class NotificationActivity extends AppCompatActivity  {
                         date = items.get(i).getInserted_at();
                         timestamp = new Timestamp(date.getTime());
                         String actualDateTime = new SimpleDateFormat("dd.MM.yyyy/HH:mm aa").format(timestamp);
-                        if(payload.getMso_type().equals("PM")) {
-                            notificationList.add(new NotificationModel(items.get(i).getId(),"PM-MSO "+items.get(i).getPayload().getMso_id(),"You received an PM MSO Alert.",actualDateTime,items.get(i).isIs_read()));
+                        if(items.get(i).getType().equals("mso")) {
+                            if (payload.getMso_type().equals("PM")) {
+                                notificationList.add(new NotificationModel(items.get(i).getId(), "PM-MSO " + items.get(i).getPayload().getMso_id(), "You received an PM MSO Alert.", actualDateTime, items.get(i).isIs_read()));
+                            } else {
+                                notificationList.add(new NotificationModel(items.get(i).getId(), "CM-MSO " + items.get(i).getPayload().getMso_id(), "You received an CM MSO Alert.", actualDateTime, items.get(i).isIs_read()));
+                            }
                         }else {
-                            notificationList.add(new NotificationModel(items.get(i).getId(),"CM-MSO "+items.get(i).getPayload().getMso_id(),"You received an CM MSO Alert.",actualDateTime, items.get(i).isIs_read()));
+                            notificationList.add(new NotificationModel(items.get(i).getId(),"Announcement", payload.getText(),actualDateTime,items.get(i).isIs_read()));
                         }
 
                     }
@@ -369,10 +373,14 @@ public class NotificationActivity extends AppCompatActivity  {
                         date = items.get(i).getInserted_at();
                         timestamp = new Timestamp(date.getTime());
                         String actualDateTime = new SimpleDateFormat("dd.MM.yyyy/HH:mm aa").format(timestamp);
-                        if(payload.getMso_type().equals("PM")) {
-                            notificationList.add(i,new NotificationModel(items.get(i).getId(),"PM-MSO "+items.get(i).getPayload().getMso_id(),"You received an PM MSO Alert.",actualDateTime,false));
+                        if(items.get(i).getType().equals("mso")) {
+                            if (payload.getMso_type().equals("PM")) {
+                                notificationList.add(new NotificationModel(items.get(i).getId(), "PM-MSO " + items.get(i).getPayload().getMso_id(), "You received an PM MSO Alert.", actualDateTime, items.get(i).isIs_read()));
+                            } else {
+                                notificationList.add(new NotificationModel(items.get(i).getId(), "CM-MSO " + items.get(i).getPayload().getMso_id(), "You received an CM MSO Alert.", actualDateTime, items.get(i).isIs_read()));
+                            }
                         }else {
-                            notificationList.add(i,new NotificationModel(items.get(i).getId(),"CM-MSO "+items.get(i).getPayload().getMso_id(),"You received an CM MSO Alert.",actualDateTime,false));
+                            notificationList.add(new NotificationModel(items.get(i).getId(),"Announcement", payload.getText(),actualDateTime,items.get(i).isIs_read()));
                         }
 
                     }
@@ -412,10 +420,14 @@ public class NotificationActivity extends AppCompatActivity  {
                         date = items.get(i).getInserted_at();
                         timestamp = new Timestamp(date.getTime());
                         String actualDateTime = new SimpleDateFormat("dd.MM.yyyy/HH:mm aa").format(timestamp);
-                        if(payload.getMso_type().equals("PM")) {
-                            notificationList.add(new NotificationModel(items.get(i).getId(),"PM-MSO "+items.get(i).getPayload().getMso_id(),"You received an PM MSO Alert.",actualDateTime,items.get(i).isIs_read()));
+                        if(items.get(i).getType().equals("mso")) {
+                            if (payload.getMso_type().equals("PM")) {
+                                notificationList.add(new NotificationModel(items.get(i).getId(), "PM-MSO " + items.get(i).getPayload().getMso_id(), "You received an PM MSO Alert.", actualDateTime, items.get(i).isIs_read()));
+                            } else {
+                                notificationList.add(new NotificationModel(items.get(i).getId(), "CM-MSO " + items.get(i).getPayload().getMso_id(), "You received an CM MSO Alert.", actualDateTime, items.get(i).isIs_read()));
+                            }
                         }else {
-                            notificationList.add(new NotificationModel(items.get(i).getId(),"CM-MSO "+items.get(i).getPayload().getMso_id(),"You received an CM MSO Alert.",actualDateTime,items.get(i).isIs_read()));
+                            notificationList.add(new NotificationModel(items.get(i).getId(),"Announcement", payload.getText(),actualDateTime,items.get(i).isIs_read()));
                         }
 
                     }

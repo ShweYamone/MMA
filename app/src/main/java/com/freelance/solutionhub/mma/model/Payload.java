@@ -5,6 +5,15 @@ public class Payload{
     public String mso_id;
     public String mso_type;
     public String status;
+    public String text;
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
 
     public String getEvent_publisher() {
         return event_publisher;
