@@ -7,6 +7,9 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
@@ -17,6 +20,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Environment;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -48,11 +52,13 @@ import com.freelance.solutionhub.mma.util.SharePreferenceHelper;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -117,6 +123,8 @@ public class First_Step_CM_Fragment extends Fragment {
     private static final int CAMERA_REQUEST = 1888;
     private static final int MY_CAMERA_PERMISSION_CODE = 100;
     private String id;
+    private String actualDateTime;
+    private Timestamp timestamp;
     ArrayList<Event> preEventList;
     ArrayList<PhotoModel> prePhotoModels;
     PhotoAdapter prePhotoAdapter;
@@ -175,27 +183,27 @@ public class First_Step_CM_Fragment extends Fragment {
             }
         });
 
-//        Call<PhotoAttachementModel> photoAttachementModelCall = apiInterface.getPhotoAttachment("Bearer "+mSharePerferenceHelper.getToken(), pmServiceInfoModel.getId());
-//        photoAttachementModelCall.enqueue(new Callback<PhotoAttachementModel>() {
-//            @Override
-//            public void onResponse(Call<PhotoAttachementModel> call, Response<PhotoAttachementModel> response) {
-//                PhotoAttachementModel photoAttachementModel = response.body();
-//                if(response.isSuccessful()){
-//                    List<PreMaintenance> preMaintenances = photoAttachementModel.getPreMaintenance();
-//                    if(preMaintenances != null) for(PreMaintenance e : preMaintenances){
-//                        Log.e("filepath",e.getFilePath());
-//                        prePhotoModels.add(new PhotoModel(e.getFileName(),2));
-//                    }
-//                    prePhotoAdapter.notifyDataSetChanged();
-//                }
-//
-//            }
-//
-//            @Override
-//            public void onFailure(Call<PhotoAttachementModel> call, Throwable t) {
-//
-//            }
-//        });
+        Call<PhotoAttachementModel> photoAttachementModelCall = apiInterface.getPhotoAttachment("Bearer "+mSharePerferenceHelper.getToken(), pmServiceInfoModel.getId());
+        photoAttachementModelCall.enqueue(new Callback<PhotoAttachementModel>() {
+            @Override
+            public void onResponse(Call<PhotoAttachementModel> call, Response<PhotoAttachementModel> response) {
+                PhotoAttachementModel photoAttachementModel = response.body();
+                if(response.isSuccessful()){
+                    List<PreMaintenance> preMaintenances = photoAttachementModel.getPreMaintenance();
+                    if(preMaintenances != null) for(PreMaintenance e : preMaintenances){
+                        Log.e("filepath",e.getFilePath());
+                        prePhotoModels.add(new PhotoModel(e.getFileName(),2));
+                    }
+                    prePhotoAdapter.notifyDataSetChanged();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<PhotoAttachementModel> call, Throwable t) {
+
+            }
+        });
 
         save.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -340,12 +348,13 @@ public class First_Step_CM_Fragment extends Fragment {
         {
             theImage = (Bitmap) data.getExtras().get("data");
             photo = getEncodedString(theImage);
-            Log.v("ORI",photo);
-            prePhotoModels.add(new PhotoModel(photo, 1));
-            prePhotoAdapter.notifyDataSetChanged();
+                Log.v("ORI", photo);
+                prePhotoModels.add(new PhotoModel(photo, 1));
+                prePhotoAdapter.notifyDataSetChanged();
 
         }
     }
+
 
 
     /**
@@ -369,7 +378,7 @@ public class First_Step_CM_Fragment extends Fragment {
 
         ByteArrayOutputStream os = new ByteArrayOutputStream();
 
-        bitmap.compress(Bitmap.CompressFormat.JPEG,100, os);
+        bitmap.compress(Bitmap.CompressFormat.JPEG,50, os);
 
        /* or use below if you want 32 bit images
 

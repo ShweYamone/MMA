@@ -25,6 +25,11 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.model.GlideUrl;
+import com.bumptech.glide.load.model.LazyHeaders;
+import com.bumptech.glide.request.RequestOptions;
 import com.freelance.solutionhub.mma.R;
 import com.freelance.solutionhub.mma.activity.CMActivity;
 import com.freelance.solutionhub.mma.activity.FullScreenActivity;
@@ -52,17 +57,21 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
+
 public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.MyViewHolder>{
     Context context;
     ArrayList<PhotoModel> singleRowArrayList;
-    SQLiteDatabase db;
-    private ApiInterface apiInterface;
     private SharePreferenceHelper mSharedPreferences;
+    private GlideUrl glideUrl;
+    private RequestOptions options;
+    private String url;
     public PhotoAdapter(Context context, ArrayList<PhotoModel> singleRowArrayList) {
         this.context = context;
         this.singleRowArrayList = singleRowArrayList;
-        apiInterface = ApiClient.getClient(context);
         mSharedPreferences = new SharePreferenceHelper(context);
+        options = new RequestOptions()
+                .diskCacheStrategy(DiskCacheStrategy.NONE);
 
     }
 
@@ -79,31 +88,20 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.MyViewHolder
         if(singleRowArrayList.get(i).getUid() == 1){
             myViewHolder.newsImage.setImageBitmap(getBitmapFromEncodedString(singleRowArrayList.get(i).getImage()));
         }else {
-        //    myViewHolder.delete.setVisibility(View.GONE);
-            Call<ResponseBody> imageCall = apiInterface.downloadPhoto("Bearer "+mSharedPreferences.getToken(),singleRowArrayList.get(i).getImage());
-            imageCall.enqueue(new Callback<ResponseBody>() {
-                @Override
-                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+            myViewHolder.delete.setVisibility(View.GONE);
+            url = "http://alb-java-apps-776075049.ap-southeast-1.elb.amazonaws.com:9000/pids-post-maintenance-photo/mobile-12020-12-2912:56:16E4ILD6H_1609223178758.jpg";
+            glideUrl = new GlideUrl(url,
+                    new LazyHeaders.Builder()
+                            .addHeader("Authorization", "Bearer " + mSharedPreferences.getToken())
+                            .build());
 
-                    Log.i("photo","HI");
-                    if (response.isSuccessful()) {
-                        if (response.body() != null) {
-                            // display the image data in a ImageView or save it
-                            Bitmap bmp = BitmapFactory.decodeStream(response.body().byteStream());
-                            myViewHolder.newsImage.setImageBitmap(bmp);
-                        } else {
-                            // TODO
-                        }
-                    } else {
-                        // TODO
-                    }
-                }
 
-                @Override
-                public void onFailure(Call<ResponseBody> call, Throwable t) {
-
-                }
-            });
+            Glide.with(context)
+                    .load(glideUrl)
+                    .transition(withCrossFade())
+                    .thumbnail(0.5f)
+                    .apply(options)
+                    .into(myViewHolder.newsImage);
         }
 
         myViewHolder.newsImage.setOnClickListener(new View.OnClickListener() {

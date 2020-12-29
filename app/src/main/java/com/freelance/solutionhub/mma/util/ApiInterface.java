@@ -63,7 +63,7 @@ public interface ApiInterface {
     Call<ResponseBody> getFaultMappings(@Header("Authorization") String auth);
 
     //Upload Photo
-    @POST("https://ufqzjtxo67.execute-api.ap-southeast-1.amazonaws.com/dev/upload/{bucketName}")
+    @POST("http://alb-java-apps-776075049.ap-southeast-1.elb.amazonaws.com:9000/upload/{bucketName}")
     Call<ReturnStatus> uploadPhoto(@Header("Authorization") String auth, @Path("bucketName") String bucketName, @Body RequestBody file);
 
     //GET Data with QRCode
@@ -83,7 +83,7 @@ public interface ApiInterface {
     Call<PhotoAttachementModel> getPhotoAttachment(@Header("Authorization") String auth, @Path("service_order_id") String serviceOrderId);
 
     //Get download photo
-    @GET("https://ufqzjtxo67.execute-api.ap-southeast-1.amazonaws.com/dev{photo_filename}")
+    @GET("http://alb-java-apps-776075049.ap-southeast-1.elb.amazonaws.com:9000{photo_filename}")
     Call<ResponseBody> downloadPhoto(@Header("Authorization") String auth, @Path("photo_filename") String fileName );
 
     //Get ThirdParty Info

@@ -111,6 +111,7 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
     private ApiInterface apiInterface;
     private PMServiceInfoDetailModel pmServiceInfoDetailModel;
     private String actualDateTime;
+    private  Timestamp timestamp;
 
     private boolean stepOneUploaded = false;
     private boolean stepTwoUploaded = false;
@@ -228,8 +229,8 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
                                         jobDone.setClickable(false);
                                         jobDone.setBackground(getResources().getDrawable(R.drawable.round_rectangle_shape_button_grey));
                                     }
-                                //    jobDone.setClickable(true);
-                                //    jobDone.setBackground(getResources().getDrawable(R.drawable.round_rectangle_shape_button_grey));
+                                    // jobDone.setClickable(true);
+                                    // jobDone.setBackground(getResources().getDrawable(R.drawable.round_rectangle_shape_button_grey));
 
                                 }
                                 else {
@@ -308,7 +309,7 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
     private File[] uploadPhoto(ArrayList<PhotoModel> p) {
         File[] files = new File[p.size()];
         date = new Date();
-        Timestamp timestamp = new Timestamp(date.getTime());
+       timestamp = new Timestamp(date.getTime());
         String actualDateTime = new SimpleDateFormat("yyyy-MM-ddHH:mm:ss").format(timestamp);
         for(int i = 0 ; i < p.size(); i++) {
             File filesDir = getContext().getFilesDir();
@@ -560,6 +561,7 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
                             count++;
                             if(files.length == count)
                                 updatePreEvents();
+                            Log.i("PHOTOPATH",returnStatus.getData().getFileUrl());
                             Toast.makeText(getContext(), returnStatus.getStatus() + ":PHOTO"+count, Toast.LENGTH_SHORT).show();
                         } else {
                             Log.i("PhotoUpload", "doInBackground: " + response.message() + response.headers());
