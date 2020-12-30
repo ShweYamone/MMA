@@ -40,6 +40,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.security.SecureRandom;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -83,7 +84,11 @@ public class Second_Step_PM_Fragment extends Fragment implements View.OnClickLis
     private Network network;
     private InitializeDatabase dbHelper;
     private String actualDateTime = "";
+    private  Random rnd;
+    /* Assign a string that contains the set of characters you allow. */
+    private static final String symbols = "ABCDEFGJKLMNPRSTUVWXYZ0123456789";
 
+    private char[] buf;
 
     public Second_Step_PM_Fragment(){}
     @Override
@@ -108,6 +113,8 @@ public class Second_Step_PM_Fragment extends Fragment implements View.OnClickLis
         btnJobDone.setOnClickListener(this);
         verify.setOnClickListener(this);
 
+        rnd =  new SecureRandom();
+        buf = new char[6];
         if (dbHelper.updateEventBodyDAO().getNumberOfUpdateEventsById(PM_Step_TWO) > 0) {
             UpdateEventBody temp = dbHelper.updateEventBodyDAO().getUpdateEventBodyByID(PM_Step_TWO);
             remarks.setText(temp.getRemark() + "");
@@ -210,7 +217,7 @@ public class Second_Step_PM_Fragment extends Fragment implements View.OnClickLis
         String actualDateTime = new SimpleDateFormat("yyyy-MM-ddHH:mm:ss").format(timestamp);
         for(int i = 0 ; i < p.size(); i++) {
             File filesDir = getContext().getFilesDir();
-            File fileName = new File(filesDir, mSharePreferenceHelper.getUserId()+actualDateTime+ getSaltString() + ".jpg");
+            File fileName = new File(filesDir, mSharePreferenceHelper.getUserId()+actualDateTime+ nextString() + ".jpg");
 
             Log.i("FILE_NAME", fileName.toString());
             OutputStream os;
@@ -235,17 +242,11 @@ public class Second_Step_PM_Fragment extends Fragment implements View.OnClickLis
         Bitmap img = BitmapFactory.decodeByteArray(arr, 0, arr.length);
         return img;
     }
-    protected String getSaltString() {
-        String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
-        StringBuilder salt = new StringBuilder();
-        Random rnd = new Random();
-        while (salt.length() < 7) { // length of the random string.
-            int index = (int) (rnd.nextFloat() * SALTCHARS.length());
-            salt.append(SALTCHARS.charAt(index));
-        }
-        String saltStr = salt.toString();
-        return saltStr;
-
+    public String nextString()
+    {
+        for (int idx = 0; idx < buf.length; ++idx)
+            buf[idx] = symbols.charAt(rnd.nextInt(symbols.length()));
+        return new String(buf);
     }
 
     private void updateSTEP_Two() {
@@ -379,6 +380,7 @@ public class Second_Step_PM_Fragment extends Fragment implements View.OnClickLis
                             count++;
                             if(files.length == count)
                                 updatePreEvents();
+                            Log.i("PHOTOPATH",returnStatus.getData().getFileUrl());
                             Toast.makeText(getContext(), returnStatus.getStatus() + ":PHOTO"+count, Toast.LENGTH_SHORT).show();
                         } else {
                             Log.i("PhotoUpload", "doInBackground: " + response.message() + response.headers());

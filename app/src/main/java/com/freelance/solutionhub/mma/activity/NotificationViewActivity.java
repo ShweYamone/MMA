@@ -126,28 +126,22 @@ public class NotificationViewActivity extends AppCompatActivity {
                             Log.i("Websocket", "NOT Joined with ");
                         }
                     });
-
-            channel.on("mso_created", new IMessageCallback() {
-                @Override
-                public void onMessage(Envelope envelope) {
-                    Log.i("NEW_MESSAGE",envelope.toString());
-                    final JsonNode user = envelope.getPayload().get("mso_id");
-                    if (user == null || user instanceof NullNode) {
-                    }
-                    else {
-                    }
-
-                }
-            });
-
-            channel.on("mso_rejected", new IMessageCallback() {
-                @Override
-                public void onMessage(Envelope envelope) {
-                    //  Toast.makeText(getApplicationContext(), "CLOSED: " + envelope.toString(), Toast.LENGTH_SHORT).show();
-                    //   tvResult.setText("CLOSED: " + envelope.toString());
-                    Log.i("CLOSED", envelope.toString());
-                }
-            });
+//
+//            channel.on("mso_created", new IMessageCallback() {
+//                @Override
+//                public void onMessage(Envelope envelope) {
+//                    Log.i("NEW_MESSAGE",envelope.toString());
+//                }
+//            });
+//
+//            channel.on("mso_rejected", new IMessageCallback() {
+//                @Override
+//                public void onMessage(Envelope envelope) {
+//                    //  Toast.makeText(getApplicationContext(), "CLOSED: " + envelope.toString(), Toast.LENGTH_SHORT).show();
+//                    //   tvResult.setText("CLOSED: " + envelope.toString());
+//                    Log.i("CLOSED", envelope.toString());
+//                }
+//            });
 
 
         } catch (Exception e) {
