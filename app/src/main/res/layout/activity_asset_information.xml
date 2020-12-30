@@ -61,7 +61,6 @@
                             android:layout_margin="@dimen/margin_small"
                             android:text="@string/asset_information"
                             android:textColor="@color/colorLightBlack"
-                            android:fontFamily="@font/crimson_text_regular"
                             android:textStyle="bold"
                             android:textSize="@dimen/txt_size_ex_large"
                             android:layout_width="match_parent"
@@ -178,7 +177,6 @@
                             android:text="@string/temp_text"
                             android:textAlignment="viewStart"
                             android:textColor="@color/colorLightBlack"
-                            android:fontFamily="@font/crimson_text_regular"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"/>
                     </LinearLayout>

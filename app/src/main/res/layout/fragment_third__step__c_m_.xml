@@ -15,9 +15,9 @@
             android:id="@+id/tv_remarks"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_small"
             android:textColor="@color/colorBlack"
             android:text="@string/remarks"
-            android:fontFamily="@font/crimson_text_bold"
             android:textSize="@dimen/txt_size_large"/>
         <LinearLayout
             android:id="@+id/ll_input_text"
@@ -52,7 +52,6 @@
                 android:layout_height="wrap_content"
                 android:text="@string/sunny"
                 android:textSize="@dimen/txt_size_large"
-                android:fontFamily="@font/crimson_text_regular"
                 android:checked="true" />
 
             <RadioButton
@@ -61,7 +60,6 @@
                 android:layout_height="wrap_content"
                 android:text="@string/cloudy"
                 android:textSize="@dimen/txt_size_large"
-                android:fontFamily="@font/crimson_text_regular"
                 android:checked="false" />
 
             <RadioButton
@@ -70,7 +68,6 @@
                 android:layout_height="wrap_content"
                 android:text="@string/raining"
                 android:textSize="@dimen/txt_size_large"
-                android:fontFamily="@font/crimson_text_regular"
                 android:checked="false" />
 
             <RadioButton
@@ -79,7 +76,6 @@
                 android:layout_height="wrap_content"
                 android:text="@string/heavy_rain"
                 android:textSize="@dimen/txt_size_large"
-                android:fontFamily="@font/crimson_text_regular"
                 android:checked="false" />
         </RadioGroup>
 

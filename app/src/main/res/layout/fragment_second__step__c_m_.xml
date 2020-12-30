@@ -48,7 +48,6 @@
                             android:layout_weight="2"
                             android:textColor="@color/colorPrimary"
                             android:text="@string/acknowledged_by"
-                            android:fontFamily="@font/crimson_text_regular"
                             android:textSize="@dimen/txt_size_normal"/>
 
                         <TextView
@@ -57,7 +56,6 @@
                             android:layout_weight="2"
                             android:textColor="@color/colorPrimary"
                             android:text="@string/acknowledge_date_time"
-                            android:fontFamily="@font/crimson_text_regular"
                             android:textSize="@dimen/txt_size_normal"/>
                     </LinearLayout>
                     <LinearLayout
@@ -72,7 +70,6 @@
                             android:layout_weight="2"
                             android:textColor="@color/colorBlack"
                             android:text="John"
-                            android:fontFamily="@font/crimson_text_regular"
                             android:textSize="@dimen/txt_size_normal"/>
 
                         <TextView
@@ -82,7 +79,6 @@
                             android:layout_weight="2"
                             android:textColor="@color/colorBlack"
                             android:text="23.06.2019 / 12.00.14"
-                            android:fontFamily="@font/crimson_text_regular"
                             android:textSize="@dimen/txt_size_normal"/>
                     </LinearLayout>
                 </LinearLayout>
@@ -98,7 +94,6 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/colorPrimary"
                         android:text="@string/first_respond_date_time"
-                        android:fontFamily="@font/crimson_text_regular"
                         android:textSize="@dimen/txt_size_normal"/>
                     <TextView
                         android:id="@+id/tv_response_datetime"
@@ -106,7 +101,6 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/colorBlack"
                         android:text="24.06.2019 / 11.00.18"
-                        android:fontFamily="@font/crimson_text_regular"
                         android:textSize="@dimen/txt_size_normal"/>
                 </LinearLayout>
 
@@ -257,7 +251,6 @@
                         android:layout_height="wrap_content"
                         android:text="@string/third_party_fault_comments"
                         android:textColor="@color/colorPrimary"
-                        android:fontFamily="@font/crimson_text_regular"
                         android:textSize="@dimen/txt_size_large"/>
 
                     <EditText
@@ -265,7 +258,6 @@
                         android:text=""
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/crimson_text_regular"
                         android:textSize="@dimen/txt_size_large"
                         android:hint="@string/comment_here"/>
 
@@ -275,7 +267,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/add_third_party_information"
-                        android:fontFamily="@font/crimson_text_regular"
                         android:textSize="@dimen/txt_size_large"/>
 
                     <!-- Telco Design -->
@@ -414,7 +405,6 @@
                 android:text="@string/part_replacement"
                 android:textColor="@color/colorBlack"
                 android:layout_marginTop="@dimen/margin_small"
-                android:fontFamily="@font/crimson_text_regular"
                 android:textSize="@dimen/txt_size_large"/>
 
             <LinearLayout
@@ -520,7 +510,6 @@
                 android:text="@string/attach_post_maintenance_photo"
                 android:textColor="@color/colorBlack"
                 android:layout_marginTop="@dimen/margin_normal"
-                android:fontFamily="@font/crimson_text_bold"
                 android:textSize="@dimen/txt_size_large"/>
 
             <LinearLayout

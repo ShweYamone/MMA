@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.freelance.solutionhub.mma.R;
@@ -49,6 +50,9 @@ public class LoginActivity extends AppCompatActivity {
     @BindView(R.id.btnLogin)
     Button btnLogin;
 
+    @BindView(R.id.progress_bar)
+    RelativeLayout progress_bar;
+
     private ApiInterface apiInterface;
     private SharePreferenceHelper mSharedPreferance;
 
@@ -75,57 +79,68 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String username = etUserName.getText().toString();
                 String password = etPassword.getText().toString();
-                UserModel userModel = new UserModel(username, password);
-                Call<LoginModel> call = apiInterface.getToken(userModel);
-                call.enqueue(new Callback<LoginModel>() {
-                    @Override
-                    public void onResponse(Call<LoginModel> call, Response<LoginModel> response) {
-                        LoginModel loginModel = response.body();
-                        if(response.isSuccessful()){
-                            mSharedPreferance.setLogin(loginModel.getUsername(), loginModel.getRefreshToken());
-                            if (mSharedPreferance.isLogin()) {
-                                Toast.makeText(getApplicationContext(), "login success", Toast.LENGTH_SHORT).show();
-                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                                startActivity(intent);
-                                finish();
-                            }
-                        } else {
-                            String errorMessage = "login error";
-                            if (response.code() == 400) {
-                                try {
-                                    ResponseBody errorReturnBody = response.errorBody();
-                                    JSONObject jsonObject = new JSONObject(errorReturnBody.string());
+                if (!username.equals("") && !password.equals("")) {
+                    progress_bar.setVisibility(View.VISIBLE);
+                    UserModel userModel = new UserModel(username, password);
+                    Call<LoginModel> call = apiInterface.getToken(userModel);
+                    call.enqueue(new Callback<LoginModel>() {
+                        @Override
+                        public void onResponse(Call<LoginModel> call, Response<LoginModel> response) {
+                            LoginModel loginModel = response.body();
+                            if(response.isSuccessful()){
+                                mSharedPreferance.setLogin(loginModel.getUsername(), loginModel.getRefreshToken());
+                                if (mSharedPreferance.isLogin()) {
+                                    Toast.makeText(getApplicationContext(), "login success", Toast.LENGTH_SHORT).show();
+                                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                    startActivity(intent);
+                                    finish();
+                                }
+                            } else {
+                                String errorMessage = "login error";
+                                if (response.code() == 400) {
+                                    try {
+                                        ResponseBody errorReturnBody = response.errorBody();
+                                        JSONObject jsonObject = new JSONObject(errorReturnBody.string());
 
-                                    String error = "login error" ; String error_desc = "login error";
-                                    if (jsonObject.has("error")) {
-                                        if (jsonObject.getString("error").equals(INVALID_GRANT)) {
-                                            errorMessage = INVALID_GRANT_MSG;
-                                        } else if (jsonObject.getString("error").equals(ACCOUNT_LOCK))
-                                            errorMessage = ACCOUNT_LOCK_MSG;
+                                        String error = "login error" ; String error_desc = "login error";
+                                        if (jsonObject.has("error")) {
+                                            if (jsonObject.getString("error").equals(INVALID_GRANT)) {
+                                                errorMessage = INVALID_GRANT_MSG;
+                                            } else if (jsonObject.getString("error").equals(ACCOUNT_LOCK))
+                                                errorMessage = ACCOUNT_LOCK_MSG;
+                                        }
+
+                                    } catch (IOException e) {
+
+                                    } catch (JSONException e) {
+
+                                    }
+                                    finally {
+                                        Toast.makeText(getApplicationContext(), errorMessage + "", Toast.LENGTH_SHORT).show();
                                     }
 
-                                } catch (IOException e) {
 
-                                } catch (JSONException e) {
-
-                                }
-                                finally {
-                                    Toast.makeText(getApplicationContext(), errorMessage + "", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(getApplicationContext(), response.code() + "", Toast.LENGTH_SHORT).show();
                                 }
 
-
-                            } else {
-                                Toast.makeText(getApplicationContext(), response.code() + "", Toast.LENGTH_SHORT).show();
                             }
+                            progress_bar.setVisibility(View.GONE);
 
                         }
-                    }
 
-                    @Override
-                    public void onFailure(Call<LoginModel> call, Throwable t) {
-                        Toast.makeText(getApplicationContext(), "response didn't go well", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                        @Override
+                        public void onFailure(Call<LoginModel> call, Throwable t) {
+                            Toast.makeText(getApplicationContext(), "response didn't go well", Toast.LENGTH_SHORT).show();
+                            progress_bar.setVisibility(View.GONE);
+                        }
+                    });
+                } else {
+                    Toast.makeText(getApplicationContext(), "Userid or Password is empty.", Toast.LENGTH_SHORT).show();
+                }
+
+
+
 
             }
         });

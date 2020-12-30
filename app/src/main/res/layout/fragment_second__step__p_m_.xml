@@ -15,9 +15,9 @@
             android:id="@+id/tv_remarks"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_small"
             android:textColor="@color/colorBlack"
             android:text="@string/remarks"
-            android:fontFamily="@font/crimson_text_bold"
             android:textSize="@dimen/txt_size_large"/>
         <LinearLayout
             android:layout_below="@+id/tv_remarks"

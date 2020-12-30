@@ -1,58 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.LoginActivity"
-    android:orientation="vertical">
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/margin_large"
-        android:textColor="@color/colorPrimary"
-        android:layout_gravity="center"
-        android:textSize="64sp"
-        android:textStyle="bold"
-        android:text="MMA"/>
+    tools:context=".activity.LoginActivity">
 
     <LinearLayout
-        android:layout_margin="@dimen/margin_xlarge"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:gravity="center">
-        <EditText
-            android:id="@+id/etUserName"
-            android:background="@drawable/bg_et_border_login"
-            android:hint="@string/username"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/edittext_height"
-            android:paddingLeft="@dimen/padding_10"
-            android:drawableLeft="@drawable/login_person"
-            android:drawablePadding="@dimen/padding_10"/>
-        <EditText
-            android:id="@+id/etPassword"
-            android:layout_marginTop="@dimen/margin_normal"
-            android:inputType="textPassword"
-            android:background="@drawable/bg_et_border_login"
-            android:hint="@string/password"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/edittext_height"
-            android:paddingLeft="@dimen/padding_10"
-            android:drawableLeft="@drawable/login_lock"
-            android:drawablePadding="@dimen/padding_10"/>
+        android:orientation="vertical">
 
-        <Button
-            android:id="@+id/btnLogin"
-            android:layout_marginTop="@dimen/margin_xlarge"
-            android:background="@drawable/bg_btn_login"
-            android:text="@string/login"
-            android:textSize="@dimen/txt_size_large"
-            android:textColor="@color/color_edt_grey"
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_large"
+            android:textColor="@color/colorPrimary"
+            android:layout_gravity="center"
+            android:textSize="64sp"
+            android:textStyle="bold"
+            android:text="MMA"/>
+
+        <LinearLayout
+            android:layout_margin="@dimen/margin_xlarge"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center">
+            <EditText
+                android:id="@+id/etUserName"
+                android:background="@drawable/bg_et_border_login"
+                android:hint="@string/username"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/edittext_height"
+                android:singleLine="true"
+                android:paddingLeft="@dimen/padding_10"
+                android:drawableLeft="@drawable/login_person"
+                android:drawablePadding="@dimen/padding_10"/>
+            <EditText
+                android:id="@+id/etPassword"
+                android:layout_marginTop="@dimen/margin_normal"
+                android:inputType="textPassword"
+                android:singleLine="true"
+                android:background="@drawable/bg_et_border_login"
+                android:hint="@string/password"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/edittext_height"
+                android:paddingLeft="@dimen/padding_10"
+                android:drawableLeft="@drawable/login_lock"
+                android:drawablePadding="@dimen/padding_10"/>
+
+            <Button
+                android:id="@+id/btnLogin"
+                android:layout_marginTop="@dimen/margin_xlarge"
+                android:background="@drawable/bg_btn_login"
+                android:text="@string/login"
+                android:textSize="@dimen/txt_size_large"
+                android:textColor="@color/color_edt_grey"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
     </LinearLayout>
 
-</LinearLayout>
+    <RelativeLayout
+        android:id="@+id/progress_bar"
+        android:clickable="true"
+        android:visibility="gone"
+        android:background="@color/color_black_trans"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.github.ybq.android.spinkit.SpinKitView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            style="@style/SpinKitView.Large.Circle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            app:SpinKit_Color="@color/colorWhite" />
+
+    </RelativeLayout>
+
+</RelativeLayout>
+

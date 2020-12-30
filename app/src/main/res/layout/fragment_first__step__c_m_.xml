@@ -27,7 +27,6 @@
                     android:layout_weight="2.3"
                     android:textColor="@color/colorBlack"
                     android:text="@string/mso_information"
-                    android:fontFamily="@font/crimson_text_bold"
                     android:textSize="@dimen/txt_size_large"/>
 
                 <TextView
@@ -38,7 +37,6 @@
                     android:textColor="@color/colorBlack"
                     android:layout_marginRight="@dimen/margin_small"
                     android:text="@string/mso_status"
-                    android:fontFamily="@font/crimson_text_regular"
                     android:textSize="@dimen/txt_size_normal"/>
 
                 <TextView
@@ -79,7 +77,6 @@
                             android:layout_weight="2.5"
                             android:textColor="@color/colorPrimary"
                             android:text="@string/mso_number"
-                            android:fontFamily="@font/crimson_text_regular"
                             android:textSize="@dimen/txt_size_normal"/>
 
                         <TextView
@@ -88,7 +85,6 @@
                             android:layout_weight="1.5"
                             android:textColor="@color/colorPrimary"
                             android:text="@string/panel_id"
-                            android:fontFamily="@font/crimson_text_regular"
                             android:textSize="@dimen/txt_size_normal"/>
                     </LinearLayout>
                     <LinearLayout
@@ -103,7 +99,6 @@
                             android:layout_weight="2.5"
                             android:textColor="@color/colorBlack"
                             android:text="PGS/18/100000307"
-                            android:fontFamily="@font/crimson_text_regular"
                             android:textSize="@dimen/txt_size_normal"/>
 
                         <TextView
@@ -113,7 +108,6 @@
                             android:layout_weight="1.5"
                             android:textColor="@color/colorBlack"
                             android:text="VMS1 002"
-                            android:fontFamily="@font/crimson_text_regular"
                             android:textSize="@dimen/txt_size_normal"/>
                     </LinearLayout>
                 </LinearLayout>
@@ -135,7 +129,6 @@
                             android:layout_weight="2.5"
                             android:textColor="@color/colorPrimary"
                             android:text="@string/fault_type"
-                            android:fontFamily="@font/crimson_text_regular"
                             android:textSize="@dimen/txt_size_normal"/>
 
                         <TextView
@@ -144,7 +137,6 @@
                             android:layout_weight="1.5"
                             android:textColor="@color/colorPrimary"
                             android:text="@string/mso_priority"
-                            android:fontFamily="@font/crimson_text_regular"
                             android:textSize="@dimen/txt_size_normal"/>
                     </LinearLayout>
                     <LinearLayout
@@ -159,7 +151,6 @@
                             android:layout_weight="2.5"
                             android:textColor="@color/colorBlack"
                             android:text="Disconnect"
-                            android:fontFamily="@font/crimson_text_regular"
                             android:textSize="@dimen/txt_size_normal"/>
 
                         <TextView
@@ -169,7 +160,6 @@
                             android:layout_weight="1.5"
                             android:textColor="@color/colorBlack"
                             android:text="Critical"
-                            android:fontFamily="@font/crimson_text_regular"
                             android:textSize="@dimen/txt_size_normal"/>
                     </LinearLayout>
                 </LinearLayout>
@@ -185,7 +175,6 @@
                             android:layout_height="wrap_content"
                             android:textColor="@color/colorPrimary"
                             android:text="@string/allowable_resolution_date_time"
-                            android:fontFamily="@font/crimson_text_regular"
                             android:textSize="@dimen/txt_size_normal"/>
                         <TextView
                             android:id="@+id/tv_allowable_resolution_datetime"
@@ -193,7 +182,6 @@
                             android:layout_height="wrap_content"
                             android:textColor="@color/colorBlack"
                             android:text="24.06.2019 / 11.00.18"
-                            android:fontFamily="@font/crimson_text_regular"
                             android:textSize="@dimen/txt_size_normal"/>
                 </LinearLayout>
 
@@ -208,7 +196,6 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/colorPrimary"
                         android:text="@string/allowable_respond_date_time"
-                        android:fontFamily="@font/crimson_text_regular"
                         android:textSize="@dimen/txt_size_normal"/>
                     <TextView
                         android:id="@+id/tv_allowable_respond_datetime"
@@ -216,7 +203,6 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/colorBlack"
                         android:text="23.06.2019 / 11.00.18"
-                        android:fontFamily="@font/crimson_text_regular"
                         android:textSize="@dimen/txt_size_normal"/>
                 </LinearLayout>
 
@@ -231,7 +217,6 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/colorPrimary"
                         android:text="@string/fault_detected_date_time"
-                        android:fontFamily="@font/crimson_text_regular"
                         android:textSize="@dimen/txt_size_normal"/>
                     <TextView
                         android:id="@+id/tv_fault_detected_datetime"
@@ -239,7 +224,6 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/colorBlack"
                         android:text="23.06.2019 / 11.00.18"
-                        android:fontFamily="@font/crimson_text_regular"
                         android:textSize="@dimen/txt_size_normal"/>
                 </LinearLayout>
 
@@ -254,7 +238,6 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/colorPrimary"
                         android:text="@string/mso_notified_date_time"
-                        android:fontFamily="@font/crimson_text_regular"
                         android:textSize="@dimen/txt_size_normal"/>
                     <TextView
                         android:id="@+id/mso_notified_datetime"
@@ -262,7 +245,6 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/colorBlack"
                         android:text="23.06.2019 / 11.00.18"
-                        android:fontFamily="@font/crimson_text_regular"
                         android:textSize="@dimen/txt_size_normal"/>
                 </LinearLayout>
 
@@ -277,7 +259,6 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/colorPrimary"
                         android:text="@string/bust_stop_number"
-                        android:fontFamily="@font/crimson_text_regular"
                         android:textSize="@dimen/txt_size_normal"/>
                     <TextView
                         android:id="@+id/tv_bus_stop_number"
@@ -285,7 +266,6 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/colorBlack"
                         android:text="VMS1 036"
-                        android:fontFamily="@font/crimson_text_regular"
                         android:textSize="@dimen/txt_size_normal"/>
                 </LinearLayout>
 
@@ -300,7 +280,6 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/colorPrimary"
                         android:text="@string/location"
-                        android:fontFamily="@font/crimson_text_regular"
                         android:textSize="@dimen/txt_size_normal"/>
                     <TextView
                         android:id="@+id/tv_location"
@@ -308,7 +287,6 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/colorBlack"
                         android:text="Rochor Rd For Marina Centr"
-                        android:fontFamily="@font/crimson_text_regular"
                         android:textSize="@dimen/txt_size_normal"/>
                 </LinearLayout>
 
@@ -321,7 +299,6 @@
                 android:text="@string/attach_pre_maintenance_photo"
                 android:textColor="@color/colorBlack"
                 android:layout_marginTop="@dimen/margin_normal"
-                android:fontFamily="@font/crimson_text_bold"
                 android:textSize="@dimen/txt_size_large"/>
 
             <LinearLayout
