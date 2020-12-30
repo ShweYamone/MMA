@@ -149,8 +149,8 @@ public class Second_Step_PM_Fragment extends Fragment implements View.OnClickLis
                                         btnJobDone.setClickable(false);
                                         btnJobDone.setBackground(getResources().getDrawable(R.drawable.round_rectangle_shape_button_grey));
                                     }
-                                //    btnJobDone.setClickable(true);
-                                //    btnJobDone.setBackground(getResources().getDrawable(R.drawable.round_rect_shape_button));
+                                    btnJobDone.setClickable(true);
+                                    btnJobDone.setBackground(getResources().getDrawable(R.drawable.round_rect_shape_button));
 
                                 }
                                 else {
@@ -260,35 +260,7 @@ public class Second_Step_PM_Fragment extends Fragment implements View.OnClickLis
         ((PMActivity)getActivity()).hideProgressBar();
         //  deleteWorkingData();
         completeWork();
-        /*
 
-        Call<ReturnStatus> call = apiInterface.updateStatusEvent("Bearer " + mSharePreferenceHelper.getToken(),
-               updateEventBody);
-        call.enqueue(new Callback<ReturnStatus>() {
-            @Override
-            public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
-                if (response.isSuccessful()) {
-                    Toast.makeText(getContext(),response.body().getStatus() + ": STEP_TWO_Event Uploaded.",Toast.LENGTH_SHORT).show();
-
-                } else {
-                    Toast.makeText(getContext(), "response " + response.code(), Toast.LENGTH_LONG).show();
-                    ResponseBody errorReturnBody = response.errorBody();
-                    try {
-                        Log.e("UPLOAD_ERROR", "onResponse: " + errorReturnBody.string());
-                        ((PMActivity)getActivity()).hideProgressBar();
-                    } catch (IOException e) {
-
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ReturnStatus> call, Throwable t) {
-                Toast.makeText(getContext(), "response " + "FAILURE", Toast.LENGTH_LONG).show();
-                ((PMActivity)getActivity()).hideProgressBar();
-                Log.e("UPLOAD_ERROR", "onResponse: " + t.getMessage());
-            }
-        });*/
     }
 
 

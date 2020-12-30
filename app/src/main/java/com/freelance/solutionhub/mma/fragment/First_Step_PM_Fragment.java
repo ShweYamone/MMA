@@ -54,11 +54,16 @@ import com.freelance.solutionhub.mma.util.ApiInterface;
 import com.freelance.solutionhub.mma.util.Network;
 import com.freelance.solutionhub.mma.util.SharePreferenceHelper;
 
+import org.apache.commons.net.ntp.NTPUDPClient;
+import org.apache.commons.net.ntp.TimeInfo;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -78,6 +83,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.freelance.solutionhub.mma.util.AppConstant.ACK;
 import static com.freelance.solutionhub.mma.util.AppConstant.CM_Step_ONE;
 import static com.freelance.solutionhub.mma.util.AppConstant.CM_Step_TWO;
 import static com.freelance.solutionhub.mma.util.AppConstant.NO;
@@ -86,6 +92,7 @@ import static com.freelance.solutionhub.mma.util.AppConstant.PM_CHECK_LIST_REMAR
 import static com.freelance.solutionhub.mma.util.AppConstant.PM_FAULT_FOUND_UPDATE;
 import static com.freelance.solutionhub.mma.util.AppConstant.PM_Step_ONE;
 import static com.freelance.solutionhub.mma.util.AppConstant.POST_BUCKET_NAME;
+import static com.freelance.solutionhub.mma.util.AppConstant.TIME_SERVER;
 import static com.freelance.solutionhub.mma.util.AppConstant.YES;
 
 
@@ -407,50 +414,97 @@ public class First_Step_PM_Fragment extends Fragment {
 
             dbHelper.updateEventBodyDAO().insert(updateEventBody);
 
-            if (mNetwork.isNetworkAvailable() && dbHelper.eventDAO().getNumberEventsToUpload(PM_Step_ONE) > 0) {
+            if (mNetwork.isNetworkAvailable()) {
                 ((PMActivity)getActivity()).showProgressBar();
-                Log.e("Tracing....", "save: progress");
-                Call<ReturnStatus> call = apiInterface.updateEvent("Bearer " + mSharePerferenceHelper.getToken() ,
-                        updateEventBody);
-                call.enqueue(new Callback<ReturnStatus>() {
-                    @Override
-                    public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
-                        Log.e("Tracing....", "save: " + "response");
-                        if(response.isSuccessful()) {
-                            Log.e("Tracing....", "save: " + "success");
-                            Toast.makeText(getContext(), dbHelper.eventDAO().getNumberEventsToUpload(PM_Step_ONE)+" events." , Toast.LENGTH_SHORT).show();
-                            dbHelper.eventDAO().update(YES, PM_Step_ONE);
-                        } else{
-                            ResponseBody errorReturnBody = response.errorBody();
-                            try {
-                                Log.e("Tracing....", "onResponse: " + errorReturnBody.string());
-                                Toast.makeText(getContext(), "response " + response.code(),  Toast.LENGTH_LONG).show();
-                                //  ((CMActivity)getActivity()).hideProgressBar();
-                            } catch (IOException e) {
-
-                            }
-                        }
-                        ((PMActivity)getActivity()).hideProgressBar();
-                    }
-
-                    @Override
-                    public void onFailure(Call<ReturnStatus> call, Throwable t) {
-                        Toast.makeText(getContext(), "Failure" , Toast.LENGTH_SHORT).show();
-                        ((PMActivity)getActivity()).hideProgressBar();
-                    }
-                });
-            } else {
-                Toast.makeText(getContext(), "No events to upload" , Toast.LENGTH_SHORT).show();
+                new getCurrentNetworkTime().execute();
             }
-
-            //  new LoadImage(events).execute(uploadPhoto(postPhotoModels));
 
         } else {
             showDialog("Photo", "Your photos must be minimum 2 and maximum 10.");
+        }
+    }
+    class getCurrentNetworkTime extends AsyncTask<String, Void, Boolean> {
+        //Step One Events
+        private void updateEvent() {
+            UpdateEventBody eventBody = dbHelper.updateEventBodyDAO().getUpdateEventBodyByID(PM_Step_ONE);
+            eventBody.setEvents(dbHelper.eventDAO().getEventsToUpload(PM_Step_ONE));
+            Call<ReturnStatus> call = apiInterface.updateEvent("Bearer " + mSharePerferenceHelper.getToken() ,
+                    eventBody
+                    );
+            call.enqueue(new Callback<ReturnStatus>() {
+                @Override
+                public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
+                    if(response.isSuccessful()) {
+                        Toast.makeText(getContext(), dbHelper.eventDAO().getNumberEventsToUpload(PM_Step_ONE)+" events. at " +
+                                        dbHelper.updateEventBodyDAO().getUpdateEventBodyByID(PM_Step_ONE).getDate()
+                                , Toast.LENGTH_SHORT).show();
+                        dbHelper.eventDAO().update(YES, PM_Step_ONE);
+                    } else{
+                        ResponseBody errorReturnBody = response.errorBody();
+                        try {
+                            Log.e("Tracing....", "onResponse: " + errorReturnBody.string());
+                            Toast.makeText(getContext(), "response " + response.code(),  Toast.LENGTH_LONG).show();
+                        } catch (IOException e) {
 
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ReturnStatus> call, Throwable t) {
+                    Toast.makeText(getContext(), "Failure" , Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
+        protected Boolean doInBackground(String... urls) {
+            boolean is_locale_date = false;
+            try {
+                NTPUDPClient timeClient = new NTPUDPClient();
+                timeClient.open();
+                timeClient.setDefaultTimeout(3000);
+                InetAddress inetAddress = InetAddress.getByName(TIME_SERVER);
+                TimeInfo timeInfo = timeClient.getTime(inetAddress);
+                long localTime = timeInfo.getReturnTime();
+                long serverTime = timeInfo.getMessage().getTransmitTimeStamp().getTime();
+                Timestamp timestamp = new Timestamp(localTime);
+                String localDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
+                Log.i("Time__Local", "doInBackground: " + localTime + "--> " + localDateTime);
+                timestamp = new Timestamp(serverTime);
+                String actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
+                Log.i("Time__Server", "doInBackground:" + serverTime + "--> " + actualDateTime);
+                //after getting network time, update event with the network time
+                dbHelper.updateEventBodyDAO().updateDateTime(actualDateTime, PM_Step_ONE);
+                Log.i("Time__Count", "doInBackground:" +"count --> " + dbHelper.eventDAO().getNumberEventsToUpload(PM_Step_ONE));
+                if (dbHelper.eventDAO().getNumberEventsToUpload(PM_Step_ONE) > 0) {
+                    updateEvent();
+                }
+
+                if (new Date(localTime) != new Date(serverTime))
+                    is_locale_date = true;
+
+            } catch (UnknownHostException e) {
+                e.printStackTrace();
+                Log.e("UnknownHostException: ", e.getMessage());
+            } catch (IOException e) {
+                e.printStackTrace();
+                Log.e("IOException: ", e.getMessage());
+            }
+            return is_locale_date;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            super.onPostExecute(aBoolean);
+            ((PMActivity)getActivity()).hideProgressBar();
+            if(!aBoolean) {
+                Log.e("Check ", "dates not equal");
+            }
         }
 
     }
+
+
 
     private void displaySavedImage() {
         postPhotoModels.clear();

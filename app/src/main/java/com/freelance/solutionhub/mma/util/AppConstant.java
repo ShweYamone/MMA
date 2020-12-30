@@ -1,12 +1,11 @@
 package com.freelance.solutionhub.mma.util;
 
-import java.security.PublicKey;
-
-import retrofit2.http.PUT;
-
 public class AppConstant {
 
     public static final String BASE_URL = "https://oiyryh245h.execute-api.ap-southeast-1.amazonaws.com/dev/";
+
+    public static final String TIME_SERVER = "sg.pool.ntp.org";
+    //;
 
     public static final String PM = "PREVENTATIVE";
     public static final String pm = "PM";

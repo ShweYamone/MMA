@@ -16,6 +16,7 @@ import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.nfc.tech.MifareClassic;
 import android.nfc.tech.MifareUltralight;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -40,7 +41,12 @@ import com.freelance.solutionhub.mma.util.ApiInterface;
 import com.freelance.solutionhub.mma.util.Network;
 import com.freelance.solutionhub.mma.util.SharePreferenceHelper;
 
+import org.apache.commons.net.ntp.NTPUDPClient;
+import org.apache.commons.net.ntp.TimeInfo;
+
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -54,11 +60,13 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.freelance.solutionhub.mma.util.AppConstant.ACK;
 import static com.freelance.solutionhub.mma.util.AppConstant.CM;
 import static com.freelance.solutionhub.mma.util.AppConstant.CM_Step_THREE;
 import static com.freelance.solutionhub.mma.util.AppConstant.NO;
 import static com.freelance.solutionhub.mma.util.AppConstant.PM;
 import static com.freelance.solutionhub.mma.util.AppConstant.PM_Step_TWO;
+import static com.freelance.solutionhub.mma.util.AppConstant.TIME_SERVER;
 import static com.freelance.solutionhub.mma.util.AppConstant.cm;
 import static com.freelance.solutionhub.mma.util.AppConstant.pm;
 import static com.freelance.solutionhub.mma.util.AppConstant.user_inactivity_time;
@@ -151,7 +159,7 @@ public class NFCReadingActivity extends AppCompatActivity {
         /****To Fix when NFC can read*********/
         /*********************/
         /////////////////////////////////////
-        //perFormTagEvent();
+        perFormTagEvent();
 
         if(nfcAdapter == null){
             Toast.makeText(this, "No NFC", Toast.LENGTH_SHORT).show();
@@ -169,7 +177,7 @@ public class NFCReadingActivity extends AppCompatActivity {
 
     }
 
-    private void performLocalTagOutEvent() {
+    private void performLocalTagOutEvent(String date) {
         UpdateEventBody eventBody = dbHelper.updateEventBodyDAO().getUpdateEventBodyByID("TAG_OUT");
         eventBody.setEvents(dbHelper.eventDAO().getEventsToUpload("TAG_OUT"));
         Call<ReturnStatus> call = apiInterface.updateEvent("Bearer " + mSharedPreference.getToken(), eventBody);
@@ -179,10 +187,10 @@ public class NFCReadingActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     Toast.makeText(getApplicationContext(), "LOCAL_TAG_OUT", Toast.LENGTH_SHORT).show();
                     if (serviceOrderId.startsWith(pm)) {
-                        performFinalStepEvent(pm);
+                        performFinalStepEvent(pm, date);
 
                     } else {
-                        performFinalStepEvent(cm);
+                        performFinalStepEvent(cm, date);
                     }
                 }
                 else {
@@ -205,7 +213,9 @@ public class NFCReadingActivity extends AppCompatActivity {
         });
     }
 
-    private void performFinalStepEvent(String pmOrcm) {
+    private void performFinalStepEvent(String pmOrcm, String date) {
+        dbHelper.updateEventBodyDAO().updateDateTime(date, step);
+
         Call<ReturnStatus> call = apiInterface.updateStatusEvent("Bearer " + mSharedPreference.getToken(),
                 dbHelper.updateEventBodyDAO().getUpdateEventBodyByID(step));
         call.enqueue(new Callback<ReturnStatus>() {
@@ -213,7 +223,9 @@ public class NFCReadingActivity extends AppCompatActivity {
             public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
                 if (response.isSuccessful()) {
                     Intent intent;
-                    Toast.makeText(getApplicationContext(),response.body().getStatus() + " Last Event Uploaded.",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(),response.body().getStatus() + " Last Event Uploaded. at" +
+                            dbHelper.updateEventBodyDAO().getUpdateEventBodyByID(step).getDate()
+                            ,Toast.LENGTH_SHORT).show();
                     if (pmOrcm.equals(pm)) {
                         intent = new Intent(NFCReadingActivity.this, PMCompletionActivity.class);
                         intent.putExtra("schedule_date", getIntent().getStringExtra("schedule_date"));
@@ -260,35 +272,70 @@ public class NFCReadingActivity extends AppCompatActivity {
     }
 
     private void perFormTagEvent() {
-        date = new Date();
-        Timestamp timestamp = new Timestamp(date.getTime());
-        currentDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
-        UpdateEventBody eventBody;
-        eventBody = new UpdateEventBody(
-                mSharedPreference.getUserName(), mSharedPreference.getUserId(), currentDateTime, serviceOrderId, events
-        );
-        if (network.isNetworkAvailable()) {
 
+
+        if (network.isNetworkAvailable()) {
+            new getCurrentNetworkTime().execute();
             Log.i("ACKACKACK", "perFormTagEvent: " + serviceOrderId);
             Log.i("ACKACKACK", "perFormTagEvent: " + currentDateTime);
+        } else {//network unavailable, store data to local
+            if (tag) {
+                date = new Date();
+                Timestamp timestamp = new Timestamp(date.getTime());
+                currentDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
+                UpdateEventBody eventBody;
+                eventBody = new UpdateEventBody(
+                        mSharedPreference.getUserName(), mSharedPreference.getUserId(), currentDateTime, serviceOrderId, events
+                );
+                eventBody = new UpdateEventBody(
+                        mSharedPreference.getUserName(),
+                        mSharedPreference.getUserId(),
+                        currentDateTime,
+                        serviceOrderId
+                );
+                eventBody.setId("TAG_OUT");
+                dbHelper.updateEventBodyDAO().insert(eventBody);
+                for (Event event : events) {
+                    event.setEvent_id("TAG_OUT");
+                    event.setUpdateEventBodyKey("TAG_OUT");
+                    event.setAlreadyUploaded(NO);
+                }
+                dbHelper.eventDAO().insertAll(events);
+                Intent intent = new Intent(NFCReadingActivity.this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+            }
+             else {
+                //show dialog for network connection
+            }
+        }
+    }
 
+    class getCurrentNetworkTime extends AsyncTask<String, Void, Boolean> {
+
+        //TAG_EVENT
+        private void updateEvent(String date) {
+            UpdateEventBody eventBody;
+            eventBody = new UpdateEventBody(
+                    mSharedPreference.getUserName(), mSharedPreference.getUserId(), date, serviceOrderId, events
+            );
             Call<ReturnStatus> call = apiInterface.updateEvent("Bearer " + mSharedPreference.getToken(), eventBody);
             call.enqueue(new Callback<ReturnStatus>() {
                 @Override
                 public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
                     if (response.isSuccessful()) {
 
-                        Toast.makeText(getApplicationContext(), "TAG_" + tag +  response.body().getStatus(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), date + "TAG_" + tag +  response.body().getStatus(), Toast.LENGTH_SHORT).show();
                         if (tag) {
                             if (toPage.equals("COMPLETION")) {
                                 if (dbHelper.updateEventBodyDAO().getNumberOfUpdateEventsById("TAG_OUT") > 0) {
-                                    performLocalTagOutEvent();
+                                    performLocalTagOutEvent(date);
                                 } else {
                                     if (serviceOrderId.startsWith(pm)) {
-                                        performFinalStepEvent(pm);
+                                        performFinalStepEvent(pm, date);
 
                                     } else {
-                                        performFinalStepEvent(cm);
+                                        performFinalStepEvent(cm, date);
                                     }
 
                                 }
@@ -324,34 +371,47 @@ public class NFCReadingActivity extends AppCompatActivity {
 
                 }
             });
-        } else {//network unavailable, store data to local
-            if (tag) {
-                eventBody = new UpdateEventBody(
-                        mSharedPreference.getUserName(),
-                        mSharedPreference.getUserId(),
-                        currentDateTime,
-                        serviceOrderId
-                );
-                eventBody.setId("TAG_OUT");
-                dbHelper.updateEventBodyDAO().insert(eventBody);
-                for (Event event : events) {
-                    event.setEvent_id("TAG_OUT");
-                    event.setUpdateEventBodyKey("TAG_OUT");
-                    event.setAlreadyUploaded(NO);
-                }
-                dbHelper.eventDAO().insertAll(events);
-                Intent intent = new Intent(NFCReadingActivity.this, MainActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
-            }
-             else {
-
-            }
         }
 
+        protected Boolean doInBackground(String... urls) {
+            boolean is_locale_date = false;
+            try {
+                NTPUDPClient timeClient = new NTPUDPClient();
+                timeClient.open();
+                timeClient.setDefaultTimeout(3000);
+                InetAddress inetAddress = InetAddress.getByName(TIME_SERVER);
+                TimeInfo timeInfo = timeClient.getTime(inetAddress);
+                long localTime = timeInfo.getReturnTime();
+                long serverTime = timeInfo.getMessage().getTransmitTimeStamp().getTime();
+                Timestamp timestamp = new Timestamp(localTime);
+                String localDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
+                Log.i("Time__Local", "doInBackground: " + localTime + "--> " + localDateTime);
+                timestamp = new Timestamp(serverTime);
+                String actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
+                Log.i("Time__Server", "doInBackground:" + serverTime + "--> " + actualDateTime);
+                //after getting network time, update event with the network time
+                updateEvent(actualDateTime);
+                if (new Date(localTime) != new Date(serverTime))
+                    is_locale_date = true;
 
+            } catch (UnknownHostException e) {
+                e.printStackTrace();
+                Log.e("UnknownHostException: ", e.getMessage());
+            } catch (IOException e) {
+                e.printStackTrace();
+                Log.e("IOException: ", e.getMessage());
+            }
+            return is_locale_date;
+        }
 
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            super.onPostExecute(aBoolean);
+        }
     }
+
+
+
 
 
     @Override

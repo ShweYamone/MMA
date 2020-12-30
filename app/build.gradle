@@ -101,5 +101,8 @@ dependencies {
     // ProgressBar
     implementation 'com.github.ybq:Android-SpinKit:1.4.0'
 
+    //To get data from NTP server
+    implementation 'commons-net:commons-net:3.3'
+
 
 }

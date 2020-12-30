@@ -14,6 +14,7 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -55,11 +56,19 @@ import com.freelance.solutionhub.mma.util.SharePreferenceHelper;
 import com.freelance.solutionhub.mma.util.WebSocketUtils;
 import com.google.android.material.navigation.NavigationView;
 
+import org.apache.commons.net.ntp.NTPUDPClient;
+import org.apache.commons.net.ntp.TimeInfo;
 import org.phoenixframework.channels.Channel;
 import org.phoenixframework.channels.Envelope;
 import org.phoenixframework.channels.IMessageCallback;
 import org.phoenixframework.channels.Socket;
 
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
@@ -68,6 +77,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.freelance.solutionhub.mma.util.AppConstant.TIME_SERVER;
 import static com.freelance.solutionhub.mma.util.AppConstant.user_inactivity_time;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
@@ -120,6 +130,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         apiInterface = ApiClient.getClient(this);
         apiInterfaceForNotification = ApiClientForNotification.getClient().create(ApiInterfaceForNotification.class);
         webSocketUtils = new WebSocketUtils(this);
+
+//        new getCurrentNetworkTime().execute();
 
         /**
          * call service
@@ -518,13 +530,5 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
     }
-    /**
-     * Encode photo string to decode string
-     */
-    private String uploadPhotoByDecoding(String s){
-        byte[] data = Base64.decode(s,Base64.DEFAULT);
-        String s1 = new String(data);
-        Log.v("DECODE", s1);
-        return s1;
-    }
+
 }
