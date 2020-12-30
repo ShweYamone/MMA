@@ -238,8 +238,8 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
                                         jobDone.setClickable(false);
                                         jobDone.setBackground(getResources().getDrawable(R.drawable.round_rectangle_shape_button_grey));
                                     }
-                                    // jobDone.setClickable(true);
-                                    // jobDone.setBackground(getResources().getDrawable(R.drawable.round_rectangle_shape_button_grey));
+                                     jobDone.setClickable(true);
+                                     jobDone.setBackground(getResources().getDrawable(R.drawable.round_rectangle_shape_button_grey));
 
                                 }
                                 else {

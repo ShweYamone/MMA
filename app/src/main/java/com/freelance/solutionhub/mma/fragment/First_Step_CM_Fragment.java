@@ -35,6 +35,7 @@ import android.widget.Toast;
 import com.freelance.solutionhub.mma.DB.InitializeDatabase;
 import com.freelance.solutionhub.mma.R;
 import com.freelance.solutionhub.mma.activity.CMActivity;
+import com.freelance.solutionhub.mma.activity.PMActivity;
 import com.freelance.solutionhub.mma.adapter.PhotoAdapter;
 import com.freelance.solutionhub.mma.delegate.FirstStepPMFragmentCallback;
 import com.freelance.solutionhub.mma.model.Event;
@@ -50,11 +51,17 @@ import com.freelance.solutionhub.mma.util.ApiInterface;
 import com.freelance.solutionhub.mma.util.Network;
 import com.freelance.solutionhub.mma.util.SharePreferenceHelper;
 
+import org.apache.commons.net.ntp.NTPUDPClient;
+import org.apache.commons.net.ntp.TimeInfo;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -68,12 +75,16 @@ import butterknife.ButterKnife;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 import static com.freelance.solutionhub.mma.util.AppConstant.CM_Step_ONE;
+import static com.freelance.solutionhub.mma.util.AppConstant.PM_Step_ONE;
 import static com.freelance.solutionhub.mma.util.AppConstant.PRE_BUCKET_NAME;
+import static com.freelance.solutionhub.mma.util.AppConstant.TIME_SERVER;
+import static com.freelance.solutionhub.mma.util.AppConstant.YES;
 
 public class First_Step_CM_Fragment extends Fragment {
 
@@ -265,6 +276,11 @@ public class First_Step_CM_Fragment extends Fragment {
             updateEventBody.setId(CM_Step_ONE);
             dbHelper.updateEventBodyDAO().insert(updateEventBody);
 
+            if (mNetwork.isNetworkAvailable()) {
+                ((CMActivity)getActivity()).showProgressBar();
+                new getCurrentNetworkTime().execute();
+            }
+
             dbHelper.uploadPhotoDAO().deleteById(CM_Step_ONE);
             for (PhotoModel photoModel: prePhotoModels) {
                 if(photoModel.getUid()==1)
@@ -278,6 +294,52 @@ public class First_Step_CM_Fragment extends Fragment {
             showDialog();
         }
     }
+
+    class getCurrentNetworkTime extends AsyncTask<String, Void, Boolean> {
+        protected Boolean doInBackground(String... urls) {
+            boolean is_locale_date = false;
+            try {
+                NTPUDPClient timeClient = new NTPUDPClient();
+                timeClient.open();
+                timeClient.setDefaultTimeout(5000);
+                InetAddress inetAddress = InetAddress.getByName(TIME_SERVER);
+                TimeInfo timeInfo = timeClient.getTime(inetAddress);
+                long localTime = timeInfo.getReturnTime();
+                long serverTime = timeInfo.getMessage().getTransmitTimeStamp().getTime();
+                Timestamp timestamp = new Timestamp(localTime);
+                String localDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
+                Log.i("Time__Local", "doInBackground: " + localTime + "--> " + localDateTime);
+                timestamp = new Timestamp(serverTime);
+                String actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
+                Log.i("Time__Server", "doInBackground:" + serverTime + "--> " + actualDateTime);
+                //after getting network time, update event with the network time
+                dbHelper.updateEventBodyDAO().updateDateTime(actualDateTime, CM_Step_ONE);
+
+                if (new Date(localTime) != new Date(serverTime))
+                    is_locale_date = true;
+
+            } catch (UnknownHostException e) {
+                e.printStackTrace();
+                Log.e("UnknownHostException: ", e.getMessage());
+            } catch (IOException e) {
+                e.printStackTrace();
+                Log.e("IOException: ", e.getMessage());
+            }
+            return is_locale_date;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            super.onPostExecute(aBoolean);
+            ((CMActivity)getActivity()).hideProgressBar();
+            if(!aBoolean) {
+                Log.e("Check ", "dates not equal");
+            }
+        }
+
+    }
+
+
 
     /**
      * //To Do save to database photo

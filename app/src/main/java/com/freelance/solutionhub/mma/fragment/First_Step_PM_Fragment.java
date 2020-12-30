@@ -462,7 +462,7 @@ public class First_Step_PM_Fragment extends Fragment {
             try {
                 NTPUDPClient timeClient = new NTPUDPClient();
                 timeClient.open();
-                timeClient.setDefaultTimeout(3000);
+                timeClient.setDefaultTimeout(5000);
                 InetAddress inetAddress = InetAddress.getByName(TIME_SERVER);
                 TimeInfo timeInfo = timeClient.getTime(inetAddress);
                 long localTime = timeInfo.getReturnTime();
@@ -560,8 +560,8 @@ public class First_Step_PM_Fragment extends Fragment {
             if (!checkListModel.isMaintenanceDone) {
                 isMandatory = true;
                 String desc = checkListModel.getCheckDescription();
-                if (desc.length() > 18) {
-                    mandatoryString += desc.substring(0, 17) + "....\n";
+                if (desc.length() > 25) {
+                    mandatoryString += desc.substring(0, 14) + "....\n";
                 } else {
                     mandatoryString += checkListModel.getCheckDescription() + "\n";
                 }

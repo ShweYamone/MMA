@@ -156,8 +156,8 @@ public class Second_Step_PM_Fragment extends Fragment implements View.OnClickLis
                                         btnJobDone.setClickable(false);
                                         btnJobDone.setBackground(getResources().getDrawable(R.drawable.round_rectangle_shape_button_grey));
                                     }
-                                    btnJobDone.setClickable(true);
-                                    btnJobDone.setBackground(getResources().getDrawable(R.drawable.round_rect_shape_button));
+                               //     btnJobDone.setClickable(true);
+                               //     btnJobDone.setBackground(getResources().getDrawable(R.drawable.round_rect_shape_button));
 
                                 }
                                 else {
@@ -269,12 +269,7 @@ public class Second_Step_PM_Fragment extends Fragment implements View.OnClickLis
     private void completeWork() {
         Intent intent = new Intent(this.getContext(), NFCReadingActivity.class);
         intent.putExtra("id", pmServiceInfoDetailModel.getId());
-        intent.putExtra("panelId", pmServiceInfoDetailModel.getPanelId());
-        intent.putExtra("schedule_date", pmServiceInfoDetailModel.getCreationDate());
-        intent.putExtra("schedule_type", pmServiceInfoDetailModel.getPreventativeMaintenanceCheckType());
-        intent.putExtra("start_time", getArguments().getString("start_time"));
-        intent.putExtra("object", pmServiceInfoDetailModel);
-        intent.putExtra("remarks", remarks.getText().toString()+"");
+
         Event tempEvent;
         tempEvent = new Event("panelId", "panelId", pmServiceInfoDetailModel.getPanelId()+"");
         tempEvent.setEvent_id("panelIdpanelId");
@@ -286,10 +281,6 @@ public class Second_Step_PM_Fragment extends Fragment implements View.OnClickLis
 
         tempEvent = new Event("schedule_type", "schedule_type", pmServiceInfoDetailModel.getPreventativeMaintenanceCheckType());
         tempEvent.setEvent_id("typetype");
-        dbHelper.eventDAO().insert(tempEvent);
-
-        tempEvent = new Event("start_time", "start_time", getArguments().getString("start_time"));
-        tempEvent.setEvent_id("start_timestart_time");
         dbHelper.eventDAO().insert(tempEvent);
 
         tempEvent = new Event("remarks", "remarks", remarks.getText().toString() + "");
