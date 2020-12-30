@@ -335,7 +335,7 @@ public class HomeFragment extends Fragment implements RadioGroup.OnCheckedChange
                 public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
                     if (response.isSuccessful()) {
                         ReturnStatus returnStatus = response.body();
-                        Toast.makeText(getContext().getApplicationContext(), returnStatus.getStatus()+"APPRtoACK", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext().getApplicationContext(), returnStatus.getStatus()+"APPRtoACK at time" + date, Toast.LENGTH_SHORT).show();
                         update_APPR_To_ACK_UI(position);
                     } else {
                         Toast.makeText(getContext().getApplicationContext(), response.code()+"APPRtoACK", Toast.LENGTH_SHORT).show();

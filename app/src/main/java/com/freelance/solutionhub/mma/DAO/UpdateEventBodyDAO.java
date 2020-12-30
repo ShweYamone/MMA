@@ -35,5 +35,5 @@ public interface UpdateEventBodyDAO {
     int getNumberOfUpdateEventsById(String id);
 
     @Query("Update UpdateEventBody Set date=:date where id=:id")
-    void update(String date, String id);
+    void updateDateTime(String date, String id);
 }
