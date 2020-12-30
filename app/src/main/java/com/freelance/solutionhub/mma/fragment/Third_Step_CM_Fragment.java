@@ -151,7 +151,8 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
         network = new Network(getContext());
         apiInterface = ApiClient.getClient(getContext());
 
-        jobDone.setOnClickListener(this);
+        jobDone.setClickable(false);
+        jobDone.setFocusable(false);
         btnVerify.setOnClickListener(this);
 
         rnd =  new SecureRandom();
@@ -189,7 +190,6 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_verify:
-
                 if (!mSharePreferenceHelper.userClickStepOneOrNot() && !mSharePreferenceHelper.userClickStepTwoOrNot() ) {
                     dialogTitle = "Unsaved Work";
                     dialogBody = "You have unsaved works in Step One and Two.";
@@ -230,17 +230,23 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
                                     VerificationReturnBody verificationReturnBody = response.body();
                                     if (verificationReturnBody.isFault_resolved()) {
                                         jobDone.setClickable(true);
+                                        jobDone.setFocusable(true);
                                         jobDone.setBackground(getResources().getDrawable(R.drawable.round_rect_shape_button));
+                                        jobDone.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View view) {
+                                                updateEvent();
+                                            }
+                                        });
                                     } else {
                                         dialogTitle = "Verification";
                                         dialogBody = VERIFICATION_FAIL_MSG;
                                         showDialog();
                                        // Toast.makeText(getContext(), "Verification failed", Toast.LENGTH_SHORT).show();
                                         jobDone.setClickable(false);
+                                        jobDone.setFocusable(false);
                                         jobDone.setBackground(getResources().getDrawable(R.drawable.round_rectangle_shape_button_grey));
                                     }
-                                //     jobDone.setClickable(true);
-                                //     jobDone.setBackground(getResources().getDrawable(R.drawable.round_rect_shape_button));
 
                                 }
                                 else {

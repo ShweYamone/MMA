@@ -165,8 +165,8 @@ public class CMCompletionActivity extends AppCompatActivity implements View.OnCl
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        sharePreferenceHelper.setLock(false);
+    //    super.onBackPressed();
+    //    sharePreferenceHelper.setLock(false);
     }
 
     @Override

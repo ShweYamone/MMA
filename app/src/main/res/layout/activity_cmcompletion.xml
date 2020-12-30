@@ -36,7 +36,7 @@
         android:orientation="vertical"
         android:padding="@dimen/margin_xlarge">
         <RelativeLayout
-            android:layout_marginTop="@dimen/margin_xlarge"
+            android:layout_marginTop="@dimen/margin_small"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <LinearLayout
@@ -63,7 +63,6 @@
                             android:layout_margin="@dimen/margin_small"
                             android:text="@string/work_complete"
                             android:textColor="@color/colorLightBlack"
-                            android:fontFamily="@font/crimson_text_regular"
                             android:textStyle="bold"
                             android:textSize="@dimen/txt_size_ex_large"
                             android:layout_width="match_parent"
@@ -102,10 +101,9 @@
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
                                 android:layout_weight="3.1"
-                                android:fontFamily="@font/crimson_text_regular"
+                                android:textColor="@color/colorBlack"
                                 android:paddingLeft="@dimen/txt_size_normal"
                                 android:text="xxxxxx"
-                                android:textColor="@color/colorLightBlack"
                                 android:textSize="@dimen/txt_size_normal" />
                         </LinearLayout>
                         <LinearLayout
@@ -134,8 +132,7 @@
                                 android:id="@+id/tv_panel_id"
                                 android:paddingLeft="@dimen/txt_size_normal"
                                 android:text="VMS1 002"
-                                android:textColor="@color/colorLightBlack"
-                                android:fontFamily="@font/crimson_text_regular"
+                                android:textColor="@color/colorBlack"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="3.1"/>
@@ -167,8 +164,7 @@
                             android:id="@+id/tv_reported_problem_code"
                             android:paddingLeft="@dimen/txt_size_normal"
                             android:text="Modem Repair"
-                            android:textColor="@color/colorLightBlack"
-                            android:fontFamily="@font/crimson_text_regular"
+                            android:textColor="@color/colorBlack"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="3.1"/>
@@ -199,8 +195,7 @@
                                 android:id="@+id/tv_fault_code"
                                 android:paddingLeft="@dimen/txt_size_normal"
                                 android:text="xxxxxxxx"
-                                android:textColor="@color/colorLightBlack"
-                                android:fontFamily="@font/crimson_text_regular"
+                                android:textColor="@color/colorBlack"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="3.1"/>
@@ -231,8 +226,7 @@
                                 android:id="@+id/tv_remedy_action"
                                 android:paddingLeft="@dimen/txt_size_normal"
                                 android:text="Modem Repair"
-                                android:textColor="@color/colorLightBlack"
-                                android:fontFamily="@font/crimson_text_regular"
+                                android:textColor="@color/colorBlack"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="3.1"/>
@@ -264,8 +258,7 @@
                                 android:id="@+id/tv_third_party_fault"
                                 android:paddingLeft="@dimen/txt_size_normal"
                                 android:text="Telco"
-                                android:textColor="@color/colorLightBlack"
-                                android:fontFamily="@font/crimson_text_regular"
+                                android:textColor="@color/colorBlack"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="3.1"/>
@@ -296,8 +289,7 @@
                                 android:id="@+id/tv_location"
                                 android:paddingLeft="@dimen/txt_size_normal"
                                 android:text="Rochor Rd For Marina Centr"
-                                android:textColor="@color/colorLightBlack"
-                                android:fontFamily="@font/crimson_text_regular"
+                                android:textColor="@color/colorBlack"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="3.1"/>
@@ -315,8 +307,7 @@
                             android:id="@+id/tvRemarks"
                             android:text="@string/temp_text"
                             android:textAlignment="viewStart"
-                            android:textColor="@color/colorLightBlack"
-                            android:fontFamily="@font/crimson_text_regular"
+                            android:textColor="@color/colorBlack"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"/>
                     </LinearLayout>

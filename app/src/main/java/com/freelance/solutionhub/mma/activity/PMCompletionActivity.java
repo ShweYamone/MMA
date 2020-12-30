@@ -145,8 +145,8 @@ public class PMCompletionActivity extends AppCompatActivity implements View.OnCl
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        sharePreferenceHelper.setLock(false);
+     //   super.onBackPressed();
+     //   sharePreferenceHelper.setLock(false);
     }
 
     private void deleteWorkingData() {
