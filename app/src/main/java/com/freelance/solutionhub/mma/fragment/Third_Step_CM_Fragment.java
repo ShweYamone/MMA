@@ -239,7 +239,7 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
                                         jobDone.setBackground(getResources().getDrawable(R.drawable.round_rectangle_shape_button_grey));
                                     }
                                      jobDone.setClickable(true);
-                                     jobDone.setBackground(getResources().getDrawable(R.drawable.round_rectangle_shape_button_grey));
+                                     jobDone.setBackground(getResources().getDrawable(R.drawable.round_rect_shape_button));
 
                                 }
                                 else {
@@ -401,14 +401,15 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
                 updateEventBody.setEvents(f);
 
                 Log.e("UPLOAD_ERROR", "updateEvents: " +
-                        dbHelper.updateEventBodyDAO().getNumberOfUpdateEventsById(CM_Step_TWO));
+                        dbHelper.updateEventBodyDAO().getNumberOfUpdateEventsById(CM_Step_ONE));
                 Call<ReturnStatus> call = apiInterface.updateEvent("Bearer " + mSharePreferenceHelper.getToken(),
                         updateEventBody);
                 call.enqueue(new Callback<ReturnStatus>() {
                     @Override
                     public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
                         if (response.isSuccessful()) {
-                            Toast.makeText(getContext(),  response.body().getStatus()+ ", " + f.size() + " PRE_EVENTS UPLOADED" , Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(),  response.body().getStatus()+ ", " + f.size() + " PRE_EVENTS UPLOADED at " +
+                                    updateEventBody.getDate(), Toast.LENGTH_SHORT).show();
 
                             mSharePreferenceHelper.userClickCMStepOne(true);
                             dbHelper.eventDAO().update(YES, CM_Step_ONE);
@@ -531,7 +532,8 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
                     @Override
                     public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
                         if (response.isSuccessful()) {
-                            Toast.makeText(getContext(),  response.body().getStatus()+ ", " + f.size() + " POST_EVENTS UPLOADED" , Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(),  response.body().getStatus()+ ", " + f.size() + " POST_EVENTS UPLOADED at" +
+                                    updateEventBody.getDate(), Toast.LENGTH_SHORT).show();
 
                             mSharePreferenceHelper.userClickCMStepTwo(true);
                             dbHelper.eventDAO().update(YES, CM_Step_TWO);

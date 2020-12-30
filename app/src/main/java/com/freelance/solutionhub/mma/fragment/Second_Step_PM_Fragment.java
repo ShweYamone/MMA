@@ -156,8 +156,8 @@ public class Second_Step_PM_Fragment extends Fragment implements View.OnClickLis
                                         btnJobDone.setClickable(false);
                                         btnJobDone.setBackground(getResources().getDrawable(R.drawable.round_rectangle_shape_button_grey));
                                     }
-                               //     btnJobDone.setClickable(true);
-                               //     btnJobDone.setBackground(getResources().getDrawable(R.drawable.round_rect_shape_button));
+                                    btnJobDone.setClickable(true);
+                                    btnJobDone.setBackground(getResources().getDrawable(R.drawable.round_rect_shape_button));
 
                                 }
                                 else {

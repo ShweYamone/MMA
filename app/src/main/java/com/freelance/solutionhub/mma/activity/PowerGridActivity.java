@@ -7,6 +7,7 @@ import androidx.appcompat.widget.Toolbar;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PowerManager;
@@ -30,7 +31,12 @@ import com.freelance.solutionhub.mma.util.ApiInterface;
 import com.freelance.solutionhub.mma.util.Network;
 import com.freelance.solutionhub.mma.util.SharePreferenceHelper;
 
+import org.apache.commons.net.ntp.NTPUDPClient;
+import org.apache.commons.net.ntp.TimeInfo;
+
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -46,6 +52,7 @@ import retrofit2.Response;
 import static com.freelance.solutionhub.mma.util.AppConstant.ACTION_DATE;
 import static com.freelance.solutionhub.mma.util.AppConstant.ACTION_TAKEN;
 import static com.freelance.solutionhub.mma.util.AppConstant.CLEARANCE_DATE;
+import static com.freelance.solutionhub.mma.util.AppConstant.CM_Step_ONE;
 import static com.freelance.solutionhub.mma.util.AppConstant.CM_Step_TWO;
 import static com.freelance.solutionhub.mma.util.AppConstant.CT_PERSONNEL;
 import static com.freelance.solutionhub.mma.util.AppConstant.EXPECTED_COMPLETION_DATE;
@@ -59,6 +66,7 @@ import static com.freelance.solutionhub.mma.util.AppConstant.REFER_DATE;
 import static com.freelance.solutionhub.mma.util.AppConstant.REMARKS_ON_FAULT;
 import static com.freelance.solutionhub.mma.util.AppConstant.TELCO_UPDATE;
 import static com.freelance.solutionhub.mma.util.AppConstant.THIRD_PARTY_NUMBER;
+import static com.freelance.solutionhub.mma.util.AppConstant.TIME_SERVER;
 import static com.freelance.solutionhub.mma.util.AppConstant.YES;
 import static com.freelance.solutionhub.mma.util.AppConstant.user_inactivity_time;
 
@@ -399,52 +407,109 @@ public class PowerGridActivity extends AppCompatActivity implements View.OnClick
 
             if (network.isNetworkAvailable() && dbHelper.eventDAO().getNumOfEventsToUploadByEventType(POWER_GRIP_UPDATE) > 0) {
                 Log.i("POWER_Grid", "save: " + dbHelper.eventDAO().getNumOfEventsToUploadByEventType(POWER_GRIP_UPDATE));
-                showProgressBar();
+            //    showProgressBar();
                 updateEventBody = new UpdateEventBody(mSharePreferenceHelper.getUserName(),
                         mSharePreferenceHelper.getUserId(),
                         actualDateTime,
                         cmID,
                         dbHelper.eventDAO().getEventsToUploadByEventType(POWER_GRIP_UPDATE));
 
-                Call<ReturnStatus> returnStatusCallEvent = apiInterface.updateEvent("Bearer " + mSharePreferenceHelper.getToken(), updateEventBody);
-                returnStatusCallEvent.enqueue(new Callback<ReturnStatus>() {
-                    @Override
-                    public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
+                showProgressBar();
+                new getCurrentNetworkTime(updateEventBody).execute();
 
-                        if (response.isSuccessful()) {
-                            Toast.makeText(getApplicationContext(), dbHelper.eventDAO().getNumOfEventsToUploadByEventType(POWER_GRIP_UPDATE)+" events uploaded", Toast.LENGTH_LONG).show();
-                            dbHelper.eventDAO().updateByThirdParty(YES, CM_Step_TWO, POWER_GRIP_UPDATE);
-                            hideProgressBar();
-                            mSharePreferenceHelper.setLock(false);
-                            finish();
-                        }
-                        else {
-                            ResponseBody errorReturnBody = response.errorBody();
-                            try {
-                                Log.e("POWER_Grid", "onResponse: " + errorReturnBody.string());
-                                Toast.makeText(getApplicationContext(), "response " + response.code(), Toast.LENGTH_LONG).show();
-                                hideProgressBar();
-                            } catch (IOException e) {
-
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<ReturnStatus> call, Throwable t) {
-                        hideProgressBar();
-                        Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
             } else {
                 mSharePreferenceHelper.setLock(false);
                 finish();
             }
         }
+    }
+
+    class getCurrentNetworkTime extends AsyncTask<String, Void, Boolean> {
+        UpdateEventBody eventBody;
+
+        public getCurrentNetworkTime(UpdateEventBody eventBody) {
+            this.eventBody = eventBody;
+        }
+
+        private void updateEvents(String datetime) {
+            eventBody.setDate(datetime);
+
+            Call<ReturnStatus> returnStatusCallEvent = apiInterface.updateEvent("Bearer " + mSharePreferenceHelper.getToken(), eventBody);
+            returnStatusCallEvent.enqueue(new Callback<ReturnStatus>() {
+                @Override
+                public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
+
+                    if (response.isSuccessful()) {
+                        Toast.makeText(getApplicationContext(), dbHelper.eventDAO().getNumOfEventsToUploadByEventType(POWER_GRIP_UPDATE)+" events uploaded at" + eventBody.getDate(), Toast.LENGTH_LONG).show();
+                        dbHelper.eventDAO().updateByThirdParty(YES, CM_Step_TWO, POWER_GRIP_UPDATE);
+                        hideProgressBar();
+                        mSharePreferenceHelper.setLock(false);
+                        finish();
+                    }
+                    else {
+                        ResponseBody errorReturnBody = response.errorBody();
+                        try {
+                            Log.e("POWER_Grid", "onResponse: " + errorReturnBody.string());
+                            Toast.makeText(getApplicationContext(), "response " + response.code(), Toast.LENGTH_LONG).show();
+                            hideProgressBar();
+                        } catch (IOException e) {
+
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ReturnStatus> call, Throwable t) {
+                    hideProgressBar();
+                    Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
 
 
+        protected Boolean doInBackground(String... urls) {
+            boolean is_locale_date = false;
+            try {
+                NTPUDPClient timeClient = new NTPUDPClient();
+                timeClient.open();
+                timeClient.setDefaultTimeout(5000);
+                InetAddress inetAddress = InetAddress.getByName(TIME_SERVER);
+                TimeInfo timeInfo = timeClient.getTime(inetAddress);
+                long localTime = timeInfo.getReturnTime();
+                long serverTime = timeInfo.getMessage().getTransmitTimeStamp().getTime();
+                Timestamp timestamp = new Timestamp(localTime);
+                String localDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
+                Log.i("Time__Local", "doInBackground: " + localTime + "--> " + localDateTime);
+                timestamp = new Timestamp(serverTime);
+                String actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
+                Log.i("Time__Server", "doInBackground:" + serverTime + "--> " + actualDateTime);
+                //magic is here
+                updateEvents(actualDateTime);
+
+                if (new Date(localTime) != new Date(serverTime))
+                    is_locale_date = true;
+
+            } catch (UnknownHostException e) {
+                e.printStackTrace();
+                Log.e("UnknownHostException: ", e.getMessage());
+            } catch (IOException e) {
+                e.printStackTrace();
+                Log.e("IOException: ", e.getMessage());
+            }
+            return is_locale_date;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            super.onPostExecute(aBoolean);
+            hideProgressBar();
+            if(!aBoolean) {
+                Log.e("Check ", "dates not equal");
+            }
+        }
 
     }
+
     private void addEvents(){
         Event tempEvent;
         String tempStr;
