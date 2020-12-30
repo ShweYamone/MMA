@@ -88,7 +88,7 @@ public class ServiceOrderAdapter extends RecyclerView.Adapter<ServiceOrderAdapte
 
                     if (tvStatus.getText().toString().equals(APPR)) {
                         if (callback.hasUserId()) {
-                            callback.update_ARRP_To_ACK(service.getCreationDate(), service.getId(), getAdapterPosition());
+                            callback.update_ARRP_To_ACK(service.getId(), getAdapterPosition());
                         }
                     }
                     else {

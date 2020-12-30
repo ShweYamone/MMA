@@ -1,6 +1,7 @@
 package com.freelance.solutionhub.mma.fragment;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.cardview.widget.CardView;
@@ -47,8 +48,16 @@ import com.freelance.solutionhub.mma.util.ApiInterface;
 import com.freelance.solutionhub.mma.util.Network;
 import com.freelance.solutionhub.mma.util.SharePreferenceHelper;
 
+import org.apache.commons.net.ntp.NTPUDPClient;
+import org.apache.commons.net.ntp.TimeInfo;
+
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.xml.bind.annotation.W3CDomHandler;
@@ -68,6 +77,7 @@ import static com.freelance.solutionhub.mma.util.AppConstant.INPRG;
 import static com.freelance.solutionhub.mma.util.AppConstant.MONTHLY;
 import static com.freelance.solutionhub.mma.util.AppConstant.PM;
 import static com.freelance.solutionhub.mma.util.AppConstant.QUARTERLY;
+import static com.freelance.solutionhub.mma.util.AppConstant.TIME_SERVER;
 import static com.freelance.solutionhub.mma.util.AppConstant.WEEKLY;
 import static com.freelance.solutionhub.mma.util.AppConstant.WSCH;
 import static com.freelance.solutionhub.mma.util.AppConstant.YEARLY;
@@ -302,32 +312,84 @@ public class HomeFragment extends Fragment implements RadioGroup.OnCheckedChange
         return !(mSharePreference.getUserId().equals(""));
     }
 
+    class getCurrentNetworkTime extends AsyncTask<String, Void, Boolean> {
 
-    public  void update_ARRP_To_ACK(String date, String serviceOrderId, int position) {
-        UpdateEventBody updateEventBody = new UpdateEventBody(mSharePreference.getUserName(), mSharePreference.getUserId(),
-                date,
-                serviceOrderId,ACK
-        );
+        String serviceId;
+        int position;
 
-        Call<ReturnStatus> call = apiInterface.updateStatusEvent("Bearer " + mSharePreference.getToken(), updateEventBody);
-        call.enqueue(new Callback<ReturnStatus>() {
-            @Override
-            public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
-                if (response.isSuccessful()) {
-                    ReturnStatus returnStatus = response.body();
-                    Toast.makeText(getContext().getApplicationContext(), returnStatus.getStatus()+"APPRtoACK", Toast.LENGTH_SHORT).show();
-                    update_APPR_To_ACK_UI(position);
-                } else {
-                    Toast.makeText(getContext().getApplicationContext(), response.code()+"APPRtoACK", Toast.LENGTH_SHORT).show();
+        public getCurrentNetworkTime(String serviceId, int position) {
+            this.serviceId = serviceId;
+            this.position = position;
+        }
+
+        //APPR TO ACK
+        private void updateEvent(String date) {
+            UpdateEventBody updateEventBody = new UpdateEventBody(mSharePreference.getUserName(), mSharePreference.getUserId(),
+                    date,
+                    serviceId,ACK
+            );
+
+            Call<ReturnStatus> call = apiInterface.updateStatusEvent("Bearer " + mSharePreference.getToken(), updateEventBody);
+            call.enqueue(new Callback<ReturnStatus>() {
+                @Override
+                public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
+                    if (response.isSuccessful()) {
+                        ReturnStatus returnStatus = response.body();
+                        Toast.makeText(getContext().getApplicationContext(), returnStatus.getStatus()+"APPRtoACK", Toast.LENGTH_SHORT).show();
+                        update_APPR_To_ACK_UI(position);
+                    } else {
+                        Toast.makeText(getContext().getApplicationContext(), response.code()+"APPRtoACK", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ReturnStatus> call, Throwable t) {
 
                 }
-            }
+            });
+        }
 
-            @Override
-            public void onFailure(Call<ReturnStatus> call, Throwable t) {
+        protected Boolean doInBackground(String... urls) {
+            boolean is_locale_date = false;
+            try {
+                NTPUDPClient timeClient = new NTPUDPClient();
+                timeClient.open();
+                timeClient.setDefaultTimeout(3000);
+                InetAddress inetAddress = InetAddress.getByName(TIME_SERVER);
+                TimeInfo timeInfo = timeClient.getTime(inetAddress);
+                long localTime = timeInfo.getReturnTime();
+                long serverTime = timeInfo.getMessage().getTransmitTimeStamp().getTime();
+                Timestamp timestamp = new Timestamp(localTime);
+                String localDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
+                Log.i("Time__Local", "doInBackground: " + localTime + "--> " + localDateTime);
+                timestamp = new Timestamp(serverTime);
+                String actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
+                Log.i("Time__Server", "doInBackground:" + serverTime + "--> " + actualDateTime);
+                //after getting network time, update event with the network time
+                updateEvent(actualDateTime);
+                if (new Date(localTime) != new Date(serverTime))
+                    is_locale_date = true;
 
+            } catch (UnknownHostException e) {
+                e.printStackTrace();
+                Log.e("UnknownHostException: ", e.getMessage());
+            } catch (IOException e) {
+                e.printStackTrace();
+                Log.e("IOException: ", e.getMessage());
             }
-        });
+            return is_locale_date;
+        }
+
+        protected void onPostExecute(boolean local_date) {
+            if(!local_date) {
+                Log.e("Check ", "dates not equal" + local_date);
+            }
+        }
+    }
+
+    public  void update_ARRP_To_ACK(String serviceOrderId, int position) {
+        //get time from server first
+       new getCurrentNetworkTime(serviceOrderId, position).execute();
     }
 
     public void update_APPR_To_ACK_UI(int position){
@@ -531,7 +593,6 @@ public class HomeFragment extends Fragment implements RadioGroup.OnCheckedChange
         rbScheduleYear.setTextColor(getResources().getColor(R.color.colorBlack));
     }
 
-
     @Override
     public void onCheckedChanged(RadioGroup radioGroup, int i) {
         page = 1;
@@ -616,8 +677,6 @@ public class HomeFragment extends Fragment implements RadioGroup.OnCheckedChange
         getServiceOrders(scheduleType);
     }
 
-
-
     @Override
     public void onResume() {
         super.onResume();
@@ -626,4 +685,6 @@ public class HomeFragment extends Fragment implements RadioGroup.OnCheckedChange
         page = 1;
         getServiceOrders(scheduleType);
     }
+
+
 }
