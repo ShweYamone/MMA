@@ -96,7 +96,7 @@ public class ApiClient {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+           Log.i("REMOVEFROMCACHE", e.getMessage());
         }
     }
 }
