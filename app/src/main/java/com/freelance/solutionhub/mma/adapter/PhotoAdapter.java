@@ -89,7 +89,8 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.MyViewHolder
             myViewHolder.newsImage.setImageBitmap(getBitmapFromEncodedString(singleRowArrayList.get(i).getImage()));
         }else {
             myViewHolder.delete.setVisibility(View.GONE);
-            url = "http://alb-java-apps-776075049.ap-southeast-1.elb.amazonaws.com:9000/"+singleRowArrayList.get(i).getImage();
+            Log.i("url",singleRowArrayList.get(i).getImage());
+            url = "http://alb-java-apps-776075049.ap-southeast-1.elb.amazonaws.com:9000"+singleRowArrayList.get(i).getImage();
             glideUrl = new GlideUrl(url,
                     new LazyHeaders.Builder()
                             .addHeader("Authorization", "Bearer " + mSharedPreferences.getToken())

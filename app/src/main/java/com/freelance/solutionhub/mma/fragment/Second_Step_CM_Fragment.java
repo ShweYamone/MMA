@@ -357,30 +357,30 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
             }
         });
 
-        Call<PhotoAttachementModel> photoAttachementModelCall = apiInterface.getPhotoAttachment("Bearer "+mSharePreference.getToken(), pmServiceInfoModel.getId());
-        photoAttachementModelCall.enqueue(new Callback<PhotoAttachementModel>() {
-            @Override
-            public void onResponse(Call<PhotoAttachementModel> call, Response<PhotoAttachementModel> response) {
-                PhotoAttachementModel photoAttachementModel = response.body();
-                if(response.isSuccessful()){
-                    List<PreMaintenance> preMaintenances = photoAttachementModel.getPreMaintenance();
-                    if(preMaintenances != null) {
-                        for (PreMaintenance e : preMaintenances) {
-                            Log.e("filepath", e.getFilePath());
-                            postModelList.add(new PhotoModel(e.getFilePath(), 2));
-
-                        }
-                        postPhotoAdapter.notifyDataSetChanged();
-                    }
-                }
-
-            }
-
-            @Override
-            public void onFailure(Call<PhotoAttachementModel> call, Throwable t) {
-
-            }
-        });
+//        Call<PhotoAttachementModel> photoAttachementModelCall = apiInterface.getPhotoAttachment("Bearer "+mSharePreference.getToken(), pmServiceInfoModel.getId());
+//        photoAttachementModelCall.enqueue(new Callback<PhotoAttachementModel>() {
+//            @Override
+//            public void onResponse(Call<PhotoAttachementModel> call, Response<PhotoAttachementModel> response) {
+//                PhotoAttachementModel photoAttachementModel = response.body();
+//                if(response.isSuccessful()){
+//                    List<PreMaintenance> preMaintenances = photoAttachementModel.getPreMaintenance();
+//                    if(preMaintenances != null) {
+//                        for (PreMaintenance e : preMaintenances) {
+//                            Log.e("filepath", e.getFilePath());
+//                            postModelList.add(new PhotoModel(e.getFilePath(), 2));
+//
+//                        }
+//                        postPhotoAdapter.notifyDataSetChanged();
+//                    }
+//                }
+//
+//            }
+//
+//            @Override
+//            public void onFailure(Call<PhotoAttachementModel> call, Throwable t) {
+//
+//            }
+//        });
 
 
         displayMaintenanceWorkInformation();
