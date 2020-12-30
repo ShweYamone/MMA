@@ -61,6 +61,8 @@ import com.freelance.solutionhub.mma.util.Network;
 import com.freelance.solutionhub.mma.util.SharePreferenceHelper;
 import com.google.zxing.integration.android.IntentIntegrator;
 
+import org.apache.commons.net.ntp.NTPUDPClient;
+import org.apache.commons.net.ntp.TimeInfo;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -70,6 +72,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -107,6 +111,7 @@ import static com.freelance.solutionhub.mma.util.AppConstant.REPLACEMENT_PART_CO
 import static com.freelance.solutionhub.mma.util.AppConstant.REPORTED_PROBLEM;
 import static com.freelance.solutionhub.mma.util.AppConstant.SERVICE_ORDER_UPDATE;
 import static com.freelance.solutionhub.mma.util.AppConstant.THIRD_PARTY_COMMENT_UPDATE;
+import static com.freelance.solutionhub.mma.util.AppConstant.TIME_SERVER;
 import static com.freelance.solutionhub.mma.util.AppConstant.YES;
 import static com.freelance.solutionhub.mma.util.AppConstant.pm;
 
@@ -595,6 +600,9 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
                     //Mandatory Photos are attached, can update events.......
                     savePhotosToDB();
                     uploadEvents();
+
+
+
                     preActualProblemCode = actualProblem;
                     preCauseCode = causeCode;
                     preRemedyCode = remedyCode;
@@ -667,30 +675,37 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
 
 
         if (network.isNetworkAvailable()) {
+            ((CMActivity)getActivity()).showProgressBar();
+            new getCurrentNetworkTime().execute();
+        }
+    }
+
+    class getCurrentNetworkTime extends AsyncTask<String, Void, Boolean> {
+        private void updateEventsWithNTPTime() {
             if (dbHelper.eventDAO().getNumberEventsToUpload(CM_Step_TWO) > 0) {
+                UpdateEventBody eventBody = dbHelper.updateEventBodyDAO().getUpdateEventBodyByID(CM_Step_TWO);
                 eventBody.setEvents(dbHelper.eventDAO().getEventsToUpload(CM_Step_TWO));
 
-                ((CMActivity)getActivity()).showProgressBar();
                 Call<ReturnStatus> call = apiInterface.updateEvent("Bearer " + mSharePreference.getToken(), eventBody);
                 call.enqueue(new Callback<ReturnStatus>() {
                     @Override
                     public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
                         if (response.isSuccessful()) {
                             Log.i("EventsUpload", "uploadEvents: " );
-                            Toast.makeText(getContext(), eventBody.getEvents().size() + " Events Uploaded!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), eventBody.getEvents().size() + " Events Uploaded at " +
+                                    eventBody.getDate(), Toast.LENGTH_SHORT).show();
                             dbHelper.eventDAO().update(YES, CM_Step_TWO);
-                          //  Toast.makeText(getContext(), dbHelper.eventDAO().getEvents(CM_Step_TWO).get(0).alreadyUploaded , Toast.LENGTH_SHORT).show();
-                            ((CMActivity)getActivity()).hideProgressBar();
+                            //  Toast.makeText(getContext(), dbHelper.eventDAO().getEvents(CM_Step_TWO).get(0).alreadyUploaded , Toast.LENGTH_SHORT).show();
+                          //  ((CMActivity)getActivity()).hideProgressBar();
                         } else {
                             ResponseBody errorReturnBody = response.errorBody();
                             try {
                                 Log.e("UPLOAD_ERROR", "onResponse: " + errorReturnBody.string());
                                 Toast.makeText(getContext(), "response " + response.code(), Toast.LENGTH_LONG).show();
-                                ((CMActivity)getActivity()).hideProgressBar();
+                             //   ((CMActivity)getActivity()).hideProgressBar();
                             } catch (IOException e) {
 
                             }
-                            ((CMActivity)getActivity()).hideProgressBar();
                         }
 
                     }
@@ -698,13 +713,58 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
                     @Override
                     public void onFailure(Call<ReturnStatus> call, Throwable t) {
                         Toast.makeText(getContext(), "Failure" , Toast.LENGTH_SHORT).show();
-                        ((CMActivity)getActivity()).hideProgressBar();
                     }
                 });
             }
-
         }
+
+
+
+        protected Boolean doInBackground(String... urls) {
+            boolean is_locale_date = false;
+            try {
+                NTPUDPClient timeClient = new NTPUDPClient();
+                timeClient.open();
+                timeClient.setDefaultTimeout(5000);
+                InetAddress inetAddress = InetAddress.getByName(TIME_SERVER);
+                TimeInfo timeInfo = timeClient.getTime(inetAddress);
+                long localTime = timeInfo.getReturnTime();
+                long serverTime = timeInfo.getMessage().getTransmitTimeStamp().getTime();
+                Timestamp timestamp = new Timestamp(localTime);
+                String localDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
+                Log.i("Time__Local", "doInBackground: " + localTime + "--> " + localDateTime);
+                timestamp = new Timestamp(serverTime);
+                String actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
+                Log.i("Time__Server", "doInBackground:" + serverTime + "--> " + actualDateTime);
+                //after getting network time, update event with the network time
+                dbHelper.updateEventBodyDAO().updateDateTime(actualDateTime, CM_Step_TWO);
+                updateEventsWithNTPTime();
+
+                if (new Date(localTime) != new Date(serverTime))
+                    is_locale_date = true;
+
+            } catch (UnknownHostException e) {
+                e.printStackTrace();
+                Log.e("UnknownHostException: ", e.getMessage());
+            } catch (IOException e) {
+                e.printStackTrace();
+                Log.e("IOException: ", e.getMessage());
+            }
+            return is_locale_date;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            super.onPostExecute(aBoolean);
+            ((CMActivity)getActivity()).hideProgressBar();
+            if(!aBoolean) {
+                Log.e("Check ", "dates not equal");
+            }
+        }
+
     }
+
+
 
     private void getQREvent() {
 
