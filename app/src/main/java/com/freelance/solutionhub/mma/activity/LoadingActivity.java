@@ -88,8 +88,12 @@ public class LoadingActivity extends AppCompatActivity {
             dbHelper.updateEventBodyDAO().deleteAll();
             dbHelper.eventDAO().deleteAll();
             dbHelper.uploadPhotoDAO().deleteAll();
+            dbHelper.checkListDescDAO().deleteAll();
             mSharePrefrence.setCurrentMSOID(msoId);
         }
+        Event tempEvent = new Event("start_tag_in_time", "start_tag_in_time", getIntent().getStringExtra("start_time"));
+        tempEvent.setEvent_id("start_timestart_time");
+        dbHelper.eventDAO().insert(tempEvent);
 
         getServieOrderbyId(msoId);
 
