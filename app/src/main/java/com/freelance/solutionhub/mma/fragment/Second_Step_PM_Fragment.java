@@ -112,7 +112,7 @@ public class Second_Step_PM_Fragment extends Fragment implements View.OnClickLis
 
         btnJobDone.setClickable(false);
         btnJobDone.setFocusable(false);
-        btnJobDone.setOnClickListener(this);
+       // btnJobDone.setOnClickListener(this);
         verify.setOnClickListener(this);
 
         rnd =  new SecureRandom();

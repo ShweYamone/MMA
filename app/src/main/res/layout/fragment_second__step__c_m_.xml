@@ -20,8 +20,10 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_small"
                 android:textColor="@color/colorBlack"
                 android:text="@string/maintenance_work_information"
+                android:textStyle="bold"
                 android:textSize="@dimen/txt_size_large"/>
 
             <!-- the whole card design -->
@@ -48,7 +50,7 @@
                             android:layout_weight="2"
                             android:textColor="@color/colorPrimary"
                             android:text="@string/acknowledged_by"
-                            android:textSize="@dimen/txt_size_normal"/>
+                            android:textSize="@dimen/txt_size_small_middle"/>
 
                         <TextView
                             android:layout_width="0dp"
@@ -56,7 +58,7 @@
                             android:layout_weight="2"
                             android:textColor="@color/colorPrimary"
                             android:text="@string/acknowledge_date_time"
-                            android:textSize="@dimen/txt_size_normal"/>
+                            android:textSize="@dimen/txt_size_small_middle"/>
                     </LinearLayout>
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -70,7 +72,7 @@
                             android:layout_weight="2"
                             android:textColor="@color/colorBlack"
                             android:text="John"
-                            android:textSize="@dimen/txt_size_normal"/>
+                            android:textSize="@dimen/txt_size_large"/>
 
                         <TextView
                             android:id="@+id/tv_acknowledge_datetime"
@@ -79,7 +81,7 @@
                             android:layout_weight="2"
                             android:textColor="@color/colorBlack"
                             android:text="23.06.2019 / 12.00.14"
-                            android:textSize="@dimen/txt_size_normal"/>
+                            android:textSize="@dimen/txt_size_large"/>
                     </LinearLayout>
                 </LinearLayout>
 
@@ -94,14 +96,14 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/colorPrimary"
                         android:text="@string/first_respond_date_time"
-                        android:textSize="@dimen/txt_size_normal"/>
+                        android:textSize="@dimen/txt_size_small_middle"/>
                     <TextView
                         android:id="@+id/tv_response_datetime"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="@color/colorBlack"
                         android:text="24.06.2019 / 11.00.18"
-                        android:textSize="@dimen/txt_size_normal"/>
+                        android:textSize="@dimen/txt_size_large"/>
                 </LinearLayout>
 
             </LinearLayout>

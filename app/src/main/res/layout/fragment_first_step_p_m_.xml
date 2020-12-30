@@ -101,7 +101,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:visibility="gone"
+                android:visibility="visible"
                 android:padding="@dimen/margin_normal"
                 android:background="@drawable/round_rect_shape">
 
@@ -121,7 +121,7 @@
                             android:layout_weight="2.5"
                             android:textColor="@color/colorPrimary"
                             android:text="@string/panel_id"
-                            android:textSize="@dimen/txt_size_normal"/>
+                            android:textSize="@dimen/txt_size_small_middle"/>
 
                         <TextView
                             android:layout_width="0dp"
@@ -129,7 +129,7 @@
                             android:layout_weight="1.5"
                             android:textColor="@color/colorPrimary"
                             android:text="@string/performed_by"
-                            android:textSize="@dimen/txt_size_normal"/>
+                            android:textSize="@dimen/txt_size_small_middle"/>
                     </LinearLayout>
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -143,7 +143,7 @@
                             android:layout_weight="2.5"
                             android:textColor="@color/colorBlack"
                             android:text="PGS/18/100000307"
-                            android:textSize="@dimen/txt_size_normal"/>
+                            android:textSize="@dimen/txt_size_large"/>
 
                         <TextView
                             android:id="@+id/tv_performed_by"
@@ -152,7 +152,7 @@
                             android:layout_weight="1.5"
                             android:textColor="@color/colorBlack"
                             android:text="VMS1 002"
-                            android:textSize="@dimen/txt_size_normal"/>
+                            android:textSize="@dimen/txt_size_large"/>
                     </LinearLayout>
                 </LinearLayout>
 
@@ -173,7 +173,7 @@
                             android:layout_weight="2.5"
                             android:textColor="@color/colorPrimary"
                             android:text="@string/location"
-                            android:textSize="@dimen/txt_size_normal"/>
+                            android:textSize="@dimen/txt_size_small_middle"/>
 
                         <TextView
                             android:layout_width="0dp"
@@ -181,7 +181,7 @@
                             android:layout_weight="1.5"
                             android:textColor="@color/colorPrimary"
                             android:text="@string/bust_stop_number"
-                            android:textSize="@dimen/txt_size_normal"/>
+                            android:textSize="@dimen/txt_size_small_middle"/>
                     </LinearLayout>
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -194,7 +194,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="2.5"
                             android:textColor="@color/colorBlack"
-                            android:textSize="@dimen/txt_size_normal"/>
+                            android:textSize="@dimen/txt_size_large"/>
 
                         <TextView
                             android:id="@+id/tv_bust_stop_number"
@@ -202,7 +202,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1.5"
                             android:textColor="@color/colorBlack"
-                            android:textSize="@dimen/txt_size_normal"/>
+                            android:textSize="@dimen/txt_size_large"/>
                     </LinearLayout>
                 </LinearLayout>
 
@@ -217,14 +217,14 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/colorPrimary"
                         android:text="@string/schedule_start_date_time"
-                        android:textSize="@dimen/txt_size_normal"/>
+                        android:textSize="@dimen/txt_size_small_middle"/>
                     <TextView
                         android:id="@+id/tv_schedule_start_date_time"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textColor="@color/colorBlack"
                         android:text="24.06.2019 / 11.00.18"
-                        android:textSize="@dimen/txt_size_normal"/>
+                        android:textSize="@dimen/txt_size_large"/>
                 </LinearLayout>
 
                 <!-- 4th row design -->
@@ -238,14 +238,14 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/colorPrimary"
                         android:text="@string/schedule_end_date_time"
-                        android:textSize="@dimen/txt_size_normal"/>
+                        android:textSize="@dimen/txt_size_small_middle"/>
                     <TextView
                         android:id="@+id/tv_schedule_end_date_time"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="@color/colorBlack"
                         android:text="23.06.2019 / 11.00.18"
-                        android:textSize="@dimen/txt_size_normal"/>
+                        android:textSize="@dimen/txt_size_large"/>
                 </LinearLayout>
 
                 <!-- 5th row design -->
@@ -259,7 +259,7 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/colorPrimary"
                         android:text="@string/actual_start_date_time"
-                        android:textSize="@dimen/txt_size_normal"/>
+                        android:textSize="@dimen/txt_size_small_middle"/>
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -272,7 +272,7 @@
                             android:layout_weight="4.5"
                             android:textColor="@color/colorBlack"
                             android:text="23.06.2019 / 11.00.18"
-                            android:textSize="@dimen/txt_size_normal"/>
+                            android:textSize="@dimen/txt_size_large"/>
                         <ImageView
                             android:id="@+id/iv_arrow_drop_up"
                             android:layout_width="0dp"

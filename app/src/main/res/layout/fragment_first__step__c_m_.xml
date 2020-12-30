@@ -27,6 +27,7 @@
                     android:layout_weight="2.3"
                     android:textColor="@color/colorBlack"
                     android:text="@string/mso_information"
+                    android:textStyle="bold"
                     android:textSize="@dimen/txt_size_large"/>
 
                 <TextView
@@ -74,10 +75,10 @@
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="2.5"
+                            android:layout_weight="2.6"
                             android:textColor="@color/colorPrimary"
                             android:text="@string/mso_number"
-                            android:textSize="@dimen/txt_size_normal"/>
+                            android:textSize="@dimen/txt_size_small_middle"/>
 
                         <TextView
                             android:layout_width="0dp"
@@ -85,7 +86,7 @@
                             android:layout_weight="1.5"
                             android:textColor="@color/colorPrimary"
                             android:text="@string/panel_id"
-                            android:textSize="@dimen/txt_size_normal"/>
+                            android:textSize="@dimen/txt_size_small_middle"/>
                     </LinearLayout>
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -96,10 +97,10 @@
                             android:id="@+id/tv_mso_number"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="2.5"
+                            android:layout_weight="2.6"
                             android:textColor="@color/colorBlack"
                             android:text="PGS/18/100000307"
-                            android:textSize="@dimen/txt_size_normal"/>
+                            android:textSize="@dimen/txt_size_large"/>
 
                         <TextView
                             android:id="@+id/tv_panel_id"
@@ -108,7 +109,7 @@
                             android:layout_weight="1.5"
                             android:textColor="@color/colorBlack"
                             android:text="VMS1 002"
-                            android:textSize="@dimen/txt_size_normal"/>
+                            android:textSize="@dimen/txt_size_large"/>
                     </LinearLayout>
                 </LinearLayout>
 
@@ -126,10 +127,10 @@
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="2.5"
+                            android:layout_weight="2.6"
                             android:textColor="@color/colorPrimary"
                             android:text="@string/fault_type"
-                            android:textSize="@dimen/txt_size_normal"/>
+                            android:textSize="@dimen/txt_size_small_middle"/>
 
                         <TextView
                             android:layout_width="0dp"
@@ -137,7 +138,7 @@
                             android:layout_weight="1.5"
                             android:textColor="@color/colorPrimary"
                             android:text="@string/mso_priority"
-                            android:textSize="@dimen/txt_size_normal"/>
+                            android:textSize="@dimen/txt_size_small_middle"/>
                     </LinearLayout>
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -148,10 +149,10 @@
                             android:id="@+id/tv_fault_type"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="2.5"
+                            android:layout_weight="2.6"
                             android:textColor="@color/colorBlack"
                             android:text="Disconnect"
-                            android:textSize="@dimen/txt_size_normal"/>
+                            android:textSize="@dimen/txt_size_large"/>
 
                         <TextView
                             android:id="@+id/tv_mso_priority"
@@ -160,7 +161,7 @@
                             android:layout_weight="1.5"
                             android:textColor="@color/colorBlack"
                             android:text="Critical"
-                            android:textSize="@dimen/txt_size_normal"/>
+                            android:textSize="@dimen/txt_size_large"/>
                     </LinearLayout>
                 </LinearLayout>
 
@@ -175,14 +176,14 @@
                             android:layout_height="wrap_content"
                             android:textColor="@color/colorPrimary"
                             android:text="@string/allowable_resolution_date_time"
-                            android:textSize="@dimen/txt_size_normal"/>
+                            android:textSize="@dimen/txt_size_small_middle"/>
                         <TextView
                             android:id="@+id/tv_allowable_resolution_datetime"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textColor="@color/colorBlack"
                             android:text="24.06.2019 / 11.00.18"
-                            android:textSize="@dimen/txt_size_normal"/>
+                            android:textSize="@dimen/txt_size_large"/>
                 </LinearLayout>
 
                 <!-- 4th row design -->
@@ -196,14 +197,14 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/colorPrimary"
                         android:text="@string/allowable_respond_date_time"
-                        android:textSize="@dimen/txt_size_normal"/>
+                        android:textSize="@dimen/txt_size_small_middle"/>
                     <TextView
                         android:id="@+id/tv_allowable_respond_datetime"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="@color/colorBlack"
                         android:text="23.06.2019 / 11.00.18"
-                        android:textSize="@dimen/txt_size_normal"/>
+                        android:textSize="@dimen/txt_size_large"/>
                 </LinearLayout>
 
                 <!-- 5th row design -->
@@ -217,14 +218,14 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/colorPrimary"
                         android:text="@string/fault_detected_date_time"
-                        android:textSize="@dimen/txt_size_normal"/>
+                        android:textSize="@dimen/txt_size_small_middle"/>
                     <TextView
                         android:id="@+id/tv_fault_detected_datetime"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="@color/colorBlack"
                         android:text="23.06.2019 / 11.00.18"
-                        android:textSize="@dimen/txt_size_normal"/>
+                        android:textSize="@dimen/txt_size_large"/>
                 </LinearLayout>
 
                 <!-- 6th row design -->
@@ -238,14 +239,14 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/colorPrimary"
                         android:text="@string/mso_notified_date_time"
-                        android:textSize="@dimen/txt_size_normal"/>
+                        android:textSize="@dimen/txt_size_small_middle"/>
                     <TextView
                         android:id="@+id/mso_notified_datetime"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="@color/colorBlack"
                         android:text="23.06.2019 / 11.00.18"
-                        android:textSize="@dimen/txt_size_normal"/>
+                        android:textSize="@dimen/txt_size_large"/>
                 </LinearLayout>
 
                 <!-- 7th row design -->
@@ -259,14 +260,14 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/colorPrimary"
                         android:text="@string/bust_stop_number"
-                        android:textSize="@dimen/txt_size_normal"/>
+                        android:textSize="@dimen/txt_size_small_middle"/>
                     <TextView
                         android:id="@+id/tv_bus_stop_number"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="@color/colorBlack"
                         android:text="VMS1 036"
-                        android:textSize="@dimen/txt_size_normal"/>
+                        android:textSize="@dimen/txt_size_large"/>
                 </LinearLayout>
 
                 <!-- 8th row design -->
@@ -280,14 +281,14 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/colorPrimary"
                         android:text="@string/location"
-                        android:textSize="@dimen/txt_size_normal"/>
+                        android:textSize="@dimen/txt_size_small_middle"/>
                     <TextView
                         android:id="@+id/tv_location"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="@color/colorBlack"
                         android:text="Rochor Rd For Marina Centr"
-                        android:textSize="@dimen/txt_size_normal"/>
+                        android:textSize="@dimen/txt_size_large"/>
                 </LinearLayout>
 
             </LinearLayout>
