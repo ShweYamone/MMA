@@ -288,12 +288,29 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
             }
 
             ((CMActivity)getActivity()).showProgressBar();
-            List<Event> events = new ArrayList<>();
-            new LoadPREImage(
-                    events,
-                    PRE_BUCKET_NAME,
-                    dbHelper.updateEventBodyDAO().getUpdateEventBodyByID(CM_Step_ONE))
-                    .execute(uploadPhoto(prePhotoModels));
+            if (dbHelper.updateEventBodyDAO().getNumberOfUpdateEventsById(CM_Step_ONE) > 0) {
+                List<Event> events = new ArrayList<>();
+                new LoadPREImage(
+                        events,
+                        PRE_BUCKET_NAME,
+                        dbHelper.updateEventBodyDAO().getUpdateEventBodyByID(CM_Step_ONE))
+                        .execute(uploadPhoto(prePhotoModels));
+            } else {
+
+                /**  STEP_TWO EVENT UPDATE */
+                ArrayList<PhotoModel>  postPhotoModels = new ArrayList<>();
+                uploadPhotoModels = dbHelper.uploadPhotoDAO().getPhotosToUploadByBucketName(POST_BUCKET_NAME);
+                for (UploadPhotoModel photoModel: uploadPhotoModels) {
+                    postPhotoModels.add(new PhotoModel(getDecodedString(photoModel.getEncodedPhotoString()), 1));
+                }
+                new LoadPOSTImage(
+                        dbHelper.eventDAO().getEventsToUpload(CM_Step_TWO),
+                        POST_BUCKET_NAME,
+                        dbHelper.updateEventBodyDAO().getUpdateEventBodyByID(CM_Step_TWO))
+                        .execute(uploadPhoto(postPhotoModels));
+            }
+
+
 
         } else {
             dialogTitle = "Network Connetion";
