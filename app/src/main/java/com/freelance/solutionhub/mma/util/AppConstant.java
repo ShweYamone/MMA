@@ -1,11 +1,12 @@
 package com.freelance.solutionhub.mma.util;
 
+import retrofit2.http.PUT;
+
 public class AppConstant {
 
     public static final String BASE_URL = "https://oiyryh245h.execute-api.ap-southeast-1.amazonaws.com/dev/";
 
     public static final String TIME_SERVER = "sg.pool.ntp.org";
-    //;
 
     public static final String PM = "PREVENTATIVE";
     public static final String pm = "PM";
@@ -21,6 +22,12 @@ public class AppConstant {
     public static final String MONTHLY = "MONTHLY";
     public static final String QUARTERLY = "QUARTERLY";
     public static final String YEARLY = "YEARLY";
+
+    public static final String INVALID_GRANT = "invalid_grant";
+    public static final String INVALID_GRANT_MSG = "Login ID or Password is incorrect!";
+    public static final String ACCOUNT_LOCK = "";
+    public static final String ACCOUNT_LOCK_MSG = "Your account is locked due to failed login attempts. Please, contact system adminstrator";
+    public static final String VERIFICATION_FAIL_MSG = "The operation can't be completed because fault still exists. Please check your faulty part again.";
 
     public static final long user_inactivity_time = 5 * 60 * 1000; //5 minutes for user inactivity
 

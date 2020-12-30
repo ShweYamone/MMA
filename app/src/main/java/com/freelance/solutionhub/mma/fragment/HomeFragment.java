@@ -531,8 +531,6 @@ public class HomeFragment extends Fragment implements RadioGroup.OnCheckedChange
         rbPMAll.setTextColor(getResources().getColor(R.color.colorWhite));
         rbScheduleAll.setChecked(true);
         rbScheduleAll.setTextColor(getResources().getColor(R.color.colorWhite));
-
-
     }
 
     private void showCorrectiveMaintenance() {

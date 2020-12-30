@@ -74,6 +74,7 @@ import static com.freelance.solutionhub.mma.util.AppConstant.JOBDONE;
 import static com.freelance.solutionhub.mma.util.AppConstant.POST_BUCKET_NAME;
 import static com.freelance.solutionhub.mma.util.AppConstant.PRE_BUCKET_NAME;
 import static com.freelance.solutionhub.mma.util.AppConstant.SERVICE_ORDER_UPDATE;
+import static com.freelance.solutionhub.mma.util.AppConstant.VERIFICATION_FAIL_MSG;
 import static com.freelance.solutionhub.mma.util.AppConstant.YES;
 import static com.freelance.solutionhub.mma.util.AppConstant.pm;
 
@@ -199,7 +200,7 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
                     showDialog();
                 } else if (!mSharePreferenceHelper.userClickStepTwoOrNot()) {
                     dialogTitle = "Unsaved Work";
-                    dialogBody = "You have unsaved works in Step and Two.";
+                    dialogBody = "You have unsaved works in Step Two.";
                     showDialog();
                 } else {
                     date = new Date();
@@ -232,14 +233,14 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
                                         jobDone.setBackground(getResources().getDrawable(R.drawable.round_rect_shape_button));
                                     } else {
                                         dialogTitle = "Verification";
-                                        dialogBody = "Verification Failed.";
+                                        dialogBody = VERIFICATION_FAIL_MSG;
                                         showDialog();
                                        // Toast.makeText(getContext(), "Verification failed", Toast.LENGTH_SHORT).show();
                                         jobDone.setClickable(false);
                                         jobDone.setBackground(getResources().getDrawable(R.drawable.round_rectangle_shape_button_grey));
                                     }
-                                     jobDone.setClickable(true);
-                                     jobDone.setBackground(getResources().getDrawable(R.drawable.round_rect_shape_button));
+                                //     jobDone.setClickable(true);
+                                //     jobDone.setBackground(getResources().getDrawable(R.drawable.round_rect_shape_button));
 
                                 }
                                 else {

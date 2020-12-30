@@ -63,6 +63,7 @@ import static com.freelance.solutionhub.mma.util.AppConstant.JOBDONE;
 import static com.freelance.solutionhub.mma.util.AppConstant.PM_Step_ONE;
 import static com.freelance.solutionhub.mma.util.AppConstant.PM_Step_TWO;
 import static com.freelance.solutionhub.mma.util.AppConstant.POST_BUCKET_NAME;
+import static com.freelance.solutionhub.mma.util.AppConstant.VERIFICATION_FAIL_MSG;
 import static com.freelance.solutionhub.mma.util.AppConstant.YES;
 import static com.freelance.solutionhub.mma.util.AppConstant.pm;
 
@@ -151,13 +152,12 @@ public class Second_Step_PM_Fragment extends Fragment implements View.OnClickLis
                                         btnJobDone.setClickable(true);
                                         btnJobDone.setBackground(getResources().getDrawable(R.drawable.round_rect_shape_button));
                                     } else {
-                                        //  Toast.makeText(getContext(), "Verification failed", Toast.LENGTH_SHORT).show();
-                                        showDialog("Verification", "Verification Failed.");
+                                        showDialog("Verification", VERIFICATION_FAIL_MSG);
                                         btnJobDone.setClickable(false);
                                         btnJobDone.setBackground(getResources().getDrawable(R.drawable.round_rectangle_shape_button_grey));
                                     }
-                                    btnJobDone.setClickable(true);
-                                    btnJobDone.setBackground(getResources().getDrawable(R.drawable.round_rect_shape_button));
+                                //    btnJobDone.setClickable(true);
+                                //    btnJobDone.setBackground(getResources().getDrawable(R.drawable.round_rect_shape_button));
 
                                 }
                                 else {

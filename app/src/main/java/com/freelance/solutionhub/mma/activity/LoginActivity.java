@@ -1,8 +1,6 @@
 package com.freelance.solutionhub.mma.activity;
 
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
 import android.content.Context;
 import android.content.Intent;
@@ -13,24 +11,31 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.freelance.solutionhub.mma.R;
-import com.freelance.solutionhub.mma.model.Data;
 import com.freelance.solutionhub.mma.model.LoginModel;
 import com.freelance.solutionhub.mma.model.UserModel;
-import com.freelance.solutionhub.mma.model.UserProfile;
 import com.freelance.solutionhub.mma.util.ApiClient;
 import com.freelance.solutionhub.mma.util.ApiInterface;
 import com.freelance.solutionhub.mma.util.SharePreferenceHelper;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.freelance.solutionhub.mma.util.AppConstant.ACCOUNT_LOCK;
+import static com.freelance.solutionhub.mma.util.AppConstant.ACCOUNT_LOCK_MSG;
+import static com.freelance.solutionhub.mma.util.AppConstant.INVALID_GRANT;
+import static com.freelance.solutionhub.mma.util.AppConstant.INVALID_GRANT_MSG;
 import static com.freelance.solutionhub.mma.util.AppConstant.user_inactivity_time;
 
 public class LoginActivity extends AppCompatActivity {
@@ -85,7 +90,34 @@ public class LoginActivity extends AppCompatActivity {
                                 finish();
                             }
                         } else {
-                            Toast.makeText(getApplicationContext(), response.code() + "", Toast.LENGTH_SHORT).show();
+                            String errorMessage = "login error";
+                            if (response.code() == 400) {
+                                try {
+                                    ResponseBody errorReturnBody = response.errorBody();
+                                    JSONObject jsonObject = new JSONObject(errorReturnBody.string());
+
+                                    String error = "login error" ; String error_desc = "login error";
+                                    if (jsonObject.has("error")) {
+                                        if (jsonObject.getString("error").equals(INVALID_GRANT)) {
+                                            errorMessage = INVALID_GRANT_MSG;
+                                        } else if (jsonObject.getString("error").equals(ACCOUNT_LOCK))
+                                            errorMessage = ACCOUNT_LOCK_MSG;
+                                    }
+
+                                } catch (IOException e) {
+
+                                } catch (JSONException e) {
+
+                                }
+                                finally {
+                                    Toast.makeText(getApplicationContext(), errorMessage + "", Toast.LENGTH_SHORT).show();
+                                }
+
+
+                            } else {
+                                Toast.makeText(getApplicationContext(), response.code() + "", Toast.LENGTH_SHORT).show();
+                            }
+
                         }
                     }
 

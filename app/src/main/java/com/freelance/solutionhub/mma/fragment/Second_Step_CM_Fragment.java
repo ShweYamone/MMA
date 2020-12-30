@@ -390,6 +390,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
 
         displayMaintenanceWorkInformation();
 
+
         displayData();
         displayImage();
 
@@ -446,6 +447,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
                 preScan2Result = pmServiceInfoModel.getPartReplacement().getReplacementPartCode()+"";
         }
 
+
         if (dbHelper.eventDAO().getEventValueCount(THIRD_PARTY_COMMENT_UPDATE, COMMENT) > 0)
             preThirdPartyComment = dbHelper.eventDAO().getEventValue(THIRD_PARTY_COMMENT_UPDATE, COMMENT);
         else if (pmServiceInfoModel.getThirdPartyFaultDescription() != null)
@@ -456,6 +458,21 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
         tvScanFault.setText(preScan1Result);
         tvScanReplacement.setText(preScan2Result);
         etThridPartyComment.setText(preThirdPartyComment);
+        if (preScan2Result.equals("")) {
+            Glide.with(this)
+                    .load(R.drawable.check_blank)
+                    .into(ivRequiredPartPlacement);
+            layoutPartReplacement.setVisibility(View.GONE);
+            replacementShow = !replacementShow;
+        }
+
+        if (preThirdPartyComment.equals("")) {
+            Glide.with(this)
+                    .load(R.drawable.check_blank)
+                    .into(ivAddThirdPary);
+            layoutThirdParty.setVisibility(View.GONE);
+            thirdPartyShow = !thirdPartyShow;
+        }
     }
 
     private void displayImage() {
@@ -538,31 +555,38 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
         switch (view.getId()) {
             case R.id.iv_add_third_party:
                 if (thirdPartyShow) {
-                    Glide.with(this)
-                            .load(R.drawable.check)
-                            .into(ivAddThirdPary);
                     layoutThirdParty.setVisibility(View.VISIBLE);
                 } else {
-                    Glide.with(this)
-                            .load(R.drawable.check_blank)
-                            .into(ivAddThirdPary);
                     layoutThirdParty.setVisibility(View.GONE);
                 }
                 thirdPartyShow = !thirdPartyShow;
+                if (etThridPartyComment.getText().toString().equals("")) {
+                    Glide.with(this)
+                            .load(R.drawable.check_blank)
+                            .into(ivAddThirdPary);
+                } else {
+                    Glide.with(this)
+                            .load(R.drawable.check)
+                            .into(ivAddThirdPary);
+                }
+
                 break;
             case R.id.iv_required_part_placement:
                 if (replacementShow){
-                    Glide.with(this)
-                            .load(R.drawable.check)
-                            .into(ivRequiredPartPlacement);
                     layoutPartReplacement.setVisibility(View.VISIBLE);
                 } else {
-                    Glide.with(this)
-                            .load(R.drawable.check_blank)
-                            .into(ivRequiredPartPlacement);
                     layoutPartReplacement.setVisibility(View.GONE);
                 }
                 replacementShow = !replacementShow;
+                if (tvScanReplacement.getText().toString().equals("")) {
+                    Glide.with(this)
+                            .load(R.drawable.check_blank)
+                            .into(ivRequiredPartPlacement);
+                } else {
+                    Glide.with(this)
+                            .load(R.drawable.check)
+                            .into(ivRequiredPartPlacement);
+                }
                 break;
             case R.id.btn_scan_fault:
                 qrScan1Click = true;
