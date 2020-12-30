@@ -177,7 +177,7 @@ public class NFCReadingActivity extends AppCompatActivity {
 
     }
 
-    private void performLocalTagOutEvent() {
+    private void performLocalTagOutEvent(String date) {
         UpdateEventBody eventBody = dbHelper.updateEventBodyDAO().getUpdateEventBodyByID("TAG_OUT");
         eventBody.setEvents(dbHelper.eventDAO().getEventsToUpload("TAG_OUT"));
         Call<ReturnStatus> call = apiInterface.updateEvent("Bearer " + mSharedPreference.getToken(), eventBody);
@@ -187,10 +187,10 @@ public class NFCReadingActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     Toast.makeText(getApplicationContext(), "LOCAL_TAG_OUT", Toast.LENGTH_SHORT).show();
                     if (serviceOrderId.startsWith(pm)) {
-                        performFinalStepEvent(pm);
+                        performFinalStepEvent(pm, date);
 
                     } else {
-                        performFinalStepEvent(cm);
+                        performFinalStepEvent(cm, date);
                     }
                 }
                 else {
@@ -213,7 +213,9 @@ public class NFCReadingActivity extends AppCompatActivity {
         });
     }
 
-    private void performFinalStepEvent(String pmOrcm) {
+    private void performFinalStepEvent(String pmOrcm, String date) {
+        dbHelper.updateEventBodyDAO().updateDateTime(date, step);
+
         Call<ReturnStatus> call = apiInterface.updateStatusEvent("Bearer " + mSharedPreference.getToken(),
                 dbHelper.updateEventBodyDAO().getUpdateEventBodyByID(step));
         call.enqueue(new Callback<ReturnStatus>() {
@@ -221,7 +223,9 @@ public class NFCReadingActivity extends AppCompatActivity {
             public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
                 if (response.isSuccessful()) {
                     Intent intent;
-                    Toast.makeText(getApplicationContext(),response.body().getStatus() + " Last Event Uploaded.",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(),response.body().getStatus() + " Last Event Uploaded. at" +
+                            dbHelper.updateEventBodyDAO().getUpdateEventBodyByID(step).getDate()
+                            ,Toast.LENGTH_SHORT).show();
                     if (pmOrcm.equals(pm)) {
                         intent = new Intent(NFCReadingActivity.this, PMCompletionActivity.class);
                         intent.putExtra("schedule_date", getIntent().getStringExtra("schedule_date"));
@@ -325,13 +329,13 @@ public class NFCReadingActivity extends AppCompatActivity {
                         if (tag) {
                             if (toPage.equals("COMPLETION")) {
                                 if (dbHelper.updateEventBodyDAO().getNumberOfUpdateEventsById("TAG_OUT") > 0) {
-                                    performLocalTagOutEvent();
+                                    performLocalTagOutEvent(date);
                                 } else {
                                     if (serviceOrderId.startsWith(pm)) {
-                                        performFinalStepEvent(pm);
+                                        performFinalStepEvent(pm, date);
 
                                     } else {
-                                        performFinalStepEvent(cm);
+                                        performFinalStepEvent(cm, date);
                                     }
 
                                 }
@@ -400,10 +404,9 @@ public class NFCReadingActivity extends AppCompatActivity {
             return is_locale_date;
         }
 
-        protected void onPostExecute(boolean local_date) {
-            if(!local_date) {
-                Log.e("Check ", "dates not equal" + local_date);
-            }
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            super.onPostExecute(aBoolean);
         }
     }
 
