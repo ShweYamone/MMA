@@ -47,6 +47,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.security.SecureRandom;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -112,12 +113,17 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
     private PMServiceInfoDetailModel pmServiceInfoDetailModel;
     private String actualDateTime;
     private  Timestamp timestamp;
+    private  Random rnd;
 
     private boolean stepOneUploaded = false;
     private boolean stepTwoUploaded = false;
 
     private String dialogTitle = "";
     private String dialogBody = "";
+    /* Assign a string that contains the set of characters you allow. */
+    private static final String symbols = "ABCDEFGJKLMNPRSTUVWXYZ0123456789";
+
+    private char[] buf;
 
     private UpdateEventBody updateEventBody;
 
@@ -146,6 +152,9 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
 
         jobDone.setOnClickListener(this);
         btnVerify.setOnClickListener(this);
+
+        rnd =  new SecureRandom();
+        buf = new char[6];
 
         // get selected radio button from radioGroup
         int selectedId = radioGroup.getCheckedRadioButtonId();
@@ -313,7 +322,7 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
         String actualDateTime = new SimpleDateFormat("yyyy-MM-ddHH:mm:ss").format(timestamp);
         for(int i = 0 ; i < p.size(); i++) {
             File filesDir = getContext().getFilesDir();
-            File fileName = new File(filesDir, mSharePreferenceHelper.getUserId()+actualDateTime+getSaltString() + ".jpg");
+            File fileName = new File(filesDir, mSharePreferenceHelper.getUserId()+actualDateTime+ nextString()+ ".jpg");
 
             Log.i("FILE_NAME", fileName.toString());
             OutputStream os;
@@ -341,17 +350,11 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
 
     }
 
-    protected String getSaltString() {
-        String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
-        StringBuilder salt = new StringBuilder();
-        Random rnd = new Random();
-        while (salt.length() < 7) { // length of the random string.
-            int index = (int) (rnd.nextFloat() * SALTCHARS.length());
-            salt.append(SALTCHARS.charAt(index));
-        }
-        String saltStr = salt.toString();
-        return saltStr;
-
+    public String nextString()
+    {
+        for (int idx = 0; idx < buf.length; ++idx)
+            buf[idx] = symbols.charAt(rnd.nextInt(symbols.length()));
+        return new String(buf);
     }
 
     class LoadPREImage extends AsyncTask<File, Void, Boolean> {
