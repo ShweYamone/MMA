@@ -251,7 +251,7 @@ public class NotificationViewActivity extends AppCompatActivity {
                     channel.push("notification_read",node);
                     Log.i("notification_read",channel.canPush()+"");
                 } catch (IOException e) {
-                    e.printStackTrace();
+                   Log.i("NOTIFICATION_READ_ERROR",e.getMessage());
                 }
             }
 
