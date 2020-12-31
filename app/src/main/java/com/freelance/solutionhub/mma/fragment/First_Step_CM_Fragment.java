@@ -409,7 +409,7 @@ public class First_Step_CM_Fragment extends Fragment {
      */
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, @NonNull Intent data) {
         mSharePerferenceHelper.setLock(false);
         Log.i("Tracing......", "onActivityResult: " + mSharePerferenceHelper.getLock());
         if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK)
