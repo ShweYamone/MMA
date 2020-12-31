@@ -325,6 +325,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .setContentTitle(title)
                 .setContentText(type)
                 .setNumber(count)
+                .setBadgeIconType(NotificationCompat.BADGE_ICON_SMALL)
                 .setAutoCancel(true)
                 .setStyle(new NotificationCompat.BigTextStyle()
                         .bigText(type));
