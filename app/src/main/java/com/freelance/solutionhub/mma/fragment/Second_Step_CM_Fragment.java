@@ -221,8 +221,8 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
     List<String> remedyArr = new ArrayList<>(); List<String> remedyProblemCode = new ArrayList<>();
 
     private String actualProblem, causeCode, remedyCode = "";
-    private boolean thirdPartyShow = true;
-    private boolean replacementShow = true;
+    private boolean thirdPartyShow = false;
+    private boolean replacementShow = false;
 
     private boolean qrScan1Click = true;
     private boolean isMandatoryFieldLeft = false;
