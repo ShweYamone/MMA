@@ -147,10 +147,10 @@ public class ServiceOrderAdapter extends RecyclerView.Adapter<ServiceOrderAdapte
                 if (status.equals(APPR)){
                     Glide.with(mContext).load(R.drawable.ack).into(ivLanding);
                 } else
-                    Glide.with(mContext).load(R.drawable.landing_cm).into(ivLanding);
+                    Glide.with(mContext).load(R.drawable.ic_landing_cm).into(ivLanding);
 
             } else {
-                Glide.with(mContext).load(R.drawable.landing_pm).into(ivLanding);
+                Glide.with(mContext).load(R.drawable.ic_landing_pm).into(ivLanding);
             }
 
             if (status.equals(APPR))

@@ -106,7 +106,9 @@ public class LoginActivity extends AppCompatActivity {
                                         if (jsonObject.has("error")) {
                                             if (jsonObject.getString("error").equals(INVALID_GRANT)) {
                                                 errorMessage = INVALID_GRANT_MSG;
-                                            } else if (jsonObject.getString("error").equals(ACCOUNT_LOCK))
+                                            }
+                                        } else if (jsonObject.has("message")) {
+                                            if (jsonObject.getString("message").equals(ACCOUNT_LOCK))
                                                 errorMessage = ACCOUNT_LOCK_MSG;
                                         }
 

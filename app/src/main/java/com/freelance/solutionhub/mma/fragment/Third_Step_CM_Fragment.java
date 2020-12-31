@@ -221,7 +221,7 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
 
                     if(network.isNetworkAvailable()) {
 
-
+                        ((CMActivity)getActivity()).showProgressBar(true);
                         Call<VerificationReturnBody> call = apiInterface.verifyWorks("Bearer " + mSharePreferenceHelper.getToken(), pmServiceInfoDetailModel.getId());
                         call.enqueue(new Callback<VerificationReturnBody>() {
                             @Override
@@ -238,6 +238,7 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
                                                 updateEvent();
                                             }
                                         });
+
                                     } else {
                                         dialogTitle = "Verification";
                                         dialogBody = VERIFICATION_FAIL_MSG;
@@ -248,16 +249,18 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
                                         jobDone.setBackground(getResources().getDrawable(R.drawable.round_rectangle_shape_button_grey));
                                     }
 
+
                                 }
                                 else {
                                     Toast.makeText(getContext(), response.code() + "", Toast.LENGTH_SHORT).show();
                                 }
+                                ((CMActivity)getActivity()).hideProgressBar();
                             }
 
 
                             @Override
                             public void onFailure(Call<VerificationReturnBody> call, Throwable t) {
-
+                                ((CMActivity)getActivity()).hideProgressBar();
                             }
                         });
                     } else {
@@ -303,7 +306,7 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
                 prePhotoModels.add(new PhotoModel(getDecodedString(photoModel.getEncodedPhotoString()), 1));
             }
 
-            ((CMActivity)getActivity()).showProgressBar();
+            ((CMActivity)getActivity()).showProgressBar(false);
             if (dbHelper.updateEventBodyDAO().getNumberOfUpdateEventsById(CM_Step_ONE) > 0) {
                 List<Event> events = new ArrayList<>();
                 new LoadPREImage(

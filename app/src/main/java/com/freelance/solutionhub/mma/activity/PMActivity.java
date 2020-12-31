@@ -18,6 +18,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.freelance.solutionhub.mma.DB.InitializeDatabase;
@@ -40,6 +41,13 @@ public class PMActivity extends AppCompatActivity {
 
     @BindView(R.id.progress_bar)
     RelativeLayout progressBar;
+
+    @BindView(R.id.firstText)
+    TextView firstText;
+
+    @BindView(R.id.secondText)
+    TextView secondText;
+
 
     private TabLayout tabLayout;
     private ViewPager viewPager;
@@ -108,7 +116,14 @@ public class PMActivity extends AppCompatActivity {
     }
 
 
-    public void showProgressBar() {
+    public void showProgressBar(Boolean isVerify) {
+        if (isVerify) {
+            firstText.setText("Verifying...");
+            secondText.setVisibility(View.GONE);
+        } else {
+            firstText.setText("Saving update data.");
+            secondText.setVisibility(View.VISIBLE);
+        }
         progressBar.setVisibility(View.VISIBLE);
     }
     public void hideProgressBar() {

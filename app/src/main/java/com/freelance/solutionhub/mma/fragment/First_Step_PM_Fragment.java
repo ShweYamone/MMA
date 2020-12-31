@@ -415,7 +415,7 @@ public class First_Step_PM_Fragment extends Fragment {
             dbHelper.updateEventBodyDAO().insert(updateEventBody);
 
             if (mNetwork.isNetworkAvailable()) {
-                ((PMActivity)getActivity()).showProgressBar();
+                ((PMActivity)getActivity()).showProgressBar(false);
                 new getCurrentNetworkTime().execute();
             }
 

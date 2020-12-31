@@ -699,7 +699,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
 
 
         if (network.isNetworkAvailable()) {
-            ((CMActivity)getActivity()).showProgressBar();
+            ((CMActivity)getActivity()).showProgressBar(false);
             new getCurrentNetworkTime().execute();
         }
     }
