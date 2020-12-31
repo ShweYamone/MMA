@@ -322,27 +322,24 @@
                 android:orientation="vertical"
                 android:layout_marginTop="@dimen/margin_small"
                 android:background="@drawable/round_rect_shape_line">
-                <LinearLayout
+                <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
                     <TextView
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="4.65"
                         android:layout_margin="@dimen/margin_small"
                         android:text="@string/fault_found_remarks"
                         android:textSize="@dimen/txt_size_normal"/>
                     <ImageView
                         android:id="@+id/iv_fault_found_remarks"
-                        android:layout_width="0dp"
-                        android:scaleType="centerInside"
-                        android:layout_height="match_parent"
-                        android:layout_weight="0.35"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
                         android:src="@drawable/check_blank"
                         android:layout_margin="@dimen/margin_small"
                         android:layout_alignParentRight="true"/>
-                </LinearLayout>
+                </RelativeLayout>
                <EditText
                    android:id="@+id/et_fault_found_remarks"
                    android:text=""

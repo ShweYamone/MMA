@@ -35,7 +35,7 @@
                 android:layout_height="@dimen/edittext_height"
                 android:singleLine="true"
                 android:paddingLeft="@dimen/padding_10"
-                android:drawableLeft="@drawable/login_person"
+                android:drawableLeft="@drawable/ic_login_person"
                 android:drawablePadding="@dimen/padding_10"/>
             <EditText
                 android:id="@+id/etPassword"
@@ -47,7 +47,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/edittext_height"
                 android:paddingLeft="@dimen/padding_10"
-                android:drawableLeft="@drawable/login_lock"
+                android:drawableLeft="@drawable/ic_login_lock"
                 android:drawablePadding="@dimen/padding_10"/>
 
             <Button

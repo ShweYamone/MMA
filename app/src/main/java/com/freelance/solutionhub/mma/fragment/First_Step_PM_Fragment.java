@@ -255,12 +255,17 @@ public class First_Step_PM_Fragment extends Fragment {
             public void onClick(View view) {
                 if (etFaultFoundRemarks.getVisibility()==View.VISIBLE) {
                     etFaultFoundRemarks.setVisibility(View.GONE);
-                    Glide.with(getActivity())
-                            .load(R.drawable.check_blank)
-                            .into(ivFaultFoundRemarks);
+
 
                 } else if (etFaultFoundRemarks.getVisibility()==View.GONE) {
                     etFaultFoundRemarks.setVisibility(View.VISIBLE);
+
+                }
+                if (etFaultFoundRemarks.getText().toString().equals("")) {
+                    Glide.with(getActivity())
+                            .load(R.drawable.check_blank)
+                            .into(ivFaultFoundRemarks);
+                } else {
                     Glide.with(getActivity())
                             .load(R.drawable.check)
                             .into(ivFaultFoundRemarks);
