@@ -2,6 +2,7 @@ package com.freelance.solutionhub.mma.activity;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -49,6 +50,9 @@ public class LoginActivity extends AppCompatActivity {
     @BindView(R.id.etPassword)
     EditText etPassword;
 
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+
     @BindView(R.id.btnLogin)
     Button btnLogin;
 
@@ -73,6 +77,9 @@ public class LoginActivity extends AppCompatActivity {
         mSharedPreferance.setLock(false);
 
         ButterKnife.bind(this);
+
+        toolbar.setTitle("");
+        setSupportActionBar(toolbar);
 
         apiInterface = ApiClient.getClient(this);
 
