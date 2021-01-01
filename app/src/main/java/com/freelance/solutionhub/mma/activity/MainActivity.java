@@ -41,6 +41,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.work.Data;
+import androidx.work.OneTimeWorkRequest;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 
@@ -287,11 +288,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .putString(MyWorker.TASK_DESC, "The task data passed from MainActivity")
                 .build();
 
-        final PeriodicWorkRequest workRequest =
-                new PeriodicWorkRequest .Builder(MyWorker.class, 3, TimeUnit.SECONDS)
-                        .setInputData(data)
-                        .build();
-     //   WorkManager.getInstance().enqueue(workRequest);
+        final OneTimeWorkRequest workRequest = new OneTimeWorkRequest.Builder(MyWorker.class).build();
+
+        //   WorkManager.getInstance().enqueue(workRequest);
 
 
     }
@@ -547,10 +546,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .putString(MyWorker.TASK_DESC, "The task data passed from MainActivity")
                 .build();
 
-        final PeriodicWorkRequest workRequest =
-                new PeriodicWorkRequest .Builder(MyWorker.class, 3, TimeUnit.SECONDS)
-                        .setInputData(data)
-                        .build();
+        final OneTimeWorkRequest workRequest = new OneTimeWorkRequest.Builder(MyWorker.class).build();
+
         WorkManager.getInstance().enqueue(workRequest);
         super.onDestroy();
 
