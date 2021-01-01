@@ -279,7 +279,7 @@ public class First_Step_CM_Fragment extends Fragment {
             dbHelper.updateEventBodyDAO().insert(updateEventBody);
 
             if (mNetwork.isNetworkAvailable()) {
-                ((CMActivity)getActivity()).showProgressBar();
+                ((CMActivity)getActivity()).showProgressBar(false);
                 new getCurrentNetworkTime().execute();
             }
 

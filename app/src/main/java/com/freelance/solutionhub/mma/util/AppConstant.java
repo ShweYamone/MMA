@@ -25,7 +25,7 @@ public class AppConstant {
 
     public static final String INVALID_GRANT = "invalid_grant";
     public static final String INVALID_GRANT_MSG = "Login ID or Password is incorrect!";
-    public static final String ACCOUNT_LOCK = "";
+    public static final String ACCOUNT_LOCK = "Account LOCKED";
     public static final String ACCOUNT_LOCK_MSG = "Your account is locked due to failed login attempts. Please, contact system adminstrator";
     public static final String VERIFICATION_FAIL_MSG = "The operation can't be completed because fault still exists. Please check your faulty part again.";
 

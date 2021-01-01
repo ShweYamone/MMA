@@ -235,8 +235,8 @@
                     <ImageView
                         android:id="@+id/iv_add_third_party"
                         android:layout_alignParentEnd="true"
-                        android:layout_width="28dp"
-                        android:layout_height="28dp"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
                         android:src="@drawable/check"/>
 
                 </RelativeLayout>
@@ -392,7 +392,7 @@
                     android:textColor="@color/colorWhite"
                     android:text="@string/qr_scan"
                     android:layout_gravity="center"
-                    android:drawableLeft="@drawable/assect_white"
+                    android:drawableLeft="@drawable/ic_assect_white"
                     android:paddingLeft="@dimen/margin_small"
                     android:layout_marginRight="@dimen/margin_small"
                     android:background="@drawable/round_rect_shape_button"/>
@@ -430,8 +430,8 @@
                     <ImageView
                         android:id="@+id/iv_required_part_placement"
                         android:layout_alignParentEnd="true"
-                        android:layout_width="28dp"
-                        android:layout_height="28dp"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
                         android:layout_margin="@dimen/margin_small"
                         android:src="@drawable/check" />
 
@@ -493,7 +493,7 @@
                             android:textColor="@color/colorWhite"
                             android:text="@string/qr_scan"
                             android:layout_gravity="center"
-                            android:drawableLeft="@drawable/assect_white"
+                            android:drawableLeft="@drawable/ic_assect_white"
                             android:paddingLeft="@dimen/margin_small"
                             android:background="@drawable/round_rect_shape_button"/>
 

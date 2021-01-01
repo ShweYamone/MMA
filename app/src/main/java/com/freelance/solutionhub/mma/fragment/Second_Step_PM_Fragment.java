@@ -143,6 +143,7 @@ public class Second_Step_PM_Fragment extends Fragment implements View.OnClickLis
                     updateEventBody.setRemark(remarks.getText().toString()+"");
                     dbHelper.updateEventBodyDAO().insert(updateEventBody);
                     if (network.isNetworkAvailable()) {
+                        ((PMActivity)getActivity()).showProgressBar(true);
                         Call<VerificationReturnBody> call = apiInterface.verifyWorks("Bearer " + mSharePreferenceHelper.getToken(), pmServiceInfoDetailModel.getId());
                         call.enqueue(new Callback<VerificationReturnBody>() {
                             @Override
@@ -165,18 +166,17 @@ public class Second_Step_PM_Fragment extends Fragment implements View.OnClickLis
                                         btnJobDone.setFocusable(false);
                                         btnJobDone.setBackground(getResources().getDrawable(R.drawable.round_rectangle_shape_button_grey));
                                     }
-                                //    btnJobDone.setClickable(true);
-                                //    btnJobDone.setBackground(getResources().getDrawable(R.drawable.round_rect_shape_button));
 
                                 }
                                 else {
                                     Toast.makeText(getContext(), response.code() + "", Toast.LENGTH_SHORT).show();
                                 }
+                                ((PMActivity)getActivity()).hideProgressBar();
                             }
 
                             @Override
                             public void onFailure(Call<VerificationReturnBody> call, Throwable t) {
-
+                                ((PMActivity)getActivity()).hideProgressBar();
                             }
                         });
                     }else {
@@ -204,7 +204,7 @@ public class Second_Step_PM_Fragment extends Fragment implements View.OnClickLis
                 postPhotoModels.add(new PhotoModel(getDecodedString(photoModel.getEncodedPhotoString()), 1));
             }
 
-            ((PMActivity)getActivity()).showProgressBar();
+            ((PMActivity)getActivity()).showProgressBar(false);
             new LoadPOSTImage(
                     dbHelper.eventDAO().getEventsToUpload(PM_Step_ONE),
                     POST_BUCKET_NAME,

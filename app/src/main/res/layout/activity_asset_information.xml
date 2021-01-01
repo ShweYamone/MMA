@@ -185,7 +185,7 @@
             </LinearLayout>
 
             <ImageView
-                android:src="@drawable/asset_info"
+                android:src="@drawable/ic_asset_info"
                 android:layout_centerHorizontal="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
