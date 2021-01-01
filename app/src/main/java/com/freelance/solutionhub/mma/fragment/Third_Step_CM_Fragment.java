@@ -192,15 +192,15 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
             case R.id.btn_verify:
                 if (!mSharePreferenceHelper.userClickStepOneOrNot() && !mSharePreferenceHelper.userClickStepTwoOrNot() ) {
                     dialogTitle = "Unsaved Work";
-                    dialogBody = "You have unsaved works in Step One and Two.";
+                    dialogBody = "You have unsaved works in Step 1 & 2.";
                     showDialog();
                 } else if (!mSharePreferenceHelper.userClickStepOneOrNot()) {
                     dialogTitle = "Unsaved Work";
-                    dialogBody = "You have unsaved works in Step One.";
+                    dialogBody = "You have unsaved works in Step 1.";
                     showDialog();
                 } else if (!mSharePreferenceHelper.userClickStepTwoOrNot()) {
                     dialogTitle = "Unsaved Work";
-                    dialogBody = "You have unsaved works in Step Two.";
+                    dialogBody = "You have unsaved works in Step 2.";
                     showDialog();
                 } else {
                     date = new Date();
