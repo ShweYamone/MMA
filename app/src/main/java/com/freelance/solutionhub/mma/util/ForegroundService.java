@@ -10,6 +10,7 @@ import android.os.IBinder;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
+import androidx.core.content.ContextCompat;
 
 import com.freelance.solutionhub.mma.R;
 import com.freelance.solutionhub.mma.activity.MainActivity;
@@ -37,9 +38,21 @@ public class ForegroundService extends Service {
         //stopSelf();
         return START_STICKY;
     }
+
+    @Override
+    public void onTaskRemoved(Intent rootIntent) {
+        super.onTaskRemoved(rootIntent);
+        Intent serviceIntent = new Intent(this, ForegroundService.class);
+        serviceIntent.putExtra("inputExtra", "MMA is running in background.");
+        ContextCompat.startForegroundService(this, serviceIntent);
+    }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
+        Intent serviceIntent = new Intent(this, ForegroundService.class);
+        serviceIntent.putExtra("inputExtra", "MMA is running in background.");
+        ContextCompat.startForegroundService(this, serviceIntent);
     }
     @Nullable
     @Override
