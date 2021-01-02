@@ -58,35 +58,41 @@
                 android:paddingLeft="@dimen/padding_10"
                 android:drawableLeft="@drawable/ic_login_person"
                 android:drawablePadding="@dimen/padding_10"/>
-            <EditText
-                android:id="@+id/etPassword"
+
+            <RelativeLayout
                 android:layout_marginTop="@dimen/margin_normal"
-                android:inputType="textPassword"
-                android:singleLine="true"
-                android:background="@drawable/bg_et_border_login"
-                android:hint="@string/password"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/edittext_height"
-                android:paddingLeft="@dimen/padding_10"
-                android:drawableLeft="@drawable/ic_login_lock"
-                android:drawablePadding="@dimen/padding_10"/>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:passwordToggleEnabled="true">
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/tiet_password"
+                android:background="@drawable/bg_et_border_login">
+                <EditText
+                    android:id="@+id/etPassword"
+                    android:inputType="textPassword"
+                    android:singleLine="true"
+                    android:hint="@string/password"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/edittext_height"
-                    android:inputType="textPassword"
-                    android:hint="@string/password"
+                    android:background="@drawable/bg_et_login"
                     android:paddingLeft="@dimen/padding_10"
-                    android:background="@drawable/bg_et_border_login"
-                    android:drawableLeft="@drawable/ic_login_lock"
-                    android:drawablePadding="@dimen/padding_10"/>
+                    android:drawablePadding="@dimen/padding_10"
+                    android:drawableLeft="@drawable/ic_login_lock"/>
+                <RelativeLayout
+                    android:id="@+id/layoutShowPwd"
+                    android:clickable="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_width="@dimen/edittext_height"
+                    android:layout_height="match_parent">
+                    <ImageView
+                        android:id="@+id/ivShowPwd"
+                        android:layout_centerInParent="true"
+                        android:alpha="0.8"
+                        android:tint="@color/colorLightBlack"
+                        android:background="@color/transparent"
+                        android:src="@drawable/eye_icon"
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"/>
+                </RelativeLayout>
 
-            </com.google.android.material.textfield.TextInputLayout>
+            </RelativeLayout>
 
             <Button
                 android:id="@+id/btnLogin"

@@ -3,6 +3,7 @@ package com.freelance.solutionhub.mma.activity;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -10,10 +11,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PowerManager;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -59,6 +63,12 @@ public class LoginActivity extends AppCompatActivity {
     @BindView(R.id.progress_bar)
     RelativeLayout progress_bar;
 
+    @BindView(R.id.layoutShowPwd)
+    RelativeLayout layoutShowPwd;
+
+    @BindView(R.id.ivShowPwd)
+    ImageView ivShowPwd;
+
     private ApiInterface apiInterface;
     private SharePreferenceHelper mSharedPreferance;
 
@@ -82,6 +92,36 @@ public class LoginActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         apiInterface = ApiClient.getClient(this);
+
+        layoutShowPwd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+/*
+* if(etPassword.getTransformationMethod().equals(PasswordTransformationMethod.getInstance())){
+                    ivShowPwd.setAlpha(1.0f);
+                    //Show Password
+                    etPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                    etPassword.setSelection(etPassword.getText().length());
+                }
+                else{
+                    ivShowPwd.setAlpha(0.3f);
+                    //Hide Password
+                    etPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                    etPassword.setSelection(etPassword.getText().length());
+                }
+* */
+                if (etPassword.getTransformationMethod().equals(PasswordTransformationMethod.getInstance())) {
+                    etPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                    etPassword.setSelection(etPassword.getText().length());
+                    ivShowPwd.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary));
+
+                } else {
+                    etPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                    etPassword.setSelection(etPassword.getText().length());
+                    ivShowPwd.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.colorLightBlack));
+                }
+            }
+        });
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -111,7 +151,6 @@ public class LoginActivity extends AppCompatActivity {
                                         ResponseBody errorReturnBody = response.errorBody();
                                         JSONObject jsonObject = new JSONObject(errorReturnBody.string());
 
-                                        String error = "login error" ; String error_desc = "login error";
                                         if (jsonObject.has("error")) {
                                             if (jsonObject.getString("error").equals(INVALID_GRANT)) {
                                                 errorMessage = INVALID_GRANT_MSG;
@@ -151,10 +190,6 @@ public class LoginActivity extends AppCompatActivity {
                 } else {
                     Toast.makeText(getApplicationContext(), "Userid or Password is empty.", Toast.LENGTH_SHORT).show();
                 }
-
-
-
-
             }
         });
 
