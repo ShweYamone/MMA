@@ -32,7 +32,7 @@ public class ForegroundService extends Service {
         notification
                 .setContentTitle("Background")
                 .setContentText(input)
-                .setSmallIcon(R.drawable.mma_icon)
+                .setSmallIcon(R.drawable.mma_notification)
                 .build();
         startForeground(1, notification.getNotification());//do heavy work on a background thread
         //stopSelf();

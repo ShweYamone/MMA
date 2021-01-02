@@ -260,6 +260,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
             });
 
+            channel.on("announcement", new IMessageCallback() {
+                @Override
+                public void onMessage(Envelope envelope) {
+                    //  Toast.makeText(getApplicationContext(), "CLOSED: " + envelope.toString(), Toast.LENGTH_SHORT).show();
+                    //   tvResult.setText("CLOSED: " + envelope.toString());
+                    Log.i("CLOSED", envelope.toString());
+//                    final JsonNode user = envelope.getPayload().get("mso_id");
+//                    if (user == null || user instanceof NullNode) {
+//                        onMessageNoti("An anonymous user entered","");
+//                    }
+//                    else {
+//                        onMessageNoti(envelope.getPayload().get("mso_id")+"","You received an MSO alert!");
+//                    }
+                }
+            });
+
 
 //Sending a message. This library uses Jackson for JSON serialization
 //            ObjectNode node = new ObjectNode(JsonNodeFactory.instance)
@@ -302,7 +318,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             // Configure the notification channel.
             notificationChannel.setDescription("Sample Channel description");
             notificationChannel.enableLights(true);
-            notificationChannel.setLightColor(Color.RED);
+            notificationChannel.setShowBadge(true);
+            notificationChannel.setLightColor(Color.BLUE);
             notificationChannel.setVibrationPattern(new long[]{0, 1000, 500, 1000});
             notificationChannel.enableVibration(true);
             notificationManager.createNotificationChannel(notificationChannel);
@@ -318,7 +335,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .setSmallIcon(R.drawable.mma_notification)
                 .setContentTitle(title)
                 .setContentText(type)
-                .setNumber(count)
                 .setBadgeIconType(NotificationCompat.BADGE_ICON_SMALL)
                 .setAutoCancel(true)
                 .setStyle(new NotificationCompat.BigTextStyle()
