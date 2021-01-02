@@ -1,9 +1,11 @@
 package com.freelance.solutionhub.mma.activity;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -103,7 +105,7 @@ public class LoginActivity extends AppCompatActivity {
                                     finish();
                                 }
                             } else {
-                                String errorMessage = "login error";
+                                String errorMessage = "Login Failed.";
                                 if (response.code() == 400) {
                                     try {
                                         ResponseBody errorReturnBody = response.errorBody();
@@ -113,6 +115,7 @@ public class LoginActivity extends AppCompatActivity {
                                         if (jsonObject.has("error")) {
                                             if (jsonObject.getString("error").equals(INVALID_GRANT)) {
                                                 errorMessage = INVALID_GRANT_MSG;
+
                                             }
                                         } else if (jsonObject.has("message")) {
                                             if (jsonObject.getString("message").equals(ACCOUNT_LOCK))
@@ -125,12 +128,13 @@ public class LoginActivity extends AppCompatActivity {
 
                                     }
                                     finally {
-                                        Toast.makeText(getApplicationContext(), errorMessage + "", Toast.LENGTH_SHORT).show();
+                                        showDialog(errorMessage);
+                                    //    Toast.makeText(getApplicationContext(), errorMessage + "", Toast.LENGTH_SHORT).show();
                                     }
 
 
                                 } else {
-                                    Toast.makeText(getApplicationContext(), response.code() + "", Toast.LENGTH_SHORT).show();
+                                 //   Toast.makeText(getApplicationContext(), response.code() + "", Toast.LENGTH_SHORT).show();
                                 }
 
                             }
@@ -168,6 +172,21 @@ public class LoginActivity extends AppCompatActivity {
             }
         };
     }
+
+    private void showDialog(String dialogBody) {
+        new AlertDialog.Builder(this)
+                .setIcon(R.drawable.warning)
+                .setTitle("Authentication Error")
+                .setMessage(dialogBody)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+
+                })
+                .show();
+    }
+
 
 
     @Override

@@ -40,6 +40,10 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.work.Data;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.NullNode;
@@ -52,6 +56,7 @@ import com.freelance.solutionhub.mma.util.ApiClient;
 import com.freelance.solutionhub.mma.util.ApiClientForNotification;
 import com.freelance.solutionhub.mma.util.ApiInterface;
 import com.freelance.solutionhub.mma.util.ApiInterfaceForNotification;
+import com.freelance.solutionhub.mma.util.MyWorker;
 import com.freelance.solutionhub.mma.util.SharePreferenceHelper;
 import com.freelance.solutionhub.mma.util.WebSocketUtils;
 import com.google.android.material.navigation.NavigationView;
@@ -70,6 +75,7 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -278,6 +284,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Log.i("Websocket",  e.getMessage() + "\n" + e.getLocalizedMessage());
         }
 
+        Data data = new Data.Builder()
+                .putString(MyWorker.TASK_DESC, "The task data passed from MainActivity")
+                .build();
+
+        final OneTimeWorkRequest workRequest = new OneTimeWorkRequest.Builder(MyWorker.class).build();
+
+        //   WorkManager.getInstance().enqueue(workRequest);
+
+
     }
 
     private void setupToolbar() {
@@ -331,8 +346,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .bigText(type));
         notificationManager.notify(0, notificationBuilder.build());
     }
-
-
     private void initNavigationDrawer() {
 
         mDrawerLayout.setScrimColor(ContextCompat.getColor(getApplicationContext(), android.R.color.transparent));
@@ -381,13 +394,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
     }
-
     private void setupDrawerContent(NavigationView navigationView) {
 
         //setting up selected item listener
         navigationView.setNavigationItemSelectedListener(this);
     }
-
     @Override
     public boolean onNavigationItemSelected(MenuItem menuItem) {
         menuItem.setChecked(true);
@@ -398,8 +409,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mDrawerLayout.closeDrawers();
         return true;
     }
-
-
     private void displayView(int menuid) {
         Fragment fragment = null;
         String title = getString(R.string.app_name);
@@ -428,7 +437,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             getSupportActionBar().setTitle(title);
         }
     }
-
     @Override
     public void onBackPressed() {
         if (isNavDrawerOpen()) {
@@ -503,7 +511,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void getMSOEvent(){
         count = 0;
-       Call<NotificationReadModel> notificationReadModelCall = apiInterfaceForNotification.getNotificationReadList("Bearer "+mSharedPreferences.getToken(),1,10);
+        Call<NotificationReadModel> notificationReadModelCall = apiInterfaceForNotification.getNotificationReadList("Bearer "+mSharedPreferences.getToken(),1,10);
         notificationReadModelCall.enqueue(new Callback<NotificationReadModel>() {
             @Override
             public void onResponse(Call<NotificationReadModel> call, Response<NotificationReadModel> response) {
@@ -511,7 +519,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 NotificationReadModel readModel = response.body();
                 if(response.isSuccessful()){
                     List<Item> items = readModel.getItems();
-                    Toast.makeText(getApplicationContext(),"SUCCESS:"+items.size(),Toast.LENGTH_SHORT).show();
+                  //  Toast.makeText(getApplicationContext(),"SUCCESS:"+items.size(),Toast.LENGTH_SHORT).show();
                     for(int i = 0;i<items.size();i++){
                         Log.i("Is_read_Main",items.get(i).isIs_read()+":"+i);
                         if(!items.get(i).isIs_read()){
@@ -532,4 +540,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
+    @Override
+    protected void onDestroy() {
+        Data data = new Data.Builder()
+                .putString(MyWorker.TASK_DESC, "The task data passed from MainActivity")
+                .build();
+
+        final OneTimeWorkRequest workRequest = new OneTimeWorkRequest.Builder(MyWorker.class).build();
+
+        WorkManager.getInstance().enqueue(workRequest);
+        super.onDestroy();
+
+    }
 }

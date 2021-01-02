@@ -104,5 +104,10 @@ dependencies {
     //To get data from NTP server
     implementation 'commons-net:commons-net:3.3'
 
+    def work_version = "2.4.0"
+
+    implementation("android.arch.work:work-runtime:1.0.1") {
+        exclude group: 'com.google.guava', module: 'listenablefuture'
+    }
 
 }
