@@ -35,7 +35,7 @@ public class ForegroundService extends Service {
                 .build();
         startForeground(1, notification.getNotification());//do heavy work on a background thread
         //stopSelf();
-        return START_NOT_STICKY;
+        return START_STICKY;
     }
     @Override
     public void onDestroy() {
