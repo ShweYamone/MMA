@@ -270,19 +270,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Toast.makeText(getApplicationContext(), "Exception" + e.getMessage(), Toast.LENGTH_SHORT).show();
             Log.i("Websocket",  e.getMessage() + "\n" + e.getLocalizedMessage());
         }
-
-<<<<<<< HEAD
+        /*
         Data data = new Data.Builder()
                 .putString(MyWorker.TASK_DESC, "The task data passed from MainActivity")
                 .build();
 
         final OneTimeWorkRequest workRequest = new OneTimeWorkRequest.Builder(MyWorker.class).build();
 
-           WorkManager.getInstance().enqueue(workRequest);
+           WorkManager.getInstance().enqueue(workRequest);*/
 
-
-=======
->>>>>>> 88030820b2cd1098ec43eae1fb9ae8e6506a765a
     }
 
     private void setupToolbar() {
@@ -532,19 +528,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     protected void onDestroy() {
-<<<<<<< HEAD
-        Data data = new Data.Builder()
-                .putString("ON DESTORY", "The task data passed from MainActivity")
-                .build();
 
-        final OneTimeWorkRequest workRequest = new OneTimeWorkRequest.Builder(MyWorker.class).build();
-
-        WorkManager.getInstance().enqueue(workRequest);
-=======
         Intent serviceIntent = new Intent(this, ForegroundService.class);
         serviceIntent.putExtra("inputExtra", "MMA is running in background.");
         ContextCompat.startForegroundService(this, serviceIntent);
->>>>>>> 88030820b2cd1098ec43eae1fb9ae8e6506a765a
         super.onDestroy();
     }
 }
