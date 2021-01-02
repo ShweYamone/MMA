@@ -290,7 +290,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         final OneTimeWorkRequest workRequest = new OneTimeWorkRequest.Builder(MyWorker.class).build();
 
-        //   WorkManager.getInstance().enqueue(workRequest);
+           WorkManager.getInstance().enqueue(workRequest);
 
 
     }
@@ -543,7 +543,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onDestroy() {
         Data data = new Data.Builder()
-                .putString(MyWorker.TASK_DESC, "The task data passed from MainActivity")
+                .putString("ON DESTORY", "The task data passed from MainActivity")
                 .build();
 
         final OneTimeWorkRequest workRequest = new OneTimeWorkRequest.Builder(MyWorker.class).build();

@@ -40,7 +40,7 @@
             android:layout_width="wrap_content"
             android:layout_height="48dp"
             android:layout_marginTop="64dp"
-            android:src="@drawable/lta_corporate_logo"
+            android:src="@drawable/lta_logo"
             android:layout_gravity="center"/>
         <LinearLayout
             android:layout_margin="@dimen/margin_xlarge"
@@ -70,6 +70,23 @@
                 android:paddingLeft="@dimen/padding_10"
                 android:drawableLeft="@drawable/ic_login_lock"
                 android:drawablePadding="@dimen/padding_10"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:passwordToggleEnabled="true">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/tiet_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/edittext_height"
+                    android:inputType="textPassword"
+                    android:hint="@string/password"
+                    android:paddingLeft="@dimen/padding_10"
+                    android:background="@drawable/bg_et_border_login"
+                    android:drawableLeft="@drawable/ic_login_lock"
+                    android:drawablePadding="@dimen/padding_10"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
 
             <Button
                 android:id="@+id/btnLogin"
