@@ -121,6 +121,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         apiInterfaceForNotification = ApiClientForNotification.getClient().create(ApiInterfaceForNotification.class);
         webSocketUtils = new WebSocketUtils(this);
 
+        Log.d("Phonenumber",mSharedPreferences.getPhoneNumber());
 //        new getCurrentNetworkTime().execute();
 
         /**
