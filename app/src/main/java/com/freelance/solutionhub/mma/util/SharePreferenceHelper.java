@@ -25,12 +25,15 @@ public class SharePreferenceHelper {
 
  	private static String CurrentMSOID = "CurrentMSOId";
 
+ 	private static String PHONE_NUMBER = "PhoneNumber";
+
  	public void setCurrentMSOID(String msoid) {
  		SharedPreferences.Editor editor = sharedPreference.edit();
  		editor.putString(CurrentMSOID, msoid);
  		editor.commit();
 	}
 
+	public String getPhoneNumber(){ return sharedPreference.getString(PHONE_NUMBER, ""); }
 	public String getCurrentMSOID() {
  		return sharedPreference.getString(CurrentMSOID, "");
 	}
@@ -41,6 +44,11 @@ public class SharePreferenceHelper {
  		editor.commit();
 	}
 
+	public void setPhoneNumber(String phoneNumber){
+		SharedPreferences.Editor editor = sharedPreference.edit();
+		editor.putString(PHONE_NUMBER, phoneNumber);
+		editor.commit();
+	}
 	public void userClickPMStepOne(boolean click){
  		SharedPreferences.Editor editor = sharedPreference.edit();
  		editor.putBoolean(PMStepOneClick, click);
