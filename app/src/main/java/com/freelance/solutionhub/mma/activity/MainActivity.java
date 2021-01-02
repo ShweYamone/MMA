@@ -121,6 +121,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         apiInterfaceForNotification = ApiClientForNotification.getClient().create(ApiInterfaceForNotification.class);
         webSocketUtils = new WebSocketUtils(this);
 
+        Log.d("Phonenumber",mSharedPreferences.getPhoneNumber());
 //        new getCurrentNetworkTime().execute();
 
         /**
@@ -270,14 +271,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Toast.makeText(getApplicationContext(), "Exception" + e.getMessage(), Toast.LENGTH_SHORT).show();
             Log.i("Websocket",  e.getMessage() + "\n" + e.getLocalizedMessage());
         }
-        /*
-        Data data = new Data.Builder()
-                .putString(MyWorker.TASK_DESC, "The task data passed from MainActivity")
-                .build();
-
-        final OneTimeWorkRequest workRequest = new OneTimeWorkRequest.Builder(MyWorker.class).build();
-
-           WorkManager.getInstance().enqueue(workRequest);*/
 
     }
 
@@ -528,7 +521,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     protected void onDestroy() {
-
         Intent serviceIntent = new Intent(this, ForegroundService.class);
         serviceIntent.putExtra("inputExtra", "MMA is running in background.");
         ContextCompat.startForegroundService(this, serviceIntent);
