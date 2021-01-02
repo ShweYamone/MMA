@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.freelance.solutionhub.mma">
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <meta-data
         android:name="com.google.android.gms.vision.DEPENDENCIES"
@@ -118,6 +119,11 @@
                 <action android:name="android.intent.action.SIM_STATE_CHANGED" />
             </intent-filter>
         </receiver>
+
+        <service
+            android:name=".util.ForegroundService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>

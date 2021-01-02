@@ -5,21 +5,17 @@ import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PowerManager;
-import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -42,8 +38,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.work.Data;
 import androidx.work.OneTimeWorkRequest;
-import androidx.work.PeriodicWorkRequest;
-import androidx.work.WorkManager;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.NullNode;
@@ -56,26 +50,17 @@ import com.freelance.solutionhub.mma.util.ApiClient;
 import com.freelance.solutionhub.mma.util.ApiClientForNotification;
 import com.freelance.solutionhub.mma.util.ApiInterface;
 import com.freelance.solutionhub.mma.util.ApiInterfaceForNotification;
-import com.freelance.solutionhub.mma.util.MyWorker;
+import com.freelance.solutionhub.mma.util.ForegroundService;
 import com.freelance.solutionhub.mma.util.SharePreferenceHelper;
 import com.freelance.solutionhub.mma.util.WebSocketUtils;
 import com.google.android.material.navigation.NavigationView;
 
-import org.apache.commons.net.ntp.NTPUDPClient;
-import org.apache.commons.net.ntp.TimeInfo;
 import org.phoenixframework.channels.Channel;
 import org.phoenixframework.channels.Envelope;
 import org.phoenixframework.channels.IMessageCallback;
 import org.phoenixframework.channels.Socket;
 
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -83,7 +68,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static com.freelance.solutionhub.mma.util.AppConstant.TIME_SERVER;
 import static com.freelance.solutionhub.mma.util.AppConstant.user_inactivity_time;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
@@ -161,6 +145,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         };
        // startHandler();
+        Intent serviceIntent = new Intent(this, ForegroundService.class);
+        serviceIntent.putExtra("inputExtra", "MMA is running in background.");
+        ContextCompat.startForegroundService(this, serviceIntent);
     }
 
     @Override
@@ -283,15 +270,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Toast.makeText(getApplicationContext(), "Exception" + e.getMessage(), Toast.LENGTH_SHORT).show();
             Log.i("Websocket",  e.getMessage() + "\n" + e.getLocalizedMessage());
         }
-
-        Data data = new Data.Builder()
-                .putString(MyWorker.TASK_DESC, "The task data passed from MainActivity")
-                .build();
-
-        final OneTimeWorkRequest workRequest = new OneTimeWorkRequest.Builder(MyWorker.class).build();
-
-        //   WorkManager.getInstance().enqueue(workRequest);
-
 
     }
 
@@ -542,14 +520,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     protected void onDestroy() {
-        Data data = new Data.Builder()
-                .putString(MyWorker.TASK_DESC, "The task data passed from MainActivity")
-                .build();
-
-        final OneTimeWorkRequest workRequest = new OneTimeWorkRequest.Builder(MyWorker.class).build();
-
-        WorkManager.getInstance().enqueue(workRequest);
+        Intent serviceIntent = new Intent(this, ForegroundService.class);
+        serviceIntent.putExtra("inputExtra", "MMA is running in background.");
+        ContextCompat.startForegroundService(this, serviceIntent);
         super.onDestroy();
-
     }
 }
