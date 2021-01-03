@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.freelance.solutionhub.mma.DB.InitializeDatabase;
 import com.freelance.solutionhub.mma.R;
 import com.freelance.solutionhub.mma.model.Data;
 import com.freelance.solutionhub.mma.model.UserProfile;
@@ -43,11 +44,16 @@ public class PasscodeActivity extends AppCompatActivity{
     @BindView(R.id.pass_code_view)
     PassCodeView passCodeView;
 
+    @BindView(R.id.tv_count)
+    TextView countText;
+
 
     private SharePreferenceHelper mSharePreferenceHelper;
-    private int count = 0;
+    private int count;
     private ApiInterface apiInterface;
     private Network network;
+
+    InitializeDatabase dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,14 +64,15 @@ public class PasscodeActivity extends AppCompatActivity{
         setSupportActionBar(toolbar);
         mSharePreferenceHelper = new SharePreferenceHelper(this);
         apiInterface = ApiClient.getClient(this);
-        network = new Network(this);
 
+        dbHelper = InitializeDatabase.getInstance(this);
+        network = new Network(this);
+        count = 1;
         passCodeView.setOnTextChangeListener(new PassCodeView.TextChangeListener() {
             @Override
             public void onTextChanged(String text) {
                 Log.i("Passcode", "text");
                 if(text.length() == 6){
-                    count++;
                     if(text.equals(mSharePreferenceHelper.getPinCode())){
                         mSharePreferenceHelper.setLock(false);
                         if (getIntent().hasExtra("workInMiddle") &&
@@ -79,8 +86,28 @@ public class PasscodeActivity extends AppCompatActivity{
                         }
                         finish();
                     }else {
+                        countText.setVisibility(View.VISIBLE);
                         passCodeView.setError(true);
+                        if(count == 1){
+                            countText.setText("1 time wrong!");
+                        }else {
+                            countText.setText(count +" times wrong!");
+                        }
+                        if(count > 5){
+                            //TODO Delete all shared preference and databases
+                            mSharePreferenceHelper.logoutSharePreference();
+                            mSharePreferenceHelper.deletePinCode();
+
+                            dbHelper.checkListDescDAO().deleteAll();
+                            dbHelper.eventDAO().deleteAll();
+                            dbHelper.updateEventBodyDAO().deleteAll();
+                            dbHelper.uploadPhotoDAO().deleteAll();
+
+                            startActivity(new Intent(PasscodeActivity.this, PasscodeRegisterActivity.class));
+                            finishAffinity();
+                        }
                     }
+                    count++;
                 }
             }
         });
