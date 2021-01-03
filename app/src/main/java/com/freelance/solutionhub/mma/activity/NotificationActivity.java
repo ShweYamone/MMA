@@ -1,25 +1,16 @@
 package com.freelance.solutionhub.mma.activity;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.annotation.SuppressLint;
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PowerManager;
@@ -32,44 +23,30 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.NullNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.freelance.solutionhub.mma.R;
 import com.freelance.solutionhub.mma.adapter.NotificationAdapter;
 import com.freelance.solutionhub.mma.common.SmartScrollListener;
-import com.freelance.solutionhub.mma.delegate.HomeFragmentCallback;
-import com.freelance.solutionhub.mma.model.FilterModelBody;
 import com.freelance.solutionhub.mma.model.Item;
 import com.freelance.solutionhub.mma.model.NotificationModel;
 import com.freelance.solutionhub.mma.model.NotificationReadModel;
-import com.freelance.solutionhub.mma.model.PMServiceListModel;
 import com.freelance.solutionhub.mma.model.Payload;
-import com.freelance.solutionhub.mma.util.ApiClient;
 import com.freelance.solutionhub.mma.util.ApiClientForNotification;
-import com.freelance.solutionhub.mma.util.ApiInterface;
 import com.freelance.solutionhub.mma.util.ApiInterfaceForNotification;
 import com.freelance.solutionhub.mma.util.Network;
 import com.freelance.solutionhub.mma.util.SharePreferenceHelper;
-import com.freelance.solutionhub.mma.util.WebSocketUtils;
 
 
 import org.phoenixframework.channels.Channel;
-import org.phoenixframework.channels.ChannelEvent;
 import org.phoenixframework.channels.Envelope;
 import org.phoenixframework.channels.IMessageCallback;
 import org.phoenixframework.channels.Socket;
 
 import java.sql.Timestamp;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.text.DateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

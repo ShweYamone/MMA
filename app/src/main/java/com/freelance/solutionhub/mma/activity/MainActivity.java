@@ -12,7 +12,6 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -39,6 +38,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.work.Data;
 import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.NullNode;
@@ -52,21 +52,16 @@ import com.freelance.solutionhub.mma.util.ApiClientForNotification;
 import com.freelance.solutionhub.mma.util.ApiInterface;
 import com.freelance.solutionhub.mma.util.ApiInterfaceForNotification;
 import com.freelance.solutionhub.mma.util.ForegroundService;
+import com.freelance.solutionhub.mma.util.MyWorker;
 import com.freelance.solutionhub.mma.util.SharePreferenceHelper;
-import com.freelance.solutionhub.mma.util.WebSocketUtils;
 import com.google.android.material.navigation.NavigationView;
 
 import org.phoenixframework.channels.Channel;
 import org.phoenixframework.channels.Envelope;
-import org.phoenixframework.channels.IErrorCallback;
 import org.phoenixframework.channels.IMessageCallback;
-import org.phoenixframework.channels.ISocketCloseCallback;
 import org.phoenixframework.channels.Socket;
 
-import java.io.IOException;
-import java.net.SocketTimeoutException;
 import java.util.List;
-import java.util.concurrent.TimeoutException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -103,7 +98,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private boolean lockScreen = false;
     private Socket socket;
     private Channel channel;
-    private WebSocketUtils webSocketUtils;
     private Menu menu;
     private int notiCount = 1;
     private RelativeLayout notificationRelativeLayout;
@@ -125,7 +119,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         tvLogout.setOnClickListener(this);
         apiInterface = ApiClient.getClient(this);
         apiInterfaceForNotification = ApiClientForNotification.getClient().create(ApiInterfaceForNotification.class);
-        webSocketUtils = new WebSocketUtils(this);
+
 
         Log.d("Phonenumber",mSharedPreferences.getPhoneNumber());
 //        new getCurrentNetworkTime().execute();
@@ -207,11 +201,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if(menu != null)
             getMSOEvent();
 
-        /************WebScoket***************/
+        Data data = new Data.Builder()
+                .putString(MyWorker.TASK_DESC, "The task data passed from MainActivity")
+                .build();
+
+        //This is the subclass of our WorkRequest
+        final OneTimeWorkRequest workRequest = new OneTimeWorkRequest.Builder(MyWorker.class).build();
+        WorkManager.getInstance().enqueue(workRequest);
+
         Uri.Builder url = Uri.parse( "ws://hub-nightly-public-alb-1826126491.ap-southeast-1.elb.amazonaws.com/socket/websocket" ).buildUpon();
         // url.appendQueryParameter("vsn", "2.0.0");
-        url.appendQueryParameter( "token", mSharedPreferences.getToken());
+        url.appendQueryParameter( "token", "mSharedPreferences.getToken()");
         try {
+            Socket socket; Channel channel;
+
             //    Log.i("Websocket", url.toString());
             socket = new Socket(url.build().toString());
             socket.connect();
@@ -241,10 +244,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     Log.i("NEW_MESSAGE",envelope.toString());
                     final JsonNode user = envelope.getPayload().get("mso_id");
                     if (user == null || user instanceof NullNode) {
-                        onMessageNoti("An anonymous user entered","");
+                        ((MainActivity)getApplicationContext()).onMessageNoti("An anonymous user entered","");
                     }
                     else {
-                        onMessageNoti(envelope.getPayload().get("mso_id")+"","You received an MSO alert!");
+                        ((MainActivity)getApplicationContext()).onMessageNoti(envelope.getPayload().get("mso_id")+"","You received an MSO alert!");
                     }
 
                 }
@@ -258,10 +261,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     Log.i("CLOSED", envelope.toString());
                     final JsonNode user = envelope.getPayload().get("mso_id");
                     if (user == null || user instanceof NullNode) {
-                        onMessageNoti("An anonymous user entered","");
+                        ((MainActivity)getApplicationContext()).onMessageNoti( "An anonymous user entered","");
                     }
                     else {
-                        onMessageNoti(envelope.getPayload().get("mso_id")+"","You received an MSO alert!");
+                        ((MainActivity)getApplicationContext()).onMessageNoti( envelope.getPayload().get("mso_id")+"","You received an MSO alert!");
                     }
                 }
             });
@@ -274,25 +277,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     Log.i("CLOSED", envelope.toString());
                     final JsonNode user = envelope.getPayload().get("text");
                     if (user == null || user instanceof NullNode) {
-                        onMessageNoti("An anonymous user entered","");
+                        ((MainActivity)getApplicationContext()).onMessageNoti("An anonymous user entered","");
                     }
                     else {
-                        onMessageNoti("Announcement",""+envelope.getPayload().get("text"));
+                        ((MainActivity)getApplicationContext()).onMessageNoti( "Announcement",""+envelope.getPayload().get("text"));
                     }
                 }
             });
 
-
-//Sending a message. This library uses Jackson for JSON serialization
-//            ObjectNode node = new ObjectNode(JsonNodeFactory.instance)
-//                    .put("user", "my_username")
-//                    .put("body", "Hello");
-//
-//            channel.push("new:msg", node);
         } catch (Exception e) {
             Toast.makeText(getApplicationContext(), "Exception" + e.getMessage(), Toast.LENGTH_SHORT).show();
             Log.i("Websocket",  e.getMessage() + "\n" + e.getLocalizedMessage());
         }
+
 
     }
 
