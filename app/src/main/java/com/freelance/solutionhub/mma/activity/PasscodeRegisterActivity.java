@@ -138,6 +138,7 @@ public class PasscodeRegisterActivity extends AppCompatActivity {
 
         TelephonyManager telephoneMgr = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         String phoneNumber = telephoneMgr.getLine1Number();
+
         Log.d("NETWORK OPERATOR", "EventSpy SIM Network Operator Name : " + telephoneMgr.getNetworkOperatorName());
         Log.d("TAG", "EventSpy SIM PhoneNumber : " + phoneNumber); // Code IMEI
         if(phoneNumber.length() != 0)

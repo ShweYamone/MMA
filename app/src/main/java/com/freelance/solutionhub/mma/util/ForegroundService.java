@@ -11,9 +11,14 @@ import android.os.IBinder;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
+import androidx.work.Data;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
 
 import com.freelance.solutionhub.mma.R;
 import com.freelance.solutionhub.mma.activity.MainActivity;
+
+import java.util.concurrent.TimeUnit;
 
 public class ForegroundService extends Service {
     public static final String CHANNEL_ID = "ForegroundServiceChannel";
@@ -25,9 +30,9 @@ public class ForegroundService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         String input = intent.getStringExtra("inputExtra");
         createNotificationChannel();
-       // Intent notificationIntent = new Intent(this, MainActivity.class);
-       // PendingIntent pendingIntent = PendingIntent.getActivity(this,
-         //       0, notificationIntent, 0);
+        // Intent notificationIntent = new Intent(this, MainActivity.class);
+        // PendingIntent pendingIntent = PendingIntent.getActivity(this,
+        //       0, notificationIntent, 0);
         NotificationCompat.Builder notification = new NotificationCompat.Builder(this, CHANNEL_ID);
         notification
                 .setContentTitle("Background")
