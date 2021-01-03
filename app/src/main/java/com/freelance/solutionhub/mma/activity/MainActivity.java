@@ -12,6 +12,7 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -57,10 +58,15 @@ import com.google.android.material.navigation.NavigationView;
 
 import org.phoenixframework.channels.Channel;
 import org.phoenixframework.channels.Envelope;
+import org.phoenixframework.channels.IErrorCallback;
 import org.phoenixframework.channels.IMessageCallback;
+import org.phoenixframework.channels.ISocketCloseCallback;
 import org.phoenixframework.channels.Socket;
 
+import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -127,10 +133,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         /**
          * call service
          */
-       // startService(new Intent(getBaseContext(), OnClearFromRecentService.class));
+        // startService(new Intent(getBaseContext(), OnClearFromRecentService.class));
 
         /**
-        after certain amount of user inactivity, asks for passcode
+         after certain amount of user inactivity, asks for passcode
          */
         handler = new Handler();
         r = new Runnable() {
@@ -145,7 +151,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 stopHandler();
             }
         };
-       // startHandler();
+        // startHandler();
         Intent serviceIntent = new Intent(this, ForegroundService.class);
         serviceIntent.putExtra("inputExtra", "MMA is running in background.");
         ContextCompat.startForegroundService(this, serviceIntent);
@@ -174,7 +180,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void onUserInteraction() {
         // TODO Auto-generated method stub
         super.onUserInteraction();
-       // Toast.makeText(this, "UserInteraction", Toast.LENGTH_SHORT).show();
+        // Toast.makeText(this, "UserInteraction", Toast.LENGTH_SHORT).show();
         stopHandler();//stop first and then start
         if (startHandler)
             startHandler();
@@ -260,6 +266,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
             });
 
+            channel.on("announcement", new IMessageCallback() {
+                @Override
+                public void onMessage(Envelope envelope) {
+                    //  Toast.makeText(getApplicationContext(), "CLOSED: " + envelope.toString(), Toast.LENGTH_SHORT).show();
+                    //   tvResult.setText("CLOSED: " + envelope.toString());
+                    Log.i("CLOSED", envelope.toString());
+                    final JsonNode user = envelope.getPayload().get("text");
+                    if (user == null || user instanceof NullNode) {
+                        onMessageNoti("An anonymous user entered","");
+                    }
+                    else {
+                        onMessageNoti("Announcement",""+envelope.getPayload().get("text"));
+                    }
+                }
+            });
+
 
 //Sending a message. This library uses Jackson for JSON serialization
 //            ObjectNode node = new ObjectNode(JsonNodeFactory.instance)
@@ -302,14 +324,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             // Configure the notification channel.
             notificationChannel.setDescription("Sample Channel description");
             notificationChannel.enableLights(true);
-            notificationChannel.setLightColor(Color.RED);
+            notificationChannel.setShowBadge(true);
+            notificationChannel.setLightColor(Color.BLUE);
             notificationChannel.setVibrationPattern(new long[]{0, 1000, 500, 1000});
             notificationChannel.enableVibration(true);
             notificationManager.createNotificationChannel(notificationChannel);
         }
         //Intent intent = new Intent(this, NotificationActivity.class);
-       // intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-       // PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+        // intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        // PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID);
         notificationBuilder
@@ -318,7 +341,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .setSmallIcon(R.drawable.mma_notification)
                 .setContentTitle(title)
                 .setContentText(type)
-                .setNumber(count)
                 .setBadgeIconType(NotificationCompat.BADGE_ICON_SMALL)
                 .setAutoCancel(true)
                 .setStyle(new NotificationCompat.BigTextStyle()
@@ -498,7 +520,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 NotificationReadModel readModel = response.body();
                 if(response.isSuccessful()){
                     List<Item> items = readModel.getItems();
-                  //  Toast.makeText(getApplicationContext(),"SUCCESS:"+items.size(),Toast.LENGTH_SHORT).show();
+                    //  Toast.makeText(getApplicationContext(),"SUCCESS:"+items.size(),Toast.LENGTH_SHORT).show();
                     for(int i = 0;i<items.size();i++){
                         Log.i("Is_read_Main",items.get(i).isIs_read()+":"+i);
                         if(!items.get(i).isIs_read()){
