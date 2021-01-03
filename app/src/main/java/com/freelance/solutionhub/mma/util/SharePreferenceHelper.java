@@ -33,7 +33,7 @@ public class SharePreferenceHelper {
  		editor.commit();
 	}
 
-	public String getPhoneNumber(){ return sharedPreference.getString(PHONE_NUMBER, ""); }
+	public String getPhoneNumber(){ return sharedPreference.getString(PHONE_NUMBER, null); }
 	public String getCurrentMSOID() {
  		return sharedPreference.getString(CurrentMSOID, "");
 	}

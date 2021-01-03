@@ -42,7 +42,7 @@ public class SimChangedReceiver extends BroadcastReceiver {
                 // Read Phone number
                 String phoneNumber = getSystemPhoneNumber(context);
                 if (mSharePreference.getPhoneNumber().isEmpty()) {
-                    Log.e("TAG", "EventSpy : No phone number Readable in TelephonyManager");
+                    sendNotifSms(context);
                 } else {
                     if (!mSharePreference.getPhoneNumber().equals(phoneNumber)) {
                         Log.w("TAG", "EventSpy SIM Change for new Phone Number : " + phoneNumber);
