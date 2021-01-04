@@ -157,7 +157,7 @@ public class AssetInformationActivity extends AppCompatActivity implements View.
             if (result.getContents() == null) {
                 Toast.makeText(this, "Result Not Found", Toast.LENGTH_LONG).show();
             } else {
-                Toast.makeText(this, result.getContents(), Toast.LENGTH_LONG).show();
+             //   Toast.makeText(this, result.getContents(), Toast.LENGTH_LONG).show();
 
                 Call<QRReturnBody> call = apiInterface.getAssetInformation("Bearer " + mSharedPreference.getToken(), result.getContents());
                 call.enqueue(new Callback<QRReturnBody>() {

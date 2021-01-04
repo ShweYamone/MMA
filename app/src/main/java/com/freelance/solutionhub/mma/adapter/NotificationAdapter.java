@@ -42,8 +42,6 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         @BindView(R.id.iv_is_read)
         ImageView isRead;
 
-
-
         private NotificationModel notification;
 
         public MyViewHolder(View view) {

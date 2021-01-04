@@ -31,7 +31,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.freelance.solutionhub.mma.DB.InitializeDatabase;
@@ -440,15 +439,15 @@ public class First_Step_PM_Fragment extends Fragment {
                 @Override
                 public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
                     if(response.isSuccessful()) {
-                        Toast.makeText(getContext(), dbHelper.eventDAO().getNumberEventsToUpload(PM_Step_ONE)+" events. at " +
-                                        dbHelper.updateEventBodyDAO().getUpdateEventBodyByID(PM_Step_ONE).getDate()
-                                , Toast.LENGTH_SHORT).show();
+                  //      Toast.makeText(getContext(), dbHelper.eventDAO().getNumberEventsToUpload(PM_Step_ONE)+" events. at " +
+                  //                      dbHelper.updateEventBodyDAO().getUpdateEventBodyByID(PM_Step_ONE).getDate()
+                  //              , Toast.LENGTH_SHORT).show();
                         dbHelper.eventDAO().update(YES, PM_Step_ONE);
                     } else{
                         ResponseBody errorReturnBody = response.errorBody();
                         try {
                             Log.e("Tracing....", "onResponse: " + errorReturnBody.string());
-                            Toast.makeText(getContext(), "response " + response.code(),  Toast.LENGTH_LONG).show();
+                     //       Toast.makeText(getContext(), "response " + response.code(),  Toast.LENGTH_LONG).show();
                         } catch (IOException e) {
 
                         }
@@ -457,7 +456,7 @@ public class First_Step_PM_Fragment extends Fragment {
 
                 @Override
                 public void onFailure(Call<ReturnStatus> call, Throwable t) {
-                    Toast.makeText(getContext(), "Failure" , Toast.LENGTH_SHORT).show();
+              //      Toast.makeText(getContext(), "Failure" , Toast.LENGTH_SHORT).show();
                 }
             });
         }
@@ -526,7 +525,7 @@ public class First_Step_PM_Fragment extends Fragment {
             if(photoModel.getUid() == 1)
                 saveEncodePhotoToDatabase(PM_Step_ONE, POST_BUCKET_NAME, photoModel.getImage());
         }
-        Toast.makeText(this.getContext(), dbHelper.uploadPhotoDAO().getNumberOfPhotosToUpload()+" photos have been saved.", Toast.LENGTH_SHORT).show();
+      //  Toast.makeText(this.getContext(), dbHelper.uploadPhotoDAO().getNumberOfPhotosToUpload()+" photos have been saved.", Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -634,7 +633,7 @@ public class First_Step_PM_Fragment extends Fragment {
             }
             else
             {
-                Toast.makeText(getActivity(), "camera permission denied", Toast.LENGTH_LONG).show();
+         //       Toast.makeText(getActivity(), "camera permission denied", Toast.LENGTH_LONG).show();
             }
         }
     }

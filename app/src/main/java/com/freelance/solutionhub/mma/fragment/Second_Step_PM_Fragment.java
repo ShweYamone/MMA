@@ -17,7 +17,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.freelance.solutionhub.mma.DB.InitializeDatabase;
 import com.freelance.solutionhub.mma.R;
@@ -169,7 +168,7 @@ public class Second_Step_PM_Fragment extends Fragment implements View.OnClickLis
 
                                 }
                                 else {
-                                    Toast.makeText(getContext(), response.code() + "", Toast.LENGTH_SHORT).show();
+                                //    Toast.makeText(getContext(), response.code() + "", Toast.LENGTH_SHORT).show();
                                 }
                                 ((PMActivity)getActivity()).hideProgressBar();
                             }
@@ -339,7 +338,7 @@ public class Second_Step_PM_Fragment extends Fragment implements View.OnClickLis
                     @Override
                     public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
                         if (response.isSuccessful()) {
-                            Toast.makeText(getContext(),  response.body().getStatus()+ f.size() + " EVENTS :STEP_ONE UPLOADED" , Toast.LENGTH_SHORT).show();
+                     //       Toast.makeText(getContext(),  response.body().getStatus()+ f.size() + " EVENTS :STEP_ONE UPLOADED" , Toast.LENGTH_SHORT).show();
                             mSharePreferenceHelper.userClickPMStepOne(true);
                             dbHelper.eventDAO().update(YES, PM_Step_ONE);
                             f.clear();
@@ -349,7 +348,7 @@ public class Second_Step_PM_Fragment extends Fragment implements View.OnClickLis
                             ResponseBody errorReturnBody = response.errorBody();
                             try {
                                 Log.e("UPLOAD_ERROR", "onResponse: " + errorReturnBody.string());
-                                Toast.makeText(getContext(), "response " + response.code(), Toast.LENGTH_LONG).show();
+                        //        Toast.makeText(getContext(), "response " + response.code(), Toast.LENGTH_LONG).show();
                             } catch (IOException e) {
 
                             }
@@ -390,10 +389,10 @@ public class Second_Step_PM_Fragment extends Fragment implements View.OnClickLis
                             if(files.length == count)
                                 updatePreEvents();
                             Log.i("PHOTOPATH",returnStatus.getData().getFileUrl());
-                            Toast.makeText(getContext(), returnStatus.getStatus() + ":PHOTO"+count, Toast.LENGTH_SHORT).show();
+                    //        Toast.makeText(getContext(), returnStatus.getStatus() + ":PHOTO"+count, Toast.LENGTH_SHORT).show();
                         } else {
                             Log.i("PhotoUpload", "doInBackground: " + response.message() + response.headers());
-                            Toast.makeText(getContext(), "FAILED:" + response.code(), Toast.LENGTH_LONG).show();
+                    //        Toast.makeText(getContext(), "FAILED:" + response.code(), Toast.LENGTH_LONG).show();
                         }
                     }
 

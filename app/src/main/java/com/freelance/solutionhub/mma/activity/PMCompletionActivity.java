@@ -62,8 +62,8 @@ public class PMCompletionActivity extends AppCompatActivity implements View.OnCl
         sharePreferenceHelper = new SharePreferenceHelper(this);
         dbHelper = InitializeDatabase.getInstance(this);
         sharePreferenceHelper.setLock(false);
-        Toast.makeText(getApplicationContext(), "mso start_time" + dbHelper.eventDAO().getEventValue("start_tag_in_time", "start_tag_in_time"),
-                Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getApplicationContext(), "mso start_time" + dbHelper.eventDAO().getEventValue("start_tag_in_time", "start_tag_in_time"),
+        //        Toast.LENGTH_SHORT).show();
         tvMSONumber.setText(getIntent().getStringExtra("id"));
         tvPanelId.setText(dbHelper.eventDAO().getEventValue("panelId", "panelId"));
         tvSchedule.setText(dbHelper.eventDAO().getEventValue("schedule_date", "schedule_date"));

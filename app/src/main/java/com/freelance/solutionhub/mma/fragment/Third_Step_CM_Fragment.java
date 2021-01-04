@@ -21,7 +21,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.Toast;
 
 import com.freelance.solutionhub.mma.DAO.UpdateEventBodyDAO;
 import com.freelance.solutionhub.mma.DB.InitializeDatabase;
@@ -252,7 +251,7 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
 
                                 }
                                 else {
-                                    Toast.makeText(getContext(), response.code() + "", Toast.LENGTH_SHORT).show();
+                                //    Toast.makeText(getContext(), response.code() + "", Toast.LENGTH_SHORT).show();
                                 }
                                 ((CMActivity)getActivity()).hideProgressBar();
                             }
@@ -418,8 +417,8 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
                     @Override
                     public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
                         if (response.isSuccessful()) {
-                            Toast.makeText(getContext(),  response.body().getStatus()+ ", " + f.size() + " PRE_EVENTS UPLOADED at " +
-                                    updateEventBody.getDate(), Toast.LENGTH_SHORT).show();
+                        //    Toast.makeText(getContext(),  response.body().getStatus()+ ", " + f.size() + " PRE_EVENTS UPLOADED at " +
+                        //            updateEventBody.getDate(), Toast.LENGTH_SHORT).show();
 
                             mSharePreferenceHelper.userClickCMStepOne(true);
                             dbHelper.eventDAO().update(YES, CM_Step_ONE);
@@ -442,7 +441,7 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
                             ResponseBody errorReturnBody = response.errorBody();
                             try {
                                 Log.e("UPLOAD_ERROR", "onResponse: " + errorReturnBody.string());
-                                Toast.makeText(getContext(), "response " + response.code(), Toast.LENGTH_LONG).show();
+                             //   Toast.makeText(getContext(), "response " + response.code(), Toast.LENGTH_LONG).show();
                                 ((CMActivity)getActivity()).hideProgressBar();
                             } catch (IOException e) {
 
@@ -482,10 +481,10 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
                             if(files.length == count)
                                 updatePreEvents();
                             Log.i("PHOTOPATH",returnStatus.getData().getFileUrl());
-                            Toast.makeText(getContext(), returnStatus.getStatus() + ":PHOTO"+count, Toast.LENGTH_SHORT).show();
+                        //    Toast.makeText(getContext(), returnStatus.getStatus() + ":PHOTO"+count, Toast.LENGTH_SHORT).show();
                         } else {
                             Log.i("PhotoUpload", "doInBackground: " + response.message() + response.headers());
-                            Toast.makeText(getContext(), "FAILED:" + response.code(), Toast.LENGTH_LONG).show();
+                        //    Toast.makeText(getContext(), "FAILED:" + response.code(), Toast.LENGTH_LONG).show();
                         }
                     }
 
@@ -542,8 +541,8 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
                     @Override
                     public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
                         if (response.isSuccessful()) {
-                            Toast.makeText(getContext(),  response.body().getStatus()+ ", " + f.size() + " POST_EVENTS UPLOADED at" +
-                                    updateEventBody.getDate(), Toast.LENGTH_SHORT).show();
+                        //    Toast.makeText(getContext(),  response.body().getStatus()+ ", " + f.size() + " POST_EVENTS UPLOADED at" +
+                        //            updateEventBody.getDate(), Toast.LENGTH_SHORT).show();
 
                             mSharePreferenceHelper.userClickCMStepTwo(true);
                             dbHelper.eventDAO().update(YES, CM_Step_TWO);
@@ -555,7 +554,7 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
                             ResponseBody errorReturnBody = response.errorBody();
                             try {
                                 Log.e("UPLOAD_ERROR", "onResponse: " + errorReturnBody.string());
-                                Toast.makeText(getContext(), "response " + response.code(), Toast.LENGTH_LONG).show();
+                            //    Toast.makeText(getContext(), "response " + response.code(), Toast.LENGTH_LONG).show();
                                 ((CMActivity)getActivity()).hideProgressBar();
                             } catch (IOException e) {
 
@@ -595,10 +594,10 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
                             if(files.length == count)
                                 updatePreEvents();
                             Log.i("PHOTOPATH",returnStatus.getData().getFileUrl());
-                            Toast.makeText(getContext(), returnStatus.getStatus() + ":PHOTO"+count, Toast.LENGTH_SHORT).show();
+                        //    Toast.makeText(getContext(), returnStatus.getStatus() + ":PHOTO"+count, Toast.LENGTH_SHORT).show();
                         } else {
                             Log.i("PhotoUpload", "doInBackground: " + response.message() + response.headers());
-                            Toast.makeText(getContext(), "FAILED:" + response.code(), Toast.LENGTH_LONG).show();
+                         //   Toast.makeText(getContext(), "FAILED:" + response.code(), Toast.LENGTH_LONG).show();
                         }
                     }
 

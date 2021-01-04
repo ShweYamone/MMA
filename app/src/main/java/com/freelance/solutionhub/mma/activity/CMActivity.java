@@ -282,7 +282,7 @@ public class CMActivity extends AppCompatActivity {
                 Toast.makeText(this, "Result Not Found", Toast.LENGTH_LONG).show();
             } else {
                 second_step_cm_fragment.updateQRCode(result.getContents());
-                Toast.makeText(this, result.getContents(), Toast.LENGTH_LONG).show();
+              //  Toast.makeText(this, result.getContents(), Toast.LENGTH_LONG).show();
 
             }
         } else {

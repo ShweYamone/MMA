@@ -440,7 +440,7 @@ public class PowerGridActivity extends AppCompatActivity implements View.OnClick
                 public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
 
                     if (response.isSuccessful()) {
-                        Toast.makeText(getApplicationContext(), dbHelper.eventDAO().getNumOfEventsToUploadByEventType(POWER_GRIP_UPDATE)+" events uploaded at" + eventBody.getDate(), Toast.LENGTH_LONG).show();
+                   //     Toast.makeText(getApplicationContext(), dbHelper.eventDAO().getNumOfEventsToUploadByEventType(POWER_GRIP_UPDATE)+" events uploaded at" + eventBody.getDate(), Toast.LENGTH_LONG).show();
                         dbHelper.eventDAO().updateByThirdParty(YES, CM_Step_TWO, POWER_GRIP_UPDATE);
                         hideProgressBar();
                         mSharePreferenceHelper.setLock(false);
@@ -450,7 +450,7 @@ public class PowerGridActivity extends AppCompatActivity implements View.OnClick
                         ResponseBody errorReturnBody = response.errorBody();
                         try {
                             Log.e("POWER_Grid", "onResponse: " + errorReturnBody.string());
-                            Toast.makeText(getApplicationContext(), "response " + response.code(), Toast.LENGTH_LONG).show();
+                      //      Toast.makeText(getApplicationContext(), "response " + response.code(), Toast.LENGTH_LONG).show();
                             hideProgressBar();
                         } catch (IOException e) {
 
@@ -461,7 +461,7 @@ public class PowerGridActivity extends AppCompatActivity implements View.OnClick
                 @Override
                 public void onFailure(Call<ReturnStatus> call, Throwable t) {
                     hideProgressBar();
-                    Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+               //     Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
         }
