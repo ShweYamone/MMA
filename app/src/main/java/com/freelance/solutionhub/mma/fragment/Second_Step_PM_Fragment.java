@@ -143,6 +143,8 @@ public class Second_Step_PM_Fragment extends Fragment implements View.OnClickLis
                     dbHelper.updateEventBodyDAO().insert(updateEventBody);
                     if (network.isNetworkAvailable()) {
                         ((PMActivity)getActivity()).showProgressBar(true);
+                        updateEvent();
+                        /*
                         Call<VerificationReturnBody> call = apiInterface.verifyWorks("Bearer " + mSharePreferenceHelper.getToken(), pmServiceInfoDetailModel.getId());
                         call.enqueue(new Callback<VerificationReturnBody>() {
                             @Override
@@ -177,7 +179,7 @@ public class Second_Step_PM_Fragment extends Fragment implements View.OnClickLis
                             public void onFailure(Call<VerificationReturnBody> call, Throwable t) {
                                 ((PMActivity)getActivity()).hideProgressBar();
                             }
-                        });
+                        });*/
                     }else {
                         showDialog("Network Connetion",
                                 "The network connection is lost. Please, check your connectivity and try again");

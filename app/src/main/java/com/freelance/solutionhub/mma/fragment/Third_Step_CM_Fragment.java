@@ -239,7 +239,7 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
                                         });
 
                                     } else {
-                                        dialogTitle = "Verification";
+                                        dialogTitle = "Verification Fail";
                                         dialogBody = VERIFICATION_FAIL_MSG;
                                         showDialog();
                                        // Toast.makeText(getContext(), "Verification failed", Toast.LENGTH_SHORT).show();
