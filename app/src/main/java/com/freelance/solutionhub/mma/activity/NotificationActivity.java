@@ -110,7 +110,7 @@ public class NotificationActivity extends AppCompatActivity  {
                 public void onListEndReach() {
 
                     page++;
-                    Toast.makeText(getApplicationContext(), "Page " + page, Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getApplicationContext(), "Page " + page, Toast.LENGTH_SHORT).show();
                     if (page <= totalPages)
                         getServiceOrders();
                 }
@@ -256,7 +256,7 @@ public class NotificationActivity extends AppCompatActivity  {
 //
 //            channel.push("new:msg", node);
             } catch (Exception e) {
-                Toast.makeText(getApplicationContext(), "Exception" + e.getMessage(), Toast.LENGTH_SHORT).show();
+         //       Toast.makeText(getApplicationContext(), "Exception" + e.getMessage(), Toast.LENGTH_SHORT).show();
                 Log.i("Websocket", e.getMessage() + "\n" + e.getLocalizedMessage());
             }
         }

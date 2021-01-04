@@ -30,7 +30,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.freelance.solutionhub.mma.DB.InitializeDatabase;
 import com.freelance.solutionhub.mma.R;
@@ -288,7 +287,7 @@ public class First_Step_CM_Fragment extends Fragment {
                 if(photoModel.getUid()==1)
                     saveEncodePhotoToDatabase(CM_Step_ONE, PRE_BUCKET_NAME, photoModel.getImage());
             }
-            Toast.makeText(this.getContext(), dbHelper.uploadPhotoDAO().getNumberOfPhotosToUpload()+" photos have been saved.", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this.getContext(), dbHelper.uploadPhotoDAO().getNumberOfPhotosToUpload()+" photos have been saved.", Toast.LENGTH_SHORT).show();
         }
         else {
             dialogTitle = "Photo";
@@ -396,7 +395,7 @@ public class First_Step_CM_Fragment extends Fragment {
             }
             else
             {
-                Toast.makeText(getActivity(), "camera permission denied", Toast.LENGTH_LONG).show();
+                //Toast.makeText(getActivity(), "camera permission denied", Toast.LENGTH_LONG).show();
             }
         }
     }

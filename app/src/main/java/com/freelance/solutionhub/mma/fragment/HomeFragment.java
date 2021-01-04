@@ -24,7 +24,6 @@ import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.freelance.solutionhub.mma.DB.InitializeDatabase;
 import com.freelance.solutionhub.mma.R;
@@ -293,13 +292,13 @@ public class HomeFragment extends Fragment implements RadioGroup.OnCheckedChange
                     mSharePreference.setUserIdAndDisplayName(userData.getUserId(), userData.getDisplayName());
                   //  Toast.makeText(getContext().getApplicationContext(), mSharePreference.getUserId() + ", " + mSharePreference.getDisplayName(), Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(getContext().getApplicationContext(), response.code() + ", ", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getContext().getApplicationContext(), response.code() + ", ", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<UserProfile> call, Throwable t) {
-                Toast.makeText(getContext().getApplicationContext(), "failure", Toast.LENGTH_SHORT).show();
+             //   Toast.makeText(getContext().getApplicationContext(), "failure", Toast.LENGTH_SHORT).show();
 
             }
         });
@@ -335,10 +334,10 @@ public class HomeFragment extends Fragment implements RadioGroup.OnCheckedChange
                 public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
                     if (response.isSuccessful()) {
                         ReturnStatus returnStatus = response.body();
-                        Toast.makeText(getContext().getApplicationContext(), returnStatus.getStatus()+"APPRtoACK at time" + date, Toast.LENGTH_SHORT).show();
+                //        Toast.makeText(getContext().getApplicationContext(), returnStatus.getStatus()+"APPRtoACK at time" + date, Toast.LENGTH_SHORT).show();
                         update_APPR_To_ACK_UI(position);
                     } else {
-                        Toast.makeText(getContext().getApplicationContext(), response.code()+"APPRtoACK", Toast.LENGTH_SHORT).show();
+                  //      Toast.makeText(getContext().getApplicationContext(), response.code()+"APPRtoACK", Toast.LENGTH_SHORT).show();
                     }
                 }
 

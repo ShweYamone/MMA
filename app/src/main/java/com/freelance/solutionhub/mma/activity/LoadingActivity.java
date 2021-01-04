@@ -176,7 +176,7 @@ public class LoadingActivity extends AppCompatActivity {
                     ResponseBody errorReturnBody = response.errorBody();
                     try {
                         Log.e("UPLOAD_ERROR", "onResponse: " + errorReturnBody.string());
-                        Toast.makeText(getApplicationContext(), "response " + response.code() + msoId,  Toast.LENGTH_LONG).show();
+                  //      Toast.makeText(getApplicationContext(), "response " + response.code() + msoId,  Toast.LENGTH_LONG).show();
                         //  ((CMActivity)getActivity()).hideProgressBar();
                     } catch (IOException e) {
 
@@ -262,7 +262,7 @@ public class LoadingActivity extends AppCompatActivity {
                     ResponseBody errorReturnBody = response.errorBody();
                     try {
                         Log.e("UPLOAD_ERROR", "onResponse: " + errorReturnBody.string());
-                        Toast.makeText(getApplicationContext(), "response " + response.code() + msoId,  Toast.LENGTH_LONG).show();
+                   //     Toast.makeText(getApplicationContext(), "response " + response.code() + msoId,  Toast.LENGTH_LONG).show();
                       //  ((CMActivity)getActivity()).hideProgressBar();
                     } catch (IOException e) {
 
@@ -318,7 +318,7 @@ public class LoadingActivity extends AppCompatActivity {
                     }
 
                 } else {
-                    Toast.makeText(getApplicationContext(), "response " + response.code(), Toast.LENGTH_LONG).show();
+                  //  Toast.makeText(getApplicationContext(), "response " + response.code(), Toast.LENGTH_LONG).show();
                     ResponseBody errorReturnBody = response.errorBody();
                     try {
                         Log.e("UPLOAD_ERROR", "onResponse: " + errorReturnBody.string());
@@ -332,7 +332,7 @@ public class LoadingActivity extends AppCompatActivity {
             }
             @Override
             public void onFailure(Call<PMServiceInfoDetailModel> call, Throwable t) {
-                Toast.makeText(getApplicationContext(), id + "response failure order by id", Toast.LENGTH_LONG).show();
+             //   Toast.makeText(getApplicationContext(), id + "response failure order by id", Toast.LENGTH_LONG).show();
 
             }
         });

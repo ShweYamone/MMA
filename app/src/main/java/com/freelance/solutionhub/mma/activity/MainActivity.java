@@ -117,15 +117,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         apiInterface = ApiClient.getClient(this);
         apiInterfaceForNotification = ApiClientForNotification.getClient().create(ApiInterfaceForNotification.class);
 
-
-//        Log.d("Phonenumber",mSharedPreferences.getPhoneNumber());
-//        new getCurrentNetworkTime().execute();
-
-        /**
-         * call service
-         */
-        // startService(new Intent(getBaseContext(), OnClearFromRecentService.class));
-
         /**
          after certain amount of user inactivity, asks for passcode
          */
@@ -283,7 +274,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             });
 
         } catch (Exception e) {
-            Toast.makeText(getApplicationContext(), "Exception" + e.getMessage(), Toast.LENGTH_SHORT).show();
+        //    Toast.makeText(getApplicationContext(), "Exception" + e.getMessage(), Toast.LENGTH_SHORT).show();
             Log.i("Websocket",  e.getMessage() + "\n" + e.getLocalizedMessage());
         }
 

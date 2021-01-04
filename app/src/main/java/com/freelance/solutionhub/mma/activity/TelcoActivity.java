@@ -337,20 +337,20 @@ public class TelcoActivity extends AppCompatActivity implements View.OnClickList
 
                     if (response.isSuccessful()) {
 
-                        Toast.makeText(getApplicationContext(), dbHelper.eventDAO().getNumOfEventsToUploadByEventType(TELCO_UPDATE)+" events uploaded at" +
-                                eventBody.getDate(), Toast.LENGTH_LONG).show();
+                //        Toast.makeText(getApplicationContext(), dbHelper.eventDAO().getNumOfEventsToUploadByEventType(TELCO_UPDATE)+" events uploaded at" +
+                //                eventBody.getDate(), Toast.LENGTH_LONG).show();
                         dbHelper.eventDAO().updateByThirdParty(YES, CM_Step_TWO, TELCO_UPDATE);
                         hideProgressBar();
                         mSharePreferenceHelper.setLock(false);
                         finish();
                     } else {
-                        Toast.makeText(getApplicationContext(), response.errorBody()+"", Toast.LENGTH_SHORT).show();
+                //        Toast.makeText(getApplicationContext(), response.errorBody()+"", Toast.LENGTH_SHORT).show();
                     }
                 }
 
                 @Override
                 public void onFailure(Call<ReturnStatus> call, Throwable t) {
-                    Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                //    Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
         }

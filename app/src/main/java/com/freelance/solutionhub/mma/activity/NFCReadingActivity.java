@@ -26,7 +26,6 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.freelance.solutionhub.mma.DB.InitializeDatabase;
@@ -60,11 +59,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static com.freelance.solutionhub.mma.util.AppConstant.ACK;
-import static com.freelance.solutionhub.mma.util.AppConstant.CM;
 import static com.freelance.solutionhub.mma.util.AppConstant.CM_Step_THREE;
 import static com.freelance.solutionhub.mma.util.AppConstant.NO;
-import static com.freelance.solutionhub.mma.util.AppConstant.PM;
 import static com.freelance.solutionhub.mma.util.AppConstant.PM_Step_TWO;
 import static com.freelance.solutionhub.mma.util.AppConstant.TIME_SERVER;
 import static com.freelance.solutionhub.mma.util.AppConstant.cm;
@@ -162,7 +158,7 @@ public class NFCReadingActivity extends AppCompatActivity {
        // perFormTagEvent();
 
         if(nfcAdapter == null){
-            Toast.makeText(this, "No NFC", Toast.LENGTH_SHORT).show();
+       //     Toast.makeText(this, "No NFC", Toast.LENGTH_SHORT).show();
             //finish();
             return;
         }else {
@@ -185,7 +181,7 @@ public class NFCReadingActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
                 if (response.isSuccessful()) {
-                    Toast.makeText(getApplicationContext(), "LOCAL_TAG_OUT", Toast.LENGTH_SHORT).show();
+               //     Toast.makeText(getApplicationContext(), "LOCAL_TAG_OUT", Toast.LENGTH_SHORT).show();
                     if (serviceOrderId.startsWith(pm)) {
                         performFinalStepEvent(pm, date);
 
@@ -194,15 +190,7 @@ public class NFCReadingActivity extends AppCompatActivity {
                     }
                 }
                 else {
-
-                    ResponseBody errorReturnBody = response.errorBody();
-                    try {
-                    //    Log.e("UPLOAD_ERROR_LOCAL_TAG", "onResponse: " + );
-                        Toast.makeText(getApplicationContext(), "response " + errorReturnBody.string(), Toast.LENGTH_LONG).show();
-
-                    } catch (IOException e) {
-
-                    }
+                 //   ResponseBody errorReturnBody = response.errorBody();
                 }
             }
 
@@ -223,9 +211,9 @@ public class NFCReadingActivity extends AppCompatActivity {
             public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
                 if (response.isSuccessful()) {
                     Intent intent;
-                    Toast.makeText(getApplicationContext(),response.body().getStatus() + " Last Event Uploaded. at" +
-                            dbHelper.updateEventBodyDAO().getUpdateEventBodyByID(step).getDate()
-                            ,Toast.LENGTH_SHORT).show();
+               //     Toast.makeText(getApplicationContext(),response.body().getStatus() + " Last Event Uploaded. at" +
+               //             dbHelper.updateEventBodyDAO().getUpdateEventBodyByID(step).getDate()
+              //              ,Toast.LENGTH_SHORT).show();
                     if (pmOrcm.equals(pm)) {
                         intent = new Intent(NFCReadingActivity.this, PMCompletionActivity.class);
                     } else {
@@ -237,7 +225,7 @@ public class NFCReadingActivity extends AppCompatActivity {
 
 
                 } else {
-                    Toast.makeText(getApplicationContext(), "response " + response.code(), Toast.LENGTH_LONG).show();
+                //    Toast.makeText(getApplicationContext(), "response " + response.code(), Toast.LENGTH_LONG).show();
                     ResponseBody errorReturnBody = response.errorBody();
                     try {
                         Log.e("UPLOAD_ERROR", "onResponse: " + errorReturnBody.string());
@@ -252,7 +240,7 @@ public class NFCReadingActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<ReturnStatus> call, Throwable t) {
-                Toast.makeText(getApplicationContext(), "response " + "FAILURE", Toast.LENGTH_LONG).show();
+          //      Toast.makeText(getApplicationContext(), "response " + "FAILURE", Toast.LENGTH_LONG).show();
               //  ((CMActivity)getActivity()).hideProgressBar();
                 Log.e("UPLOAD_ERROR", "onResponse: " + t.getMessage());
             }
@@ -309,7 +297,7 @@ public class NFCReadingActivity extends AppCompatActivity {
                 public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
                     if (response.isSuccessful()) {
 
-                        Toast.makeText(getApplicationContext(), networkDateTime + "TAG_" + tag +  response.body().getStatus(), Toast.LENGTH_SHORT).show();
+                   //     Toast.makeText(getApplicationContext(), networkDateTime + "TAG_" + tag +  response.body().getStatus(), Toast.LENGTH_SHORT).show();
                         if (tag) {
                             Event tempEvent = new Event("end_time", "end_time", networkDateTime);
                             tempEvent.setEvent_id("end_timeend_time");
@@ -343,13 +331,13 @@ public class NFCReadingActivity extends AppCompatActivity {
                     } else {
 
                         ResponseBody errorReturnBody = response.errorBody();
-                        try {
+                  /*      try {
                             Log.e("UPLOAD_ERROR", "onResponse: ");
-                            Toast.makeText(getApplicationContext(), events.get(0).getKey() + "response " + errorReturnBody.string(), Toast.LENGTH_LONG).show();
+                 //           Toast.makeText(getApplicationContext(), events.get(0).getKey() + "response " + errorReturnBody.string(), Toast.LENGTH_LONG).show();
 
                         } catch (IOException e) {
 
-                        }
+                        }*/
                     }
                 }
 
@@ -497,12 +485,12 @@ public class NFCReadingActivity extends AppCompatActivity {
             builder.append(str).append("\n");
         }
 
-       Toast.makeText(this, builder.toString(), Toast.LENGTH_SHORT).show();
+   //    Toast.makeText(this, builder.toString(), Toast.LENGTH_SHORT).show();
         perFormTagEvent();
     }
 
     private void showWirelessSettings() {
-        Toast.makeText(this, "You need to enable NFC", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "You need to enable NFC", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(Settings.ACTION_NFC_SETTINGS);
         startActivity(intent);
     }

@@ -33,7 +33,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.freelance.solutionhub.mma.DB.InitializeDatabase;
@@ -716,8 +715,8 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
                     public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
                         if (response.isSuccessful()) {
                             Log.i("EventsUpload", "uploadEvents: " );
-                            Toast.makeText(getContext(), eventBody.getEvents().size() + " Events Uploaded at " +
-                                    eventBody.getDate(), Toast.LENGTH_SHORT).show();
+                        //    Toast.makeText(getContext(), eventBody.getEvents().size() + " Events Uploaded at " +
+                        //            eventBody.getDate(), Toast.LENGTH_SHORT).show();
                             dbHelper.eventDAO().update(YES, CM_Step_TWO);
                             //  Toast.makeText(getContext(), dbHelper.eventDAO().getEvents(CM_Step_TWO).get(0).alreadyUploaded , Toast.LENGTH_SHORT).show();
                           //  ((CMActivity)getActivity()).hideProgressBar();
@@ -725,7 +724,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
                             ResponseBody errorReturnBody = response.errorBody();
                             try {
                                 Log.e("UPLOAD_ERROR", "onResponse: " + errorReturnBody.string());
-                                Toast.makeText(getContext(), "response " + response.code(), Toast.LENGTH_LONG).show();
+                          //      Toast.makeText(getContext(), "response " + response.code(), Toast.LENGTH_LONG).show();
                              //   ((CMActivity)getActivity()).hideProgressBar();
                             } catch (IOException e) {
 
@@ -736,7 +735,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
 
                     @Override
                     public void onFailure(Call<ReturnStatus> call, Throwable t) {
-                        Toast.makeText(getContext(), "Failure" , Toast.LENGTH_SHORT).show();
+                   //     Toast.makeText(getContext(), "Failure" , Toast.LENGTH_SHORT).show();
                     }
                 });
             }
@@ -918,7 +917,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
             if(photoModel.getUid() == 1)
                 saveEncodePhotoToDatabase(CM_Step_TWO, POST_BUCKET_NAME, photoModel.getImage());
         }
-        Toast.makeText(this.getContext(), dbHelper.uploadPhotoDAO().getNumberOfPhotosToUpload()+" photos have been saved.", Toast.LENGTH_SHORT).show();
+    //    Toast.makeText(this.getContext(), dbHelper.uploadPhotoDAO().getNumberOfPhotosToUpload()+" photos have been saved.", Toast.LENGTH_SHORT).show();
 
     }
 

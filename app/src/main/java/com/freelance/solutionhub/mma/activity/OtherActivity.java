@@ -449,8 +449,8 @@ public class OtherActivity extends AppCompatActivity implements View.OnClickList
                 @Override
                 public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
                     if (response.isSuccessful()) {
-                        Toast.makeText(getApplicationContext(), dbHelper.eventDAO().getNumOfEventsToUploadByEventType(OTHER_CONTRACTOR_UPDATE)+" events uploaded at " +
-                                eventBody.getDate(), Toast.LENGTH_LONG).show();
+                //        Toast.makeText(getApplicationContext(), dbHelper.eventDAO().getNumOfEventsToUploadByEventType(OTHER_CONTRACTOR_UPDATE)+" events uploaded at " +
+                //                eventBody.getDate(), Toast.LENGTH_LONG).show();
                         dbHelper.eventDAO().updateByThirdParty(YES, CM_Step_TWO, OTHER_CONTRACTOR_UPDATE);
                         hideProgressBar();
                         mSharePreferenceHelper.setLock(false);
@@ -461,7 +461,7 @@ public class OtherActivity extends AppCompatActivity implements View.OnClickList
                         ResponseBody errorReturnBody = response.errorBody();
                         try {
                             Log.e("OTHER", "onResponse: " + errorReturnBody.string());
-                            Toast.makeText(getApplicationContext(), "response " + response.code(), Toast.LENGTH_LONG).show();
+                    //        Toast.makeText(getApplicationContext(), "response " + response.code(), Toast.LENGTH_LONG).show();
                         } catch (IOException e) {
 
                         }
@@ -471,7 +471,7 @@ public class OtherActivity extends AppCompatActivity implements View.OnClickList
                 @Override
                 public void onFailure(Call<ReturnStatus> call, Throwable t) {
                     hideProgressBar();
-                    Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                //    Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
         }

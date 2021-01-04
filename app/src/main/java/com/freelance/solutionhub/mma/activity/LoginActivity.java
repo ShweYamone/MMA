@@ -96,20 +96,7 @@ public class LoginActivity extends AppCompatActivity {
         layoutShowPwd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-/*
-* if(etPassword.getTransformationMethod().equals(PasswordTransformationMethod.getInstance())){
-                    ivShowPwd.setAlpha(1.0f);
-                    //Show Password
-                    etPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
-                    etPassword.setSelection(etPassword.getText().length());
-                }
-                else{
-                    ivShowPwd.setAlpha(0.3f);
-                    //Hide Password
-                    etPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
-                    etPassword.setSelection(etPassword.getText().length());
-                }
-* */
+
                 if (etPassword.getTransformationMethod().equals(PasswordTransformationMethod.getInstance())) {
                     etPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
                     etPassword.setSelection(etPassword.getText().length());
@@ -139,7 +126,7 @@ public class LoginActivity extends AppCompatActivity {
                             if(response.isSuccessful()){
                                 mSharedPreferance.setLogin(loginModel.getUsername(), loginModel.getRefreshToken());
                                 if (mSharedPreferance.isLogin()) {
-                                    Toast.makeText(getApplicationContext(), "login success", Toast.LENGTH_SHORT).show();
+                                  //  Toast.makeText(getApplicationContext(), "login success", Toast.LENGTH_SHORT).show();
                                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                     startActivity(intent);
                                     finish();
@@ -183,8 +170,9 @@ public class LoginActivity extends AppCompatActivity {
 
                         @Override
                         public void onFailure(Call<LoginModel> call, Throwable t) {
-                            Toast.makeText(getApplicationContext(), "response didn't go well", Toast.LENGTH_SHORT).show();
+                       //     Toast.makeText(getApplicationContext(), "response didn't go well", Toast.LENGTH_SHORT).show();
                             progress_bar.setVisibility(View.GONE);
+                            showDialog("Login Failed.");
                         }
                     });
                 } else {
