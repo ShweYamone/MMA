@@ -105,6 +105,8 @@ public class PasscodeActivity extends AppCompatActivity{
 
                             startActivity(new Intent(PasscodeActivity.this, PasscodeRegisterActivity.class));
                             finishAffinity();
+
+
                         }
                     }
                     count++;
