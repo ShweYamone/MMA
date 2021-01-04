@@ -259,7 +259,7 @@ public class CMActivity extends AppCompatActivity {
                 intent.putExtra("id", pmServiceInfoDetailModel.getId());
                 intent.putExtra("TAG_OUT", 1);
                 startActivity(intent);
-                finish();
+            //    finish();
                 break;
             case android.R.id.home:
                 mSharedPreference.setLock(false);

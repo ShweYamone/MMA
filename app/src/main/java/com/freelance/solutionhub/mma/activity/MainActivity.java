@@ -36,9 +36,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.work.Data;
-import androidx.work.OneTimeWorkRequest;
-import androidx.work.WorkManager;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.NullNode;
@@ -52,13 +49,13 @@ import com.freelance.solutionhub.mma.util.ApiClientForNotification;
 import com.freelance.solutionhub.mma.util.ApiInterface;
 import com.freelance.solutionhub.mma.util.ApiInterfaceForNotification;
 import com.freelance.solutionhub.mma.util.ForegroundService;
-import com.freelance.solutionhub.mma.util.MyWorker;
 import com.freelance.solutionhub.mma.util.SharePreferenceHelper;
 import com.google.android.material.navigation.NavigationView;
 
 import org.phoenixframework.channels.Channel;
 import org.phoenixframework.channels.Envelope;
 import org.phoenixframework.channels.IMessageCallback;
+import org.phoenixframework.channels.ISocketCloseCallback;
 import org.phoenixframework.channels.Socket;
 
 import java.util.List;
@@ -121,7 +118,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         apiInterfaceForNotification = ApiClientForNotification.getClient().create(ApiInterfaceForNotification.class);
 
 
-        Log.d("Phonenumber",mSharedPreferences.getPhoneNumber());
+//        Log.d("Phonenumber",mSharedPreferences.getPhoneNumber());
 //        new getCurrentNetworkTime().execute();
 
         /**
@@ -201,23 +198,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if(menu != null)
             getMSOEvent();
 
-        Data data = new Data.Builder()
-                .putString(MyWorker.TASK_DESC, "The task data passed from MainActivity")
-                .build();
-
-        //This is the subclass of our WorkRequest
-        final OneTimeWorkRequest workRequest = new OneTimeWorkRequest.Builder(MyWorker.class).build();
-        WorkManager.getInstance().enqueue(workRequest);
-
+        /************WebScoket***************/
         Uri.Builder url = Uri.parse( "ws://hub-nightly-public-alb-1826126491.ap-southeast-1.elb.amazonaws.com/socket/websocket" ).buildUpon();
         // url.appendQueryParameter("vsn", "2.0.0");
-        url.appendQueryParameter( "token", "mSharedPreferences.getToken()");
+        url.appendQueryParameter( "token", mSharedPreferences.getToken());
         try {
-            Socket socket; Channel channel;
-
             //    Log.i("Websocket", url.toString());
-            socket = new Socket(url.build().toString());
+            socket = new Socket(url.build().toString(), 2000);
             socket.connect();
+            socket.reconectOnFailure(true);
+            socket.onClose(new ISocketCloseCallback() {
+                @Override
+                public void onClose() {
+
+                }
+            });
+
+         //   socket
             if(socket.isConnected()){
                 Log.i("SOCKET_CONNECT","SUCCESS");
             }
@@ -244,10 +241,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     Log.i("NEW_MESSAGE",envelope.toString());
                     final JsonNode user = envelope.getPayload().get("mso_id");
                     if (user == null || user instanceof NullNode) {
-                        ((MainActivity)getApplicationContext()).onMessageNoti("An anonymous user entered","");
+                        onMessageNoti("An anonymous user entered","");
                     }
                     else {
-                        ((MainActivity)getApplicationContext()).onMessageNoti(envelope.getPayload().get("mso_id")+"","You received an MSO alert!");
+                        onMessageNoti(envelope.getPayload().get("mso_id")+"","You received an MSO alert!");
                     }
 
                 }
@@ -261,10 +258,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     Log.i("CLOSED", envelope.toString());
                     final JsonNode user = envelope.getPayload().get("mso_id");
                     if (user == null || user instanceof NullNode) {
-                        ((MainActivity)getApplicationContext()).onMessageNoti( "An anonymous user entered","");
+                        onMessageNoti("An anonymous user entered","");
                     }
                     else {
-                        ((MainActivity)getApplicationContext()).onMessageNoti( envelope.getPayload().get("mso_id")+"","You received an MSO alert!");
+                        onMessageNoti(envelope.getPayload().get("mso_id")+"","You received an MSO alert!");
                     }
                 }
             });
@@ -277,10 +274,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     Log.i("CLOSED", envelope.toString());
                     final JsonNode user = envelope.getPayload().get("text");
                     if (user == null || user instanceof NullNode) {
-                        ((MainActivity)getApplicationContext()).onMessageNoti("An anonymous user entered","");
+                        onMessageNoti("An anonymous user entered","");
                     }
                     else {
-                        ((MainActivity)getApplicationContext()).onMessageNoti( "Announcement",""+envelope.getPayload().get("text"));
+                        onMessageNoti("Announcement",""+envelope.getPayload().get("text"));
                     }
                 }
             });
@@ -291,6 +288,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        Intent serviceIntent = new Intent(this, ForegroundService.class);
+        serviceIntent.putExtra("inputExtra", "MMA is running in background.");
+        ContextCompat.startForegroundService(this, serviceIntent);
+        super.onDestroy();
     }
 
     private void setupToolbar() {
@@ -305,45 +310,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                sendNotification(envolope,mso_type);
+              //  sendNotification(envolope,mso_type);
                 if(menu != null)
                     menu.getItem(0).setIcon(buildCounterDrawable(count+1,R.drawable.bell));
             }
         });
     }
-    //  @OnClick(R.id.button)
-    public void sendNotification(String title, String type) {
 
-        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        String NOTIFICATION_CHANNEL_ID = "tutorialspoint_01";
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            @SuppressLint("WrongConstant") NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, "My Notifications", NotificationManager.IMPORTANCE_MAX);
-            // Configure the notification channel.
-            notificationChannel.setDescription("Sample Channel description");
-            notificationChannel.enableLights(true);
-            notificationChannel.setShowBadge(true);
-            notificationChannel.setLightColor(Color.BLUE);
-            notificationChannel.setVibrationPattern(new long[]{0, 1000, 500, 1000});
-            notificationChannel.enableVibration(true);
-            notificationManager.createNotificationChannel(notificationChannel);
-        }
-        //Intent intent = new Intent(this, NotificationActivity.class);
-        // intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        // PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
-
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID);
-        notificationBuilder
-                .setDefaults(Notification.BADGE_ICON_SMALL)
-                .setWhen(System.currentTimeMillis())
-                .setSmallIcon(R.drawable.mma_notification)
-                .setContentTitle(title)
-                .setContentText(type)
-                .setBadgeIconType(NotificationCompat.BADGE_ICON_SMALL)
-                .setAutoCancel(true)
-                .setStyle(new NotificationCompat.BigTextStyle()
-                        .bigText(type));
-        notificationManager.notify(0, notificationBuilder.build());
-    }
     private void initNavigationDrawer() {
 
         mDrawerLayout.setScrimColor(ContextCompat.getColor(getApplicationContext(), android.R.color.transparent));
@@ -538,11 +511,4 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-    @Override
-    protected void onDestroy() {
-        Intent serviceIntent = new Intent(this, ForegroundService.class);
-        serviceIntent.putExtra("inputExtra", "MMA is running in background.");
-        ContextCompat.startForegroundService(this, serviceIntent);
-        super.onDestroy();
-    }
 }

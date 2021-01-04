@@ -15,16 +15,8 @@ import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.NullNode;
 import com.freelance.solutionhub.mma.R;
-import com.freelance.solutionhub.mma.activity.MainActivity;
 
-import org.phoenixframework.channels.Channel;
-import org.phoenixframework.channels.Envelope;
-import org.phoenixframework.channels.IMessageCallback;
-import org.phoenixframework.channels.Socket;
 
 public class MyWorker extends Worker {
 
@@ -38,85 +30,42 @@ public class MyWorker extends Worker {
         Uri.Builder url = Uri.parse( "ws://hub-nightly-public-alb-1826126491.ap-southeast-1.elb.amazonaws.com/socket/websocket" ).buildUpon();
         // url.appendQueryParameter("vsn", "2.0.0");
         url.appendQueryParameter( "token", "mSharedPreferences.getToken()");
-        try {
-            Socket socket; Channel channel;
-
-            //    Log.i("Websocket", url.toString());
-            socket = new Socket(url.build().toString());
-            socket.connect();
-            if(socket.isConnected()){
-                Log.i("SOCKET_CONNECT","SUCCESS");
-            }
-
-            channel = socket.chan("notification", null);
-
-            channel.join()
-                    .receive("ok", new IMessageCallback() {
-                        @Override
-                        public void onMessage(Envelope envelope) {
-                            Log.i("JOINED_WITH", "Joined with " + envelope.toString());
-                            Log.i("ON_MESSAGE", "onMessage: " + socket.isConnected());
-                        }
-                    })
-                    .receive("error", new IMessageCallback() {
-                        @Override
-                        public void onMessage(Envelope envelope) {
-                            Log.i("Websocket", "NOT Joined with ");
-                        }
-                    });
-            channel.on("mso_created", new IMessageCallback() {
-                @Override
-                public void onMessage(Envelope envelope) {
-                    Log.i("NEW_MESSAGE",envelope.toString());
-                    final JsonNode user = envelope.getPayload().get("mso_id");
-                    if (user == null || user instanceof NullNode) {
-                        ((MainActivity)getApplicationContext()).onMessageNoti("An anonymous user entered","");
-                    }
-                    else {
-                        ((MainActivity)getApplicationContext()).onMessageNoti(envelope.getPayload().get("mso_id")+"","You received an MSO alert!");
-                    }
-
-                }
-            });
-
-            channel.on("mso_rejected", new IMessageCallback() {
-                @Override
-                public void onMessage(Envelope envelope) {
-                    //  Toast.makeText(getApplicationContext(), "CLOSED: " + envelope.toString(), Toast.LENGTH_SHORT).show();
-                    //   tvResult.setText("CLOSED: " + envelope.toString());
-                    Log.i("CLOSED", envelope.toString());
-                    final JsonNode user = envelope.getPayload().get("mso_id");
-                    if (user == null || user instanceof NullNode) {
-                        ((MainActivity)getApplicationContext()).onMessageNoti( "An anonymous user entered","");
-                    }
-                    else {
-                        ((MainActivity)getApplicationContext()).onMessageNoti( envelope.getPayload().get("mso_id")+"","You received an MSO alert!");
-                    }
-                }
-            });
-
-            channel.on("announcement", new IMessageCallback() {
-                @Override
-                public void onMessage(Envelope envelope) {
-                    //  Toast.makeText(getApplicationContext(), "CLOSED: " + envelope.toString(), Toast.LENGTH_SHORT).show();
-                    //   tvResult.setText("CLOSED: " + envelope.toString());
-                    Log.i("CLOSED", envelope.toString());
-                    final JsonNode user = envelope.getPayload().get("text");
-                    if (user == null || user instanceof NullNode) {
-                        ((MainActivity)getApplicationContext()).onMessageNoti("An anonymous user entered","");
-                    }
-                    else {
-                        ((MainActivity)getApplicationContext()).onMessageNoti( "Announcement",""+envelope.getPayload().get("text"));
-                    }
-                }
-            });
-
-        } catch (Exception e) {
-            Toast.makeText(getApplicationContext(), "Exception" + e.getMessage(), Toast.LENGTH_SHORT).show();
-            Log.i("Websocket",  e.getMessage() + "\n" + e.getLocalizedMessage());
-        }
     }
 
+
+    //  @OnClick(R.id.button)
+    public void sendNotification(Context context, String title, String type) {
+
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        String NOTIFICATION_CHANNEL_ID = "tutorialspoint_01";
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            @SuppressLint("WrongConstant") NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, "My Notifications", NotificationManager.IMPORTANCE_MAX);
+            // Configure the notification channel.
+            notificationChannel.setDescription("Sample Channel description");
+            notificationChannel.enableLights(true);
+            notificationChannel.setShowBadge(true);
+            notificationChannel.setLightColor(Color.BLUE);
+            notificationChannel.setVibrationPattern(new long[]{0, 1000, 500, 1000});
+            notificationChannel.enableVibration(true);
+            notificationManager.createNotificationChannel(notificationChannel);
+        }
+        //Intent intent = new Intent(this, NotificationActivity.class);
+        // intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        // PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID);
+        notificationBuilder
+                .setDefaults(Notification.BADGE_ICON_SMALL)
+                .setWhen(System.currentTimeMillis())
+                .setSmallIcon(R.drawable.mma_notification)
+                .setContentTitle(title)
+                .setContentText(type)
+                .setBadgeIconType(NotificationCompat.BADGE_ICON_SMALL)
+                .setAutoCancel(true)
+                .setStyle(new NotificationCompat.BigTextStyle()
+                        .bigText(type));
+        notificationManager.notify(0, notificationBuilder.build());
+    }
 
 
     @NonNull

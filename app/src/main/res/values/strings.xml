@@ -6,7 +6,8 @@
     <!-- Strings related to login -->
     <string name="default_topic">rooms:lobby</string>
     <string name="default_url">ws://hub-nightly-public-alb-1826126491.ap-southeast-1.elb.amazonaws.com/socket/websocket</string>
-
+    <string name="netwatch_target_ping_server_ip_add">8.8.8.8</string>
+    <string name="netwatch_lost_connection">No internet connection</string>
     <string name="nav_home">Home</string>
     <string name="nav_nfc">NFC</string>
     <string name="nav_camera">Camera</string>

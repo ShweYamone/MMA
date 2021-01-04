@@ -190,16 +190,6 @@ public class NotificationActivity extends AppCompatActivity  {
                 startHandler = true;
                 startHandler();
             }
-//        if(notificationList.size()>=11){
-//            Log.i("LIST10","WORK");
-//            for(int i = 1,j=notificationList.size()-1;i<11;i++,j--){
-//                notificationList.remove(j);
-//            }
-//            getServiceOrders();
-//        }else {
-//            Log.i("LIST","WORK");
-//
-//        }
 
             /************WebScoket***************/
             Uri.Builder url = Uri.parse("ws://hub-nightly-public-alb-1826126491.ap-southeast-1.elb.amazonaws.com/socket/websocket").buildUpon();

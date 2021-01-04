@@ -109,5 +109,4 @@ dependencies {
     implementation("android.arch.work:work-runtime:1.0.1") {
         exclude group: 'com.google.guava', module: 'listenablefuture'
     }
-
 }
