@@ -17,6 +17,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.digisoft.mma.DB.InitializeDatabase;
 import com.digisoft.mma.R;
 import com.digisoft.mma.model.CheckListModel;
@@ -67,8 +68,13 @@ public class CheckListAdapter extends RecyclerView.Adapter<CheckListAdapter.MyVi
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (s.length() != 0)
+                if (s.length() != 0) {
                     checkListModel.setMaintenanceRemark(s.toString());
+                    Glide.with(context).load(R.drawable.remark).into(myViewHolder.edit);
+                } else {
+                    Glide.with(context).load(R.drawable.remark_blank).into(myViewHolder.edit);
+                }
+
                // Toast.makeText(context, checkListModel.getId() + "" , Toast.LENGTH_SHORT).show();
             }
         });
@@ -112,6 +118,11 @@ public class CheckListAdapter extends RecyclerView.Adapter<CheckListAdapter.MyVi
                 checkList.setChecked(true);
             } else {
                 checkList.setChecked(false);
+            }
+            if (!checkListValue.getText().toString().equals("")) {
+                Glide.with(context).load(R.drawable.remark).into(edit);
+            } else {
+                Glide.with(context).load(R.drawable.remark_blank).into(edit);
             }
         }
     }
