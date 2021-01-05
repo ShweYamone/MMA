@@ -645,7 +645,7 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
         intent.putExtra("TAG_OUT", 1);
         intent.putExtra("JOB_DONE", 1);
         startActivity(intent);
-        getActivity().finish();
+     //   getActivity().finish();
 
     }
 

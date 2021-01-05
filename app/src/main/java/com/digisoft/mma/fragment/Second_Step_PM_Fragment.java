@@ -296,7 +296,7 @@ public class Second_Step_PM_Fragment extends Fragment implements View.OnClickLis
         intent.putExtra("TAG_OUT", 1);
 
         startActivity(intent);
-        getActivity().finish();
+        //getActivity().finish();
 
     }
 

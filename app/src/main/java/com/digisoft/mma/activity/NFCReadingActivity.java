@@ -1,10 +1,12 @@
 package com.digisoft.mma.activity;
 
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
@@ -492,8 +494,21 @@ public class NFCReadingActivity extends AppCompatActivity {
         if(builder.toString().equals(pId)){
             perFormTagEvent();
         }else {
-            //perFormTagEvent();
-            Toast.makeText(this, "Wrong panel ID!", Toast.LENGTH_SHORT).show();
+
+            perFormTagEvent();
+            new AlertDialog.Builder(this)
+                    .setIcon(R.drawable.warning)
+                    .setTitle("PID Mismatch!")
+                    .setMessage("Your panel id is wrong.")
+                    .setCancelable(false)
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+
+                    })
+                    .show();
         }
     }
 
