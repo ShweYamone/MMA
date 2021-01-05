@@ -556,9 +556,9 @@ public class First_Step_PM_Fragment extends Fragment {
             }
         }
 
-        if(!(postPhotoModels.size() > 1 && postPhotoModels.size() < 6)){
+        if(!(postPhotoModels.size() > 1 && postPhotoModels.size() < 11)){
             isMandatory = true;
-            mandatoryString += "Add photo (between 2 and 5)\n";
+            mandatoryString += "Add photo (between 2 and 10)\n";
         }
 
     }
