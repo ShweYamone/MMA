@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.NotificationActivity"
+    tools:context="com.digisoft.mma.activity.NotificationActivity"
     android:background="@color/colorTextLightGrey"
     android:orientation="vertical">
 
