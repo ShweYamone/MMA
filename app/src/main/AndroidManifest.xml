@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.freelance.solutionhub.mma">
+    package="com.digisoft.mma">
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
 
@@ -33,18 +33,18 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
 
-        <activity android:name=".activity.SimChanged"></activity>
+        <activity android:name="com.digisoft.mma.activity.SimChanged"></activity>
         <activity
-            android:name=".activity.NotificationViewActivity"
+            android:name="com.digisoft.mma.activity.NotificationViewActivity"
             android:configChanges="orientation"
-            android:parentActivityName=".activity.NotificationActivity"
+            android:parentActivityName="com.digisoft.mma.activity.NotificationActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.FullScreenActivity"
+            android:name="com.digisoft.mma.activity.FullScreenActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.PasscodeRegisterActivity"
+            android:name="com.digisoft.mma.activity.PasscodeRegisterActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -54,76 +54,76 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.PasscodeActivity"
+            android:name="com.digisoft.mma.activity.PasscodeActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.CaptureActivityPotrait"
+            android:name="com.digisoft.mma.activity.CaptureActivityPotrait"
             android:screenOrientation="sensorPortrait"
             android:stateNotNeeded="true"
             android:theme="@style/zxing_CaptureTheme"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name=".activity.TelcoActivity"
+            android:name="com.digisoft.mma.activity.TelcoActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.PowerGridActivity"
+            android:name="com.digisoft.mma.activity.PowerGridActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.OtherActivity"
+            android:name="com.digisoft.mma.activity.OtherActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.NotificationActivity"
+            android:name="com.digisoft.mma.activity.NotificationActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.PMCompletionActivity"
+            android:name="com.digisoft.mma.activity.PMCompletionActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.CMCompletionActivity"
+            android:name="com.digisoft.mma.activity.CMCompletionActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.AssetInformationActivity"
+            android:name="com.digisoft.mma.activity.AssetInformationActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.CMActivity"
+            android:name="com.digisoft.mma.activity.CMActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.PMActivity"
+            android:name="com.digisoft.mma.activity.PMActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.LoadingActivity"
+            android:name="com.digisoft.mma.activity.LoadingActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.NFCReadingActivity"
+            android:name="com.digisoft.mma.activity.NFCReadingActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.LoginActivity"
+            android:name="com.digisoft.mma.activity.LoginActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.MainActivity"
+            android:name="com.digisoft.mma.activity.MainActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
 
-        <receiver android:name=".listener.SimChangedReceiver">
+        <receiver android:name="com.digisoft.mma.listener.SimChangedReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.SIM_STATE_CHANGED" />
             </intent-filter>
         </receiver>
 
         <service
-            android:name=".util.ForegroundService"
+            android:name="com.digisoft.mma.util.ForegroundService"
             android:enabled="true"
             android:exported="true"></service>
     </application>
