@@ -95,6 +95,7 @@ public class ServiceOrderAdapter extends RecyclerView.Adapter<ServiceOrderAdapte
                             Intent intent = new Intent(mContext, NFCReadingActivity.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             intent.putExtra("id", service.getId());
+                            intent.putExtra("pid", service.getPanelId());
                             mContext.startActivity(intent);
                         }
                     }

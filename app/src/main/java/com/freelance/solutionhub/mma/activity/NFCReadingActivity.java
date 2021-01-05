@@ -63,6 +63,7 @@ import static com.freelance.solutionhub.mma.util.AppConstant.CM_Step_THREE;
 import static com.freelance.solutionhub.mma.util.AppConstant.NO;
 import static com.freelance.solutionhub.mma.util.AppConstant.PM_Step_TWO;
 import static com.freelance.solutionhub.mma.util.AppConstant.TIME_SERVER;
+import static com.freelance.solutionhub.mma.util.AppConstant.YES;
 import static com.freelance.solutionhub.mma.util.AppConstant.cm;
 import static com.freelance.solutionhub.mma.util.AppConstant.pm;
 import static com.freelance.solutionhub.mma.util.AppConstant.user_inactivity_time;
@@ -75,6 +76,7 @@ public class NFCReadingActivity extends AppCompatActivity {
     private NfcAdapter nfcAdapter;
     private PendingIntent pendingIntent;
     private String serviceOrderId;
+    private String pId;
     private SharePreferenceHelper mSharedPreference;
     private Network network;
     private InitializeDatabase dbHelper;
@@ -140,9 +142,16 @@ public class NFCReadingActivity extends AppCompatActivity {
             tag = true;
             Log.i("TAG_OUT",getIntent().getIntExtra("TAG_OUT",0)+"");
             events.add(new Event("TAG_OUT", "tagOut", "tagOut"));
+            pId = dbHelper.eventDAO().getEventValue("pid", "pid");
         } else {
             tag = false;
             events.add(new Event("TAG_IN", "tagIn", "tagIn"));
+            pId = getIntent().getStringExtra("pid");
+            Event tempEvent = new Event("pid", "pid", pId);
+            tempEvent.setEvent_id("pidKey");
+            tempEvent.setUpdateEventBodyKey("PID");
+            dbHelper.eventDAO().insert(tempEvent);
+
         }
         if (getIntent().hasExtra("JOB_DONE")) {
             toPage = "COMPLETION";
@@ -155,7 +164,7 @@ public class NFCReadingActivity extends AppCompatActivity {
         /****To Fix when NFC can read*********/
         /*********************/
         /////////////////////////////////////
-       // perFormTagEvent();
+        perFormTagEvent();
 
         if(nfcAdapter == null){
        //     Toast.makeText(this, "No NFC", Toast.LENGTH_SHORT).show();
