@@ -36,6 +36,9 @@ import org.phoenixframework.channels.IMessageCallback;
 import org.phoenixframework.channels.ISocketCloseCallback;
 import org.phoenixframework.channels.Socket;
 
+import java.net.SocketTimeoutException;
+import java.util.concurrent.TimeoutException;
+
 public class ForegroundService extends Service {
     public static final String CHANNEL_ID = "ForegroundServiceChannel";
     private Socket socket;
@@ -139,7 +142,13 @@ public class ForegroundService extends Service {
                 }
             });
 
-        } catch (Exception e) {
+        }
+        catch (SocketTimeoutException e) {
+            Network network = new Network(getApplicationContext());
+            if (network.isNetworkAvailable())
+                createSocketConnection();
+        }
+        catch (Exception e) {
             Toast.makeText(getApplicationContext(), "Exception" + e.getMessage(), Toast.LENGTH_SHORT).show();
             Log.i("Websocket",  e.getMessage() + "\n" + e.getLocalizedMessage());
         }
