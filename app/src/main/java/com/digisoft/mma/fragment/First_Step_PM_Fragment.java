@@ -602,17 +602,17 @@ public class First_Step_PM_Fragment extends Fragment {
      * @param data
      */
     @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, @NonNull Intent data) {
         mSharePerferenceHelper.setLock(false);
         if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK)
         {
-            if (data != null) {
+         //   if (data != null) {
                 theImage = (Bitmap) data.getExtras().get("data");
                 photo = getEncodedString(theImage);
                 Log.v("ORI",photo);
                 postPhotoModels.add(new PhotoModel(photo, 1));
                 postPhotoAdapter.notifyDataSetChanged();
-            }
+         //   }
 
         }
     }

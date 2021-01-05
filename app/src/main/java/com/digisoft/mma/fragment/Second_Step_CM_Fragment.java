@@ -941,16 +941,16 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
      */
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, @NonNull Intent data) {
         mSharePreference.setLock(false);
         if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK)
         {
-            if (data != null) {
+        //    if (data != null) {
                 bitmap = (Bitmap) data.getExtras().get("data");
                 photo = getEncodedString(bitmap);
                 postModelList.add(new PhotoModel(photo, 1));
                 postPhotoAdapter.notifyDataSetChanged();
-            }
+         //   }
 
         }
     }

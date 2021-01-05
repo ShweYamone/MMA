@@ -391,13 +391,13 @@ public class First_Step_CM_Fragment extends Fragment {
         Log.i("Tracing......", "onActivityResult: " + mSharePerferenceHelper.getLock());
         if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK)
         {
-            if (data != null) {
+        //    if (data != null) {
                 theImage = (Bitmap) data.getExtras().get("data");
                 photo = getEncodedString(theImage);
                 Log.v("ORI", photo);
                 prePhotoModels.add(new PhotoModel(photo, 1));
                 prePhotoAdapter.notifyDataSetChanged();
-            }
+         //   }
 
         }
     }
