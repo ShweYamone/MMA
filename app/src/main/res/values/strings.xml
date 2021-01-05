@@ -97,7 +97,7 @@
     <string name="third_party_fault_comments">3rd Party Fault Comments:</string>
     <string name="add_third_party_information">Add 3rd Party Information</string>
     <string name="part_replacement">Part Replacement:</string>
-    <string name="required_part_placement">Required Part placement</string>
+    <string name="required_part_placement">Required Part Replacement</string>
     <string name="scan_faulty_parts">Scan Faulty Part:</string>
     <string name="scan_replacement_parts">Scan Replacement Part:</string>
     <string name="component_id">Component ID:</string>

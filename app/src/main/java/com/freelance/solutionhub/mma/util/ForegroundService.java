@@ -143,11 +143,6 @@ public class ForegroundService extends Service {
             });
 
         }
-        catch (SocketTimeoutException e) {
-            Network network = new Network(getApplicationContext());
-            if (network.isNetworkAvailable())
-                createSocketConnection();
-        }
         catch (Exception e) {
             Toast.makeText(getApplicationContext(), "Exception" + e.getMessage(), Toast.LENGTH_SHORT).show();
             Log.i("Websocket",  e.getMessage() + "\n" + e.getLocalizedMessage());
