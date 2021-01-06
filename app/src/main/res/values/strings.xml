@@ -79,7 +79,7 @@
     <string name="allowable_respond_date_time">Allowable Respond Date/Time</string>
     <string name="fault_detected_date_time">Fault Detected Date/Time</string>
     <string name="mso_notified_date_time">MSO Notified Date/Time</string>
-    <string name="bust_stop_number">Bust Stop Number:</string>
+    <string name="bus_stop_number">Bus Stop Number:</string>
     <string name="location">Location:</string>
     <string name="attach_pre_maintenance_photo">Attach Pre-Maintenance Photo:</string>
 

@@ -3,6 +3,7 @@ package com.digisoft.mma.model;
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import static com.digisoft.mma.util.AppConstant.NO;
@@ -31,6 +32,14 @@ public class Event {
     public String alreadyUploaded;
 
     public Event(String eventType, String key, String value) {
+        this.eventType = eventType;
+        this.key = key;
+        this.value = value;
+    }
+
+    @Ignore
+    public Event(String event_id, String eventType, String key,String value){
+        this.event_id = event_id;
         this.eventType = eventType;
         this.key = key;
         this.value = value;
