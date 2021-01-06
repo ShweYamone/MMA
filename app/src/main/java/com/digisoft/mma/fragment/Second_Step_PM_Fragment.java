@@ -358,7 +358,7 @@ public class Second_Step_PM_Fragment extends Fragment implements View.OnClickLis
                                 Log.e("UPLOAD_ERROR", "onResponse: " + errorReturnBody.string());
                         //        Toast.makeText(getContext(), "response " + response.code(), Toast.LENGTH_LONG).show();
                             } catch (IOException e) {
-
+                                    Log.e("ERROR",e.getMessage());
                             }
                             ((PMActivity)getActivity()).hideProgressBar();
                         }

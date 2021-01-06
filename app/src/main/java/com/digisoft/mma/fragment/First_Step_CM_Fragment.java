@@ -298,10 +298,8 @@ public class First_Step_CM_Fragment extends Fragment {
                     is_locale_date = true;
 
             } catch (UnknownHostException e) {
-                e.printStackTrace();
                 Log.e("UnknownHostException: ", e.getMessage());
             } catch (IOException e) {
-                e.printStackTrace();
                 Log.e("IOException: ", e.getMessage());
             }
             return is_locale_date;
