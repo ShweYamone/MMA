@@ -65,7 +65,7 @@ public class PasscodeRegisterActivity extends AppCompatActivity {
             startActivity(new Intent(PasscodeRegisterActivity.this, PasscodeActivity.class));
             finish();
         }else {
-            askPermissionAndGetPhoneNumbers();
+            //askPermissionAndGetPhoneNumbers();
         }
 
         reType.setOnClickListener(new View.OnClickListener() {

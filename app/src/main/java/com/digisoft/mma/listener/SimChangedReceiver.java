@@ -25,7 +25,9 @@ public class SimChangedReceiver extends BroadcastReceiver {
         SharePreferenceHelper mSharePreference = new SharePreferenceHelper(context);
         Log.d("SimChangedReceiver", "--> SIM state changed <--");
         String action = intent.getAction();
-        if (ACTION_SIM_STATE_CHANGED.equals(action)) {
+        if (mSharePreference.getPhoneNumber() ==null) {
+            sendNotifSms(context);
+        } else if (ACTION_SIM_STATE_CHANGED.equals(action)) {
             Bundle extras = intent.getExtras();
             printExtras(extras);
             String state = extras.getString(EXTRA_SIM_STATE);
@@ -34,16 +36,13 @@ public class SimChangedReceiver extends BroadcastReceiver {
             if (SIM_STATE_LOADED.equals(state)) {
                 // Read Phone number
                 String phoneNumber = getSystemPhoneNumber(context);
-                if (mSharePreference.getPhoneNumber().isEmpty()) {
+                if(!mSharePreference.getPhoneNumber().equals(phoneNumber)) {
+                    Log.w("TAG", "EventSpy SIM Change for new Phone Number : " + phoneNumber);
+                    // Send message
                     sendNotifSms(context);
-                } else {
-                    if (!mSharePreference.getPhoneNumber().equals(phoneNumber)) {
-                        Log.w("TAG", "EventSpy SIM Change for new Phone Number : " + phoneNumber);
-                        // Send message
-                        sendNotifSms(context);
-                        // Save as New Phone
-                        // NO savePrefsPhoneNumber(prefs, phoneNumber);
-                    }
+                    // Save as New Phone
+                    // NO savePrefsPhoneNumber(prefs, phoneNumber);
+
                 }
             }
 

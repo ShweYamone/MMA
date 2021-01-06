@@ -488,10 +488,8 @@ public class PowerGridActivity extends AppCompatActivity implements View.OnClick
                     is_locale_date = true;
 
             } catch (UnknownHostException e) {
-                e.printStackTrace();
                 Log.e("UnknownHostException: ", e.getMessage());
             } catch (IOException e) {
-                e.printStackTrace();
                 Log.e("IOException: ", e.getMessage());
             }
             return is_locale_date;

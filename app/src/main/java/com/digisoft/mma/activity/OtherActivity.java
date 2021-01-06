@@ -496,10 +496,8 @@ public class OtherActivity extends AppCompatActivity implements View.OnClickList
                     is_locale_date = true;
 
             } catch (UnknownHostException e) {
-                e.printStackTrace();
                 Log.e("UnknownHostException: ", e.getMessage());
             } catch (IOException e) {
-                e.printStackTrace();
                 Log.e("IOException: ", e.getMessage());
             }
             return is_locale_date;

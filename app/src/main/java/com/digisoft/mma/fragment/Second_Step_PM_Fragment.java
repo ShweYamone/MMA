@@ -80,6 +80,8 @@ public class Second_Step_PM_Fragment extends Fragment implements View.OnClickLis
     private InitializeDatabase dbHelper;
     private String actualDateTime = "";
     private  Random rnd;
+
+    private OutputStream os;
     /* Assign a string that contains the set of characters you allow. */
     private static final String symbols = "ABCDEFGJKLMNPRSTUVWXYZ0123456789";
 
@@ -138,7 +140,11 @@ public class Second_Step_PM_Fragment extends Fragment implements View.OnClickLis
                     dbHelper.updateEventBodyDAO().insert(updateEventBody);
                     if (network.isNetworkAvailable()) {
                         ((PMActivity)getActivity()).showProgressBar(true);
-                        updateEvent();
+                        try {
+                            updateEvent();
+                        } catch (IOException e) {
+                            Log.i("ERROR_IN_PM_STEP_2",e.getMessage());
+                        }
                         /*
                         Call<VerificationReturnBody> call = apiInterface.verifyWorks("Bearer " + mSharePreferenceHelper.getToken(), pmServiceInfoDetailModel.getId());
                         call.enqueue(new Callback<VerificationReturnBody>() {
@@ -186,11 +192,15 @@ public class Second_Step_PM_Fragment extends Fragment implements View.OnClickLis
                 }
                 break;
             case R.id.btnJobDone :
-                updateEvent();
+                try {
+                    updateEvent();
+                } catch (IOException e) {
+                    Log.e("ERROR_IN_PM_STEP2",e.getMessage());
+                }
         }
     }
 
-    private void updateEvent() {
+    private void updateEvent() throws IOException {
         if (network.isNetworkAvailable()) {
 
             /**  STEP_ONE EVENT UPDATE */
@@ -215,7 +225,7 @@ public class Second_Step_PM_Fragment extends Fragment implements View.OnClickLis
     /**
      *Upload one photo to server and get url id
      */
-    private File[] uploadPhoto(ArrayList<PhotoModel> p) {
+    private File[] uploadPhoto(ArrayList<PhotoModel> p) throws IOException {
         File[] files = new File[p.size()];
         date = new Date();
         Timestamp timestamp = new Timestamp(date.getTime());
@@ -225,7 +235,6 @@ public class Second_Step_PM_Fragment extends Fragment implements View.OnClickLis
             File fileName = new File(filesDir, mSharePreferenceHelper.getUserId()+actualDateTime+ nextString() + ".jpg");
 
             Log.i("FILE_NAME", fileName.toString());
-            OutputStream os;
             try {
                 os = new FileOutputStream(fileName);
                 getBitmapFromEncodedString(p.get(i).getImage()).compress(Bitmap.CompressFormat.JPEG, 100, os);
@@ -233,6 +242,8 @@ public class Second_Step_PM_Fragment extends Fragment implements View.OnClickLis
                 os.close();
             } catch (Exception e) {
                 Log.e("PHOTO", "Error writing bitmap", e);
+            }finally {
+                os.close();
             }
             files[i]= fileName;
         }

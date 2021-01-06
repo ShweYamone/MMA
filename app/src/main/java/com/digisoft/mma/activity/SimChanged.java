@@ -4,6 +4,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.digisoft.mma.DB.InitializeDatabase;
@@ -42,6 +43,7 @@ public class SimChanged extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         // TODO delete your database and passcode
 
+                        startActivity(new Intent(SimChanged.this, PasscodeRegisterActivity.class));
                         finishAffinity();
                     }
 

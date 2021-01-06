@@ -428,7 +428,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             counterTextPanel.setVisibility(View.GONE);
         } else {
             TextView textView = (TextView) view.findViewById(R.id.count);
-            textView.setText("" + count);
+            textView.setText("");
         }
 
         view.measure(
@@ -481,7 +481,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             count++;
                         }
                     }
-                    if(menu != null)
+                    if(menu != null && count != 0)
                         menu.getItem(0).setIcon(buildCounterDrawable(count,R.drawable.bell));
                 }
             }
