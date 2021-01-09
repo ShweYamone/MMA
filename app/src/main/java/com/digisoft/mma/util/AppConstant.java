@@ -6,6 +6,7 @@ public class AppConstant {
 
     public static final String TIME_SERVER = "sg.pool.ntp.org";
 
+    public static final String BEARER = "Bearer ";
     public static final String PREVENTATIVE = "PREVENTATIVE";
     public static final String PM = "PM";
     public static final String CORRECTIVE = "CORRECTIVE";
@@ -79,5 +80,7 @@ public class AppConstant {
 
     public static final String PRE_BUCKET_NAME = "pids-pre-maintenance-photo";
     public static final String POST_BUCKET_NAME = "pids-post-maintenance-photo";
+
+    public static final String UPLOAD_ERROR = "UPLOAD_ERROR";
 
 }

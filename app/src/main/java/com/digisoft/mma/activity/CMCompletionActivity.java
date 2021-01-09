@@ -164,13 +164,10 @@ public class CMCompletionActivity extends AppCompatActivity implements View.OnCl
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.btnClose:
-                deleteWorkingData();
-                Intent intent = new Intent(CMCompletionActivity.this, MainActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
-        }
+        deleteWorkingData();
+        Intent intent = new Intent(CMCompletionActivity.this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
     }
 
 }
