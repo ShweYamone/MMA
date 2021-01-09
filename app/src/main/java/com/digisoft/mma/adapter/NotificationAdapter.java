@@ -2,6 +2,7 @@ package com.digisoft.mma.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,7 +62,11 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             if(notification.isRead())
                 isRead.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.read_message));
             tvMessageHead.setText(notification.getMessageHead());
-            tvMessageBody.setText(notification.getMessageBody());
+            if(notification.getMessageBody().length() > 95){
+                tvMessageBody.setText( Html.fromHtml( notification.getMessageBody().substring(0,95)+"<font color='#00558C'> read more...</font>"));
+            }else {
+                tvMessageBody.setText(notification.getMessageBody());
+            }
             tvDateTime.setText(notification.getMessageDateTime());
 
         }

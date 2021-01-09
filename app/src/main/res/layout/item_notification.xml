@@ -51,6 +51,7 @@
                     android:orientation="horizontal">
                     <TextView
                         android:id="@+id/tvMessageBody"
+                        android:maxLines="2"
                         android:text="@string/temp_text"
                         android:textColor="@color/colorBlack"
                         android:fontFamily="@font/crimson_text_regular"
