@@ -83,5 +83,20 @@ public class AppConstant {
 
     public static final String UPLOAD_ERROR = "UPLOAD_ERROR";
     public static final String FAILURE = "ON FAILURE";
+    public static final String RESPONSE_UNSUCCESS = "UNSUCCESSFUL_RESPONSE";
+    public static final String IOEXCEPTION = "IO Exception";
+    public static final String Anonymous_USER = "An anonymous user entered";
+
+    public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
+    public static final String DATE_MONTH_YEAR = "dd.MM.yyyy/HH:mm aa";
+
+    public static final String PM_MSO = "PM-MSO ";
+    public static final String CM_MSO = "CM-MSO ";
+    public static final String RECEIVING_PM_ALERT = "You received an PM MSO Alert.";
+    public static final String RECEIVING_CM_ALERT = "You received an CM MSO Alert.";
+
+    public static final String ANNOUNCEMENT = "Announcement";
+    public static final String DEFAULT = "DEFAULT";
+
 
 }

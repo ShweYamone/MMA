@@ -54,6 +54,14 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.digisoft.mma.util.AppConstant.ANNOUNCEMENT;
+import static com.digisoft.mma.util.AppConstant.BEARER;
+import static com.digisoft.mma.util.AppConstant.CM_MSO;
+import static com.digisoft.mma.util.AppConstant.DATE_MONTH_YEAR;
+import static com.digisoft.mma.util.AppConstant.PM_MSO;
+import static com.digisoft.mma.util.AppConstant.RECEIVING_CM_ALERT;
+import static com.digisoft.mma.util.AppConstant.RECEIVING_PM_ALERT;
+import static com.digisoft.mma.util.AppConstant.UPLOAD_ERROR;
 import static com.digisoft.mma.util.AppConstant.user_inactivity_time;
 
 public class NotificationActivity extends AppCompatActivity  {
@@ -79,7 +87,6 @@ public class NotificationActivity extends AppCompatActivity  {
     private Channel channel;
     private SharePreferenceHelper mSharedPreference;
     private ApiInterfaceForNotification apiInterface;
-    private String urlStr, channelStr;
     private Timestamp timestamp;
     private Date date;
     private SmartScrollListener mSmartScrollListener;
@@ -88,10 +95,9 @@ public class NotificationActivity extends AppCompatActivity  {
     private Handler handler;
     private Runnable r;
     private boolean startHandler = true;
-    private boolean lockScreen = false;
     private Network network;
+    private final String mso_id = "mso_id";
 
-    private static final String TAG = "NotificationActivity";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -223,11 +229,11 @@ public class NotificationActivity extends AppCompatActivity  {
                     @Override
                     public void onMessage(Envelope envelope) {
                         Log.i("NEW_MESSAGE", envelope.toString());
-                        final JsonNode user = envelope.getPayload().get("mso_id");
+                        final JsonNode user = envelope.getPayload().get(mso_id);
                         if (user == null || user instanceof NullNode) {
                             onMessageNoti("An anonymous user entered", "");
                         } else {
-                            onMessageNoti(envelope.getPayload().get("mso_id") + "", "MSO is created.");
+                            onMessageNoti(envelope.getPayload().get(mso_id) + "", "MSO is created.");
                         }
 
                     }
@@ -239,22 +245,15 @@ public class NotificationActivity extends AppCompatActivity  {
                         //  Toast.makeText(getApplicationContext(), "CLOSED: " + envelope.toString(), Toast.LENGTH_SHORT).show();
                         //   tvResult.setText("CLOSED: " + envelope.toString());
                         Log.i("CLOSED", envelope.toString());
-                        final JsonNode user = envelope.getPayload().get("mso_id");
+                        final JsonNode user = envelope.getPayload().get(mso_id);
                         if (user == null || user instanceof NullNode) {
                             onMessageNoti("An anonymous user entered", "");
                         } else {
-                            onMessageNoti(envelope.getPayload().get("mso_id") + "", "MSO is rejected.");
+                            onMessageNoti(envelope.getPayload().get(mso_id) + "", "MSO is rejected.");
                         }
                     }
                 });
 
-
-//Sending a message. This library uses Jackson for JSON serialization
-//            ObjectNode node = new ObjectNode(JsonNodeFactory.instance)
-//                    .put("user", "my_username")
-//                    .put("body", "Hello");
-//
-//            channel.push("new:msg", node);
             } catch (Exception e) {
          //       Toast.makeText(getApplicationContext(), "Exception" + e.getMessage(), Toast.LENGTH_SHORT).show();
                 Log.i("Websocket", e.getMessage() + "\n" + e.getLocalizedMessage());
@@ -263,7 +262,7 @@ public class NotificationActivity extends AppCompatActivity  {
     }
 
     private void getServiceOrders() {
-        Call<NotificationReadModel> notificationReadModelCall = apiInterface.getNotificationReadList("Bearer "+mSharedPreference.getToken(),page,10);
+        Call<NotificationReadModel> notificationReadModelCall = apiInterface.getNotificationReadList(BEARER + mSharedPreference.getToken(),page,10);
         notificationReadModelCall.enqueue(new Callback<NotificationReadModel>() {
             @Override
             public void onResponse(Call<NotificationReadModel> call, Response<NotificationReadModel> response) {
@@ -279,15 +278,15 @@ public class NotificationActivity extends AppCompatActivity  {
                         Payload payload = items.get(i).getPayload();
                         date = items.get(i).getInserted_at();
                         timestamp = new Timestamp(date.getTime());
-                        String actualDateTime = new SimpleDateFormat("dd.MM.yyyy/HH:mm aa").format(timestamp);
+                        String actualDateTime = new SimpleDateFormat(DATE_MONTH_YEAR).format(timestamp);
                         if(items.get(i).getType().equals("mso")) {
                             if (payload.getMso_type().equals("PM")) {
-                                notificationList.add(new NotificationModel(items.get(i).getId(), "PM-MSO " + items.get(i).getPayload().getMso_id(), "You received an PM MSO Alert.", actualDateTime, items.get(i).isIs_read()));
+                                notificationList.add(new NotificationModel(items.get(i).getId(), PM_MSO + items.get(i).getPayload().getMso_id(), RECEIVING_PM_ALERT, actualDateTime, items.get(i).isIs_read()));
                             } else {
-                                notificationList.add(new NotificationModel(items.get(i).getId(), "CM-MSO " + items.get(i).getPayload().getMso_id(), "You received an CM MSO Alert.", actualDateTime, items.get(i).isIs_read()));
+                                notificationList.add(new NotificationModel(items.get(i).getId(), CM_MSO + items.get(i).getPayload().getMso_id(), RECEIVING_CM_ALERT, actualDateTime, items.get(i).isIs_read()));
                             }
                         }else {
-                            notificationList.add(new NotificationModel(items.get(i).getId(),"Announcement", payload.getText(),actualDateTime,items.get(i).isIs_read()));
+                            notificationList.add(new NotificationModel(items.get(i).getId(),ANNOUNCEMENT, payload.getText(),actualDateTime,items.get(i).isIs_read()));
                         }
 
                     }
@@ -297,7 +296,7 @@ public class NotificationActivity extends AppCompatActivity  {
 
             @Override
             public void onFailure(Call<NotificationReadModel> call, Throwable t) {
-                Log.i("ERROR",t.getLocalizedMessage());
+                Log.i(UPLOAD_ERROR, "" + t.getLocalizedMessage());
             }
         });
 
@@ -322,7 +321,7 @@ public class NotificationActivity extends AppCompatActivity  {
     }
 
     private void getMSOCreatedEvent(){
-        Call<NotificationReadModel> notificationReadModelCall = apiInterface.getNotificationReadList("Bearer "+mSharedPreference.getToken(),1,1);
+        Call<NotificationReadModel> notificationReadModelCall = apiInterface.getNotificationReadList(BEARER + mSharedPreference.getToken(),1,1);
         notificationReadModelCall.enqueue(new Callback<NotificationReadModel>() {
             @Override
             public void onResponse(Call<NotificationReadModel> call, Response<NotificationReadModel> response) {
@@ -339,15 +338,15 @@ public class NotificationActivity extends AppCompatActivity  {
                         Payload payload = items.get(i).getPayload();
                         date = items.get(i).getInserted_at();
                         timestamp = new Timestamp(date.getTime());
-                        String actualDateTime = new SimpleDateFormat("dd.MM.yyyy/HH:mm aa").format(timestamp);
+                        String actualDateTime = new SimpleDateFormat(DATE_MONTH_YEAR).format(timestamp);
                         if(items.get(i).getType().equals("mso")) {
                             if (payload.getMso_type().equals("PM")) {
-                                notificationList.add(new NotificationModel(items.get(i).getId(), "PM-MSO " + items.get(i).getPayload().getMso_id(), "You received an PM MSO Alert.", actualDateTime, items.get(i).isIs_read()));
+                                notificationList.add(new NotificationModel(items.get(i).getId(), PM_MSO + items.get(i).getPayload().getMso_id(), RECEIVING_PM_ALERT, actualDateTime, items.get(i).isIs_read()));
                             } else {
-                                notificationList.add(new NotificationModel(items.get(i).getId(), "CM-MSO " + items.get(i).getPayload().getMso_id(), "You received an CM MSO Alert.", actualDateTime, items.get(i).isIs_read()));
+                                notificationList.add(new NotificationModel(items.get(i).getId(), CM_MSO + items.get(i).getPayload().getMso_id(), RECEIVING_CM_ALERT, actualDateTime, items.get(i).isIs_read()));
                             }
                         }else {
-                            notificationList.add(new NotificationModel(items.get(i).getId(),"Announcement", payload.getText(),actualDateTime,items.get(i).isIs_read()));
+                            notificationList.add(new NotificationModel(items.get(i).getId(),ANNOUNCEMENT, payload.getText(),actualDateTime,items.get(i).isIs_read()));
                         }
 
                     }
@@ -357,13 +356,13 @@ public class NotificationActivity extends AppCompatActivity  {
 
             @Override
             public void onFailure(Call<NotificationReadModel> call, Throwable t) {
-                Log.i("ERROR",t.getLocalizedMessage());
+                Log.i(UPLOAD_ERROR, "" + t.getLocalizedMessage());
             }
         });
     }
 
     private void getMSOEvent(){
-        Call<NotificationReadModel> notificationReadModelCall = apiInterface.getNotificationReadList("Bearer "+mSharedPreference.getToken(),1,10);
+        Call<NotificationReadModel> notificationReadModelCall = apiInterface.getNotificationReadList(BEARER + mSharedPreference.getToken(),1,10);
         notificationReadModelCall.enqueue(new Callback<NotificationReadModel>() {
             @Override
             public void onResponse(Call<NotificationReadModel> call, Response<NotificationReadModel> response) {
@@ -386,15 +385,15 @@ public class NotificationActivity extends AppCompatActivity  {
                         Payload payload = items.get(i).getPayload();
                         date = items.get(i).getInserted_at();
                         timestamp = new Timestamp(date.getTime());
-                        String actualDateTime = new SimpleDateFormat("dd.MM.yyyy/HH:mm aa").format(timestamp);
+                        String actualDateTime = new SimpleDateFormat(DATE_MONTH_YEAR).format(timestamp);
                         if(items.get(i).getType().equals("mso")) {
                             if (payload.getMso_type().equals("PM")) {
-                                notificationList.add(new NotificationModel(items.get(i).getId(), "PM-MSO " + items.get(i).getPayload().getMso_id(), "You received an PM MSO Alert.", actualDateTime, items.get(i).isIs_read()));
+                                notificationList.add(new NotificationModel(items.get(i).getId(), PM_MSO + items.get(i).getPayload().getMso_id(), RECEIVING_PM_ALERT, actualDateTime, items.get(i).isIs_read()));
                             } else {
-                                notificationList.add(new NotificationModel(items.get(i).getId(), "CM-MSO " + items.get(i).getPayload().getMso_id(), "You received an CM MSO Alert.", actualDateTime, items.get(i).isIs_read()));
+                                notificationList.add(new NotificationModel(items.get(i).getId(), CM_MSO + items.get(i).getPayload().getMso_id(), RECEIVING_CM_ALERT, actualDateTime, items.get(i).isIs_read()));
                             }
                         }else {
-                            notificationList.add(new NotificationModel(items.get(i).getId(),"Announcement", payload.getText(),actualDateTime,items.get(i).isIs_read()));
+                            notificationList.add(new NotificationModel(items.get(i).getId(),ANNOUNCEMENT, payload.getText(),actualDateTime,items.get(i).isIs_read()));
                         }
 
                     }
@@ -404,7 +403,7 @@ public class NotificationActivity extends AppCompatActivity  {
 
             @Override
             public void onFailure(Call<NotificationReadModel> call, Throwable t) {
-                    Log.i("ERROR",t.getLocalizedMessage());
+                    Log.i(UPLOAD_ERROR , "" + t.getLocalizedMessage());
             }
         });
     }
@@ -417,10 +416,9 @@ public class NotificationActivity extends AppCompatActivity  {
                 mSharedPreference.setLock(false);
                 finish();
                 return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-
-
-        return super.onOptionsItemSelected(item);
     }
 
     @Override

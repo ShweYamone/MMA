@@ -36,6 +36,7 @@ import retrofit2.Response;
 
 import static com.digisoft.mma.util.AppConstant.BEARER;
 import static com.digisoft.mma.util.AppConstant.FAILURE;
+import static com.digisoft.mma.util.AppConstant.IOEXCEPTION;
 import static com.digisoft.mma.util.AppConstant.OTHER_CONTRACTOR;
 import static com.digisoft.mma.util.AppConstant.PM_CHECK_LIST_DONE;
 import static com.digisoft.mma.util.AppConstant.PM_CHECK_LIST_REMARK;
@@ -174,7 +175,7 @@ public class LoadingActivity extends AppCompatActivity {
                   //      Toast.makeText(getApplicationContext(), "response " + response.code() + msoId,  Toast.LENGTH_LONG).show();
                         //  ((CMActivity)getActivity()).hideProgressBar();
                     } catch (IOException e) {
-
+                        Log.e(UPLOAD_ERROR, IOEXCEPTION + "");
                     }
                 }
 
@@ -258,20 +259,19 @@ public class LoadingActivity extends AppCompatActivity {
                    //     Toast.makeText(getApplicationContext(), "response " + response.code() + msoId,  Toast.LENGTH_LONG).show();
                       //  ((CMActivity)getActivity()).hideProgressBar();
                     } catch (IOException e) {
-
+                        Log.e(UPLOAD_ERROR, IOEXCEPTION + "");
                     }
                 }
             }
 
             @Override
             public void onFailure(Call<List<CheckListModel>> call, Throwable t) {
-
+                Log.e(UPLOAD_ERROR, FAILURE + "");
             }
         });
     }
 
     private void getServieOrderbyId(String id) {
-      //  Toast.makeText(getApplicationContext(), "response " + "enter", Toast.LENGTH_LONG).show();
 
         Call<PMServiceInfoDetailModel> call = apiInterface.getPMServiceOrderByID(BEARER + mSharePrefrence.getToken() , id);
         call.enqueue(new Callback<PMServiceInfoDetailModel>() {
@@ -287,15 +287,12 @@ public class LoadingActivity extends AppCompatActivity {
                     } else {
                         //first get relevant PM Checklist.........
                         if (dbHelper.eventDAO().getNumberOfEventsByUpdateBodyKey(PM_Step_ONE) > 0) {
-                            Log.i("logloglog", "Directly go to PM" + dbHelper.eventDAO().getNumberEventsToUpload(PM_Step_ONE));
                             intent = new Intent(LoadingActivity.this, PMActivity.class);
                             intent.putExtra(start_time, getIntent().getStringExtra(start_time));
                             intent.putExtra(object, response.body());
                             startActivity(intent);
                             finish();
                         } else {
-                            Log.i("logloglog", "can't go to PM" + dbHelper.eventDAO().getNumberEventsToUpload(PM_Step_ONE));
-
                             getPMCheckList(response.body());
                         }
                     }
@@ -305,18 +302,15 @@ public class LoadingActivity extends AppCompatActivity {
                     ResponseBody errorReturnBody = response.errorBody();
                     try {
                         Log.e(UPLOAD_ERROR, "" + errorReturnBody.string());
-                      //  ((CMActivity)getActivity()).hideProgressBar();
-
 
                     } catch (IOException e) {
-
+                        Log.e(UPLOAD_ERROR, IOEXCEPTION + "");
                     }
                 }
             }
             @Override
             public void onFailure(Call<PMServiceInfoDetailModel> call, Throwable t) {
-             //   Toast.makeText(getApplicationContext(), id + "response failure order by id", Toast.LENGTH_LONG).show();
-
+               Log.e(UPLOAD_ERROR, FAILURE + "");
             }
         });
     }

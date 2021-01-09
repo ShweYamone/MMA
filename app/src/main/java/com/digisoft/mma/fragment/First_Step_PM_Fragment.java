@@ -11,7 +11,6 @@ import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
@@ -68,13 +67,17 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.digisoft.mma.util.AppConstant.DATE_FORMAT;
+import static com.digisoft.mma.util.AppConstant.FAILURE;
 import static com.digisoft.mma.util.AppConstant.NO;
 import static com.digisoft.mma.util.AppConstant.PM_CHECK_LIST_DONE;
 import static com.digisoft.mma.util.AppConstant.PM_CHECK_LIST_REMARK;
 import static com.digisoft.mma.util.AppConstant.PM_FAULT_FOUND_UPDATE;
 import static com.digisoft.mma.util.AppConstant.PM_Step_ONE;
 import static com.digisoft.mma.util.AppConstant.POST_BUCKET_NAME;
+import static com.digisoft.mma.util.AppConstant.RESPONSE_UNSUCCESS;
 import static com.digisoft.mma.util.AppConstant.TIME_SERVER;
+import static com.digisoft.mma.util.AppConstant.UPLOAD_ERROR;
 import static com.digisoft.mma.util.AppConstant.YES;
 
 
@@ -151,7 +154,7 @@ public class First_Step_PM_Fragment extends Fragment {
     Bitmap theImage;
     PhotoAdapter postPhotoAdapter;
     private PMServiceInfoDetailModel pmServiceInfoDetailModel;
-    private Network network;
+
     private InitializeDatabase dbHelper;
     private Date date;
     private Timestamp ts;
@@ -177,9 +180,7 @@ public class First_Step_PM_Fragment extends Fragment {
         ButterKnife.bind(this, view);
         apiInterface = ApiClient.getClient(this.getContext());
         mSharePerferenceHelper = new SharePreferenceHelper(this.getContext());
-     //   mSharePerferenceHelper.setLock(false);
 
-        network = new Network(getContext());
         dbHelper = InitializeDatabase.getInstance(getContext());
         mNetwork = new Network(getContext());
         postPhotoModels = new ArrayList<>();
@@ -234,7 +235,7 @@ public class First_Step_PM_Fragment extends Fragment {
 
         date = new Date();
         ts=new Timestamp(date.getTime());
-        String actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(ts);
+        String actualDateTime = new SimpleDateFormat(DATE_FORMAT).format(ts);
 
         tvPerformedBy.setText(mSharePerferenceHelper.getUserId());
         tvActualStartDateTime.setText(actualDateTime);
@@ -356,7 +357,7 @@ public class First_Step_PM_Fragment extends Fragment {
 
             date = new Date();
             Timestamp timestamp = new Timestamp(date.getTime());
-            String actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
+            String actualDateTime = new SimpleDateFormat(DATE_FORMAT).format(timestamp);
             UpdateEventBody updateEventBody = new UpdateEventBody(
                     mSharePerferenceHelper.getUserName(),
                     mSharePerferenceHelper.getUserId(),
@@ -403,17 +404,18 @@ public class First_Step_PM_Fragment extends Fragment {
                     } else{
                         ResponseBody errorReturnBody = response.errorBody();
                         try {
-                            Log.e("Tracing....", "onResponse: " + errorReturnBody.string());
+                            Log.e(UPLOAD_ERROR, "onResponse: " + errorReturnBody.string());
                      //       Toast.makeText(getContext(), "response " + response.code(),  Toast.LENGTH_LONG).show();
                         } catch (IOException e) {
-
+                            Log.e(UPLOAD_ERROR, RESPONSE_UNSUCCESS + "");
                         }
                     }
                 }
 
                 @Override
                 public void onFailure(Call<ReturnStatus> call, Throwable t) {
-              //      Toast.makeText(getContext(), "Failure" , Toast.LENGTH_SHORT).show();
+                    Log.e(UPLOAD_ERROR, FAILURE + "");
+
                 }
             });
         }
@@ -429,14 +431,14 @@ public class First_Step_PM_Fragment extends Fragment {
                 long localTime = timeInfo.getReturnTime();
                 long serverTime = timeInfo.getMessage().getTransmitTimeStamp().getTime();
                 Timestamp timestamp = new Timestamp(localTime);
-                String localDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
-                Log.i("Time__Local", "doInBackground: " + localTime + "--> " + localDateTime);
+           //     String localDateTime = new SimpleDateFormat(DATE_FORMAT).format(timestamp);
+           //     Log.i("Time__Local", "doInBackground: " + localTime + "--> " + localDateTime);
                 timestamp = new Timestamp(serverTime);
-                String actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
-                Log.i("Time__Server", "doInBackground:" + serverTime + "--> " + actualDateTime);
+                String actualDateTime = new SimpleDateFormat(DATE_FORMAT).format(timestamp);
+           //     Log.i("Time__Server", "doInBackground:" + serverTime + "--> " + actualDateTime);
                 //after getting network time, update event with the network time
                 dbHelper.updateEventBodyDAO().updateDateTime(actualDateTime, PM_Step_ONE);
-                Log.i("Time__Count", "doInBackground:" +"count --> " + dbHelper.eventDAO().getNumberEventsToUpload(PM_Step_ONE));
+           //     Log.i("Time__Count", "doInBackground:" +"count --> " + dbHelper.eventDAO().getNumberEventsToUpload(PM_Step_ONE));
                 if (dbHelper.eventDAO().getNumberEventsToUpload(PM_Step_ONE) > 0) {
                     updateEvent();
                 }
@@ -508,7 +510,7 @@ public class First_Step_PM_Fragment extends Fragment {
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
+                        //user clicked ok button
 
                     }
 
@@ -588,10 +590,7 @@ public class First_Step_PM_Fragment extends Fragment {
                 Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
                 startActivityForResult(cameraIntent, CAMERA_REQUEST);
             }
-            else
-            {
-         //       Toast.makeText(getActivity(), "camera permission denied", Toast.LENGTH_LONG).show();
-            }
+
         }
     }
 

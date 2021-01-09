@@ -54,9 +54,11 @@ import static com.digisoft.mma.util.AppConstant.ACTION_TAKEN;
 import static com.digisoft.mma.util.AppConstant.CLEARANCE_DATE;
 import static com.digisoft.mma.util.AppConstant.CM_Step_TWO;
 import static com.digisoft.mma.util.AppConstant.CT_PERSONNEL;
+import static com.digisoft.mma.util.AppConstant.DATE_FORMAT;
 import static com.digisoft.mma.util.AppConstant.EXPECTED_COMPLETION_DATE;
 import static com.digisoft.mma.util.AppConstant.FAULT_DETECTED_DATE;
 import static com.digisoft.mma.util.AppConstant.FAULT_STATUS;
+import static com.digisoft.mma.util.AppConstant.IOEXCEPTION;
 import static com.digisoft.mma.util.AppConstant.NO;
 import static com.digisoft.mma.util.AppConstant.NO_TYPE;
 import static com.digisoft.mma.util.AppConstant.OFFICER;
@@ -65,6 +67,7 @@ import static com.digisoft.mma.util.AppConstant.REFER_DATE;
 import static com.digisoft.mma.util.AppConstant.REMARKS_ON_FAULT;
 import static com.digisoft.mma.util.AppConstant.THIRD_PARTY_NUMBER;
 import static com.digisoft.mma.util.AppConstant.TIME_SERVER;
+import static com.digisoft.mma.util.AppConstant.UPLOAD_ERROR;
 import static com.digisoft.mma.util.AppConstant.YES;
 import static com.digisoft.mma.util.AppConstant.user_inactivity_time;
 
@@ -356,6 +359,8 @@ public class PowerGridActivity extends AppCompatActivity implements View.OnClick
             case R.id.btn_save:
                 save();
                 break;
+            default:
+                Log.i("DEFAULT", "onClick: ");
         }
     }
 
@@ -364,7 +369,7 @@ public class PowerGridActivity extends AppCompatActivity implements View.OnClick
      */
     private void setDateTimeButton(){
         Timestamp timestamp = new Timestamp(date.getTime());
-        String actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
+        String actualDateTime = new SimpleDateFormat(DATE_FORMAT).format(timestamp);
         referDateTime.setText(actualDateTime);
         expectedCompletionDateTime.setText(actualDateTime);
         clearanceDateTime.setText(actualDateTime);
@@ -400,7 +405,7 @@ public class PowerGridActivity extends AppCompatActivity implements View.OnClick
 
             date = new Date();
             Timestamp timestamp = new Timestamp(date.getTime());
-            String actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
+            String actualDateTime = new SimpleDateFormat(DATE_FORMAT).format(timestamp);
             UpdateEventBody updateEventBody;
 
             if (network.isNetworkAvailable() && dbHelper.eventDAO().getNumOfEventsToUploadByEventType(POWER_GRIP_UPDATE) > 0) {
@@ -451,7 +456,7 @@ public class PowerGridActivity extends AppCompatActivity implements View.OnClick
                       //      Toast.makeText(getApplicationContext(), "response " + response.code(), Toast.LENGTH_LONG).show();
                             hideProgressBar();
                         } catch (IOException e) {
-
+                            Log.e(UPLOAD_ERROR, IOEXCEPTION + "");
                         }
                     }
                 }
@@ -476,10 +481,10 @@ public class PowerGridActivity extends AppCompatActivity implements View.OnClick
                 long localTime = timeInfo.getReturnTime();
                 long serverTime = timeInfo.getMessage().getTransmitTimeStamp().getTime();
                 Timestamp timestamp = new Timestamp(localTime);
-                String localDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
+                String localDateTime = new SimpleDateFormat(DATE_FORMAT).format(timestamp);
                 Log.i("Time__Local", "doInBackground: " + localTime + "--> " + localDateTime);
                 timestamp = new Timestamp(serverTime);
-                String actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
+                String actualDateTime = new SimpleDateFormat(DATE_FORMAT).format(timestamp);
                 Log.i("Time__Server", "doInBackground:" + serverTime + "--> " + actualDateTime);
                 //magic is here
                 updateEvents(actualDateTime);

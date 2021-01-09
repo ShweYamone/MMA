@@ -57,12 +57,18 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.digisoft.mma.util.AppConstant.BEARER;
 import static com.digisoft.mma.util.AppConstant.CM_Step_THREE;
+import static com.digisoft.mma.util.AppConstant.DATE_FORMAT;
+import static com.digisoft.mma.util.AppConstant.FAILURE;
+import static com.digisoft.mma.util.AppConstant.IOEXCEPTION;
 import static com.digisoft.mma.util.AppConstant.NO;
 import static com.digisoft.mma.util.AppConstant.PM_Step_TWO;
+import static com.digisoft.mma.util.AppConstant.RESPONSE_UNSUCCESS;
 import static com.digisoft.mma.util.AppConstant.TIME_SERVER;
 import static com.digisoft.mma.util.AppConstant.CM;
 import static com.digisoft.mma.util.AppConstant.PM;
+import static com.digisoft.mma.util.AppConstant.UPLOAD_ERROR;
 import static com.digisoft.mma.util.AppConstant.user_inactivity_time;
 
 public class NFCReadingActivity extends AppCompatActivity {
@@ -79,7 +85,6 @@ public class NFCReadingActivity extends AppCompatActivity {
     private InitializeDatabase dbHelper;
     private ApiInterface apiInterface;
     private Date date;
-    private Timestamp ts;
     boolean tag;
     String toPage = "";
     private final int NFC_PERMISSION_CODE = 1002;
@@ -89,8 +94,8 @@ public class NFCReadingActivity extends AppCompatActivity {
     private Handler handler;
     private Runnable r;
     private boolean startHandler = true;
-    private boolean lockScreen = false;
     private String step = "";
+    private final String TAG_OUT = "TAG_OUT";
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -135,10 +140,10 @@ public class NFCReadingActivity extends AppCompatActivity {
             }
         });
         ////////////////////////////////
-        if (getIntent().hasExtra("TAG_OUT")) {
+        if (getIntent().hasExtra(TAG_OUT)) {
             tag = true;
-            Log.i("TAG_OUT",getIntent().getIntExtra("TAG_OUT",0)+"");
-            events.add(new Event("TAG_OUT", "tagOut", "tagOut"));
+            Log.i(TAG_OUT,getIntent().getIntExtra(TAG_OUT,0)+"");
+            events.add(new Event(TAG_OUT, "tagOut", "tagOut"));
             pId = dbHelper.eventDAO().getEventValue("pid", "pid");
         } else {
             tag = false;
@@ -180,9 +185,9 @@ public class NFCReadingActivity extends AppCompatActivity {
     }
 
     private void performLocalTagOutEvent(String date) {
-        UpdateEventBody eventBody = dbHelper.updateEventBodyDAO().getUpdateEventBodyByID("TAG_OUT");
-        eventBody.setEvents(dbHelper.eventDAO().getEventsToUpload("TAG_OUT"));
-        Call<ReturnStatus> call = apiInterface.updateEvent("Bearer " + mSharedPreference.getToken(), eventBody);
+        UpdateEventBody eventBody = dbHelper.updateEventBodyDAO().getUpdateEventBodyByID(TAG_OUT);
+        eventBody.setEvents(dbHelper.eventDAO().getEventsToUpload(TAG_OUT));
+        Call<ReturnStatus> call = apiInterface.updateEvent(BEARER + mSharedPreference.getToken(), eventBody);
         call.enqueue(new Callback<ReturnStatus>() {
             @Override
             public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
@@ -196,13 +201,13 @@ public class NFCReadingActivity extends AppCompatActivity {
                     }
                 }
                 else {
-                 //   ResponseBody errorReturnBody = response.errorBody();
+                    Log.e(UPLOAD_ERROR, RESPONSE_UNSUCCESS + "");
                 }
             }
 
             @Override
             public void onFailure(Call<ReturnStatus> call, Throwable t) {
-
+                Log.e(UPLOAD_ERROR, FAILURE + "");
             }
         });
     }
@@ -210,16 +215,13 @@ public class NFCReadingActivity extends AppCompatActivity {
     private void performFinalStepEvent(String pmOrcm, String date) {
         dbHelper.updateEventBodyDAO().updateDateTime(date, step);
 
-        Call<ReturnStatus> call = apiInterface.updateStatusEvent("Bearer " + mSharedPreference.getToken(),
+        Call<ReturnStatus> call = apiInterface.updateStatusEvent(BEARER + mSharedPreference.getToken(),
                 dbHelper.updateEventBodyDAO().getUpdateEventBodyByID(step));
         call.enqueue(new Callback<ReturnStatus>() {
             @Override
             public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
                 if (response.isSuccessful()) {
                     Intent intent;
-               //     Toast.makeText(getApplicationContext(),response.body().getStatus() + " Last Event Uploaded. at" +
-               //             dbHelper.updateEventBodyDAO().getUpdateEventBodyByID(step).getDate()
-              //              ,Toast.LENGTH_SHORT).show();
                     if (pmOrcm.equals(PM)) {
                         intent = new Intent(NFCReadingActivity.this, PMCompletionActivity.class);
                     } else {
@@ -234,21 +236,17 @@ public class NFCReadingActivity extends AppCompatActivity {
                 //    Toast.makeText(getApplicationContext(), "response " + response.code(), Toast.LENGTH_LONG).show();
                     ResponseBody errorReturnBody = response.errorBody();
                     try {
-                        Log.e("UPLOAD_ERROR", "onResponse: " + errorReturnBody.string());
-                      //  ((CMActivity)getActivity()).hideProgressBar();
-
+                        Log.e(UPLOAD_ERROR, "" + errorReturnBody.string());
 
                     } catch (IOException e) {
-
+                        Log.e(UPLOAD_ERROR, IOEXCEPTION + "");
                     }
                 }
             }
 
             @Override
             public void onFailure(Call<ReturnStatus> call, Throwable t) {
-          //      Toast.makeText(getApplicationContext(), "response " + "FAILURE", Toast.LENGTH_LONG).show();
-              //  ((CMActivity)getActivity()).hideProgressBar();
-                Log.e("UPLOAD_ERROR", "onResponse: " + t.getMessage());
+                Log.e(UPLOAD_ERROR, FAILURE + "");
             }
         });
     }
@@ -257,13 +255,11 @@ public class NFCReadingActivity extends AppCompatActivity {
 
         if (network.isNetworkAvailable()) {
             new getCurrentNetworkTime().execute();
-            Log.i("ACKACKACK", "perFormTagEvent: " + serviceOrderId);
-            Log.i("ACKACKACK", "perFormTagEvent: " + currentDateTime);
         } else {//network unavailable, store data to local
             if (tag) {
                 date = new Date();
                 Timestamp timestamp = new Timestamp(date.getTime());
-                currentDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
+                currentDateTime = new SimpleDateFormat(DATE_FORMAT).format(timestamp);
                 UpdateEventBody eventBody;
                 eventBody = new UpdateEventBody(
                         mSharedPreference.getUserName(),
@@ -271,11 +267,11 @@ public class NFCReadingActivity extends AppCompatActivity {
                         currentDateTime,
                         serviceOrderId
                 );
-                eventBody.setId("TAG_OUT");
+                eventBody.setId(TAG_OUT);
                 dbHelper.updateEventBodyDAO().insert(eventBody);
                 for (Event event : events) {
-                    event.setEvent_id("TAG_OUT");
-                    event.setUpdateEventBodyKey("TAG_OUT");
+                    event.setEvent_id(TAG_OUT);
+                    event.setUpdateEventBodyKey(TAG_OUT);
                     event.setAlreadyUploaded(NO);
                 }
                 dbHelper.eventDAO().insertAll(events);
@@ -283,9 +279,7 @@ public class NFCReadingActivity extends AppCompatActivity {
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
             }
-             else {
-                //show dialog for network connection
-            }
+
         }
     }
 
@@ -297,7 +291,7 @@ public class NFCReadingActivity extends AppCompatActivity {
             eventBody = new UpdateEventBody(
                     mSharedPreference.getUserName(), mSharedPreference.getUserId(), networkDateTime, serviceOrderId, events
             );
-            Call<ReturnStatus> call = apiInterface.updateEvent("Bearer " + mSharedPreference.getToken(), eventBody);
+            Call<ReturnStatus> call = apiInterface.updateEvent(BEARER + mSharedPreference.getToken(), eventBody);
             call.enqueue(new Callback<ReturnStatus>() {
                 @Override
                 public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
@@ -309,7 +303,7 @@ public class NFCReadingActivity extends AppCompatActivity {
                             tempEvent.setEvent_id("end_timeend_time");
                             dbHelper.eventDAO().insert(tempEvent);
                             if (toPage.equals("COMPLETION")) {
-                                if (dbHelper.updateEventBodyDAO().getNumberOfUpdateEventsById("TAG_OUT") > 0) {
+                                if (dbHelper.updateEventBodyDAO().getNumberOfUpdateEventsById(TAG_OUT) > 0) {
                                     performLocalTagOutEvent(networkDateTime);
                                 } else {
                                     if (serviceOrderId.startsWith(PM)) {
@@ -336,7 +330,8 @@ public class NFCReadingActivity extends AppCompatActivity {
                         }
                     } else {
 
-                        ResponseBody errorReturnBody = response.errorBody();
+                  //      ResponseBody errorReturnBody = response.errorBody();
+                        Log.e(UPLOAD_ERROR, RESPONSE_UNSUCCESS + "");
                   /*      try {
                             Log.e("UPLOAD_ERROR", "onResponse: ");
                  //           Toast.makeText(getApplicationContext(), events.get(0).getKey() + "response " + errorReturnBody.string(), Toast.LENGTH_LONG).show();
@@ -349,7 +344,7 @@ public class NFCReadingActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(Call<ReturnStatus> call, Throwable t) {
-
+                    Log.e(UPLOAD_ERROR, FAILURE + "");
                 }
             });
         }
@@ -365,10 +360,10 @@ public class NFCReadingActivity extends AppCompatActivity {
                 long localTime = timeInfo.getReturnTime();
                 long serverTime = timeInfo.getMessage().getTransmitTimeStamp().getTime();
                 Timestamp timestamp = new Timestamp(localTime);
-                String localDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
+                String localDateTime = new SimpleDateFormat(DATE_FORMAT).format(timestamp);
                 Log.i("Time__Local", "doInBackground: " + localTime + "--> " + localDateTime);
                 timestamp = new Timestamp(serverTime);
-                String actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
+                String actualDateTime = new SimpleDateFormat(DATE_FORMAT).format(timestamp);
                 Log.i("Time__Server", "doInBackground:" + serverTime + "--> " + actualDateTime);
                 //after getting network time, update event with the network time
                 updateEvent(actualDateTime);
@@ -388,9 +383,6 @@ public class NFCReadingActivity extends AppCompatActivity {
             super.onPostExecute(aBoolean);
         }
     }
-
-
-
 
 
     @Override

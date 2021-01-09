@@ -260,10 +260,9 @@ public class CMActivity extends AppCompatActivity {
                 mSharedPreference.setLock(false);
                 finish();
                 return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-
-
-        return super.onOptionsItemSelected(item);
     }
 
     //Getting the scan results

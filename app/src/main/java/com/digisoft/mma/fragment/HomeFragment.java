@@ -64,12 +64,17 @@ import retrofit2.Response;
 import static com.digisoft.mma.util.AppConstant.ACK;
 import static com.digisoft.mma.util.AppConstant.ALL;
 import static com.digisoft.mma.util.AppConstant.APPR;
+import static com.digisoft.mma.util.AppConstant.BEARER;
 import static com.digisoft.mma.util.AppConstant.CORRECTIVE;
+import static com.digisoft.mma.util.AppConstant.DEFAULT;
+import static com.digisoft.mma.util.AppConstant.FAILURE;
 import static com.digisoft.mma.util.AppConstant.INPRG;
 import static com.digisoft.mma.util.AppConstant.MONTHLY;
 import static com.digisoft.mma.util.AppConstant.PREVENTATIVE;
 import static com.digisoft.mma.util.AppConstant.QUARTERLY;
+import static com.digisoft.mma.util.AppConstant.RESPONSE_UNSUCCESS;
 import static com.digisoft.mma.util.AppConstant.TIME_SERVER;
+import static com.digisoft.mma.util.AppConstant.UPLOAD_ERROR;
 import static com.digisoft.mma.util.AppConstant.WEEKLY;
 import static com.digisoft.mma.util.AppConstant.WSCH;
 import static com.digisoft.mma.util.AppConstant.YEARLY;
@@ -169,8 +174,6 @@ public class HomeFragment extends Fragment implements RadioGroup.OnCheckedChange
     @BindView(R.id.rbScheduleYear)
     RadioButton rbScheduleYear;
 
-    private String[] list;
-    private ArrayAdapter spinnerArrAdaper;
     private ServiceOrderAdapter mAdapter;
     private List<ServiceInfoModel> serviceInfoModelList = new ArrayList<>();
     private ApiInterface apiInterface;
@@ -248,7 +251,7 @@ public class HomeFragment extends Fragment implements RadioGroup.OnCheckedChange
      * Fault Mapping Data for Second Step CM , for later use
      */
     private void getFaultMappingData() {
-        Call<ResponseBody> call = apiInterface.getFaultMappings("Bearer " + mSharePreference.getToken());
+        Call<ResponseBody> call = apiInterface.getFaultMappings(BEARER + mSharePreference.getToken());
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -262,20 +265,20 @@ public class HomeFragment extends Fragment implements RadioGroup.OnCheckedChange
                                 new FaultMappingJSONString(
                                         response.body().string()));
                     } catch (IOException e) {
-                        Log.e("IOException", "onResponse: " + e.getMessage() );
+                        Log.e(UPLOAD_ERROR, "" + e.getMessage() );
                     }
 
                 }
             }
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Log.i("FaultMapping", "onResponse: ");
+                Log.i(UPLOAD_ERROR, FAILURE + "");
             }
         });
     }
 
     private void getUserIdAndUserDisplayName() {
-        Call<UserProfile> call1 = apiInterface.getUserProfile("Bearer " + mSharePreference.getToken());
+        Call<UserProfile> call1 = apiInterface.getUserProfile(BEARER + mSharePreference.getToken());
         call1.enqueue(new Callback<UserProfile>() {
             @Override
             public void onResponse(Call<UserProfile> call, Response<UserProfile> response) {
@@ -285,12 +288,14 @@ public class HomeFragment extends Fragment implements RadioGroup.OnCheckedChange
                     mSharePreference.setUserIdAndDisplayName(userData.getUserId(), userData.getDisplayName());
                   //  Toast.makeText(getContext().getApplicationContext(), mSharePreference.getUserId() + ", " + mSharePreference.getDisplayName(), Toast.LENGTH_SHORT).show();
                 } else {
+                    Log.e(UPLOAD_ERROR, RESPONSE_UNSUCCESS + "");
                     //Toast.makeText(getContext().getApplicationContext(), response.code() + ", ", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<UserProfile> call, Throwable t) {
+                Log.e(UPLOAD_ERROR, FAILURE + "");
              //   Toast.makeText(getContext().getApplicationContext(), "failure", Toast.LENGTH_SHORT).show();
 
             }
@@ -321,7 +326,7 @@ public class HomeFragment extends Fragment implements RadioGroup.OnCheckedChange
                     serviceId,ACK
             );
 
-            Call<ReturnStatus> call = apiInterface.updateStatusEvent("Bearer " + mSharePreference.getToken(), updateEventBody);
+            Call<ReturnStatus> call = apiInterface.updateStatusEvent(BEARER + mSharePreference.getToken(), updateEventBody);
             call.enqueue(new Callback<ReturnStatus>() {
                 @Override
                 public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
@@ -330,13 +335,14 @@ public class HomeFragment extends Fragment implements RadioGroup.OnCheckedChange
                 //        Toast.makeText(getContext().getApplicationContext(), returnStatus.getStatus()+"APPRtoACK at time" + date, Toast.LENGTH_SHORT).show();
                         update_APPR_To_ACK_UI(position);
                     } else {
+                        Log.e(UPLOAD_ERROR, RESPONSE_UNSUCCESS + "");
                   //      Toast.makeText(getContext().getApplicationContext(), response.code()+"APPRtoACK", Toast.LENGTH_SHORT).show();
                     }
                 }
 
                 @Override
                 public void onFailure(Call<ReturnStatus> call, Throwable t) {
-
+                    Log.e(UPLOAD_ERROR, FAILURE + "");
                 }
             });
         }
@@ -393,7 +399,7 @@ public class HomeFragment extends Fragment implements RadioGroup.OnCheckedChange
         textValueList.clear();
         textValueList.add(INPRG); textValueList.add(APPR); textValueList.add(ACK);
         filterModelBody = FilterModelBody.createFilterModel("in", CORRECTIVE, textValueList, 1);
-        Call<PMServiceListModel> call = apiInterface.getPMServiceOrders("Bearer " + mSharePreference.getToken(), filterModelBody);
+        Call<PMServiceListModel> call = apiInterface.getPMServiceOrders(BEARER + mSharePreference.getToken(), filterModelBody);
         call.enqueue(new Callback<PMServiceListModel>() {
             @Override
             public void onResponse(Call<PMServiceListModel> call, Response<PMServiceListModel> response) {
@@ -414,13 +420,14 @@ public class HomeFragment extends Fragment implements RadioGroup.OnCheckedChange
 
             @Override
             public void onFailure(Call<PMServiceListModel> call, Throwable t) {
+                Log.e(UPLOAD_ERROR, FAILURE + "");
             }
         });
 
         textValueList.clear();
         textValueList.add(WSCH); textValueList.add(INPRG);
         filterModelBody = FilterModelBody.createFilterModel("in", PREVENTATIVE, textValueList, 1);
-        call = apiInterface.getPMServiceOrders("Bearer " + mSharePreference.getToken(), filterModelBody);
+        call = apiInterface.getPMServiceOrders(BEARER + mSharePreference.getToken(), filterModelBody);
         call.enqueue(new Callback<PMServiceListModel>() {
             @Override
             public void onResponse(Call<PMServiceListModel> call, Response<PMServiceListModel> response) {
@@ -441,6 +448,7 @@ public class HomeFragment extends Fragment implements RadioGroup.OnCheckedChange
 
             @Override
             public void onFailure(Call<PMServiceListModel> call, Throwable t) {
+                Log.e(UPLOAD_ERROR, FAILURE + "");
             }
         });
     }
@@ -452,7 +460,7 @@ public class HomeFragment extends Fragment implements RadioGroup.OnCheckedChange
         else
             filterModelBody = FilterModelBody.createFilterModelWithScheduleType(scheduleType, filterExpression, enumValue, textValueList, page);
 
-        Call<PMServiceListModel> call = apiInterface.getPMServiceOrders("Bearer " + mSharePreference.getToken(), filterModelBody);
+        Call<PMServiceListModel> call = apiInterface.getPMServiceOrders(BEARER + mSharePreference.getToken(), filterModelBody);
 
         call.enqueue(new Callback<PMServiceListModel>() {
 
@@ -482,6 +490,7 @@ public class HomeFragment extends Fragment implements RadioGroup.OnCheckedChange
 
             @Override
             public void onFailure(Call<PMServiceListModel> call, Throwable t) {
+                Log.e(UPLOAD_ERROR, FAILURE + "");
 //                Toast.makeText(getContext(), "connection failure", Toast.LENGTH_SHORT).show();
             }
         });
@@ -511,6 +520,8 @@ public class HomeFragment extends Fragment implements RadioGroup.OnCheckedChange
             case R.id.cvPreventive:
                 showPreventiveMaintenance();
                 break;
+            default:
+                Log.i(DEFAULT, "onClick: ");
         }
 
         setRadioButtonColorToBlack();
@@ -536,7 +547,7 @@ public class HomeFragment extends Fragment implements RadioGroup.OnCheckedChange
         rgCM.setVisibility(View.VISIBLE);
         rgPM.setVisibility(View.GONE);
 
-        list = new String[]{ALL, APPR, ACK, INPRG};
+        //list = new String[]{ALL, APPR, ACK, INPRG};
         textValueList.add(INPRG); textValueList.add(APPR); textValueList.add(ACK);
         rbCMAll.setChecked(true);
         rbCMAll.setTextColor(getResources().getColor(R.color.colorWhite));
@@ -556,7 +567,7 @@ public class HomeFragment extends Fragment implements RadioGroup.OnCheckedChange
         rgCM.setVisibility(View.GONE);
         rgPM.setVisibility(View.VISIBLE);
 
-        list = new String[]{ALL, WSCH, INPRG};
+        //list = new String[]{ALL, WSCH, INPRG};
         textValueList.add(WSCH); textValueList.add(INPRG);
         rbPMAll.setChecked(true);
         rbPMAll.setTextColor(getResources().getColor(R.color.colorWhite));
@@ -639,6 +650,8 @@ public class HomeFragment extends Fragment implements RadioGroup.OnCheckedChange
                     textValueList.add(INPRG);
                     rbPMINPRG.setTextColor(getResources().getColor(R.color.colorWhite));
                     break;
+                default:
+                    Log.i(DEFAULT, "onCheckedChanged: ");
             }
         }
         else {
@@ -660,6 +673,8 @@ public class HomeFragment extends Fragment implements RadioGroup.OnCheckedChange
                 case R.id.rbScheduleYear: scheduleType = YEARLY;
                     rbScheduleYear.setTextColor(getResources().getColor(R.color.colorWhite));
                     break;
+                default:
+                    Log.i(DEFAULT, "onCheckedChanged: ");
             }
         }
         serviceInfoModelList.clear();

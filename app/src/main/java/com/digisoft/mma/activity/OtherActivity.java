@@ -56,6 +56,7 @@ import static com.digisoft.mma.util.AppConstant.CLEARANCE_DATE;
 import static com.digisoft.mma.util.AppConstant.CM_Step_TWO;
 import static com.digisoft.mma.util.AppConstant.COMPANY_NAME;
 import static com.digisoft.mma.util.AppConstant.CONTACT_NUMBER;
+import static com.digisoft.mma.util.AppConstant.DATE_FORMAT;
 import static com.digisoft.mma.util.AppConstant.EXPECTED_COMPLETION_DATE;
 import static com.digisoft.mma.util.AppConstant.FAULT_DETECTED_DATE;
 import static com.digisoft.mma.util.AppConstant.FAULT_STATUS;
@@ -349,6 +350,9 @@ public class OtherActivity extends AppCompatActivity implements View.OnClickList
             case R.id.btn_save:
                 save();
                 break;
+            default:
+                Log.i("DEFAULT", "onClick: ");
+                break;
         }
     }
 
@@ -369,7 +373,7 @@ public class OtherActivity extends AppCompatActivity implements View.OnClickList
      */
     private void setDateTimeButton(){
         Timestamp timestamp = new Timestamp(date.getTime());
-        String actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
+        String actualDateTime = new SimpleDateFormat(DATE_FORMAT).format(timestamp);
         referDateTime.setText(actualDateTime);
         expectedCompletionDateTime.setText(actualDateTime);
         clearanceDateTime.setText(actualDateTime);
@@ -402,7 +406,7 @@ public class OtherActivity extends AppCompatActivity implements View.OnClickList
 
             date = new Date();
             Timestamp timestamp = new Timestamp(date.getTime());
-            String actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
+            String actualDateTime = new SimpleDateFormat(DATE_FORMAT).format(timestamp);
             UpdateEventBody updateEventBody;
             Log.i("Other", "save: " + dbHelper.eventDAO().getNumberOfEvents());
             List<Event> events = dbHelper.eventDAO().getEventsByEventType(OTHER_CONTRACTOR_UPDATE);
@@ -484,10 +488,10 @@ public class OtherActivity extends AppCompatActivity implements View.OnClickList
                 long localTime = timeInfo.getReturnTime();
                 long serverTime = timeInfo.getMessage().getTransmitTimeStamp().getTime();
                 Timestamp timestamp = new Timestamp(localTime);
-                String localDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
+                String localDateTime = new SimpleDateFormat(DATE_FORMAT).format(timestamp);
                 Log.i("Time__Local", "doInBackground: " + localTime + "--> " + localDateTime);
                 timestamp = new Timestamp(serverTime);
-                String actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
+                String actualDateTime = new SimpleDateFormat(DATE_FORMAT).format(timestamp);
                 Log.i("Time__Server", "doInBackground:" + serverTime + "--> " + actualDateTime);
                 //magic is here
                 updateEvents(actualDateTime);
