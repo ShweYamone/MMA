@@ -29,6 +29,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.digisoft.mma.util.AppConstant.FAILURE;
+import static com.digisoft.mma.util.AppConstant.UPLOAD_ERROR;
 import static com.digisoft.mma.util.AppConstant.user_inactivity_time;
 
 public class AssetInformationActivity extends AppCompatActivity implements View.OnClickListener {
@@ -178,7 +180,7 @@ public class AssetInformationActivity extends AppCompatActivity implements View.
 
                     @Override
                     public void onFailure(Call<QRReturnBody> call, Throwable t) {
-
+                        Log.e(UPLOAD_ERROR, FAILURE + "");
                     }
                 });
 

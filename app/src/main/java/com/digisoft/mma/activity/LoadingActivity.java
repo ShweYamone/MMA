@@ -35,6 +35,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import static com.digisoft.mma.util.AppConstant.BEARER;
+import static com.digisoft.mma.util.AppConstant.FAILURE;
 import static com.digisoft.mma.util.AppConstant.OTHER_CONTRACTOR;
 import static com.digisoft.mma.util.AppConstant.PM_CHECK_LIST_DONE;
 import static com.digisoft.mma.util.AppConstant.PM_CHECK_LIST_REMARK;
@@ -181,7 +182,7 @@ public class LoadingActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<ThirdPartyModel>> call, Throwable t) {
-
+                Log.e(UPLOAD_ERROR, FAILURE + "");
             }
         });
     }

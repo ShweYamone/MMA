@@ -82,5 +82,6 @@ public class AppConstant {
     public static final String POST_BUCKET_NAME = "pids-post-maintenance-photo";
 
     public static final String UPLOAD_ERROR = "UPLOAD_ERROR";
+    public static final String FAILURE = "ON FAILURE";
 
 }

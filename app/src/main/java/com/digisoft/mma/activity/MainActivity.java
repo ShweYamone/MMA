@@ -78,9 +78,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private int count;
     protected ActionBarDrawerToggle mDrawerToggle;
     private SharePreferenceHelper mSharedPreferences;
-    private Runnable runnable;
-    private int passcode;
-    private ApiInterface apiInterface;
     private ApiInterfaceForNotification apiInterfaceForNotification;
     private Handler handler;
     private Runnable r;
@@ -89,9 +86,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private Socket socket;
     private Channel channel;
     private Menu menu;
-    private int notiCount = 1;
-    private RelativeLayout notificationRelativeLayout;
-    private TextView notificationCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,7 +101,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         displayView(R.id.nav_home);
         // lotout txtview is here
         tvLogout.setOnClickListener(this);
-        apiInterface = ApiClient.getClient(this);
         apiInterfaceForNotification = ApiClientForNotification.getClient().create(ApiInterfaceForNotification.class);
 
         /**
