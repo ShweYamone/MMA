@@ -196,6 +196,8 @@ public class AssetInformationActivity extends AppCompatActivity implements View.
                 Intent intent = new Intent(AssetInformationActivity.this, MainActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
+            default:
+                return;
         }
     }
 }
