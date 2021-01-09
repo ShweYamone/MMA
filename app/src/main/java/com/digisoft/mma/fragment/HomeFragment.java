@@ -64,10 +64,10 @@ import retrofit2.Response;
 import static com.digisoft.mma.util.AppConstant.ACK;
 import static com.digisoft.mma.util.AppConstant.ALL;
 import static com.digisoft.mma.util.AppConstant.APPR;
-import static com.digisoft.mma.util.AppConstant.CM;
+import static com.digisoft.mma.util.AppConstant.CORRECTIVE;
 import static com.digisoft.mma.util.AppConstant.INPRG;
 import static com.digisoft.mma.util.AppConstant.MONTHLY;
-import static com.digisoft.mma.util.AppConstant.PM;
+import static com.digisoft.mma.util.AppConstant.PREVENTATIVE;
 import static com.digisoft.mma.util.AppConstant.QUARTERLY;
 import static com.digisoft.mma.util.AppConstant.TIME_SERVER;
 import static com.digisoft.mma.util.AppConstant.WEEKLY;
@@ -392,7 +392,7 @@ public class HomeFragment extends Fragment implements RadioGroup.OnCheckedChange
     private void setServiceOrderCount() {
         textValueList.clear();
         textValueList.add(INPRG); textValueList.add(APPR); textValueList.add(ACK);
-        filterModelBody = FilterModelBody.createFilterModel("in", CM, textValueList, 1);
+        filterModelBody = FilterModelBody.createFilterModel("in", CORRECTIVE, textValueList, 1);
         Call<PMServiceListModel> call = apiInterface.getPMServiceOrders("Bearer " + mSharePreference.getToken(), filterModelBody);
         call.enqueue(new Callback<PMServiceListModel>() {
             @Override
@@ -419,7 +419,7 @@ public class HomeFragment extends Fragment implements RadioGroup.OnCheckedChange
 
         textValueList.clear();
         textValueList.add(WSCH); textValueList.add(INPRG);
-        filterModelBody = FilterModelBody.createFilterModel("in", PM, textValueList, 1);
+        filterModelBody = FilterModelBody.createFilterModel("in", PREVENTATIVE, textValueList, 1);
         call = apiInterface.getPMServiceOrders("Bearer " + mSharePreference.getToken(), filterModelBody);
         call.enqueue(new Callback<PMServiceListModel>() {
             @Override
@@ -527,7 +527,7 @@ public class HomeFragment extends Fragment implements RadioGroup.OnCheckedChange
 
     private void showCorrectiveMaintenance() {
         textValueList.clear();
-        enumValue = CM;
+        enumValue = CORRECTIVE;
         ivCorrective.setColorFilter(ContextCompat.getColor(this.getContext(), R.color.colorPrimary));
         tvCorrective.setTextColor(getResources().getColor(R.color.colorBlack));
 
@@ -547,7 +547,7 @@ public class HomeFragment extends Fragment implements RadioGroup.OnCheckedChange
 
     private void showPreventiveMaintenance() {
         textValueList.clear();
-        enumValue = PM;
+        enumValue = PREVENTATIVE;
         ivPreventive.setColorFilter(ContextCompat.getColor(this.getContext(), R.color.colorPrimary));
         tvPreventive.setTextColor(getResources().getColor(R.color.colorBlack));
 

@@ -61,8 +61,8 @@ import static com.digisoft.mma.util.AppConstant.CM_Step_THREE;
 import static com.digisoft.mma.util.AppConstant.NO;
 import static com.digisoft.mma.util.AppConstant.PM_Step_TWO;
 import static com.digisoft.mma.util.AppConstant.TIME_SERVER;
-import static com.digisoft.mma.util.AppConstant.cm;
-import static com.digisoft.mma.util.AppConstant.pm;
+import static com.digisoft.mma.util.AppConstant.CM;
+import static com.digisoft.mma.util.AppConstant.PM;
 import static com.digisoft.mma.util.AppConstant.user_inactivity_time;
 
 public class NFCReadingActivity extends AppCompatActivity {
@@ -153,7 +153,7 @@ public class NFCReadingActivity extends AppCompatActivity {
         if (getIntent().hasExtra("JOB_DONE")) {
             toPage = "COMPLETION";
         }
-        if (serviceOrderId.startsWith(pm))
+        if (serviceOrderId.startsWith(PM))
             step = PM_Step_TWO;
         else
             step = CM_Step_THREE;
@@ -188,11 +188,11 @@ public class NFCReadingActivity extends AppCompatActivity {
             public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
                 if (response.isSuccessful()) {
                //     Toast.makeText(getApplicationContext(), "LOCAL_TAG_OUT", Toast.LENGTH_SHORT).show();
-                    if (serviceOrderId.startsWith(pm)) {
-                        performFinalStepEvent(pm, date);
+                    if (serviceOrderId.startsWith(PM)) {
+                        performFinalStepEvent(PM, date);
 
                     } else {
-                        performFinalStepEvent(cm, date);
+                        performFinalStepEvent(CM, date);
                     }
                 }
                 else {
@@ -220,7 +220,7 @@ public class NFCReadingActivity extends AppCompatActivity {
                //     Toast.makeText(getApplicationContext(),response.body().getStatus() + " Last Event Uploaded. at" +
                //             dbHelper.updateEventBodyDAO().getUpdateEventBodyByID(step).getDate()
               //              ,Toast.LENGTH_SHORT).show();
-                    if (pmOrcm.equals(pm)) {
+                    if (pmOrcm.equals(PM)) {
                         intent = new Intent(NFCReadingActivity.this, PMCompletionActivity.class);
                     } else {
                         intent = new Intent(NFCReadingActivity.this, CMCompletionActivity.class);
@@ -312,11 +312,11 @@ public class NFCReadingActivity extends AppCompatActivity {
                                 if (dbHelper.updateEventBodyDAO().getNumberOfUpdateEventsById("TAG_OUT") > 0) {
                                     performLocalTagOutEvent(networkDateTime);
                                 } else {
-                                    if (serviceOrderId.startsWith(pm)) {
-                                        performFinalStepEvent(pm, networkDateTime);
+                                    if (serviceOrderId.startsWith(PM)) {
+                                        performFinalStepEvent(PM, networkDateTime);
 
                                     } else {
-                                        performFinalStepEvent(cm, networkDateTime);
+                                        performFinalStepEvent(CM, networkDateTime);
                                     }
 
                                 }

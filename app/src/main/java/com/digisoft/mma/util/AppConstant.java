@@ -6,10 +6,10 @@ public class AppConstant {
 
     public static final String TIME_SERVER = "sg.pool.ntp.org";
 
-    public static final String PM = "PREVENTATIVE";
-    public static final String pm = "PM";
-    public static final String CM = "CORRECTIVE";
-    public static final String cm = "CM";
+    public static final String PREVENTATIVE = "PREVENTATIVE";
+    public static final String PM = "PM";
+    public static final String CORRECTIVE = "CORRECTIVE";
+    public static final String CM = "CM";
     public static final String ALL = "ALL";
     public static final String WSCH = "WSCH";
     public static final String INPRG = "INPRG";
