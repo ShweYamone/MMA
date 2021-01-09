@@ -162,6 +162,9 @@ public class ForegroundService extends Service {
     //  @OnClick(R.id.button)
     public void sendNotification(String title, String type) {
 
+        if (type.length() > 95) {
+            type = type.substring(0, 94) + "read more...";
+        }
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         String NOTIFICATION_CHANNEL_ID = "tutorialspoint_01";
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -175,9 +178,7 @@ public class ForegroundService extends Service {
             notificationChannel.enableVibration(true);
             notificationManager.createNotificationChannel(notificationChannel);
         }
-        //Intent intent = new Intent(this, NotificationActivity.class);
-        // intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        // PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
 
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID);
         notificationBuilder
