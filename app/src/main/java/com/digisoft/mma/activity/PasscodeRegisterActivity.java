@@ -107,6 +107,7 @@ public class PasscodeRegisterActivity extends AppCompatActivity {
             }
         });
     }
+
     private void askPermissionAndGetPhoneNumbers() {
 
         // With Android Level >= 23, you have to ask the user

@@ -146,6 +146,7 @@ public class ForegroundService extends Service {
         createSocketConnection();
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+//        intentFilter.addAction(ConnectivityManager.C);
         registerReceiver(networkChangeReceiver, intentFilter);
     }
 
