@@ -131,7 +131,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.MyViewHolder
 
     public void deletedata(final int position, final ArrayList<PhotoModel> singleRowArrayList){
         new AlertDialog.Builder(context)
-                .setIcon(R.drawable.defaultimage)
+                .setIcon(R.drawable.warning)
                 .setTitle("Confirm Delete")
                 .setMessage("Are you sure you want delete this photo?")
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {

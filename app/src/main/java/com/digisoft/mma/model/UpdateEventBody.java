@@ -93,6 +93,18 @@ public class UpdateEventBody implements Serializable {
         this.serviceOrderStatus = serviceOrderStatus;
     }
 
+    @Ignore
+    public UpdateEventBody(String id, String actor, String actorId, String date, String serviceOrderId,String serviceOrderStatus, String remark,String weatherCondition) {
+        this.id = id;
+        this.actor = actor;
+        this.actorId = actorId;
+        this.date = date;
+        this.serviceOrderId = serviceOrderId;
+        this.serviceOrderStatus = serviceOrderStatus;
+        this.remark = remark;
+        this.weatherCondition = weatherCondition;
+    }
+
     @NonNull
     public String getId() {
         return id;

@@ -259,7 +259,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="@color/colorPrimary"
-                        android:text="@string/bust_stop_number"
+                        android:text="@string/bus_stop_number"
                         android:textSize="@dimen/txt_size_small_middle"/>
                     <TextView
                         android:id="@+id/tv_bus_stop_number"

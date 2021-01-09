@@ -1,10 +1,12 @@
 package com.digisoft.mma.activity;
 
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
@@ -374,10 +376,8 @@ public class NFCReadingActivity extends AppCompatActivity {
                     is_locale_date = true;
 
             } catch (UnknownHostException e) {
-                e.printStackTrace();
                 Log.e("UnknownHostException: ", e.getMessage());
             } catch (IOException e) {
-                e.printStackTrace();
                 Log.e("IOException: ", e.getMessage());
             }
             return is_locale_date;
@@ -489,8 +489,25 @@ public class NFCReadingActivity extends AppCompatActivity {
             builder.append(str).append("\n");
         }
 
-   //    Toast.makeText(this, builder.toString(), Toast.LENGTH_SHORT).show();
-        perFormTagEvent();
+        if(builder.toString().equals(pId)){
+            perFormTagEvent();
+        }else {
+
+            perFormTagEvent();
+            new AlertDialog.Builder(this)
+                    .setIcon(R.drawable.warning)
+                    .setTitle("PID Mismatch!")
+                    .setMessage("Your panel id is wrong.")
+                    .setCancelable(false)
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+
+                    })
+                    .show();
+        }
     }
 
     private void showWirelessSettings() {

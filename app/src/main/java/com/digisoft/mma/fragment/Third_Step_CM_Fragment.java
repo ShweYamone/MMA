@@ -104,6 +104,7 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
     private String actualDateTime;
     private  Timestamp timestamp;
     private  Random rnd;
+    private OutputStream os;
 
     private boolean stepOneUploaded = false;
     private boolean stepTwoUploaded = false;
@@ -224,7 +225,11 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
                                         jobDone.setOnClickListener(new View.OnClickListener() {
                                             @Override
                                             public void onClick(View view) {
-                                                updateEvent();
+                                                try {
+                                                    updateEvent();
+                                                } catch (IOException e) {
+                                                    Log.e("ERROR_IN_CM_STEP3",e.getMessage());
+                                                }
                                             }
                                         });
 
@@ -265,7 +270,11 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
 
 
             case R.id.btn_job_done :
-                updateEvent();
+                try {
+                    updateEvent();
+                } catch (IOException e) {
+                    Log.e("ERROR_IN_CM_STEP3",e.getMessage());
+                }
         }
     }
 
@@ -284,7 +293,7 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
     }
 
 
-    public void updateEvent(){
+    public void updateEvent() throws IOException {
 
         if (network.isNetworkAvailable()) {
 
@@ -331,7 +340,7 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
     /**
      *Upload one photo to server and get url id
      */
-    private File[] uploadPhoto(ArrayList<PhotoModel> p) {
+    private File[] uploadPhoto(ArrayList<PhotoModel> p) throws IOException {
         File[] files = new File[p.size()];
         date = new Date();
        timestamp = new Timestamp(date.getTime());
@@ -341,7 +350,6 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
             File fileName = new File(filesDir, mSharePreferenceHelper.getUserId()+actualDateTime+ nextString()+ ".jpg");
 
             Log.i("FILE_NAME", fileName.toString());
-            OutputStream os;
             try {
                 os = new FileOutputStream(fileName);
                 getBitmapFromEncodedString(p.get(i).getImage()).compress(Bitmap.CompressFormat.JPEG, 100, os);
@@ -349,6 +357,8 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
                 os.close();
             } catch (Exception e) {
                 Log.e("PHOTO", "Error writing bitmap", e);
+            }finally {
+                os.close();
             }
             files[i]= fileName;
         }
@@ -421,11 +431,15 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
                             for (UploadPhotoModel photoModel: uploadPhotoModels) {
                                 postPhotoModels.add(new PhotoModel(getDecodedString(photoModel.getEncodedPhotoString()), 1));
                             }
-                            new LoadPOSTImage(
-                                    dbHelper.eventDAO().getEventsToUpload(CM_Step_TWO),
-                                    POST_BUCKET_NAME,
-                                    dbHelper.updateEventBodyDAO().getUpdateEventBodyByID(CM_Step_TWO))
-                                    .execute(uploadPhoto(postPhotoModels));
+                            try {
+                                new LoadPOSTImage(
+                                        dbHelper.eventDAO().getEventsToUpload(CM_Step_TWO),
+                                        POST_BUCKET_NAME,
+                                        dbHelper.updateEventBodyDAO().getUpdateEventBodyByID(CM_Step_TWO))
+                                        .execute(uploadPhoto(postPhotoModels));
+                            } catch (IOException e) {
+                                Log.e("ERROR_IN_CM_STEP3",e.getMessage());
+                            }
 
                         } else {
                             ResponseBody errorReturnBody = response.errorBody();
@@ -645,7 +659,7 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
         intent.putExtra("TAG_OUT", 1);
         intent.putExtra("JOB_DONE", 1);
         startActivity(intent);
-        getActivity().finish();
+     //   getActivity().finish();
 
     }
 
