@@ -17,6 +17,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,6 +30,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -170,6 +173,12 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
     @BindView(R.id.btnSave)
     Button btnSave;
 
+    @BindView(R.id.layoutScanFaultDelete)
+    RelativeLayout layoutFaultDelete;
+
+    @BindView(R.id.layoutScanReplacementDelete)
+    RelativeLayout layoutReplacementDelete;
+
     private static final int CAMERA_REQUEST = 1888;
     private static final int MY_CAMERA_PERMISSION_CODE = 100;
     private Bitmap bitmap;
@@ -217,10 +226,6 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
     private String preThirdPartyComment = "";
     private boolean spinnerCauseAutoSelect = false;
     private boolean spinnerRemedyAutoSelect = false;
-
-    private ThirdPartyModel telcoObj = new ThirdPartyModel();
-    private ThirdPartyModel powerGripObj = new ThirdPartyModel();
-    private ThirdPartyModel otherObj = new ThirdPartyModel();
 
     Intent intent;
     public Second_Step_CM_Fragment() {
@@ -386,6 +391,9 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
         powerGrid.setOnClickListener(this);
         other.setOnClickListener(this);
 
+        layoutFaultDelete.setOnClickListener(this);
+        layoutReplacementDelete.setOnClickListener(this);
+
         //intializing scan object
         qrScan = new IntentIntegrator(this.getActivity());
         qrScan.setPrompt("Scan QR Code");
@@ -453,6 +461,13 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
                     .into(ivAddThirdPary);
             layoutThirdParty.setVisibility(View.GONE);
             thirdPartyShow = !thirdPartyShow;
+        }
+
+        if (preScan1Result.equals("")) {
+            layoutFaultDelete.setVisibility(View.VISIBLE);
+        }
+        if (preScan2Result.equals("")) {
+            layoutReplacementDelete.setVisibility(View.VISIBLE);
         }
     }
 
@@ -534,6 +549,17 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
+            case R.id.layoutScanFaultDelete:
+                tvScanFault.setText("");
+                break;
+
+            case R.id.layoutScanReplacementDelete:
+                tvScanReplacement.setText("");
+                Glide.with(this)
+                        .load(R.drawable.check_blank)
+                        .into(ivRequiredPartPlacement);
+                break;
+
             case R.id.iv_add_third_party:
                 if (thirdPartyShow) {
                     layoutThirdParty.setVisibility(View.VISIBLE);
@@ -815,11 +841,15 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
         }
     }
 
+    //Update QR Text After Scanner Reading
     public void updateQRCode(String qrCodeStr) {
         if (qrScan1Click) {
             tvScanFault.setText(qrCodeStr);
         } else {
             tvScanReplacement.setText(qrCodeStr);
+            Glide.with(this)
+                    .load(R.drawable.check)
+                    .into(ivRequiredPartPlacement);
         }
     }
 
