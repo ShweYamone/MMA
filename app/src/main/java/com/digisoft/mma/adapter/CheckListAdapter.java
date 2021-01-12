@@ -59,11 +59,12 @@ public class CheckListAdapter extends RecyclerView.Adapter<CheckListAdapter.MyVi
         myViewHolder.checkListValue.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
+                //We will get data after text change, ignore this
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                //We will get data after text change, ignore this
             }
 
             @Override

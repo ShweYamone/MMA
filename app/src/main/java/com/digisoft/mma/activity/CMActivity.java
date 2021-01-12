@@ -64,9 +64,10 @@ public class CMActivity extends AppCompatActivity {
     private Handler handler;
     private Runnable r;
     private boolean startHandler = true;
-    private boolean lockScreen = false;
     private SharePreferenceHelper mSharedPreference;
-    private InitializeDatabase dbHelper;
+    private final String TELCO = "telco";
+    private final String POWER_GRID = "powerGrid";
+    private final String OTHER = "other";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,13 +76,12 @@ public class CMActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_c_m);
         ButterKnife.bind(this);
-        dbHelper = InitializeDatabase.getInstance(this);
         mSharedPreference = new SharePreferenceHelper(this);
         mSharedPreference.setLock(false);
         mSharedPreference.userClickCMStepOne(false);
         mSharedPreference.userClickCMStepTwo(false);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -102,20 +102,20 @@ public class CMActivity extends AppCompatActivity {
         Bundle bundle = new Bundle();
         bundle.putSerializable("object", pmServiceInfoDetailModel);
         bundle.putString("start_time", getIntent().getStringExtra("start_time"));
-        if (getIntent().hasExtra("telco"))
-            bundle.putSerializable("telco" , getIntent().getSerializableExtra("telco"));
+        if (getIntent().hasExtra(TELCO))
+            bundle.putSerializable(TELCO , getIntent().getSerializableExtra(TELCO));
         else
-            bundle.putSerializable("telco", new ThirdPartyModel());
+            bundle.putSerializable(TELCO, new ThirdPartyModel());
 
-        if (getIntent().hasExtra("powerGrid"))
-            bundle.putSerializable("powerGrid" , getIntent().getSerializableExtra("powerGrid"));
+        if (getIntent().hasExtra(POWER_GRID))
+            bundle.putSerializable(POWER_GRID , getIntent().getSerializableExtra(POWER_GRID));
         else
-            bundle.putSerializable("powerGrid", new ThirdPartyModel());
+            bundle.putSerializable(POWER_GRID, new ThirdPartyModel());
 
-        if (getIntent().hasExtra("other"))
-            bundle.putSerializable("other" , getIntent().getSerializableExtra("other"));
+        if (getIntent().hasExtra(OTHER))
+            bundle.putSerializable(OTHER , getIntent().getSerializableExtra(OTHER));
         else
-            bundle.putSerializable("other", new ThirdPartyModel());
+            bundle.putSerializable(OTHER, new ThirdPartyModel());
 
 
         first_step_cm_fragment.setArguments(bundle);
@@ -255,16 +255,14 @@ public class CMActivity extends AppCompatActivity {
                 intent.putExtra("id", pmServiceInfoDetailModel.getId());
                 intent.putExtra("TAG_OUT", 1);
                 startActivity(intent);
-            //    finish();
-                break;
+                return true;
             case android.R.id.home:
                 mSharedPreference.setLock(false);
                 finish();
                 return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-
-
-        return super.onOptionsItemSelected(item);
     }
 
     //Getting the scan results

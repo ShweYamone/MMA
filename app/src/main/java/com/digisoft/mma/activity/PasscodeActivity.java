@@ -38,8 +38,6 @@ public class PasscodeActivity extends AppCompatActivity{
 
     private SharePreferenceHelper mSharePreferenceHelper;
     private int count;
-    private ApiInterface apiInterface;
-    private Network network;
 
     InitializeDatabase dbHelper;
 
@@ -51,11 +49,9 @@ public class PasscodeActivity extends AppCompatActivity{
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
         mSharePreferenceHelper = new SharePreferenceHelper(this);
-        apiInterface = ApiClient.getClient(this);
-
         dbHelper = InitializeDatabase.getInstance(this);
-        network = new Network(this);
         count = 1;
+
         passCodeView.setOnTextChangeListener(new PassCodeView.TextChangeListener() {
             @Override
             public void onTextChanged(String text) {
@@ -101,12 +97,6 @@ public class PasscodeActivity extends AppCompatActivity{
                 }
             }
         });
-    }
-
-
-
-    private boolean isEmpty(EditText etText) {
-        return etText.getText().toString().trim().length() == 0;
     }
 
     @Override

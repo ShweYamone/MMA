@@ -34,12 +34,16 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.digisoft.mma.util.AppConstant.BEARER;
+import static com.digisoft.mma.util.AppConstant.FAILURE;
+import static com.digisoft.mma.util.AppConstant.IOEXCEPTION;
 import static com.digisoft.mma.util.AppConstant.OTHER_CONTRACTOR;
 import static com.digisoft.mma.util.AppConstant.PM_CHECK_LIST_DONE;
 import static com.digisoft.mma.util.AppConstant.PM_CHECK_LIST_REMARK;
 import static com.digisoft.mma.util.AppConstant.PM_Step_ONE;
 import static com.digisoft.mma.util.AppConstant.POWER_GRIP;
 import static com.digisoft.mma.util.AppConstant.TELCO;
+import static com.digisoft.mma.util.AppConstant.UPLOAD_ERROR;
 import static com.digisoft.mma.util.AppConstant.YES;
 import static com.digisoft.mma.util.AppConstant.user_inactivity_time;
 
@@ -59,9 +63,9 @@ public class LoadingActivity extends AppCompatActivity {
     private InitializeDatabase dbHelper;
     private String msoId = "";
     private List<ThirdPartyModel> thirdPartyModels = new ArrayList<>();
-    private ThirdPartyModel telco;
-    private ThirdPartyModel powerGrid;
-    private ThirdPartyModel other;
+    private final String start_time = "start_time";
+    private final String object = "object";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,7 +87,7 @@ public class LoadingActivity extends AppCompatActivity {
             dbHelper.checkListDescDAO().deleteAll();
             mSharePrefrence.setCurrentMSOID(msoId);
         }
-        Event tempEvent = new Event("start_tag_in_time", "start_tag_in_time", getIntent().getStringExtra("start_time"));
+        Event tempEvent = new Event("start_tag_in_time", "start_tag_in_time", getIntent().getStringExtra(start_time));
         tempEvent.setEvent_id("start_timestart_time");
         dbHelper.eventDAO().insert(tempEvent);
 
@@ -151,7 +155,7 @@ public class LoadingActivity extends AppCompatActivity {
     private void getThirdPartInfo(PMServiceInfoDetailModel responseBody) {
     //    Toast.makeText(getApplicationContext(), "response enter 2"  + msoId,  Toast.LENGTH_LONG).show();
 
-        Call<List<ThirdPartyModel>> callThirdParty = apiInterface.getThirdParties("Bearer " + mSharePrefrence.getToken(), msoId);
+        Call<List<ThirdPartyModel>> callThirdParty = apiInterface.getThirdParties(BEARER + mSharePrefrence.getToken(), msoId);
         callThirdParty.enqueue(new Callback<List<ThirdPartyModel>>() {
             @Override
             public void onResponse(Call<List<ThirdPartyModel>> call, Response<List<ThirdPartyModel>> response) {
@@ -159,19 +163,19 @@ public class LoadingActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     thirdPartyModels = response.body();
                     storeThirdPartyInfo(thirdPartyModels, intent);
-                    intent.putExtra("start_time", getIntent().getStringExtra("start_time"));
-                    intent.putExtra("object", responseBody);
+                    intent.putExtra(start_time, getIntent().getStringExtra(start_time));
+                    intent.putExtra(object, responseBody);
                     startActivity(intent);
                     finish();
                 }
                 else{
                     ResponseBody errorReturnBody = response.errorBody();
                     try {
-                        Log.e("UPLOAD_ERROR", "onResponse: " + errorReturnBody.string());
+                        Log.e(UPLOAD_ERROR, "" + errorReturnBody.string());
                   //      Toast.makeText(getApplicationContext(), "response " + response.code() + msoId,  Toast.LENGTH_LONG).show();
                         //  ((CMActivity)getActivity()).hideProgressBar();
                     } catch (IOException e) {
-
+                        Log.e(UPLOAD_ERROR, IOEXCEPTION + "");
                     }
                 }
 
@@ -179,7 +183,7 @@ public class LoadingActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<ThirdPartyModel>> call, Throwable t) {
-
+                Log.e(UPLOAD_ERROR, FAILURE + "");
             }
         });
     }
@@ -192,12 +196,10 @@ public class LoadingActivity extends AppCompatActivity {
 
             else if (obj.getThirdPartyType().equals(POWER_GRIP)) {
                 intent.putExtra("powerGrid", obj);
-                powerGrid = obj;
             }
 
             else if (obj.getThirdPartyType().equals(OTHER_CONTRACTOR)) {
                 intent.putExtra("other", obj);
-                other = obj;
             }
         }
 
@@ -207,7 +209,7 @@ public class LoadingActivity extends AppCompatActivity {
     private void getPMCheckList(PMServiceInfoDetailModel responseBody) {
       //  Toast.makeText(getApplicationContext(), "response checklist", Toast.LENGTH_LONG).show();
 
-        Call<List<CheckListModel>> callCheckList = apiInterface.getCheckList("Bearer "+ mSharePrefrence.getToken(), msoId);
+        Call<List<CheckListModel>> callCheckList = apiInterface.getCheckList(BEARER + mSharePrefrence.getToken(), msoId);
         callCheckList.enqueue(new Callback<List<CheckListModel>>() {
             @Override
             public void onResponse(Call<List<CheckListModel>> call, Response<List<CheckListModel>> response) {
@@ -246,33 +248,32 @@ public class LoadingActivity extends AppCompatActivity {
                         Log.i("EVENTDAO", "onResponse: " + PM_CHECK_LIST_DONE + object.getId());
                     }
                     Intent intent = new Intent(LoadingActivity.this, PMActivity.class);
-                    intent.putExtra("start_time", getIntent().getStringExtra("start_time"));
-                    intent.putExtra("object", responseBody);
+                    intent.putExtra(start_time, getIntent().getStringExtra(start_time));
+                    intent.putExtra(object, responseBody);
                     startActivity(intent);
                     finish();
                 } else{
                     ResponseBody errorReturnBody = response.errorBody();
                     try {
-                        Log.e("UPLOAD_ERROR", "onResponse: " + errorReturnBody.string());
+                        Log.e(UPLOAD_ERROR, "" + errorReturnBody.string());
                    //     Toast.makeText(getApplicationContext(), "response " + response.code() + msoId,  Toast.LENGTH_LONG).show();
                       //  ((CMActivity)getActivity()).hideProgressBar();
                     } catch (IOException e) {
-
+                        Log.e(UPLOAD_ERROR, IOEXCEPTION + "");
                     }
                 }
             }
 
             @Override
             public void onFailure(Call<List<CheckListModel>> call, Throwable t) {
-
+                Log.e(UPLOAD_ERROR, FAILURE + "");
             }
         });
     }
 
     private void getServieOrderbyId(String id) {
-      //  Toast.makeText(getApplicationContext(), "response " + "enter", Toast.LENGTH_LONG).show();
 
-        Call<PMServiceInfoDetailModel> call = apiInterface.getPMServiceOrderByID("Bearer " + mSharePrefrence.getToken() , id);
+        Call<PMServiceInfoDetailModel> call = apiInterface.getPMServiceOrderByID(BEARER + mSharePrefrence.getToken() , id);
         call.enqueue(new Callback<PMServiceInfoDetailModel>() {
             @Override
             public void onResponse(Call<PMServiceInfoDetailModel> call, Response<PMServiceInfoDetailModel> response) {
@@ -281,30 +282,17 @@ public class LoadingActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     Intent intent;
                     if (id.startsWith("CM")) {
-                        /*
-                        if (dbHelper.eventDAO().getNumOfEventsByEventType(TELCO_UPDATE) > 0 &&
-                            dbHelper.eventDAO().getNumOfEventsByEventType(POWER_GRIP_UPDATE) > 0 &&
-                            dbHelper.eventDAO().getNumOfEventsByEventType(OTHER_CONTRACTOR_UPDATE) > 0) {
-                            intent = new Intent(LoadingActivity.this, CMActivity.class);
-                            intent.putExtra("start_time", getIntent().getStringExtra("start_time"));
-                            intent.putExtra("object", response.body());
-                            startActivity(intent);
-                            finish();
-                        } else {*/
-                            getThirdPartInfo(response.body());
-                     //   }
+                        getThirdPartInfo(response.body());
+
                     } else {
                         //first get relevant PM Checklist.........
                         if (dbHelper.eventDAO().getNumberOfEventsByUpdateBodyKey(PM_Step_ONE) > 0) {
-                            Log.i("logloglog", "Directly go to PM" + dbHelper.eventDAO().getNumberEventsToUpload(PM_Step_ONE));
                             intent = new Intent(LoadingActivity.this, PMActivity.class);
-                            intent.putExtra("start_time", getIntent().getStringExtra("start_time"));
-                            intent.putExtra("object", response.body());
+                            intent.putExtra(start_time, getIntent().getStringExtra(start_time));
+                            intent.putExtra(object, response.body());
                             startActivity(intent);
                             finish();
                         } else {
-                            Log.i("logloglog", "can't go to PM" + dbHelper.eventDAO().getNumberEventsToUpload(PM_Step_ONE));
-
                             getPMCheckList(response.body());
                         }
                     }
@@ -313,19 +301,16 @@ public class LoadingActivity extends AppCompatActivity {
                   //  Toast.makeText(getApplicationContext(), "response " + response.code(), Toast.LENGTH_LONG).show();
                     ResponseBody errorReturnBody = response.errorBody();
                     try {
-                        Log.e("UPLOAD_ERROR", "onResponse: " + errorReturnBody.string());
-                      //  ((CMActivity)getActivity()).hideProgressBar();
-
+                        Log.e(UPLOAD_ERROR, "" + errorReturnBody.string());
 
                     } catch (IOException e) {
-
+                        Log.e(UPLOAD_ERROR, IOEXCEPTION + "");
                     }
                 }
             }
             @Override
             public void onFailure(Call<PMServiceInfoDetailModel> call, Throwable t) {
-             //   Toast.makeText(getApplicationContext(), id + "response failure order by id", Toast.LENGTH_LONG).show();
-
+               Log.e(UPLOAD_ERROR, FAILURE + "");
             }
         });
     }

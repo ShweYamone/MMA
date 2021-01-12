@@ -184,14 +184,15 @@ public class PMActivity extends AppCompatActivity {
                 intent.putExtra("id", pmServiceInfoDetailModel.getId());
                 intent.putExtra("TAG_OUT", 1);
                 startActivity(intent);
-              //  finish();
-                break;
+                return true;
             case android.R.id.home:
                 sharePreferenceHelper.setLock(false);
                 finish();
                 return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
+
     }
 
 

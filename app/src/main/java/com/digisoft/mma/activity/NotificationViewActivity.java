@@ -160,10 +160,10 @@ public class NotificationViewActivity extends AppCompatActivity {
                 sharePreferenceHelper.setLock(false);
                 finish();
                 return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
 
-
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -213,10 +213,6 @@ public class NotificationViewActivity extends AppCompatActivity {
     }
 
     class LoadImage extends AsyncTask<Boolean, Void, Boolean> {
-
-        public LoadImage() {
-
-        }
 
         @Override
         protected void onPostExecute(Boolean aVoid) {

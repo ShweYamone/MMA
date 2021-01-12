@@ -42,6 +42,7 @@ public class FullScreenActivity extends AppCompatActivity {
     private String url;
     private GlideUrl glideUrl;
     private RequestOptions options;
+    private final String IMAGE = "image";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,8 +65,8 @@ public class FullScreenActivity extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         boolean isRejected = extras.getBoolean("isRejected");
         if(isRejected){
-            Log.i("image",extras.getString("image"));
-            url = "http://alb-java-apps-776075049.ap-southeast-1.elb.amazonaws.com:9000"+extras.get("image");
+            Log.i(IMAGE,extras.getString(IMAGE));
+            url = "http://alb-java-apps-776075049.ap-southeast-1.elb.amazonaws.com:9000"+extras.get(IMAGE);
             glideUrl = new GlideUrl(url,
                     new LazyHeaders.Builder()
                             .addHeader("Authorization", "Bearer " + sharePreferenceHelper.getToken())

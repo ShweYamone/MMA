@@ -29,6 +29,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.digisoft.mma.util.AppConstant.FAILURE;
+import static com.digisoft.mma.util.AppConstant.UPLOAD_ERROR;
 import static com.digisoft.mma.util.AppConstant.user_inactivity_time;
 
 public class AssetInformationActivity extends AppCompatActivity implements View.OnClickListener {
@@ -59,7 +61,6 @@ public class AssetInformationActivity extends AppCompatActivity implements View.
     private Handler handler;
     private Runnable r;
     private boolean startHandler = true;
-    private boolean lockScreen = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +72,7 @@ public class AssetInformationActivity extends AppCompatActivity implements View.
         setContentView(R.layout.activity_asset_information);
         ButterKnife.bind(this);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
 
@@ -179,7 +180,7 @@ public class AssetInformationActivity extends AppCompatActivity implements View.
 
                     @Override
                     public void onFailure(Call<QRReturnBody> call, Throwable t) {
-
+                        Log.e(UPLOAD_ERROR, FAILURE + "");
                     }
                 });
 
@@ -191,13 +192,8 @@ public class AssetInformationActivity extends AppCompatActivity implements View.
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.btnClose:
-                Intent intent = new Intent(AssetInformationActivity.this, MainActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
-            default:
-                return;
-        }
+        Intent intent = new Intent(AssetInformationActivity.this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
     }
 }

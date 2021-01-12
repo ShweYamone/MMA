@@ -76,7 +76,6 @@ public class LoginActivity extends AppCompatActivity {
     private Handler handler;
     private Runnable r;
     private boolean startHandler = true;
-    private boolean lockScreen = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -159,8 +158,6 @@ public class LoginActivity extends AppCompatActivity {
                                     }
 
 
-                                } else {
-                                 //   Toast.makeText(getApplicationContext(), response.code() + "", Toast.LENGTH_SHORT).show();
                                 }
 
                             }
@@ -204,6 +201,7 @@ public class LoginActivity extends AppCompatActivity {
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        Log.i("ONClick", "onClick: ");
                     }
 
                 })

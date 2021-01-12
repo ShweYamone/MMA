@@ -60,8 +60,11 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import static com.digisoft.mma.util.AppConstant.CM_Step_ONE;
+import static com.digisoft.mma.util.AppConstant.DATE_FORMAT;
+import static com.digisoft.mma.util.AppConstant.FAILURE;
 import static com.digisoft.mma.util.AppConstant.PRE_BUCKET_NAME;
 import static com.digisoft.mma.util.AppConstant.TIME_SERVER;
+import static com.digisoft.mma.util.AppConstant.UPLOAD_ERROR;
 
 public class First_Step_CM_Fragment extends Fragment {
 
@@ -110,9 +113,6 @@ public class First_Step_CM_Fragment extends Fragment {
 
     private static final int CAMERA_REQUEST = 1888;
     private static final int MY_CAMERA_PERMISSION_CODE = 100;
-    private String id;
-    private String actualDateTime;
-    private Timestamp timestamp;
     ArrayList<Event> preEventList;
     ArrayList<PhotoModel> prePhotoModels;
     PhotoAdapter prePhotoAdapter;
@@ -195,6 +195,7 @@ public class First_Step_CM_Fragment extends Fragment {
 
             @Override
             public void onFailure(Call<PhotoAttachementModel> call, Throwable t) {
+                Log.e(UPLOAD_ERROR, FAILURE + "");
 
             }
         });
@@ -227,6 +228,7 @@ public class First_Step_CM_Fragment extends Fragment {
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        //The user clicks ok button
                     }
 
                 })
@@ -244,7 +246,7 @@ public class First_Step_CM_Fragment extends Fragment {
             Log.v("JOIN", preEventList.size() + "");
             date = new Date();
             Timestamp timestamp = new Timestamp(date.getTime());
-            String actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
+            String actualDateTime = new SimpleDateFormat(DATE_FORMAT).format(timestamp);
             UpdateEventBody updateEventBody = new UpdateEventBody(
                     mSharePerferenceHelper.getUserName(),
                     mSharePerferenceHelper.getUserId(),
@@ -286,10 +288,10 @@ public class First_Step_CM_Fragment extends Fragment {
                 long localTime = timeInfo.getReturnTime();
                 long serverTime = timeInfo.getMessage().getTransmitTimeStamp().getTime();
                 Timestamp timestamp = new Timestamp(localTime);
-                String localDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
+                String localDateTime = new SimpleDateFormat(DATE_FORMAT).format(timestamp);
                 Log.i("Time__Local", "doInBackground: " + localTime + "--> " + localDateTime);
                 timestamp = new Timestamp(serverTime);
-                String actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
+                String actualDateTime = new SimpleDateFormat(DATE_FORMAT).format(timestamp);
                 Log.i("Time__Server", "doInBackground:" + serverTime + "--> " + actualDateTime);
                 //after getting network time, update event with the network time
                 dbHelper.updateEventBodyDAO().updateDateTime(actualDateTime, CM_Step_ONE);
@@ -368,10 +370,6 @@ public class First_Step_CM_Fragment extends Fragment {
                 mSharePerferenceHelper.setLock(false);
                 Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
                 startActivityForResult(cameraIntent, CAMERA_REQUEST);
-            }
-            else
-            {
-                //Toast.makeText(getActivity(), "camera permission denied", Toast.LENGTH_LONG).show();
             }
         }
     }

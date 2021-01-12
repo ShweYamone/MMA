@@ -165,6 +165,7 @@ public class ForegroundService extends Service {
         if (type.length() > 95) {
             type = type.substring(0, 90) + " ... ";
         }
+
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         String NOTIFICATION_CHANNEL_ID = "tutorialspoint_01";
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

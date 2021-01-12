@@ -59,6 +59,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.digisoft.mma.util.AppConstant.Anonymous_USER;
 import static com.digisoft.mma.util.AppConstant.user_inactivity_time;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
@@ -78,20 +79,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private int count;
     protected ActionBarDrawerToggle mDrawerToggle;
     private SharePreferenceHelper mSharedPreferences;
-    private Runnable runnable;
-    private int passcode;
-    private ApiInterface apiInterface;
     private ApiInterfaceForNotification apiInterfaceForNotification;
     private Handler handler;
     private Runnable r;
     private boolean startHandler = true;
-    private boolean lockScreen = false;
+
     private Socket socket;
     private Channel channel;
     private Menu menu;
-    private int notiCount = 1;
-    private RelativeLayout notificationRelativeLayout;
-    private TextView notificationCount;
+
+    private final String mso_id = "mso_id";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,7 +104,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         displayView(R.id.nav_home);
         // lotout txtview is here
         tvLogout.setOnClickListener(this);
-        apiInterface = ApiClient.getClient(this);
         apiInterfaceForNotification = ApiClientForNotification.getClient().create(ApiInterfaceForNotification.class);
 
         /**
@@ -223,12 +219,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 @Override
                 public void onMessage(Envelope envelope) {
                     Log.i("NEW_MESSAGE",envelope.toString());
-                    final JsonNode user = envelope.getPayload().get("mso_id");
+                    final JsonNode user = envelope.getPayload().get(mso_id);
                     if (user == null || user instanceof NullNode) {
-                        onMessageNoti("An anonymous user entered","");
+                        onMessageNoti(Anonymous_USER,"");
                     }
                     else {
-                        onMessageNoti(envelope.getPayload().get("mso_id")+"","You received an MSO alert!");
+                        onMessageNoti(envelope.getPayload().get(mso_id)+"","You received an MSO alert!");
                     }
 
                 }
@@ -240,12 +236,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     //  Toast.makeText(getApplicationContext(), "CLOSED: " + envelope.toString(), Toast.LENGTH_SHORT).show();
                     //   tvResult.setText("CLOSED: " + envelope.toString());
                     Log.i("CLOSED", envelope.toString());
-                    final JsonNode user = envelope.getPayload().get("mso_id");
+                    final JsonNode user = envelope.getPayload().get(mso_id);
                     if (user == null || user instanceof NullNode) {
-                        onMessageNoti("An anonymous user entered","");
+                        onMessageNoti(Anonymous_USER,"");
                     }
                     else {
-                        onMessageNoti(envelope.getPayload().get("mso_id")+"","You received an MSO alert!");
+                        onMessageNoti(envelope.getPayload().get(mso_id)+"","You received an MSO alert!");
                     }
                 }
             });
@@ -258,7 +254,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     Log.i("CLOSED", envelope.toString());
                     final JsonNode user = envelope.getPayload().get("text");
                     if (user == null || user instanceof NullNode) {
-                        onMessageNoti("An anonymous user entered","");
+                        onMessageNoti(Anonymous_USER,"");
                     }
                     else {
                         onMessageNoti("Announcement",""+envelope.getPayload().get("text"));
@@ -378,6 +374,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.nav_setting:
                 fragment = new AboutFragment();
+                break;
             default:
                 break;
         }
@@ -459,9 +456,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 startActivity(intent);
                 return true;
 
+            default:
+                return super.onOptionsItemSelected(item);
+
         }
 
-        return super.onOptionsItemSelected(item);
+
     }
 
     private void getMSOEvent(){

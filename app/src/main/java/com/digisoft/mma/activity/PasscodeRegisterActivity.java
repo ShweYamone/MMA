@@ -41,8 +41,6 @@ public class PasscodeRegisterActivity extends AppCompatActivity {
     @BindView(R.id.iv_re_type)
     ImageView reType;
 
-
-
     private static final int MY_PERMISSION_REQUEST_CODE_PHONE_STATE = 1;
 
     private static final String LOG_TAG = "AndroidExample";
@@ -59,9 +57,9 @@ public class PasscodeRegisterActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         mSharePreferenceHelper = new SharePreferenceHelper(this);
-        Log.i("PasscodeProblem", "onCreate: check" + mSharePreferenceHelper.getPinCode());
+       // Log.i("PasscodeProblem", "onCreate: check" + mSharePreferenceHelper.getPinCode());
         if (mSharePreferenceHelper.hasPinCode()) {
-            Log.i("PasscodeProblem", "onCreate: has PinCode " + mSharePreferenceHelper.getPinCode());
+        //    Log.i("PasscodeProblem", "onCreate: has PinCode " + mSharePreferenceHelper.getPinCode());
             startActivity(new Intent(PasscodeRegisterActivity.this, PasscodeActivity.class));
             finish();
         }else {
@@ -81,7 +79,7 @@ public class PasscodeRegisterActivity extends AppCompatActivity {
         pinCode.setOnTextChangeListener(new PassCodeView.TextChangeListener() {
             @Override
             public void onTextChanged(String text) {
-                Log.i("Passcode", "text");
+            //    Log.i("Passcode", "text");
                 if(text.length() == 6){
                     pinCodeStr = text;
                     pinCode.setVisibility(View.GONE);
@@ -94,7 +92,7 @@ public class PasscodeRegisterActivity extends AppCompatActivity {
         rePinCode.setOnTextChangeListener(new PassCodeView.TextChangeListener() {
             @Override
             public void onTextChanged(String text) {
-                Log.i("PasscodeProblem", "text");
+            //    Log.i("PasscodeProblem", "text");
                 if(text.length() == 6){
                     if(text.equals(pinCodeStr)){
                         mSharePreferenceHelper.setPinCode(text);
@@ -170,6 +168,8 @@ public class PasscodeRegisterActivity extends AppCompatActivity {
                 }
                 break;
             }
+            default:
+                Log.d(LOG_TAG, "onRequestPermissionsResult: Default");
         }
     }
 

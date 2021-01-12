@@ -30,8 +30,6 @@ public class SimChanged extends AppCompatActivity {
         dbHelper.updateEventBodyDAO().deleteAll();
         dbHelper.uploadPhotoDAO().deleteAll();
 
-
-
         // TODO We must to ask deleting database after OK button click or Not
         new AlertDialog.Builder(this)
                 .setIcon(R.drawable.warning)
@@ -54,6 +52,6 @@ public class SimChanged extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-
+        //To disable user back press.............
     }
 }

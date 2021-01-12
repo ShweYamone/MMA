@@ -31,8 +31,8 @@ import static com.digisoft.mma.util.AppConstant.QUARTERLY;
 import static com.digisoft.mma.util.AppConstant.WEEKLY;
 import static com.digisoft.mma.util.AppConstant.WSCH;
 import static com.digisoft.mma.util.AppConstant.YEARLY;
-import static com.digisoft.mma.util.AppConstant.cm;
-import static com.digisoft.mma.util.AppConstant.pm;
+import static com.digisoft.mma.util.AppConstant.CM;
+import static com.digisoft.mma.util.AppConstant.PM;
 
 public class ServiceOrderAdapter extends RecyclerView.Adapter<ServiceOrderAdapter.MyViewHolder> {
 
@@ -112,7 +112,7 @@ public class ServiceOrderAdapter extends RecyclerView.Adapter<ServiceOrderAdapte
                 layoutBack.setBackground(mContext.getDrawable(R.drawable.bg_mso_selected_border));
             else
                 layoutBack.setBackground(mContext.getDrawable(R.drawable.bg_mso_border));
-            if (service.getId().startsWith(pm)) {
+            if (service.getId().startsWith(PM)) {
                 layoutPriority.setVisibility(View.GONE);
                 tvProblemORSchedule.setText("Schedule Type");
                 String checkType = service.getPreventativeMaintenanceCheckType()+"";
@@ -143,7 +143,7 @@ public class ServiceOrderAdapter extends RecyclerView.Adapter<ServiceOrderAdapte
             tvPanelId.setText(service.getPanelId());
 
             tvPriority.setText(service.getPriorityLevel()+"");
-            if (service.getId().startsWith(cm)) {
+            if (service.getId().startsWith(CM)) {
                 if (status.equals(APPR)){
                     Glide.with(mContext).load(R.drawable.ack).into(ivLanding);
                 } else
