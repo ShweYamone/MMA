@@ -611,19 +611,19 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
                 getQREvent();
                 if (isMandatoryFieldLeft && postModelList.size() == 0) {
                     mSharePreference.userClickCMStepTwo(false);
-                    mandatoryFieldsLeft += "\nAttach Post-Maintenance Photos";
+                    mandatoryFieldsLeft += "\n* Attach Post-Maintenance Photos";
                     showDialog();
                 } else if (isMandatoryFieldLeft) {
                     mSharePreference.userClickCMStepTwo(false);
                     showDialog();
                 } else if (postModelList.size() == 0) {
                     mSharePreference.userClickCMStepTwo(false);
-                    mandatoryFieldsLeft = "\nAttach Post-Maintenance Photos";
+                    mandatoryFieldsLeft = "\n* Attach Post-Maintenance Photos";
                     showDialog();
                 }
                 else if (postModelList.size() < 2 || postModelList.size() > 6){
                     mSharePreference.userClickCMStepTwo(false);
-                    mandatoryFieldsLeft = "Your photos must be minimum 2 and maximum 5.";
+                    mandatoryFieldsLeft = "* Your photos must be minimum 2 and maximum 5.";
                     showDialog();
                 }
                 else {
@@ -825,7 +825,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
             }
 
         } else {
-            mandatoryFieldsLeft += "\nScan Faulty Component";
+            mandatoryFieldsLeft += "\n* Scan Faulty Component";
             isMandatoryFieldLeft = true;
         }
         if (!tvScanReplacement.getText().toString().equals("")) {
@@ -880,7 +880,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
             }
 
         } else {
-            mandatoryFieldsLeft += "\nSelect Actual Problem Code";
+            mandatoryFieldsLeft += "\n* Select Actual Problem Code";
             isMandatoryFieldLeft = true;
         }
 
@@ -897,7 +897,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
             }
 
         } else {
-            mandatoryFieldsLeft += "\nSelect Cause Code";
+            mandatoryFieldsLeft += "\n* Select Cause Code";
             isMandatoryFieldLeft = true;
         }
 
@@ -914,7 +914,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
             }
 
         } else {
-            mandatoryFieldsLeft += "\nSelect Remedy Code";
+            mandatoryFieldsLeft += "\n* Select Remedy Code";
             isMandatoryFieldLeft = true;
         }
 
