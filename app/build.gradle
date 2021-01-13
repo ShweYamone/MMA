@@ -1,23 +1,5 @@
 apply plugin: 'com.android.application'
 
-apply plugin: 'org.sonarqube'
-
-
-sonarqube
-        {
-            properties
-                    {
-                        property "sonar.projectName", "MMA"
-                        property "sonar.projectKey", "MMA"
-                        property "sonar.host.url", "http://localhost:9000"
-                        property "sonar.language", "java"
-                        property "sonar.sources", "src/main/java/"
-                        property "sonar.binaries", "build"
-                        property "sonar.sourceEncoding", "UTF-8"
-                        property "sonar.login", "admin"
-                        property "sonar.password", "admin123"
-                    }
-        }
 
 android {
     compileSdkVersion 29
