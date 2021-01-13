@@ -228,24 +228,24 @@ public class First_Step_PM_Fragment extends Fragment {
         etFaultFoundRemarks.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
+                //perform after text changed
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
+                //perform after text changed
             }
 
             @Override
             public void afterTextChanged(Editable s) {
                 if(s.length() != 0){
                     Glide.with(getActivity())
-                            .load(R.drawable.check)
+                            .load(R.drawable.ic_check)
                             .into(ivFaultFoundRemarks);
                 }else {
 
                     Glide.with(getActivity())
-                            .load(R.drawable.check_blank)
+                            .load(R.drawable.ic_check_blank)
                             .into(ivFaultFoundRemarks);
                 }
 
@@ -393,7 +393,7 @@ public class First_Step_PM_Fragment extends Fragment {
             for (Event event: events) {
                 temp += event.getEventType() + " - " + event.getKey() + " - " + event.getAlreadyUploaded() + "\n";
             }
-            Log.e("Tring....", "save: " + temp);
+            Log.e("Tiring....", "save: " + temp);
 
             dbHelper.updateEventBodyDAO().insert(updateEventBody);
 

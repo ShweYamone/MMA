@@ -194,8 +194,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
     private ArrayAdapter actualProblemArrAdapter;
     private ArrayAdapter causeProblemArrAdapter;
     private ArrayAdapter remedyArrAdapter;
-    private Date date;private Timestamp ts;
-    String currentDateTime;
+    private Date date;
 
     //qr code scanner object
     private IntentIntegrator qrScan;
@@ -348,35 +347,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
             }
         });
 
-//        Call<PhotoAttachementModel> photoAttachementModelCall = apiInterface.getPhotoAttachment("Bearer "+mSharePreference.getToken(), pmServiceInfoModel.getId());
-//        photoAttachementModelCall.enqueue(new Callback<PhotoAttachementModel>() {
-//            @Override
-//            public void onResponse(Call<PhotoAttachementModel> call, Response<PhotoAttachementModel> response) {
-//                PhotoAttachementModel photoAttachementModel = response.body();
-//                if(response.isSuccessful()){
-//                    List<PreMaintenance> preMaintenances = photoAttachementModel.getPreMaintenance();
-//                    if(preMaintenances != null) {
-//                        for (PreMaintenance e : preMaintenances) {
-//                            Log.e("filepath", e.getFilePath());
-//                            postModelList.add(new PhotoModel(e.getFilePath(), 2));
-//
-//                        }
-//                        postPhotoAdapter.notifyDataSetChanged();
-//                    }
-//                }
-//
-//            }
-//
-//            @Override
-//            public void onFailure(Call<PhotoAttachementModel> call, Throwable t) {
-//
-//            }
-//        });
-
-
         displayMaintenanceWorkInformation();
-
-
         displayData();
         displayImage();
 
@@ -393,6 +364,32 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
 
         layoutFaultDelete.setOnClickListener(this);
         layoutReplacementDelete.setOnClickListener(this);
+
+        etThridPartyComment.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                //perform after text changed
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                //perform after text changed
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if(s.length() != 0){
+                    Glide.with(getActivity())
+                            .load(R.drawable.ic_check)
+                            .into(ivAddThirdPary);
+                }else {
+
+                    Glide.with(getActivity())
+                            .load(R.drawable.ic_check_blank)
+                            .into(ivAddThirdPary);
+                }
+            }
+        });
 
         //intializing scan object
         qrScan = new IntentIntegrator(this.getActivity());
@@ -449,7 +446,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
         etThridPartyComment.setText(preThirdPartyComment);
         if (preScan2Result.equals("")) {
             Glide.with(this)
-                    .load(R.drawable.check_blank)
+                    .load(R.drawable.ic_check_blank)
                     .into(ivRequiredPartPlacement);
             layoutPartReplacement.setVisibility(View.GONE);
             replacementShow = !replacementShow;
@@ -457,7 +454,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
 
         if (preThirdPartyComment.equals("")) {
             Glide.with(this)
-                    .load(R.drawable.check_blank)
+                    .load(R.drawable.ic_check_blank)
                     .into(ivAddThirdPary);
             layoutThirdParty.setVisibility(View.GONE);
             thirdPartyShow = !thirdPartyShow;
@@ -556,7 +553,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
             case R.id.layoutScanReplacementDelete:
                 tvScanReplacement.setText("");
                 Glide.with(this)
-                        .load(R.drawable.check_blank)
+                        .load(R.drawable.ic_check_blank)
                         .into(ivRequiredPartPlacement);
                 break;
 
@@ -566,7 +563,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
                 } else {
                     layoutThirdParty.setVisibility(View.GONE);
                 }
-                thirdPartyShow = !thirdPartyShow;
+                thirdPartyShow = !thirdPartyShow;/*
                 if (etThridPartyComment.getText().toString().equals("")) {
                     Glide.with(this)
                             .load(R.drawable.check_blank)
@@ -575,8 +572,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
                     Glide.with(this)
                             .load(R.drawable.check)
                             .into(ivAddThirdPary);
-                }
-
+                }*/
                 break;
             case R.id.iv_required_part_placement:
                 if (replacementShow){
@@ -585,6 +581,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
                     layoutPartReplacement.setVisibility(View.GONE);
                 }
                 replacementShow = !replacementShow;
+                /*
                 if (tvScanReplacement.getText().toString().equals("")) {
                     Glide.with(this)
                             .load(R.drawable.check_blank)
@@ -593,7 +590,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
                     Glide.with(this)
                             .load(R.drawable.check)
                             .into(ivRequiredPartPlacement);
-                }
+                }*/
                 break;
             case R.id.btn_scan_fault:
                 qrScan1Click = true;
@@ -848,7 +845,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
         } else {
             tvScanReplacement.setText(qrCodeStr);
             Glide.with(this)
-                    .load(R.drawable.check)
+                    .load(R.drawable.ic_check)
                     .into(ivRequiredPartPlacement);
         }
     }

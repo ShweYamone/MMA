@@ -237,7 +237,7 @@
                         android:layout_alignParentEnd="true"
                         android:layout_width="32dp"
                         android:layout_height="32dp"
-                        android:src="@drawable/check"/>
+                        android:src="@drawable/ic_check"/>
 
                 </RelativeLayout>
                 <LinearLayout
@@ -284,7 +284,7 @@
                             android:layout_gravity="center"
                             android:layout_height="wrap_content"
                             android:layout_weight="0.5"
-                            android:src="@drawable/icon_add_circle"/>
+                            android:src="@drawable/ic_icon_add"/>
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -307,7 +307,7 @@
                             android:layout_gravity="center"
                             android:layout_height="wrap_content"
                             android:layout_weight="0.5"
-                            android:src="@drawable/icon_add_circle"/>
+                            android:src="@drawable/ic_icon_add"/>
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -329,7 +329,7 @@
                             android:layout_gravity="center"
                             android:layout_height="wrap_content"
                             android:layout_weight="0.5"
-                            android:src="@drawable/icon_add_circle"/>
+                            android:src="@drawable/ic_icon_add"/>
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -450,7 +450,7 @@
                         android:layout_width="32dp"
                         android:layout_height="32dp"
                         android:layout_margin="@dimen/margin_small"
-                        android:src="@drawable/check" />
+                        android:src="@drawable/ic_check" />
 
                 </RelativeLayout>
                 <LinearLayout
@@ -559,7 +559,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:src="@drawable/add_photo"/>
+                    android:src="@drawable/ic_add_photo"/>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerview_post_photo"

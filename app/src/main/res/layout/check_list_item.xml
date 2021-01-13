@@ -31,7 +31,7 @@
                 android:layout_height="32dp"
                 android:layout_margin="@dimen/margin_small"
                 android:layout_toLeftOf="@+id/cb_check"
-                android:src="@drawable/remark_blank" />
+                android:src="@drawable/ic_remark_blank" />
 
             <CheckBox
                 android:id="@+id/cb_check"
