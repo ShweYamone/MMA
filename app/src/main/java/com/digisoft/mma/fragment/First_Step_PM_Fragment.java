@@ -545,9 +545,9 @@ public class First_Step_PM_Fragment extends Fragment {
                 isMandatory = true;
                 String desc = checkListModel.getCheckDescription();
                 if (desc.length() > 25) {
-                    mandatoryString += desc.substring(0, 14) + "....\n";
+                    mandatoryString += "* " + desc.substring(0, 14) + "...\n";
                 } else {
-                    mandatoryString += checkListModel.getCheckDescription() + "\n";
+                    mandatoryString += "* " + checkListModel.getCheckDescription() + "\n";
                 }
 
             }
@@ -555,7 +555,7 @@ public class First_Step_PM_Fragment extends Fragment {
 
         if(!(postPhotoModels.size() > 1 && postPhotoModels.size() < 11)){
             isMandatory = true;
-            mandatoryString += "Add photo (between 2 and 10)\n";
+            mandatoryString += "* Add photo (between 2 and 10)\n";
         }
 
     }

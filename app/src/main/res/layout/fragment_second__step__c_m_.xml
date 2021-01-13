@@ -365,7 +365,7 @@
                 android:layout_marginTop="@dimen/margin_small"
                 android:orientation="horizontal"
                 android:weightSum="5">
-                <LinearLayout
+                <RelativeLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="3"
@@ -374,14 +374,31 @@
 
                     <TextView
                         android:id="@+id/tv_scan_fault"
-                        android:gravity="center"
+                        android:gravity="center_vertical"
+                        android:layout_marginLeft="@dimen/margin_xlarge"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/edittext_height"
-                        android:textSize="@dimen/txt_size_normal"
                         android:textColor="@color/colorPrimaryDark"
-                        android:layout_marginLeft="@dimen/margin_small"
-                        android:textAlignment="center"/>
-                </LinearLayout>
+                        android:textSize="@dimen/txt_size_middle"/>
+
+                    <RelativeLayout
+                        android:id="@+id/layoutScanFaultDelete"
+                        android:clickable="true"
+                        android:background="@drawable/bg_delete"
+                        android:layout_alignParentEnd="true"
+                        android:layout_width="@dimen/edittext_height"
+                        android:layout_height="@dimen/edittext_height">
+                        <ImageView
+                            android:layout_centerInParent="true"
+                            android:alpha="0.8"
+                            android:tint="@color/colorLightBlack"
+                            android:background="@color/transparent"
+                            android:src="@drawable/icon_delete"
+                            android:layout_width="21dp"
+                            android:layout_height="21dp"/>
+                    </RelativeLayout>
+
+                </RelativeLayout>
 
                 <Button
                     android:id="@+id/btn_scan_fault"
@@ -467,7 +484,7 @@
                         android:layout_marginTop="@dimen/margin_small"
                         android:orientation="horizontal"
                         android:weightSum="5">
-                        <LinearLayout
+                        <RelativeLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="3"
@@ -476,13 +493,30 @@
 
                             <TextView
                                 android:id="@+id/tv_scan_replacement"
-                                android:gravity="center"
+                                android:gravity="center_vertical"
+                                android:layout_marginLeft="@dimen/margin_xlarge"
                                 android:layout_width="match_parent"
                                 android:layout_height="@dimen/edittext_height"
                                 android:textColor="@color/colorPrimaryDark"
-                                android:textAlignment="center"
-                                android:textSize="@dimen/txt_size_normal"/>
-                        </LinearLayout>
+                                android:textSize="@dimen/txt_size_middle"/>
+
+                            <RelativeLayout
+                                android:id="@+id/layoutScanReplacementDelete"
+                                android:background="@drawable/bg_delete"
+                                android:clickable="true"
+                                android:layout_alignParentEnd="true"
+                                android:layout_width="@dimen/edittext_height"
+                                android:layout_height="@dimen/edittext_height">
+                                <ImageView
+                                    android:layout_centerInParent="true"
+                                    android:alpha="0.8"
+                                    android:tint="@color/colorLightBlack"
+                                    android:background="@color/transparent"
+                                    android:src="@drawable/icon_delete"
+                                    android:layout_width="21dp"
+                                    android:layout_height="21dp"/>
+                            </RelativeLayout>
+                        </RelativeLayout>
 
                         <Button
                             android:id="@+id/btn_scan_replacement"
