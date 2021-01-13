@@ -18,6 +18,8 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -218,13 +220,32 @@ public class First_Step_PM_Fragment extends Fragment {
                     etFaultFoundRemarks.setVisibility(View.VISIBLE);
 
                 }
-                if (etFaultFoundRemarks.getText().toString().equals("")) {
-                    Glide.with(getActivity())
-                            .load(R.drawable.check_blank)
-                            .into(ivFaultFoundRemarks);
-                } else {
+
+
+            }
+        });
+
+        etFaultFoundRemarks.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if(s.length() != 0){
                     Glide.with(getActivity())
                             .load(R.drawable.check)
+                            .into(ivFaultFoundRemarks);
+                }else {
+
+                    Glide.with(getActivity())
+                            .load(R.drawable.check_blank)
                             .into(ivFaultFoundRemarks);
                 }
 

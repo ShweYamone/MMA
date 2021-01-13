@@ -70,11 +70,9 @@ public class CheckListAdapter extends RecyclerView.Adapter<CheckListAdapter.MyVi
             @Override
             public void afterTextChanged(Editable s) {
                 if (s.length() != 0) {
-                    myViewHolder.checkList.setChecked(true);
                     checkListModel.setMaintenanceRemark(s.toString());
                     Glide.with(context).load(R.drawable.remark).into(myViewHolder.edit);
                 } else {
-                    myViewHolder.checkList.setChecked(false);
                     Glide.with(context).load(R.drawable.remark_blank).into(myViewHolder.edit);
                 }
 
