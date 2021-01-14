@@ -20,6 +20,7 @@ import android.widget.EditText;
 
 import com.digisoft.mma.DB.InitializeDatabase;
 import com.digisoft.mma.R;
+import com.digisoft.mma.activity.CMActivity;
 import com.digisoft.mma.activity.NFCReadingActivity;
 import com.digisoft.mma.activity.PMActivity;
 import com.digisoft.mma.model.Event;
@@ -33,10 +34,15 @@ import com.digisoft.mma.util.ApiInterface;
 import com.digisoft.mma.util.Network;
 import com.digisoft.mma.util.SharePreferenceHelper;
 
+import org.apache.commons.net.ntp.NTPUDPClient;
+import org.apache.commons.net.ntp.TimeInfo;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.security.SecureRandom;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -55,10 +61,13 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.digisoft.mma.util.AppConstant.CM_Step_ONE;
+import static com.digisoft.mma.util.AppConstant.DATE_FORMAT;
 import static com.digisoft.mma.util.AppConstant.JOBDONE;
 import static com.digisoft.mma.util.AppConstant.PM_Step_ONE;
 import static com.digisoft.mma.util.AppConstant.PM_Step_TWO;
 import static com.digisoft.mma.util.AppConstant.POST_BUCKET_NAME;
+import static com.digisoft.mma.util.AppConstant.TIME_SERVER;
 import static com.digisoft.mma.util.AppConstant.YES;
 
 public class Second_Step_PM_Fragment extends Fragment implements View.OnClickListener {
@@ -127,6 +136,10 @@ public class Second_Step_PM_Fragment extends Fragment implements View.OnClickLis
         switch (view.getId()) {
             case R.id.btn_verify:
                 if(mSharePreferenceHelper.userClickPMStepOneOrNot()){
+                    date = new Date();
+                    Timestamp timestamp = new Timestamp(date.getTime());
+                    actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
+
                     UpdateEventBody updateEventBody = new UpdateEventBody(
                             mSharePreferenceHelper.getUserName(),
                             mSharePreferenceHelper.getUserId(),
@@ -268,15 +281,56 @@ public class Second_Step_PM_Fragment extends Fragment implements View.OnClickLis
     private void updateSTEP_Two() {
         //completeWork();
         /** STEP_TWO EVENT UPDATE*/
-        UpdateEventBody updateEventBody = dbHelper.updateEventBodyDAO().getUpdateEventBodyByID(PM_Step_TWO);
-        date = new Date();
-        Timestamp timestamp = new Timestamp(date.getTime());
-        actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
-        updateEventBody.setDate(actualDateTime);
-        dbHelper.updateEventBodyDAO().insert(updateEventBody);
-        ((PMActivity)getActivity()).hideProgressBar();
+    //    UpdateEventBody updateEventBody = dbHelper.updateEventBodyDAO().getUpdateEventBodyByID(PM_Step_TWO);
+
+    //    updateEventBody.setDate(actualDateTime);
+     //   dbHelper.updateEventBodyDAO().insert(updateEventBody);
+     //   ((PMActivity)getActivity()).hideProgressBar();
         //  deleteWorkingData();
-        completeWork();
+      //  completeWork();
+        new getCurrentNetworkTime().execute();
+
+    }
+
+    class getCurrentNetworkTime extends AsyncTask<String, Void, Boolean> {
+        protected Boolean doInBackground(String... urls) {
+            boolean is_locale_date = false;
+            try {
+                NTPUDPClient timeClient = new NTPUDPClient();
+                timeClient.open();
+                timeClient.setDefaultTimeout(5000);
+                InetAddress inetAddress = InetAddress.getByName(TIME_SERVER);
+                TimeInfo timeInfo = timeClient.getTime(inetAddress);
+                long localTime = timeInfo.getReturnTime();
+                long serverTime = timeInfo.getMessage().getTransmitTimeStamp().getTime();
+                Timestamp timestamp = new Timestamp(localTime);
+                String localDateTime = new SimpleDateFormat(DATE_FORMAT).format(timestamp);
+                Log.i("Time__Local", "doInBackground: " + localTime + "--> " + localDateTime);
+                timestamp = new Timestamp(serverTime);
+                String actualDateTime = new SimpleDateFormat(DATE_FORMAT).format(timestamp);
+                Log.i("Time__Server", "doInBackground:" + serverTime + "--> " + actualDateTime);
+                //after getting network time, update event with the network time
+                dbHelper.updateEventBodyDAO().updateDateTime(actualDateTime, PM_Step_TWO);
+                completeWork();
+                if (new Date(localTime) != new Date(serverTime))
+                    is_locale_date = true;
+
+            } catch (UnknownHostException e) {
+                Log.e("UnknownHostException: ", e.getMessage());
+            } catch (IOException e) {
+                Log.e("IOException: ", e.getMessage());
+            }
+            return is_locale_date;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            super.onPostExecute(aBoolean);
+            ((PMActivity)getActivity()).hideProgressBar();
+            if(!aBoolean) {
+                Log.e("Check ", "dates not equal");
+            }
+        }
 
     }
 

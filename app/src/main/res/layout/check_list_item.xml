@@ -12,14 +12,29 @@
         android:background="@drawable/round_rect_shape_line"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/tv_check_list_desc"
+        <LinearLayout
+            android:layout_margin="@dimen/margin_small"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/colorBlack"
-            android:layout_margin="@dimen/margin_small"
-            android:text="@string/desc_visual_inspection"
-            android:textSize="@dimen/txt_size_normal" />
+            android:orientation="horizontal">
+            <TextView
+                android:text="*"
+                android:textSize="@dimen/txt_size_ex_large"
+                android:textColor="@color/colorRed"
+                android:layout_gravity="center"
+                android:layout_marginRight="@dimen/margin_xsmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+            <TextView
+                android:id="@+id/tv_check_list_desc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorBlack"
+                android:text="@string/desc_visual_inspection"
+                android:textSize="@dimen/txt_size_normal" />
+        </LinearLayout>
+
+
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -31,7 +46,7 @@
                 android:layout_height="32dp"
                 android:layout_margin="@dimen/margin_small"
                 android:layout_toLeftOf="@+id/cb_check"
-                android:src="@drawable/remark_blank" />
+                android:src="@drawable/ic_remark_blank" />
 
             <CheckBox
                 android:id="@+id/cb_check"

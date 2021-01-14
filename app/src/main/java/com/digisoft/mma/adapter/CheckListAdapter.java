@@ -71,9 +71,9 @@ public class CheckListAdapter extends RecyclerView.Adapter<CheckListAdapter.MyVi
             public void afterTextChanged(Editable s) {
                 if (s.length() != 0) {
                     checkListModel.setMaintenanceRemark(s.toString());
-                    Glide.with(context).load(R.drawable.remark).into(myViewHolder.edit);
+                    Glide.with(context).load(R.drawable.ic_remark).into(myViewHolder.edit);
                 } else {
-                    Glide.with(context).load(R.drawable.remark_blank).into(myViewHolder.edit);
+                    Glide.with(context).load(R.drawable.ic_remark_blank).into(myViewHolder.edit);
                 }
 
                // Toast.makeText(context, checkListModel.getId() + "" , Toast.LENGTH_SHORT).show();
@@ -121,9 +121,9 @@ public class CheckListAdapter extends RecyclerView.Adapter<CheckListAdapter.MyVi
                 checkList.setChecked(false);
             }
             if (!checkListValue.getText().toString().equals("")) {
-                Glide.with(context).load(R.drawable.remark).into(edit);
+                Glide.with(context).load(R.drawable.ic_remark).into(edit);
             } else {
-                Glide.with(context).load(R.drawable.remark_blank).into(edit);
+                Glide.with(context).load(R.drawable.ic_remark_blank).into(edit);
             }
         }
     }

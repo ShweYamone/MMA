@@ -336,7 +336,7 @@
                         android:id="@+id/iv_fault_found_remarks"
                         android:layout_width="32dp"
                         android:layout_height="32dp"
-                        android:src="@drawable/check_blank"
+                        android:src="@drawable/ic_check_blank"
                         android:layout_margin="@dimen/margin_small"
                         android:layout_alignParentRight="true"/>
                 </RelativeLayout>
@@ -354,14 +354,29 @@
 
             </LinearLayout>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/photo_attachment"
-                android:textStyle="bold"
-                android:textColor="@color/colorBlack"
+            <LinearLayout
                 android:layout_marginTop="@dimen/margin_normal"
-                android:textSize="@dimen/txt_size_large"/>
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:text="*"
+                    android:textSize="@dimen/txt_size_ex_large"
+                    android:textColor="@color/colorRed"
+                    android:layout_gravity="bottom"
+                    android:layout_marginRight="@dimen/margin_xsmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/photo_attachment"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="@dimen/txt_size_large"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -374,7 +389,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:src="@drawable/add_photo"/>
+                    android:src="@drawable/ic_add_photo"/>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerview_post_photo"

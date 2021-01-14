@@ -35,7 +35,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <ImageView
-                    android:src="@drawable/home_cm"
+                    android:src="@drawable/ic_home_cm"
                     android:layout_gravity="center"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -100,7 +100,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <ImageView
-                    android:src="@drawable/home_pm"
+                    android:src="@drawable/ic_home_pm"
                     android:layout_gravity="center"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -187,7 +187,7 @@
                     android:layout_height="wrap_content">
                     <ImageView
                         android:id="@+id/ivCorrective"
-                        android:src="@drawable/home_cm"
+                        android:src="@drawable/ic_home_cm"
                         android:layout_gravity="center"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -219,7 +219,7 @@
                     android:layout_height="wrap_content">
                     <ImageView
                         android:id="@+id/ivPreventive"
-                        android:src="@drawable/home_pm"
+                        android:src="@drawable/ic_home_pm"
                         android:layout_gravity="center"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"

@@ -184,7 +184,7 @@ public class NFCReadingActivity extends AppCompatActivity {
 
     }
 
-    private void performLocalTagOutEvent(String date) {
+    private void performLocalTagOutEvent() {
         UpdateEventBody eventBody = dbHelper.updateEventBodyDAO().getUpdateEventBodyByID(TAG_OUT);
         eventBody.setEvents(dbHelper.eventDAO().getEventsToUpload(TAG_OUT));
         Call<ReturnStatus> call = apiInterface.updateEvent(BEARER + mSharedPreference.getToken(), eventBody);
@@ -194,10 +194,10 @@ public class NFCReadingActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                //     Toast.makeText(getApplicationContext(), "LOCAL_TAG_OUT", Toast.LENGTH_SHORT).show();
                     if (serviceOrderId.startsWith(PM)) {
-                        performFinalStepEvent(PM, date);
+                        performFinalStepEvent(PM);
 
                     } else {
-                        performFinalStepEvent(CM, date);
+                        performFinalStepEvent(CM);
                     }
                 }
                 else {
@@ -212,8 +212,8 @@ public class NFCReadingActivity extends AppCompatActivity {
         });
     }
 
-    private void performFinalStepEvent(String pmOrcm, String date) {
-        dbHelper.updateEventBodyDAO().updateDateTime(date, step);
+    private void performFinalStepEvent(String pmOrcm) {
+      //  dbHelper.updateEventBodyDAO().updateDateTime(date, step);
 
         Call<ReturnStatus> call = apiInterface.updateStatusEvent(BEARER + mSharedPreference.getToken(),
                 dbHelper.updateEventBodyDAO().getUpdateEventBodyByID(step));
@@ -304,13 +304,13 @@ public class NFCReadingActivity extends AppCompatActivity {
                             dbHelper.eventDAO().insert(tempEvent);
                             if (toPage.equals("COMPLETION")) {
                                 if (dbHelper.updateEventBodyDAO().getNumberOfUpdateEventsById(TAG_OUT) > 0) {
-                                    performLocalTagOutEvent(networkDateTime);
+                                    performLocalTagOutEvent();
                                 } else {
                                     if (serviceOrderId.startsWith(PM)) {
-                                        performFinalStepEvent(PM, networkDateTime);
+                                        performFinalStepEvent(PM);
 
                                     } else {
-                                        performFinalStepEvent(CM, networkDateTime);
+                                        performFinalStepEvent(CM);
                                     }
 
                                 }
@@ -484,7 +484,6 @@ public class NFCReadingActivity extends AppCompatActivity {
         if(builder.toString().equals(pId)){
             perFormTagEvent();
         }else {
-
             perFormTagEvent();
             new AlertDialog.Builder(this)
                     .setIcon(R.drawable.warning)
