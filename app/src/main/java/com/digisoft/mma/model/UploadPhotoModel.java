@@ -2,6 +2,7 @@ package com.digisoft.mma.model;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import java.io.Serializable;
@@ -21,10 +22,21 @@ public class UploadPhotoModel implements Serializable {
     @ColumnInfo(name = "encodedPhotoString")
     String encodedPhotoString;
 
+    @ColumnInfo(name = "photoFilePath")
+    public String photoFilePath;
+
+    @Ignore
     public UploadPhotoModel(String updateEventBodyKey, String bucketName, String encodedPhotoString) {
         this.updateEventBodyKey = updateEventBodyKey;
         this.bucketName = bucketName;
         this.encodedPhotoString = encodedPhotoString;
+    }
+
+    public UploadPhotoModel(String updateEventBodyKey, String bucketName, String encodedPhotoString, String photoFilePath) {
+        this.updateEventBodyKey = updateEventBodyKey;
+        this.bucketName = bucketName;
+        this.encodedPhotoString = encodedPhotoString;
+        this.photoFilePath = photoFilePath;
     }
 
     public int getId() {
@@ -58,4 +70,6 @@ public class UploadPhotoModel implements Serializable {
     public void setEncodedPhotoString(String encodedPhotoString) {
         this.encodedPhotoString = encodedPhotoString;
     }
+
+
 }

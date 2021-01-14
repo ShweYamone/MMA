@@ -46,6 +46,7 @@ import com.digisoft.mma.adapter.PhotoAdapter;
 import com.digisoft.mma.model.CheckListModel;
 import com.digisoft.mma.model.Event;
 import com.digisoft.mma.model.PMServiceInfoDetailModel;
+import com.digisoft.mma.model.PhotoFilePathModel;
 import com.digisoft.mma.model.PhotoModel;
 import com.digisoft.mma.model.ReturnStatus;
 import com.digisoft.mma.model.UpdateEventBody;
@@ -519,7 +520,7 @@ public class First_Step_PM_Fragment extends Fragment {
         dbHelper.uploadPhotoDAO().deleteById(PM_Step_ONE);
         for (PhotoModel photoModel: postPhotoModels) {
             if(photoModel.getUid() == 1)
-                saveEncodePhotoToDatabase(PM_Step_ONE, POST_BUCKET_NAME, photoModel.getImage());
+                saveEncodePhotoToDatabase(PM_Step_ONE, POST_BUCKET_NAME, photoModel.getImage(), photoModel.getPhotoPath());
         }
       //  Toast.makeText(this.getContext(), dbHelper.uploadPhotoDAO().getNumberOfPhotosToUpload()+" photos have been saved.", Toast.LENGTH_SHORT).show();
     }
@@ -527,12 +528,12 @@ public class First_Step_PM_Fragment extends Fragment {
     /**
      * //To Do save to database photo
      */
-    private void saveEncodePhotoToDatabase(String updateEventKey, String bucketName, String sPhoto){
+    private void saveEncodePhotoToDatabase(String updateEventKey, String bucketName, String sPhoto, String photoPath){
         byte[] bytes = sPhoto.getBytes();
         String encodeToString = Base64.encodeToString(bytes,Base64.DEFAULT);
         Log.v("ENCODE",encodeToString);
         dbHelper.uploadPhotoDAO().insert(new UploadPhotoModel(
-                updateEventKey, bucketName, encodeToString
+                updateEventKey, bucketName, encodeToString, photoPath
         ));
 
     }
@@ -759,6 +760,12 @@ public class First_Step_PM_Fragment extends Fragment {
         return s1;
     }
 
+    /**
+     * Save FilePath To DataBase
+     */
+    private void savePhotoFilePath(String photoFilePath) {
+        dbHelper.photoFilePathDAO().insert(new PhotoFilePathModel(photoFilePath));
+    }
 
 
 }

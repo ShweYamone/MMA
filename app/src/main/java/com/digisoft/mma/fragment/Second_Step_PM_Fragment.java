@@ -25,6 +25,7 @@ import com.digisoft.mma.activity.NFCReadingActivity;
 import com.digisoft.mma.activity.PMActivity;
 import com.digisoft.mma.model.Event;
 import com.digisoft.mma.model.PMServiceInfoDetailModel;
+import com.digisoft.mma.model.PhotoFilePathModel;
 import com.digisoft.mma.model.PhotoModel;
 import com.digisoft.mma.model.ReturnStatus;
 import com.digisoft.mma.model.UpdateEventBody;
@@ -502,7 +503,11 @@ public class Second_Step_PM_Fragment extends Fragment implements View.OnClickLis
                 .show();
     }
 
-
-
+    /**
+     * Get Photo File Paths from DB
+     */
+    private List<PhotoFilePathModel> getPhotoFilePaths() {
+        return dbHelper.photoFilePathDAO().getPhotoFilePaths();
+    }
 
 }
