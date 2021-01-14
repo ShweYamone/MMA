@@ -5,9 +5,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PowerManager;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -20,6 +23,8 @@ import com.bumptech.glide.load.model.LazyHeaders;
 import com.bumptech.glide.request.RequestOptions;
 import com.digisoft.mma.R;
 import com.digisoft.mma.util.SharePreferenceHelper;
+
+import java.io.File;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -81,9 +86,10 @@ public class FullScreenActivity extends AppCompatActivity {
                     .into(imgDisplay);
 
         }else {
-
-            Bitmap bmp = (Bitmap) extras.getParcelable("imagebitmap");
-            imgDisplay.setImageBitmap(bmp );
+            File imgFile = new File(extras.get(IMAGE)+"");
+            if (imgFile.exists()) {
+                imgDisplay.setImageURI(Uri.fromFile(imgFile));
+            }
         }
 
         imgClose.setOnClickListener(new View.OnClickListener() {
@@ -150,6 +156,15 @@ public class FullScreenActivity extends AppCompatActivity {
             startHandler = true;
             startHandler();
         }
+    }
+    private Bitmap getBitmapFromEncodedString(String encodedString){
+
+        byte[] arr = Base64.decode(encodedString, Base64.URL_SAFE);
+
+        Bitmap img = BitmapFactory.decodeByteArray(arr, 0, arr.length);
+
+        return img;
+
     }
 
     @Override

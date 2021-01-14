@@ -6,6 +6,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -18,6 +21,8 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Base64;
@@ -30,6 +35,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.digisoft.mma.DB.InitializeDatabase;
@@ -53,8 +59,12 @@ import org.apache.commons.net.ntp.NTPUDPClient;
 import org.apache.commons.net.ntp.TimeInfo;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.InetAddress;
+import java.net.URL;
 import java.net.UnknownHostException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -69,6 +79,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static android.app.Activity.RESULT_OK;
+import static androidx.core.content.FileProvider.getUriForFile;
 import static com.digisoft.mma.util.AppConstant.DATE_FORMAT;
 import static com.digisoft.mma.util.AppConstant.FAILURE;
 import static com.digisoft.mma.util.AppConstant.NO;
@@ -150,6 +162,11 @@ public class First_Step_PM_Fragment extends Fragment {
     CheckListAdapter checkListAdapter;
     ArrayList<CheckListModel> checkListModels;
     ArrayList<CheckListModel> preCheckListModels;
+
+    static final int REQUEST_PICTURE_CAPTURE = 1;
+    private ImageView image;
+    private String pictureFilePath;
+    private String deviceIdentifier;
 
     String photo;
     ArrayList<PhotoModel>  postPhotoModels;
@@ -280,8 +297,7 @@ public class First_Step_PM_Fragment extends Fragment {
                 }
                 else
                 {
-                    Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                    startActivityForResult(cameraIntent, CAMERA_REQUEST);
+                   sendTakePictureIntent();
 
                 }
             }
@@ -591,6 +607,40 @@ public class First_Step_PM_Fragment extends Fragment {
         }
         return clonedList;
     }
+    private void sendTakePictureIntent() {
+
+        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        cameraIntent.putExtra( MediaStore.EXTRA_FINISH_ON_COMPLETION, true);
+        if (cameraIntent.resolveActivity(getContext().getPackageManager()) != null) {
+            // startActivityForResult(cameraIntent, REQUEST_PICTURE_CAPTURE);
+
+            File pictureFile = null;
+            try {
+                pictureFile = getPictureFile();
+            } catch (IOException ex) {
+                Toast.makeText(getContext(),
+                        "Photo file can't be created, please try again",
+                        Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (pictureFile != null) {
+                Uri photoURI = getUriForFile(getContext(),
+                        "com.digisoft.mma.fileprovider",
+                        pictureFile);
+                cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                startActivityForResult(cameraIntent, REQUEST_PICTURE_CAPTURE);
+            }
+        }
+    }
+    private File getPictureFile() throws IOException {
+        String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+        String pictureFile = "PHOTO_" + timeStamp;
+        File storageDir = getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(pictureFile,  ".jpg", storageDir);
+        pictureFilePath = image.getAbsolutePath();
+        return image;
+    }
+
 
     /**
      * Reuqesting for premissons
@@ -607,9 +657,7 @@ public class First_Step_PM_Fragment extends Fragment {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
             {
                 mSharePerferenceHelper.setLock(false);
-               // Toast.makeText(getActivity(), "camera permission granted", Toast.LENGTH_LONG).show();
-                Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(cameraIntent, CAMERA_REQUEST);
+               sendTakePictureIntent();
             }
 
         }
@@ -624,19 +672,49 @@ public class First_Step_PM_Fragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @NonNull Intent data) {
         mSharePerferenceHelper.setLock(false);
-        if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK)
-        {
-         //   if (data != null) {
-                theImage = (Bitmap) data.getExtras().get("data");
+        if (requestCode == REQUEST_PICTURE_CAPTURE && resultCode == RESULT_OK) {
+            File imgFile = new File(pictureFilePath);
+            if (imgFile.exists()) {
+               theImage = setPic(imgFile.getAbsolutePath());
                 photo = getEncodedString(theImage);
-                Log.v("ORI",photo);
-                postPhotoModels.add(new PhotoModel(photo, 1));
+                Log.v("ORI", photo);
+                postPhotoModels.add(new PhotoModel(photo, 1,pictureFilePath));
                 postPhotoAdapter.notifyDataSetChanged();
-         //   }
-
+            }
         }
+
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
+    private Bitmap setPic(String currentPhotoPath) {
+        // Get the dimensions of the View
+
+        int targetW = 512;
+        int targetH = 680;
+
+        // Get the dimensions of the bitmap
+        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+        bmOptions.inJustDecodeBounds = true;
+
+        BitmapFactory.decodeFile(currentPhotoPath, bmOptions);
+
+        int photoW = bmOptions.outWidth;
+        int photoH = bmOptions.outHeight;
+
+        // Determine how much to scale down the image
+        int scaleFactor = Math.max(1, Math.min(photoW/targetW, photoH/targetH));
+
+        // Decode the image file into a Bitmap sized to fill the View
+        bmOptions.inJustDecodeBounds = false;
+        bmOptions.inSampleSize = scaleFactor;
+        bmOptions.inPurgeable = true;
+
+        Bitmap bitmap = BitmapFactory.decodeFile(currentPhotoPath, bmOptions);
+
+        Matrix matrix = new Matrix();
+        matrix.postRotate(90);
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+    }
     /**
      * Set two recycler view with adapter
      */
@@ -680,6 +758,7 @@ public class First_Step_PM_Fragment extends Fragment {
         Log.v("DECODE", s1);
         return s1;
     }
+
 
 
 }

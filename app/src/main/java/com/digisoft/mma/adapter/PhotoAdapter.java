@@ -91,7 +91,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.MyViewHolder
                 Intent intent = new Intent(context, FullScreenActivity.class);
                 Bundle extras = new Bundle();
                 if(singleRowArrayList.get(i).getUid() == 1){
-                    extras.putParcelable("imagebitmap", getBitmapFromEncodedString(singleRowArrayList.get(i).getImage()));
+                    extras.putString("image", singleRowArrayList.get(i).getPhotoPath());
                     extras.putBoolean("isRejected",false);
                 }else {
                     extras.putString("image", singleRowArrayList.get(i).getImage());
@@ -149,40 +149,6 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.MyViewHolder
                 .show();
     }
 
-    class LoadImage extends AsyncTask<File, Void, Boolean> {
-
-        private ArrayList<Event> f;
-        private int count = 0;
-
-        public LoadImage(ArrayList<Event> f) {
-            this.f = f;
-        }
-
-        @Override
-        protected void onPostExecute(Boolean aVoid) {
-            super.onPostExecute(aVoid);
-            if(f.size() == count  ){
-
-            }
-        }
-
-        @Override
-        protected Boolean doInBackground(File... files) {
-            for (File fileName : files) {
-                MultipartBody.Builder builder = new MultipartBody.Builder();
-                builder.setType(MultipartBody.FORM);
-                builder.addFormDataPart("file", fileName.getName(), RequestBody.create(MediaType.parse("multipart/form-data"), fileName));
-                MultipartBody requestBody = builder.build();
-            }
-
-
-            if(files.length == count) {
-                return true;
-            }
-            return false;
-        }
-
-    }
     private Bitmap getBitmapFromEncodedString(String encodedString){
 
         byte[] arr = Base64.decode(encodedString, Base64.URL_SAFE);
