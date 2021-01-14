@@ -36,10 +36,15 @@ import com.digisoft.mma.util.ApiInterface;
 import com.digisoft.mma.util.Network;
 import com.digisoft.mma.util.SharePreferenceHelper;
 
+import org.apache.commons.net.ntp.NTPUDPClient;
+import org.apache.commons.net.ntp.TimeInfo;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.security.SecureRandom;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -61,9 +66,12 @@ import retrofit2.Response;
 import static com.digisoft.mma.util.AppConstant.CM_Step_ONE;
 import static com.digisoft.mma.util.AppConstant.CM_Step_THREE;
 import static com.digisoft.mma.util.AppConstant.CM_Step_TWO;
+import static com.digisoft.mma.util.AppConstant.DATE_FORMAT;
 import static com.digisoft.mma.util.AppConstant.JOBDONE;
+import static com.digisoft.mma.util.AppConstant.PM_Step_TWO;
 import static com.digisoft.mma.util.AppConstant.POST_BUCKET_NAME;
 import static com.digisoft.mma.util.AppConstant.PRE_BUCKET_NAME;
+import static com.digisoft.mma.util.AppConstant.TIME_SERVER;
 import static com.digisoft.mma.util.AppConstant.VERIFICATION_FAIL_MSG;
 import static com.digisoft.mma.util.AppConstant.YES;
 
@@ -242,7 +250,6 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
                                         jobDone.setFocusable(false);
                                         jobDone.setBackground(getResources().getDrawable(R.drawable.round_rectangle_shape_button_grey));
                                     }
-
 
                                 }
                                 else {
@@ -627,16 +634,58 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
     private void updateSTEP_Three() {
        // completeWork();
         /** STEP_THREE EVENT UPDATE*/
-        UpdateEventBody updateEventBody = dbHelper.updateEventBodyDAO().getUpdateEventBodyByID(CM_Step_THREE);
-        date = new Date();
-        Timestamp timestamp = new Timestamp(date.getTime());
-        actualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timestamp);
-        updateEventBody.setDate(actualDateTime);
-        dbHelper.updateEventBodyDAO().insert(updateEventBody);
+    //    UpdateEventBody updateEventBody = dbHelper.updateEventBodyDAO().getUpdateEventBodyByID(CM_Step_THREE);
+    //    updateEventBody.setDate(actualDateTime);
+    //    dbHelper.updateEventBodyDAO().insert(updateEventBody);
 
-        ((CMActivity)getActivity()).hideProgressBar();
-        completeWork();
+
+       // completeWork();
+        new getCurrentNetworkTime().execute();
     }
+
+    class getCurrentNetworkTime extends AsyncTask<String, Void, Boolean> {
+        protected Boolean doInBackground(String... urls) {
+            boolean is_locale_date = false;
+            try {
+                NTPUDPClient timeClient = new NTPUDPClient();
+                timeClient.open();
+                timeClient.setDefaultTimeout(5000);
+                InetAddress inetAddress = InetAddress.getByName(TIME_SERVER);
+                TimeInfo timeInfo = timeClient.getTime(inetAddress);
+                long localTime = timeInfo.getReturnTime();
+                long serverTime = timeInfo.getMessage().getTransmitTimeStamp().getTime();
+                Timestamp timestamp = new Timestamp(localTime);
+                String localDateTime = new SimpleDateFormat(DATE_FORMAT).format(timestamp);
+                Log.i("Time__Local", "doInBackground: " + localTime + "--> " + localDateTime);
+                timestamp = new Timestamp(serverTime);
+                String actualDateTime = new SimpleDateFormat(DATE_FORMAT).format(timestamp);
+                Log.i("Time__Server", "doInBackground:" + serverTime + "--> " + actualDateTime);
+                //after getting network time, update event with the network time
+                dbHelper.updateEventBodyDAO().updateDateTime(actualDateTime, CM_Step_THREE);
+                completeWork();
+                if (new Date(localTime) != new Date(serverTime))
+                    is_locale_date = true;
+
+            } catch (UnknownHostException e) {
+                Log.e("UnknownHostException: ", e.getMessage());
+            } catch (IOException e) {
+                Log.e("IOException: ", e.getMessage());
+            }
+            return is_locale_date;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            super.onPostExecute(aBoolean);
+            ((CMActivity)getActivity()).hideProgressBar();
+            if(!aBoolean) {
+                Log.e("Check ", "dates not equal");
+            }
+        }
+
+    }
+
+
 
     private void completeWork() {
         Intent intent = new Intent(this.getContext(), NFCReadingActivity.class);

@@ -205,7 +205,7 @@ public class First_Step_CM_Fragment extends Fragment {
             public void onClick(View v) {
                 if (prePhotoModels.size() == 0) {
                     dialogTitle = "Mandatory Fields:";
-                    dialogBody = "* Attach Premaintenance Photos.";
+                    dialogBody = "Attach Premaintenance Photos.";
                     showDialog();
                 } else {
                     save();
@@ -271,7 +271,7 @@ public class First_Step_CM_Fragment extends Fragment {
         }
         else {
             dialogTitle = "Photo";
-            dialogBody = "* Your photos must be minimum 2 and maximum 5.";
+            dialogBody = "Your photos must be minimum 2 and maximum 5.";
             showDialog();
         }
     }

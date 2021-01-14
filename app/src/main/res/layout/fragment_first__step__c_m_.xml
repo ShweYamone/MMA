@@ -294,13 +294,27 @@
             </LinearLayout>
 
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/attach_pre_maintenance_photo"
-                android:textColor="@color/colorBlack"
+            <LinearLayout
                 android:layout_marginTop="@dimen/margin_normal"
-                android:textSize="@dimen/txt_size_large"/>
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:text="*"
+                    android:textSize="@dimen/txt_size_ex_large"
+                    android:textColor="@color/colorRed"
+                    android:layout_gravity="bottom"
+                    android:layout_marginRight="@dimen/margin_xsmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/attach_pre_maintenance_photo"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="@dimen/txt_size_large"/>
+            </LinearLayout>
+
 
             <LinearLayout
                 android:layout_width="match_parent"

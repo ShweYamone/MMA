@@ -133,14 +133,27 @@
 
             </LinearLayout>
 
-            <!-- Actual Problem Code Design -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/actual_problem_code"
-                android:textColor="@color/colorBlack"
+            <LinearLayout
                 android:layout_marginTop="@dimen/margin_normal"
-                android:textSize="@dimen/txt_size_normal"/>
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:text="*"
+                    android:textSize="@dimen/txt_size_ex_large"
+                    android:textColor="@color/colorRed"
+                    android:layout_gravity="bottom"
+                    android:layout_marginRight="@dimen/margin_xsmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/actual_problem_code"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="@dimen/txt_size_normal"/>
+            </LinearLayout>
+
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -157,14 +170,27 @@
 
             </LinearLayout>
 
-            <!-- Cause Code Design -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/cause_code"
-                android:textColor="@color/colorBlack"
+            <LinearLayout
                 android:layout_marginTop="@dimen/margin_normal"
-                android:textSize="@dimen/txt_size_normal"/>
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:text="*"
+                    android:textSize="@dimen/txt_size_ex_large"
+                    android:textColor="@color/colorRed"
+                    android:layout_gravity="bottom"
+                    android:layout_marginRight="@dimen/margin_xsmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/cause_code"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="@dimen/txt_size_normal"/>
+            </LinearLayout>
+
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -181,14 +207,27 @@
 
             </LinearLayout>
 
-            <!-- Remedy Code Design -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/remedy_code"
-                android:textColor="@color/colorBlack"
+            <LinearLayout
                 android:layout_marginTop="@dimen/margin_normal"
-                android:textSize="@dimen/txt_size_normal"/>
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:text="*"
+                    android:textSize="@dimen/txt_size_ex_large"
+                    android:textColor="@color/colorRed"
+                    android:layout_gravity="bottom"
+                    android:layout_marginRight="@dimen/margin_xsmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/remedy_code"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="@dimen/txt_size_normal"/>
+            </LinearLayout>
+
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -343,13 +382,28 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <LinearLayout
                 android:layout_marginTop="@dimen/margin_normal"
-                android:text="@string/scan_faulty_parts"
-                android:textColor="@color/colorBlack"
-                android:textSize="@dimen/txt_size_normal"/>
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:text="*"
+                    android:textSize="@dimen/txt_size_ex_large"
+                    android:textColor="@color/colorRed"
+                    android:layout_gravity="bottom"
+                    android:layout_marginRight="@dimen/margin_xsmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/scan_faulty_parts"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="@dimen/txt_size_normal"/>
+            </LinearLayout>
+
 
             <TextView
                 android:layout_width="wrap_content"
@@ -539,14 +593,28 @@
 
             </LinearLayout>
 
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/attach_post_maintenance_photo"
-                android:textColor="@color/colorBlack"
+            <LinearLayout
                 android:layout_marginTop="@dimen/margin_normal"
-                android:textSize="@dimen/txt_size_large"/>
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:text="*"
+                    android:textSize="@dimen/txt_size_ex_large"
+                    android:textColor="@color/colorRed"
+                    android:layout_gravity="bottom"
+                    android:layout_marginRight="@dimen/margin_xsmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/attach_post_maintenance_photo"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="@dimen/txt_size_large"/>
+            </LinearLayout>
+
 
             <LinearLayout
                 android:layout_width="match_parent"
