@@ -17,12 +17,14 @@ import com.digisoft.mma.model.CheckListDescModel;
 import com.digisoft.mma.model.CheckListModel;
 import com.digisoft.mma.model.Event;
 import com.digisoft.mma.model.PMServiceInfoDetailModel;
+import com.digisoft.mma.model.PhotoFilePathModel;
 import com.digisoft.mma.model.ThirdPartyModel;
 import com.digisoft.mma.util.ApiClient;
 import com.digisoft.mma.util.ApiInterface;
 import com.digisoft.mma.util.SharePreferenceHelper;
 import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +39,7 @@ import retrofit2.Response;
 import static com.digisoft.mma.util.AppConstant.BEARER;
 import static com.digisoft.mma.util.AppConstant.FAILURE;
 import static com.digisoft.mma.util.AppConstant.IOEXCEPTION;
+import static com.digisoft.mma.util.AppConstant.NO_TYPE;
 import static com.digisoft.mma.util.AppConstant.OTHER_CONTRACTOR;
 import static com.digisoft.mma.util.AppConstant.PM_CHECK_LIST_DONE;
 import static com.digisoft.mma.util.AppConstant.PM_CHECK_LIST_REMARK;
@@ -81,11 +84,20 @@ public class LoadingActivity extends AppCompatActivity {
         msoId = getIntent().getStringExtra("id");
         //check current working mso is changed. if, delete
         if (!msoId.equals(mSharePrefrence.getCurrentMSOID())) {
+            File file;
+            for(PhotoFilePathModel e : getPhotoFilePaths()){
+                file = new File(e.getFilePath());
+                if(file.exists())
+                    file.delete();
+            }
+
             dbHelper.updateEventBodyDAO().deleteAll();
             dbHelper.eventDAO().deleteAll();
             dbHelper.uploadPhotoDAO().deleteAll();
             dbHelper.checkListDescDAO().deleteAll();
+            dbHelper.photoFilePathDAO().deleteAll();
             mSharePrefrence.setCurrentMSOID(msoId);
+            mSharePrefrence.setThirdPartyInfo(NO_TYPE);
         }
         Event tempEvent = new Event("start_tag_in_time", "start_tag_in_time", getIntent().getStringExtra(start_time));
         tempEvent.setEvent_id("start_timestart_time");
@@ -110,6 +122,13 @@ public class LoadingActivity extends AppCompatActivity {
             }
         };
 
+    }
+
+    /**
+     * Get Photo File Paths from DB
+     */
+    private List<PhotoFilePathModel> getPhotoFilePaths() {
+        return dbHelper.photoFilePathDAO().getPhotoFilePaths();
     }
 
     @Override
@@ -192,14 +211,17 @@ public class LoadingActivity extends AppCompatActivity {
         for (ThirdPartyModel obj : thirdPartyModels) {
             if (obj.getThirdPartyType().equals(TELCO)) {
                 intent.putExtra("telco", obj);
+                mSharePrefrence.setThirdPartyInfo(TELCO);
             }
 
             else if (obj.getThirdPartyType().equals(POWER_GRIP)) {
                 intent.putExtra("powerGrid", obj);
+                mSharePrefrence.setThirdPartyInfo(POWER_GRIP);
             }
 
             else if (obj.getThirdPartyType().equals(OTHER_CONTRACTOR)) {
                 intent.putExtra("other", obj);
+                mSharePrefrence.setThirdPartyInfo(OTHER_CONTRACTOR);
             }
         }
 

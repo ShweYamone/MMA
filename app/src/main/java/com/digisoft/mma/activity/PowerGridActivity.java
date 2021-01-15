@@ -62,6 +62,7 @@ import static com.digisoft.mma.util.AppConstant.IOEXCEPTION;
 import static com.digisoft.mma.util.AppConstant.NO;
 import static com.digisoft.mma.util.AppConstant.NO_TYPE;
 import static com.digisoft.mma.util.AppConstant.OFFICER;
+import static com.digisoft.mma.util.AppConstant.POWER_GRIP;
 import static com.digisoft.mma.util.AppConstant.POWER_GRIP_UPDATE;
 import static com.digisoft.mma.util.AppConstant.REFER_DATE;
 import static com.digisoft.mma.util.AppConstant.REMARKS_ON_FAULT;
@@ -407,7 +408,7 @@ public class PowerGridActivity extends AppCompatActivity implements View.OnClick
             Timestamp timestamp = new Timestamp(date.getTime());
             String actualDateTime = new SimpleDateFormat(DATE_FORMAT).format(timestamp);
             UpdateEventBody updateEventBody;
-
+            mSharePreferenceHelper.setThirdPartyInfo(POWER_GRIP);
             if (network.isNetworkAvailable() && dbHelper.eventDAO().getNumOfEventsToUploadByEventType(POWER_GRIP_UPDATE) > 0) {
                 Log.i("POWER_Grid", "save: " + dbHelper.eventDAO().getNumOfEventsToUploadByEventType(POWER_GRIP_UPDATE));
             //    showProgressBar();

@@ -12,10 +12,14 @@ import android.widget.TextView;
 
 import com.digisoft.mma.DB.InitializeDatabase;
 import com.digisoft.mma.R;
+import com.digisoft.mma.model.PhotoFilePathModel;
 import com.digisoft.mma.util.ApiClient;
 import com.digisoft.mma.util.ApiInterface;
 import com.digisoft.mma.util.Network;
 import com.digisoft.mma.util.SharePreferenceHelper;
+
+import java.io.File;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -80,12 +84,19 @@ public class PasscodeActivity extends AppCompatActivity{
                         if(count > 5){
                             //TODO Delete all shared preference and databases
                             mSharePreferenceHelper.logoutSharePreference();
+                            mSharePreferenceHelper.removeCurrentMSOID();
                             mSharePreferenceHelper.deletePinCode();
-
+                            File file;
+                            for(PhotoFilePathModel e : getPhotoFilePaths()){
+                                file = new File(e.getFilePath());
+                                if(file.exists())
+                                    file.delete();
+                            }
                             dbHelper.checkListDescDAO().deleteAll();
                             dbHelper.eventDAO().deleteAll();
                             dbHelper.updateEventBodyDAO().deleteAll();
                             dbHelper.uploadPhotoDAO().deleteAll();
+                            dbHelper.photoFilePathDAO().deleteAll();
 
                             startActivity(new Intent(PasscodeActivity.this, PasscodeRegisterActivity.class));
                             finishAffinity();
@@ -101,6 +112,13 @@ public class PasscodeActivity extends AppCompatActivity{
 
     @Override
     public void onBackPressed() {
+        //To disable user back pressed
+    }
 
+    /**
+     * Get Photo File Paths from DB
+     */
+    private List<PhotoFilePathModel> getPhotoFilePaths() {
+        return dbHelper.photoFilePathDAO().getPhotoFilePaths();
     }
 }

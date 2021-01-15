@@ -9,7 +9,11 @@ import android.os.Bundle;
 
 import com.digisoft.mma.DB.InitializeDatabase;
 import com.digisoft.mma.R;
+import com.digisoft.mma.model.PhotoFilePathModel;
 import com.digisoft.mma.util.SharePreferenceHelper;
+
+import java.io.File;
+import java.util.List;
 
 public class SimChanged extends AppCompatActivity {
 
@@ -23,12 +27,20 @@ public class SimChanged extends AppCompatActivity {
         dbHelper = InitializeDatabase.getInstance(this);
         sharePreferenceHelper = new SharePreferenceHelper(this);
         sharePreferenceHelper.logoutSharePreference();
+        sharePreferenceHelper.removeCurrentMSOID();
         sharePreferenceHelper.deletePinCode();
+        File file;
+        for(PhotoFilePathModel e : getPhotoFilePaths()){
+            file = new File(e.getFilePath());
+            if(file.exists())
+                file.delete();
+        }
 
         dbHelper.checkListDescDAO().deleteAll();
         dbHelper.eventDAO().deleteAll();
         dbHelper.updateEventBodyDAO().deleteAll();
         dbHelper.uploadPhotoDAO().deleteAll();
+        dbHelper.photoFilePathDAO().deleteAll();
 
         // TODO We must to ask deleting database after OK button click or Not
         new AlertDialog.Builder(this)
@@ -53,5 +65,12 @@ public class SimChanged extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         //To disable user back press.............
+    }
+
+    /**
+     * Get Photo File Paths from DB
+     */
+    private List<PhotoFilePathModel> getPhotoFilePaths() {
+        return dbHelper.photoFilePathDAO().getPhotoFilePaths();
     }
 }

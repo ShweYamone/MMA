@@ -165,7 +165,7 @@ public class First_Step_CM_Fragment extends Fragment {
             prePhotoModels.clear();
             // int imaCount = dbHelper.uploadPhotoDAO().getNumberOfPhotosToUpload();
             for (UploadPhotoModel uploadPhotoModel: dbHelper.uploadPhotoDAO().getPhotosToUploadByBucketName(PRE_BUCKET_NAME)) {
-                prePhotoModels.add(new PhotoModel(getDecodedString(uploadPhotoModel.getEncodedPhotoString()), 1));
+                prePhotoModels.add(new PhotoModel(getDecodedString(uploadPhotoModel.getEncodedPhotoString()), 1, uploadPhotoModel.getPhotoFilePath()));
             }
             prePhotoAdapter.notifyDataSetChanged();
         }
@@ -282,7 +282,7 @@ public class First_Step_CM_Fragment extends Fragment {
             dbHelper.uploadPhotoDAO().deleteById(CM_Step_ONE);
             for (PhotoModel photoModel: prePhotoModels) {
                 if(photoModel.getUid()==1)
-                    saveEncodePhotoToDatabase(CM_Step_ONE, PRE_BUCKET_NAME, photoModel.getImage());
+                    saveEncodePhotoToDatabase(CM_Step_ONE, PRE_BUCKET_NAME, photoModel.getImage(), photoModel.getPhotoPath());
             }
             //Toast.makeText(this.getContext(), dbHelper.uploadPhotoDAO().getNumberOfPhotosToUpload()+" photos have been saved.", Toast.LENGTH_SHORT).show();
         }
@@ -340,12 +340,12 @@ public class First_Step_CM_Fragment extends Fragment {
     /**
      * //To Do save to database photo
      */
-    private void saveEncodePhotoToDatabase(String updateEventKey, String bucketName, String sPhoto){
+    private void saveEncodePhotoToDatabase(String updateEventKey, String bucketName, String sPhoto, String photoPath){
         byte[] bytes = sPhoto.getBytes();
         String encodeToString = Base64.encodeToString(bytes,Base64.DEFAULT);
         Log.v("ENCODE",encodeToString);
         dbHelper.uploadPhotoDAO().insert(new UploadPhotoModel(
-                updateEventKey, bucketName, encodeToString
+                updateEventKey, bucketName, encodeToString, photoPath
         ));
 
     }
@@ -482,10 +482,10 @@ public class First_Step_CM_Fragment extends Fragment {
         bmOptions.inPurgeable = true;
 
         Bitmap bitmap = BitmapFactory.decodeFile(currentPhotoPath, bmOptions);
-
-        Matrix matrix = new Matrix();
-        matrix.postRotate(90);
-        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+        return bitmap;
+    //    Matrix matrix = new Matrix();
+    //    matrix.postRotate(90);
+    //    return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
     }
 
 

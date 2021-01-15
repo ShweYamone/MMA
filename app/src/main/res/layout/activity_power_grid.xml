@@ -56,13 +56,25 @@
                     android:layout_height="wrap_content"/>
 
                 <!-- Power Grid No: (TextView)-->
-                <TextView
-                    android:text="@string/power_grid_no"
-                    android:textColor="@color/color_blue"
-                    android:layout_marginTop="@dimen/margin_large"
+                <LinearLayout
+                    android:layout_marginTop="@dimen/margin_normal"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
-
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:text="*"
+                        android:textSize="@dimen/txt_size_ex_large"
+                        android:textColor="@color/colorRed"
+                        android:layout_gravity="center"
+                        android:layout_marginRight="@dimen/margin_xsmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                    <TextView
+                        android:text="@string/power_grid_no"
+                        android:textColor="@color/color_blue"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
                 <!-- Power Grid No:(EditText)-->
                 <EditText
                     android:id="@+id/et_power_grid_no"
@@ -75,13 +87,27 @@
                     android:layout_height="@dimen/edittext_height"/>
 
 
-                <!-- CT Personnel: (TextView) -->
-                <TextView
-                    android:text="@string/ct_personnel"
-                    android:textColor="@color/color_blue"
-                    android:layout_marginTop="@dimen/margin_large"
+                <LinearLayout
+                    android:layout_marginTop="@dimen/margin_normal"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:text="*"
+                        android:textSize="@dimen/txt_size_ex_large"
+                        android:textColor="@color/colorRed"
+                        android:layout_gravity="center"
+                        android:layout_marginRight="@dimen/margin_xsmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                    <!-- CT Personnel: (TextView) -->
+                    <TextView
+                        android:text="@string/ct_personnel"
+                        android:textColor="@color/color_blue"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
 
                 <!-- CT Personnel: (EditText) -->
                 <EditText
@@ -109,7 +135,7 @@
                     android:paddingRight="@dimen/margin_normal"
                     android:textColor="@color/colorBlack"
                     android:textAlignment="textStart"
-                    android:drawableRight="@drawable/date_time"
+                    android:drawableRight="@drawable/ic_datetime"
                     android:background="@drawable/round_rect_shape_line"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/edittext_height"/>
@@ -129,7 +155,7 @@
                     android:paddingRight="@dimen/margin_normal"
                     android:textColor="@color/colorBlack"
                     android:textAlignment="textStart"
-                    android:drawableRight="@drawable/date_time"
+                    android:drawableRight="@drawable/ic_datetime"
                     android:background="@drawable/round_rect_shape_line"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/edittext_height"/>
@@ -149,18 +175,32 @@
                     android:paddingRight="@dimen/margin_normal"
                     android:textColor="@color/colorBlack"
                     android:textAlignment="textStart"
-                    android:drawableRight="@drawable/date_time"
+                    android:drawableRight="@drawable/ic_datetime"
                     android:background="@drawable/round_rect_shape_line"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/edittext_height"/>
 
                 <!-- Power Grid Fault Status: (TextView) -->
-                <TextView
-                    android:text="@string/power_grid_fault_status"
-                    android:textColor="@color/color_blue"
-                    android:layout_marginTop="@dimen/margin_large"
+                <LinearLayout
+                    android:layout_marginTop="@dimen/margin_normal"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:text="*"
+                        android:textSize="@dimen/txt_size_ex_large"
+                        android:textColor="@color/colorRed"
+                        android:layout_gravity="center"
+                        android:layout_marginRight="@dimen/margin_xsmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:text="@string/power_grid_fault_status"
+                        android:textColor="@color/color_blue"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
 
                 <!-- Power Grid Fault Status: (EditText) -->
                 <EditText
@@ -224,7 +264,7 @@
                     android:id="@+id/btn_fault_detected_date_time"
                     android:paddingLeft="@dimen/margin_normal"
                     android:paddingRight="@dimen/margin_normal"
-                    android:drawableRight="@drawable/date_time"
+                    android:drawableRight="@drawable/ic_datetime"
                     android:textColor="@color/colorBlack"
                     android:textAlignment="textStart"
                     android:background="@drawable/round_rect_shape_line"
@@ -244,7 +284,7 @@
                     android:id="@+id/btn_action_date_time"
                     android:paddingLeft="@dimen/margin_normal"
                     android:paddingRight="@dimen/margin_normal"
-                    android:drawableRight="@drawable/date_time"
+                    android:drawableRight="@drawable/ic_datetime"
                     android:textColor="@color/colorBlack"
                     android:textAlignment="textStart"
                     android:background="@drawable/round_rect_shape_line"
@@ -252,12 +292,26 @@
                     android:layout_height="@dimen/edittext_height"/>
 
                 <!-- Action taken by power grid (TextView) -->
-                <TextView
-                    android:text="@string/action_taken_by_power_grid"
-                    android:textColor="@color/color_blue"
-                    android:layout_marginTop="@dimen/margin_large"
+                <LinearLayout
+                    android:layout_marginTop="@dimen/margin_normal"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:text="*"
+                        android:textSize="@dimen/txt_size_ex_large"
+                        android:textColor="@color/colorRed"
+                        android:layout_gravity="center"
+                        android:layout_marginRight="@dimen/margin_xsmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:text="@string/action_taken_by_power_grid"
+                        android:textColor="@color/color_blue"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
 
                 <!-- Action taken by power grid (LinearLayout) -->
                 <LinearLayout

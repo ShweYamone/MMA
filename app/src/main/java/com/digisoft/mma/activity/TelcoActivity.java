@@ -61,7 +61,9 @@ import static com.digisoft.mma.util.AppConstant.FAULT_STATUS;
 import static com.digisoft.mma.util.AppConstant.NO;
 import static com.digisoft.mma.util.AppConstant.NO_TYPE;
 import static com.digisoft.mma.util.AppConstant.OFFICER;
+import static com.digisoft.mma.util.AppConstant.POWER_GRIP;
 import static com.digisoft.mma.util.AppConstant.REFER_DATE;
+import static com.digisoft.mma.util.AppConstant.TELCO;
 import static com.digisoft.mma.util.AppConstant.TELCO_UPDATE;
 import static com.digisoft.mma.util.AppConstant.THIRD_PARTY_NUMBER;
 import static com.digisoft.mma.util.AppConstant.TIME_SERVER;
@@ -301,7 +303,7 @@ public class TelcoActivity extends AppCompatActivity implements View.OnClickList
             date = new Date();
             Timestamp timestamp = new Timestamp(date.getTime());
             String actualDateTime = new SimpleDateFormat(DATE_FORMAT).format(timestamp);
-
+            mSharePreferenceHelper.setThirdPartyInfo(TELCO);
             UpdateEventBody updateEventBody;
             if (network.isNetworkAvailable() && dbHelper.eventDAO().getNumOfEventsToUploadByEventType(TELCO_UPDATE) > 0) {
                 showProgressBar();

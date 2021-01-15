@@ -20,6 +20,7 @@ import com.digisoft.mma.util.SharePreferenceHelper;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.digisoft.mma.util.AppConstant.NO_TYPE;
 import static com.digisoft.mma.util.AppConstant.OTHER_CONTRACTOR_UPDATE;
 import static com.digisoft.mma.util.AppConstant.POWER_GRIP_UPDATE;
 import static com.digisoft.mma.util.AppConstant.TELCO_UPDATE;
@@ -77,16 +78,11 @@ public class CMCompletionActivity extends AppCompatActivity implements View.OnCl
         reportedProblemCode.setText(dbHelper.eventDAO().getEventValue("reported", "reported"));
         faultCode.setText(dbHelper.eventDAO().getEventValue("faultpartcode", "faultpartcode"));
         remedyAction.setText(dbHelper.eventDAO().getEventValue("remedy", "remedy"));
-
-        if (dbHelper.eventDAO().getNumOfEventsByEventType(TELCO_UPDATE) > 0) {
-            thirdPartyFault.setText("Telco");
-        } else if (dbHelper.eventDAO().getNumOfEventsByEventType(POWER_GRIP_UPDATE) > 0) {
-            thirdPartyFault.setText("POWER GRIP");
-        } else if (dbHelper.eventDAO().getNumOfEventsByEventType(OTHER_CONTRACTOR_UPDATE) > 0)
-            thirdPartyFault.setText("Other Contractor");
+        if (!sharePreferenceHelper.getThirdPartyInfo().equals(NO_TYPE))
+            thirdPartyFault.setText(sharePreferenceHelper.getThirdPartyInfo());
         else
             thirdPartyFault.setText("");
-
+        
         location.setText(dbHelper.eventDAO().getEventValue("location", "location"));
         tvRemarks.setText(dbHelper.eventDAO().getEventValue("remarks", "remarks"));
         btnClose.setOnClickListener(this);

@@ -17,4 +17,7 @@ public interface PhotoFilePathDAO {
 
     @Query("Select * from PhotoFilePathModel")
     List<PhotoFilePathModel> getPhotoFilePaths();
+
+    @Query("Delete from PhotoFilePathModel")
+    void deleteAll();
 }

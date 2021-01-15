@@ -63,7 +63,9 @@ import static com.digisoft.mma.util.AppConstant.FAULT_STATUS;
 import static com.digisoft.mma.util.AppConstant.NO;
 import static com.digisoft.mma.util.AppConstant.NO_TYPE;
 import static com.digisoft.mma.util.AppConstant.OFFICER;
+import static com.digisoft.mma.util.AppConstant.OTHER_CONTRACTOR;
 import static com.digisoft.mma.util.AppConstant.OTHER_CONTRACTOR_UPDATE;
+import static com.digisoft.mma.util.AppConstant.POWER_GRIP;
 import static com.digisoft.mma.util.AppConstant.REFER_DATE;
 import static com.digisoft.mma.util.AppConstant.REMARKS_ON_FAULT;
 import static com.digisoft.mma.util.AppConstant.TIME_SERVER;
@@ -407,6 +409,8 @@ public class OtherActivity extends AppCompatActivity implements View.OnClickList
             date = new Date();
             Timestamp timestamp = new Timestamp(date.getTime());
             String actualDateTime = new SimpleDateFormat(DATE_FORMAT).format(timestamp);
+            mSharePreferenceHelper.setThirdPartyInfo(OTHER_CONTRACTOR);
+
             UpdateEventBody updateEventBody;
             Log.i("Other", "save: " + dbHelper.eventDAO().getNumberOfEvents());
             List<Event> events = dbHelper.eventDAO().getEventsByEventType(OTHER_CONTRACTOR_UPDATE);
