@@ -102,6 +102,7 @@ public class SharePreferenceHelper {
 		SharedPreferences.Editor editor = sharedPreference.edit();
 		editor.putString(USER_ID, userId);
 		editor.putString(USER_DISPLAY_NAME_KEY, displayName);
+		editor.putString(USER_NAME_KEY, displayName);
 		editor.commit();
 	}
 
@@ -119,12 +120,6 @@ public class SharePreferenceHelper {
 
 	public boolean getLock() {
 		return sharedPreference.getBoolean(LOCK, false);
-	}
-
-	public void setToken(String token) {
-		SharedPreferences.Editor editor = sharedPreference.edit();
-		editor.putString(TOKEN, token);
-		editor.commit();
 	}
 
 	public String getPinCode(){return sharedPreference.getString(PIN_CODE,"");}

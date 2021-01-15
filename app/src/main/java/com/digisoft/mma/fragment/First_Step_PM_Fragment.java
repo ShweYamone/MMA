@@ -83,6 +83,7 @@ import retrofit2.Response;
 import static android.app.Activity.RESULT_OK;
 import static androidx.core.content.FileProvider.getUriForFile;
 import static com.digisoft.mma.util.AppConstant.DATE_FORMAT;
+import static com.digisoft.mma.util.AppConstant.DATE_FORMAT_PHOTO;
 import static com.digisoft.mma.util.AppConstant.FAILURE;
 import static com.digisoft.mma.util.AppConstant.NO;
 import static com.digisoft.mma.util.AppConstant.PM_CHECK_LIST_DONE;
@@ -297,7 +298,6 @@ public class First_Step_PM_Fragment extends Fragment {
                 else
                 {
                    sendTakePictureIntent();
-
                 }
             }
         });
@@ -610,31 +610,109 @@ public class First_Step_PM_Fragment extends Fragment {
     }
     private void sendTakePictureIntent() {
 
-        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        cameraIntent.putExtra( MediaStore.EXTRA_FINISH_ON_COMPLETION, true);
-        if (cameraIntent.resolveActivity(getContext().getPackageManager()) != null) {
+
             // startActivityForResult(cameraIntent, REQUEST_PICTURE_CAPTURE);
 
-            File pictureFile = null;
-            try {
-                pictureFile = getPictureFile();
-            } catch (IOException ex) {
-                Toast.makeText(getContext(),
-                        "Photo file can't be created, please try again",
-                        Toast.LENGTH_SHORT).show();
-                return;
+
+            if (mNetwork.isNetworkAvailable()) {
+                new getCurrentNetworkTimeForPhoto().execute();
             }
-            if (pictureFile != null) {
-                Uri photoURI = getUriForFile(getContext(),
-                        "com.digisoft.mma.fileprovider",
-                        pictureFile);
-                cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                startActivityForResult(cameraIntent, REQUEST_PICTURE_CAPTURE);
+            else {
+                Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                cameraIntent.putExtra( MediaStore.EXTRA_FINISH_ON_COMPLETION, true);
+                if (cameraIntent.resolveActivity(getContext().getPackageManager()) != null) {
+                    String timeStamp = new SimpleDateFormat(DATE_FORMAT_PHOTO).format(new Date());
+                    File pictureFile = null;
+                    try {
+                        pictureFile = getPictureFile(timeStamp);
+                    } catch (IOException ex) {
+                        Toast.makeText(getContext(),
+                                "Photo file can't be created, please try again",
+                                Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    if (pictureFile != null) {
+                        Uri photoURI = getUriForFile(getContext(),
+                                "com.digisoft.mma.fileprovider",
+                                pictureFile);
+                        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                        startActivityForResult(cameraIntent, REQUEST_PICTURE_CAPTURE);
+                    }
+                }
+            }
+    }
+
+    class getCurrentNetworkTimeForPhoto extends AsyncTask<String, Void, Boolean> {
+        //Step One Events
+        private void setTime(String actualDateTime) {
+            Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            cameraIntent.putExtra( MediaStore.EXTRA_FINISH_ON_COMPLETION, true);
+            if (cameraIntent.resolveActivity(getContext().getPackageManager()) != null) {
+                File pictureFile = null;
+                try {
+                    pictureFile = getPictureFile(actualDateTime);
+                } catch (IOException ex) {
+                    Toast.makeText(getContext(),
+                            "Photo file can't be created, please try again",
+                            Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (pictureFile != null) {
+                    Uri photoURI = getUriForFile(getContext(),
+                            "com.digisoft.mma.fileprovider",
+                            pictureFile);
+                    cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                    startActivityForResult(cameraIntent, REQUEST_PICTURE_CAPTURE);
+                }
             }
         }
+
+        protected Boolean doInBackground(String... urls) {
+            boolean is_locale_date = false;
+            try {
+                NTPUDPClient timeClient = new NTPUDPClient();
+                timeClient.open();
+                timeClient.setDefaultTimeout(5000);
+                InetAddress inetAddress = InetAddress.getByName(TIME_SERVER);
+                TimeInfo timeInfo = timeClient.getTime(inetAddress);
+                long localTime = timeInfo.getReturnTime();
+                long serverTime = timeInfo.getMessage().getTransmitTimeStamp().getTime();
+                Timestamp timestamp = new Timestamp(localTime);
+                //     String localDateTime = new SimpleDateFormat(DATE_FORMAT).format(timestamp);
+                //     Log.i("Time__Local", "doInBackground: " + localTime + "--> " + localDateTime);
+                timestamp = new Timestamp(serverTime);
+                String actualDateTime = new SimpleDateFormat(DATE_FORMAT_PHOTO).format(timestamp);
+                //     Log.i("Time__Server", "doInBackground:" + serverTime + "--> " + actualDateTime);
+                //after getting network time, update event with the network time
+                setTime(actualDateTime);
+
+                if (new Date(localTime) != new Date(serverTime))
+                    is_locale_date = true;
+
+            } catch (UnknownHostException e) {
+                e.printStackTrace();
+                Log.e("UnknownHostException: ", e.getMessage());
+            } catch (IOException e) {
+                e.printStackTrace();
+                Log.e("IOException: ", e.getMessage());
+            }
+            return is_locale_date;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            super.onPostExecute(aBoolean);
+            ((PMActivity)getActivity()).hideProgressBar();
+            if(!aBoolean) {
+                Log.e("Check ", "dates not equal");
+            }
+        }
+
     }
-    private File getPictureFile() throws IOException {
-        String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+
+
+    private File getPictureFile(String timeStamp) throws IOException {
+
         String pictureFile = "PHOTO_" + timeStamp;
         File storageDir = getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(pictureFile,  ".jpg", storageDir);
@@ -642,7 +720,6 @@ public class First_Step_PM_Fragment extends Fragment {
         savePhotoFilePath(pictureFilePath);
         return image;
     }
-
 
     /**
      * Reuqesting for premissons
@@ -659,7 +736,7 @@ public class First_Step_PM_Fragment extends Fragment {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
             {
                 mSharePerferenceHelper.setLock(false);
-               sendTakePictureIntent();
+                sendTakePictureIntent();
             }
 
         }

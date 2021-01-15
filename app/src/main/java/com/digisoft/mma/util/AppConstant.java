@@ -89,6 +89,7 @@ public class AppConstant {
 
     public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
     public static final String DATE_MONTH_YEAR = "dd.MM.yyyy/HH:mm aa";
+    public static final String DATE_FORMAT_PHOTO = "yyyy-MM-dd_HH:mm:ss";
 
     public static final String PM_MSO = "PM-MSO ";
     public static final String CM_MSO = "CM-MSO ";

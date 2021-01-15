@@ -81,6 +81,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.IllegalFormatCodePointException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -511,6 +512,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
     private void displayMaintenanceWorkInformation() {
         tvAcknowledgeBy.setText(pmServiceInfoModel.getAcknowledgedBy());
         tvAcknowledgeDT.setText(pmServiceInfoModel.getAcknowledgementDate());
+        tvResponseDT.setText(pmServiceInfoModel.getFirstResponseDate());
         tvReportedCode.setText(pmServiceInfoModel.getReportedProblemDescription());
         try {
             setFaultMappingSpinner(new JSONObject(dbHelper.faultMappingDAO().getFaultMappingJSON().get(0).getJsonString()));
@@ -645,8 +647,6 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
                     savePhotosToDB();
                     uploadEvents();
 
-
-
                     preActualProblemCode = actualProblem;
                     preCauseCode = causeCode;
                     preRemedyCode = remedyCode;
@@ -739,7 +739,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
                         //    Toast.makeText(getContext(), eventBody.getEvents().size() + " Events Uploaded at " +
                         //            eventBody.getDate(), Toast.LENGTH_SHORT).show();
                             dbHelper.eventDAO().update(YES, CM_Step_TWO);
-                            //  Toast.makeText(getContext(), dbHelper.eventDAO().getEvents(CM_Step_TWO).get(0).alreadyUploaded , Toast.LENGTH_SHORT).show();
+                          //    Toast.makeText(getContext(), eventBody.getActor() + ", " + eventBody.getActorId() , Toast.LENGTH_SHORT).show();
                           //  ((CMActivity)getActivity()).hideProgressBar();
                         } else {
                             ResponseBody errorReturnBody = response.errorBody();
@@ -813,44 +813,57 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
     private void getQREvent() {
 
         Event tempEvent;
+        //third party comment update
+        tempEvent = new Event(THIRD_PARTY_COMMENT_UPDATE,
+                COMMENT,
+                "" + etThridPartyComment.getText().toString());
+        tempEvent.setEvent_id(THIRD_PARTY_COMMENT_UPDATE + COMMENT);
+        tempEvent.setUpdateEventBodyKey(CM_Step_TWO);
         if (!etThridPartyComment.getText().toString().equals("")) { //third party comment
-            tempEvent = new Event(THIRD_PARTY_COMMENT_UPDATE,
-                    COMMENT,
-                    "" + etThridPartyComment.getText().toString());
-            tempEvent.setEvent_id(THIRD_PARTY_COMMENT_UPDATE + COMMENT);
-            tempEvent.setUpdateEventBodyKey(CM_Step_TWO);
-
             if (preThirdPartyComment.equals("") || !preThirdPartyComment.equals(etThridPartyComment.getText().toString())) {
                 tempEvent.setAlreadyUploaded(NO);
                 dbHelper.eventDAO().insert(tempEvent);
             }
-
+        } else {
+            tempEvent.setAlreadyUploaded(YES);
+            dbHelper.eventDAO().insert(tempEvent);
         }
+
+        //FAULT PART CODE Update
+        tempEvent = new Event(PART_REPLACEMENT_UPDATE,
+                FAULT_PART_CODE,
+                tvScanFault.getText().toString());
+        tempEvent.setEvent_id(PART_REPLACEMENT_UPDATE + FAULT_PART_CODE);
+        tempEvent.setUpdateEventBodyKey(CM_Step_TWO);
         if (!tvScanFault.getText().toString().equals("")) {
-            tempEvent = new Event(PART_REPLACEMENT_UPDATE,
-                    FAULT_PART_CODE,
-                    tvScanFault.getText().toString());
-            tempEvent.setEvent_id(PART_REPLACEMENT_UPDATE + FAULT_PART_CODE);
-            tempEvent.setUpdateEventBodyKey(CM_Step_TWO);
             if (preScan1Result.equals("") || !preScan1Result.equals(tvScanFault.getText().toString())) {
                 tempEvent.setAlreadyUploaded(NO);
                 dbHelper.eventDAO().insert(tempEvent);
             }
-
         } else {
-            mandatoryFieldsLeft += "\nScan Faulty Component";
-            isMandatoryFieldLeft = true;
+            if (mSharePreference.getThirdPartyInfo().equals(NO_TYPE)) {
+                mandatoryFieldsLeft += "\nScan Faulty Component";
+                isMandatoryFieldLeft = true;
+            } else {
+                tempEvent.setAlreadyUploaded(YES);
+                dbHelper.eventDAO().insert(tempEvent);
+            }
         }
+
+        //REPLACEMENT PART CODE
+        tempEvent = new Event(PART_REPLACEMENT_UPDATE,
+                REPLACEMENT_PART_CODE,
+                tvScanReplacement.getText().toString());
+        tempEvent.setEvent_id(PART_REPLACEMENT_UPDATE + REPLACEMENT_PART_CODE);
+        tempEvent.setUpdateEventBodyKey(CM_Step_TWO);
         if (!tvScanReplacement.getText().toString().equals("")) {
-            tempEvent = new Event(PART_REPLACEMENT_UPDATE,
-                    REPLACEMENT_PART_CODE,
-                    tvScanReplacement.getText().toString());
-            tempEvent.setEvent_id(PART_REPLACEMENT_UPDATE + REPLACEMENT_PART_CODE);
-            tempEvent.setUpdateEventBodyKey(CM_Step_TWO);
             if (preScan2Result.equals("") || !preScan2Result.equals(tvScanReplacement.getText().toString())) {
                 tempEvent.setAlreadyUploaded(NO);
                 dbHelper.eventDAO().insert(tempEvent);
             }
+        } else {
+            tempEvent.setAlreadyUploaded(YES);
+            dbHelper.eventDAO().insert(tempEvent);
         }
     }
 
@@ -880,55 +893,75 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
             dbHelper.eventDAO().insert(tempEvent);
         }
 
+        //ACTUAL PROBLEM CODE
+        tempEvent = new Event(
+                SERVICE_ORDER_UPDATE,
+                ACTUAL_PROBLEM ,
+                actualProblem+"");
+        tempEvent.setEvent_id(SERVICE_ORDER_UPDATE + ACTUAL_PROBLEM);
+        tempEvent.setUpdateEventBodyKey(CM_Step_TWO);
         if (spinnerActualProbleCode.getSelectedItemPosition() > 0) {
-            tempEvent = new Event(
-                    SERVICE_ORDER_UPDATE,
-                    ACTUAL_PROBLEM ,
-                    actualProblem);
-            tempEvent.setEvent_id(SERVICE_ORDER_UPDATE + ACTUAL_PROBLEM);
-            tempEvent.setUpdateEventBodyKey(CM_Step_TWO);
             if (preActualProblemCode.equals("") || !preActualProblemCode.equals(actualProblem)) {
                 tempEvent.setAlreadyUploaded(NO);
                 dbHelper.eventDAO().insert(tempEvent);
             }
 
         } else {
-            mandatoryFieldsLeft += "\nSelect Actual Problem Code";
-            isMandatoryFieldLeft = true;
+            if (mSharePreference.getThirdPartyInfo().equals(NO_TYPE)) {
+                mandatoryFieldsLeft += "\nSelect Actual Problem Code";
+                isMandatoryFieldLeft = true;
+            } else {
+                tempEvent.setAlreadyUploaded(YES);
+                dbHelper.eventDAO().insert(tempEvent);
+            }
         }
 
+        //CAUSE CODE
+        tempEvent = new Event(
+                SERVICE_ORDER_UPDATE,
+                CAUSE,
+                causeCode);
+        tempEvent.setEvent_id(SERVICE_ORDER_UPDATE + CAUSE);
+        tempEvent.setUpdateEventBodyKey(CM_Step_TWO);
         if (spinnerCauseCode.getSelectedItemPosition() > 0) {
-            tempEvent = new Event(
-                    SERVICE_ORDER_UPDATE,
-                    CAUSE,
-                    causeCode);
-            tempEvent.setEvent_id(SERVICE_ORDER_UPDATE + CAUSE);
-            tempEvent.setUpdateEventBodyKey(CM_Step_TWO);
             if (preCauseCode.equals("") || !preCauseCode.equals(causeCode)) {
                 tempEvent.setAlreadyUploaded(NO);
                 dbHelper.eventDAO().insert(tempEvent);
             }
 
         } else {
-            mandatoryFieldsLeft += "\nSelect Cause Code";
-            isMandatoryFieldLeft = true;
+            if (mSharePreference.getThirdPartyInfo().equals(NO_TYPE)) {
+                mandatoryFieldsLeft += "\nSelect Cause Code";
+                isMandatoryFieldLeft = true;
+            } else {
+                tempEvent.setAlreadyUploaded(YES);
+                dbHelper.eventDAO().insert(tempEvent);
+            }
+
         }
 
+        //REMEDY
+        tempEvent = new Event(
+                SERVICE_ORDER_UPDATE,
+                REMEDY,
+                remedyCode);
+        tempEvent.setEvent_id(SERVICE_ORDER_UPDATE + REMEDY);
+        tempEvent.setUpdateEventBodyKey(CM_Step_TWO);
         if (spinnerRemedyCode.getSelectedItemPosition() > 0) {
-            tempEvent = new Event(
-                    SERVICE_ORDER_UPDATE,
-                    REMEDY,
-                    remedyCode);
-            tempEvent.setEvent_id(SERVICE_ORDER_UPDATE + REMEDY);
-            tempEvent.setUpdateEventBodyKey(CM_Step_TWO);
             if (preRemedyCode.equals("") || !preRemedyCode.equals(remedyCode)) {
                 tempEvent.setAlreadyUploaded(NO);
                 dbHelper.eventDAO().insert(tempEvent);
             }
 
         } else {
-            mandatoryFieldsLeft += "\nSelect Remedy Code";
-            isMandatoryFieldLeft = true;
+            if (mSharePreference.getThirdPartyInfo().equals(NO_TYPE)) {
+                mandatoryFieldsLeft += "\nSelect Remedy Code";
+                isMandatoryFieldLeft = true;
+            } else {
+                tempEvent.setAlreadyUploaded(YES);
+                dbHelper.eventDAO().insert(tempEvent);
+            }
+
         }
 
     }

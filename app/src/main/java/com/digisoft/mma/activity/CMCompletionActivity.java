@@ -82,7 +82,7 @@ public class CMCompletionActivity extends AppCompatActivity implements View.OnCl
             thirdPartyFault.setText(sharePreferenceHelper.getThirdPartyInfo());
         else
             thirdPartyFault.setText("");
-        
+
         location.setText(dbHelper.eventDAO().getEventValue("location", "location"));
         tvRemarks.setText(dbHelper.eventDAO().getEventValue("remarks", "remarks"));
         btnClose.setOnClickListener(this);

@@ -21,6 +21,7 @@ import android.widget.EditText;
 import com.digisoft.mma.DB.InitializeDatabase;
 import com.digisoft.mma.R;
 import com.digisoft.mma.activity.CMActivity;
+import com.digisoft.mma.activity.LoginActivity;
 import com.digisoft.mma.activity.NFCReadingActivity;
 import com.digisoft.mma.activity.PMActivity;
 import com.digisoft.mma.model.Event;
@@ -179,12 +180,11 @@ public class Second_Step_PM_Fragment extends Fragment implements View.OnClickLis
     private void updateEvent() throws IOException {
         if (network.isNetworkAvailable()) {
 
-
             /**  STEP_ONE EVENT UPDATE */
             ArrayList<PhotoModel> postPhotoModels = new ArrayList<>();
             List<UploadPhotoModel> uploadPhotoModels = dbHelper.uploadPhotoDAO().getPhotosToUploadByBucketName(POST_BUCKET_NAME);
             for (UploadPhotoModel photoModel: uploadPhotoModels) {
-                postPhotoModels.add(new PhotoModel(getDecodedString(photoModel.getEncodedPhotoString()), 1));
+                postPhotoModels.add(new PhotoModel(getDecodedString(photoModel.getEncodedPhotoString()), 1, photoModel.getPhotoFilePath()));
             }
 
             ((PMActivity)getActivity()).showProgressBar(false);
@@ -211,25 +211,31 @@ public class Second_Step_PM_Fragment extends Fragment implements View.OnClickLis
      */
     private File[] uploadPhoto(ArrayList<PhotoModel> p) throws IOException {
         File[] files = new File[p.size()];
-        date = new Date();
-        Timestamp timestamp = new Timestamp(date.getTime());
-        String actualDateTime = new SimpleDateFormat("yyyy-MM-ddHH:mm:ss").format(timestamp);
+     //   date = new Date();
+     //   Timestamp timestamp = new Timestamp(date.getTime());
+     //   String actualDateTime = new SimpleDateFormat("yyyy-MM-ddHH:mm:ss").format(timestamp);
+     //   actualDateTime = "";
         for(int i = 0 ; i < p.size(); i++) {
             File filesDir = getContext().getFilesDir();
-            File fileName = new File(filesDir, mSharePreferenceHelper.getUserId()+actualDateTime+ nextString() + ".jpg");
+            String temp = p.get(i).getPhotoPath();
+            temp = temp.substring(temp.lastIndexOf("PHOTO_") + 5);
+       //     File fileName = new File(filesDir, mSharePreferenceHelper.getUserId()+actualDateTime+ nextString() + ".jpg");
+            File tempFile = new File(filesDir, mSharePreferenceHelper.getUserId()+ "_at_" + temp);
 
-            Log.i("FILE_NAME", fileName.toString());
+       //     Log.i("FILE_NAME", fileName.toString());
+            Log.i("FILE_TAMP", tempFile.toString());
             try {
-                os = new FileOutputStream(fileName);
+                os = new FileOutputStream(tempFile);
                 getBitmapFromEncodedString(p.get(i).getImage()).compress(Bitmap.CompressFormat.JPEG, 100, os);
                 os.flush();
                 os.close();
             } catch (Exception e) {
                 Log.e("PHOTO", "Error writing bitmap", e);
             }finally {
+                Log.i("FILE_NAME", tempFile.toString());
                 os.close();
             }
-            files[i]= fileName;
+            files[i]= tempFile;
         }
 
         return files;
@@ -305,8 +311,6 @@ public class Second_Step_PM_Fragment extends Fragment implements View.OnClickLis
 
     }
 
-
-
     private void completeWork() {
         Intent intent = new Intent(this.getContext(), NFCReadingActivity.class);
         intent.putExtra("id", pmServiceInfoDetailModel.getId());
@@ -362,7 +366,6 @@ public class Second_Step_PM_Fragment extends Fragment implements View.OnClickLis
 
             if (f.size() > 0) {
                 updateEventBody.setEvents(f);
-
                 Log.e("UPLOAD_ERROR", "updateEvents: " +
                         dbHelper.updateEventBodyDAO().getNumberOfUpdateEventsById(PM_Step_ONE));
                 Call<ReturnStatus> call = apiInterface.updateEvent("Bearer " + mSharePreferenceHelper.getToken(),

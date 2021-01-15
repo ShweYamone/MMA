@@ -232,9 +232,6 @@ public class HomeFragment extends Fragment implements RadioGroup.OnCheckedChange
         recyclerViewMaintenance.addOnScrollListener(mSmartScrollListener);
         recyclerViewMaintenance.setAdapter(mAdapter);
 
-        if (mSharePreference.getUserId().equals("")) {
-            getUserIdAndUserDisplayName();
-        }
 
         if (network.isNetworkAvailable()) {
             setServiceOrderCount();
@@ -257,7 +254,9 @@ public class HomeFragment extends Fragment implements RadioGroup.OnCheckedChange
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 Log.i("FaultMapping", "onResponse: " + response.code());
                 if (response.isSuccessful()) {
-                    progressBar.setVisibility(View.GONE);
+                    if (mSharePreference.getUserId().equals("")) {
+                        getUserIdAndUserDisplayName();
+                    }
                     try {
                         //first delete and insert new fault-mapping data for later use
                         dbHelper.faultMappingDAO().delete();
@@ -267,11 +266,12 @@ public class HomeFragment extends Fragment implements RadioGroup.OnCheckedChange
                     } catch (IOException e) {
                         Log.e(UPLOAD_ERROR, "" + e.getMessage() );
                     }
-
                 }
+                progressBar.setVisibility(View.GONE);
             }
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
+                progressBar.setVisibility(View.GONE);
                 Log.i(UPLOAD_ERROR, FAILURE + "");
             }
         });
@@ -291,13 +291,14 @@ public class HomeFragment extends Fragment implements RadioGroup.OnCheckedChange
                     Log.e(UPLOAD_ERROR, RESPONSE_UNSUCCESS + "");
                     //Toast.makeText(getContext().getApplicationContext(), response.code() + ", ", Toast.LENGTH_SHORT).show();
                 }
+                progressBar.setVisibility(View.GONE);
             }
 
             @Override
             public void onFailure(Call<UserProfile> call, Throwable t) {
                 Log.e(UPLOAD_ERROR, FAILURE + "");
              //   Toast.makeText(getContext().getApplicationContext(), "failure", Toast.LENGTH_SHORT).show();
-
+                progressBar.setVisibility(View.GONE);
             }
         });
 
