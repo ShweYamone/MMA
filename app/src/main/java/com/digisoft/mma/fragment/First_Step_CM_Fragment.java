@@ -125,7 +125,7 @@ public class First_Step_CM_Fragment extends Fragment {
     static final int REQUEST_PICTURE_CAPTURE = 1;
     private String pictureFilePath;
 
-    private static final int CAMERA_REQUEST = 1888;
+    private boolean isAttachment;
     private static final int MY_CAMERA_PERMISSION_CODE = 100;
     ArrayList<Event> preEventList;
     ArrayList<PhotoModel> prePhotoModels;
@@ -148,6 +148,7 @@ public class First_Step_CM_Fragment extends Fragment {
         pmServiceInfoModel = (PMServiceInfoDetailModel)(getArguments().getSerializable("object"));
 
 
+        isAttachment = false;
         View view = inflater.inflate(R.layout.fragment_first__step__c_m_, container, false);
         apiInterface = ApiClient.getClient(getContext());
         preEventList = new ArrayList<>();
@@ -172,14 +173,17 @@ public class First_Step_CM_Fragment extends Fragment {
         preMaintenancePhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (getActivity().checkPermission(Manifest.permission.CAMERA,1,1) != PackageManager.PERMISSION_GRANTED)
-                {
-                    requestPermissions(new String[]{Manifest.permission.CAMERA}, MY_CAMERA_PERMISSION_CODE);
-                }
-                else
-                {
-                    sendTakePictureIntent();
+                if(isAttachment){
+                    dialogTitle = "Pre-maintenance Photo Unnecessary";
+                    dialogBody = "Pre-maintenance photos are not necessary to upload again.";
+                    showDialog();
+                }else {
+                    if (getActivity().checkPermission(Manifest.permission.CAMERA, 1, 1) != PackageManager.PERMISSION_GRANTED) {
+                        requestPermissions(new String[]{Manifest.permission.CAMERA}, MY_CAMERA_PERMISSION_CODE);
+                    } else {
+                        sendTakePictureIntent();
 
+                    }
                 }
             }
         });
@@ -192,7 +196,7 @@ public class First_Step_CM_Fragment extends Fragment {
                 if(response.isSuccessful()){
                     List<PreMaintenance> preMaintenances = photoAttachementModel.getPreMaintenance();
                     if(preMaintenances != null) {
-                        preMaintenancePhoto.setClickable(false);
+                        isAttachment = true;
                         save.setClickable(false);
                         mSharePerferenceHelper.userClickCMStepOne(true);
                         for (PreMaintenance e : preMaintenances) {
