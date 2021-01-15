@@ -127,8 +127,6 @@ public class Second_Step_PM_Fragment extends Fragment implements View.OnClickLis
             UpdateEventBody temp = dbHelper.updateEventBodyDAO().getUpdateEventBodyByID(PM_Step_TWO);
             remarks.setText(temp.getRemark() + "");
         }
-
-
         return view;
     }
 
@@ -159,42 +157,6 @@ public class Second_Step_PM_Fragment extends Fragment implements View.OnClickLis
                         } catch (IOException e) {
                             Log.i("ERROR_IN_PM_STEP_2",e.getMessage());
                         }
-                        /*
-                        Call<VerificationReturnBody> call = apiInterface.verifyWorks("Bearer " + mSharePreferenceHelper.getToken(), pmServiceInfoDetailModel.getId());
-                        call.enqueue(new Callback<VerificationReturnBody>() {
-                            @Override
-                            public void onResponse(Call<VerificationReturnBody> call, Response<VerificationReturnBody> response) {
-                                if (response.isSuccessful()) {
-                                    VerificationReturnBody verificationReturnBody = response.body();
-                                    if (verificationReturnBody.isFault_resolved()) {
-                                        btnJobDone.setClickable(true);
-                                        btnJobDone.setFocusable(true);
-                                        btnJobDone.setBackground(getResources().getDrawable(R.drawable.round_rect_shape_button));
-                                        btnJobDone.setOnClickListener(new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View view) {
-                                                updateEvent();
-                                            }
-                                        });
-                                    } else {
-                                        showDialog("Verification", VERIFICATION_FAIL_MSG);
-                                        btnJobDone.setClickable(false);
-                                        btnJobDone.setFocusable(false);
-                                        btnJobDone.setBackground(getResources().getDrawable(R.drawable.round_rectangle_shape_button_grey));
-                                    }
-
-                                }
-                                else {
-                                //    Toast.makeText(getContext(), response.code() + "", Toast.LENGTH_SHORT).show();
-                                }
-                                ((PMActivity)getActivity()).hideProgressBar();
-                            }
-
-                            @Override
-                            public void onFailure(Call<VerificationReturnBody> call, Throwable t) {
-                                ((PMActivity)getActivity()).hideProgressBar();
-                            }
-                        });*/
                     }else {
                         showDialog("Network Connetion",
                                 "The network connection is lost. Please, check your connectivity and try again");

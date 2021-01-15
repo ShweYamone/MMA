@@ -516,13 +516,13 @@ public class First_Step_PM_Fragment extends Fragment {
 
     public void savePhotosToDB(){
         dbHelper.uploadPhotoDAO().deleteById(PM_Step_ONE);
-        String temp = "";
+    //    String temp = "";
         for (PhotoModel photoModel: postPhotoModels) {
             if(photoModel.getUid() == 1)
                 saveEncodePhotoToDatabase(PM_Step_ONE, POST_BUCKET_NAME, photoModel.getImage(), photoModel.getPhotoPath());
-            temp = photoModel.getPhotoPath()+"";
+     //       temp = photoModel.getPhotoPath()+"";
         }
-        Toast.makeText(this.getContext(), dbHelper.uploadPhotoDAO().getNumberOfPhotosToUpload()+ temp, Toast.LENGTH_SHORT).show();
+    //    Toast.makeText(this.getContext(), dbHelper.uploadPhotoDAO().getNumberOfPhotosToUpload()+ temp, Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -711,11 +711,12 @@ public class First_Step_PM_Fragment extends Fragment {
         bmOptions.inSampleSize = scaleFactor;
         bmOptions.inPurgeable = true;
 
-        Bitmap bitmap = BitmapFactory.decodeFile(currentPhotoPath, bmOptions);
 
-        Matrix matrix = new Matrix();
-        matrix.postRotate(90);
-        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+        Bitmap bitmap = BitmapFactory.decodeFile(currentPhotoPath, bmOptions);
+        return bitmap;
+       // Matrix matrix = new Matrix();
+       // matrix.postRotate(90);
+       // return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
     }
     /**
      * Set two recycler view with adapter

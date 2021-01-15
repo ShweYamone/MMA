@@ -1064,10 +1064,10 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
         bmOptions.inPurgeable = true;
 
         Bitmap bitmap = BitmapFactory.decodeFile(currentPhotoPath, bmOptions);
-
-        Matrix matrix = new Matrix();
-        matrix.postRotate(90);
-        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+        return bitmap;
+      //  Matrix matrix = new Matrix();
+      //  matrix.postRotate(90);
+      //  return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
     }
 
     /**
