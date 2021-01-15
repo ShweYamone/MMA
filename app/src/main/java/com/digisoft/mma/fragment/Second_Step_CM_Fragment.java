@@ -16,6 +16,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -99,12 +100,16 @@ import static com.digisoft.mma.util.AppConstant.CM_Step_TWO;
 import static com.digisoft.mma.util.AppConstant.COMMENT;
 import static com.digisoft.mma.util.AppConstant.FAULT_PART_CODE;
 import static com.digisoft.mma.util.AppConstant.NO;
+import static com.digisoft.mma.util.AppConstant.NO_TYPE;
+import static com.digisoft.mma.util.AppConstant.OTHER_CONTRACTOR;
 import static com.digisoft.mma.util.AppConstant.PART_REPLACEMENT_UPDATE;
 import static com.digisoft.mma.util.AppConstant.POST_BUCKET_NAME;
+import static com.digisoft.mma.util.AppConstant.POWER_GRIP;
 import static com.digisoft.mma.util.AppConstant.REMEDY;
 import static com.digisoft.mma.util.AppConstant.REPLACEMENT_PART_CODE;
 import static com.digisoft.mma.util.AppConstant.REPORTED_PROBLEM;
 import static com.digisoft.mma.util.AppConstant.SERVICE_ORDER_UPDATE;
+import static com.digisoft.mma.util.AppConstant.TELCO;
 import static com.digisoft.mma.util.AppConstant.THIRD_PARTY_COMMENT_UPDATE;
 import static com.digisoft.mma.util.AppConstant.TIME_SERVER;
 import static com.digisoft.mma.util.AppConstant.YES;
@@ -172,13 +177,13 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
     EditText etThridPartyComment;
 
     @BindView(R.id.ll_telco)
-    LinearLayout telco;
+    RelativeLayout telco;
 
     @BindView(R.id.ll_power_grid)
-    LinearLayout powerGrid;
+    RelativeLayout powerGrid;
 
     @BindView(R.id.ll_other)
-    LinearLayout other;
+    RelativeLayout other;
 
     @BindView(R.id.btnSave)
     Button btnSave;
@@ -189,6 +194,23 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
     @BindView(R.id.layoutScanReplacementDelete)
     RelativeLayout layoutReplacementDelete;
 
+    @BindView(R.id.ivTelco)
+    ImageView ivTelco;
+
+    @BindView(R.id.tvTelco)
+    TextView tvTelco;
+
+    @BindView(R.id.ivPowerGrid)
+    ImageView ivPowerGrid;
+
+    @BindView(R.id.tvPowerGrid)
+    TextView tvPowerGrid;
+
+    @BindView(R.id.ivOther)
+    ImageView ivOther;
+
+    @BindView(R.id.tvOther)
+    TextView tvOther;
 
     static final int REQUEST_PICTURE_CAPTURE = 1;
     private String pictureFilePath;
@@ -238,6 +260,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
     private String preThirdPartyComment = "";
     private boolean spinnerCauseAutoSelect = false;
     private boolean spinnerRemedyAutoSelect = false;
+    private boolean ignoreMandatory = false;
 
     Intent intent;
     public Second_Step_CM_Fragment() {
@@ -262,7 +285,6 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
         ButterKnife.bind(this, view);
         postModelList = new ArrayList<>();
         setDataAdapter();
-
 
         actualProblemArrAdapter = new ArrayAdapter(this.getContext(), android.R.layout.simple_spinner_item, problemArr);
         causeProblemArrAdapter = new ArrayAdapter(this.getContext(), android.R.layout.simple_spinner_item, causeArr);
@@ -371,9 +393,6 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
         btnScanReplacement.setOnClickListener(this);
         btnSave.setOnClickListener(this);
         postPhotoBtn.setOnClickListener(this);
-        telco.setOnClickListener(this);
-        powerGrid.setOnClickListener(this);
-        other.setOnClickListener(this);
 
         layoutFaultDelete.setOnClickListener(this);
         layoutReplacementDelete.setOnClickListener(this);
@@ -391,12 +410,11 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
 
             @Override
             public void afterTextChanged(Editable s) {
-                if(s.length() != 0){
+                if(s.length() != 0 || !mSharePreference.getThirdPartyInfo().equals(NO_TYPE)){
                     Glide.with(getActivity())
                             .load(R.drawable.ic_check)
                             .into(ivAddThirdPary);
                 }else {
-
                     Glide.with(getActivity())
                             .load(R.drawable.ic_check_blank)
                             .into(ivAddThirdPary);
@@ -465,7 +483,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
             replacementShow = !replacementShow;
         }
 
-        if (preThirdPartyComment.equals("")) {
+        if (preThirdPartyComment.equals("") && mSharePreference.getThirdPartyInfo().equals(NO_TYPE)) {
             Glide.with(this)
                     .load(R.drawable.ic_check_blank)
                     .into(ivAddThirdPary);
@@ -576,16 +594,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
                 } else {
                     layoutThirdParty.setVisibility(View.GONE);
                 }
-                thirdPartyShow = !thirdPartyShow;/*
-                if (etThridPartyComment.getText().toString().equals("")) {
-                    Glide.with(this)
-                            .load(R.drawable.check_blank)
-                            .into(ivAddThirdPary);
-                } else {
-                    Glide.with(this)
-                            .load(R.drawable.check)
-                            .into(ivAddThirdPary);
-                }*/
+                thirdPartyShow = !thirdPartyShow;
                 break;
             case R.id.iv_required_part_placement:
                 if (replacementShow){
@@ -594,16 +603,6 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
                     layoutPartReplacement.setVisibility(View.GONE);
                 }
                 replacementShow = !replacementShow;
-                /*
-                if (tvScanReplacement.getText().toString().equals("")) {
-                    Glide.with(this)
-                            .load(R.drawable.check_blank)
-                            .into(ivRequiredPartPlacement);
-                } else {
-                    Glide.with(this)
-                            .load(R.drawable.check)
-                            .into(ivRequiredPartPlacement);
-                }*/
                 break;
             case R.id.btn_scan_fault:
                 qrScan1Click = true;
@@ -619,6 +618,10 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
                 mandatoryFieldsLeft = "";
                 getProblemCodeEvent();
                 getQREvent();
+                if (!mSharePreference.getThirdPartyInfo().equals(NO_TYPE)) {
+                    isMandatoryFieldLeft = false;
+                    mandatoryFieldsLeft = "";
+                }
                 if (isMandatoryFieldLeft && postModelList.size() == 0) {
                     mSharePreference.userClickCMStepTwo(false);
                     mandatoryFieldsLeft += "\nAttach Post-Maintenance Photos";
@@ -722,6 +725,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
 
     class getCurrentNetworkTime extends AsyncTask<String, Void, Boolean> {
         private void updateEventsWithNTPTime() {
+            Log.i("EventsUpload", "uploadEvents: " + dbHelper.eventDAO().getNumberEventsToUpload(CM_Step_TWO) );
             if (dbHelper.eventDAO().getNumberEventsToUpload(CM_Step_TWO) > 0) {
                 UpdateEventBody eventBody = dbHelper.updateEventBodyDAO().getUpdateEventBodyByID(CM_Step_TWO);
                 eventBody.setEvents(dbHelper.eventDAO().getEventsToUpload(CM_Step_TWO));
@@ -731,7 +735,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
                     @Override
                     public void onResponse(Call<ReturnStatus> call, Response<ReturnStatus> response) {
                         if (response.isSuccessful()) {
-                            Log.i("EventsUpload", "uploadEvents: " );
+                            Log.i("EventsUpload", "uploadEvents: " + eventBody.getEvents().size() );
                         //    Toast.makeText(getContext(), eventBody.getEvents().size() + " Events Uploaded at " +
                         //            eventBody.getDate(), Toast.LENGTH_SHORT).show();
                             dbHelper.eventDAO().update(YES, CM_Step_TWO);
@@ -1142,4 +1146,58 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
         dbHelper.photoFilePathDAO().insert(new PhotoFilePathModel(photoFilePath));
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (!mSharePreference.getThirdPartyInfo().equals(NO_TYPE)) {
+            Glide.with(this)
+                    .load(R.drawable.ic_check)
+                    .into(ivAddThirdPary);
+            //layoutThirdParty.setVisibility(View.GONE);
+            if (mSharePreference.getThirdPartyInfo().equals(TELCO)) {
+                powerGrid.setClickable(false); powerGrid.setFocusable(false);
+                ivPowerGrid.setColorFilter(ContextCompat.getColor(this.getContext(), R.color.color_grey_stroke_dark));
+                tvPowerGrid.setTextColor(getResources().getColor(R.color.color_grey_stroke_dark));
+                other.setClickable(false);
+                ivOther.setColorFilter(ContextCompat.getColor(this.getContext(), R.color.color_grey_stroke_dark));
+                tvOther.setTextColor(getResources().getColor(R.color.color_grey_stroke_dark));
+
+                Glide.with(getContext())
+                        .load(R.drawable.ic_remark)
+                        .into(ivTelco);
+                telco.setOnClickListener(this);
+
+            } else if (mSharePreference.getThirdPartyInfo().equals(POWER_GRIP)) {
+                telco.setClickable(false);
+                ivTelco.setColorFilter(ContextCompat.getColor(this.getContext(), R.color.color_grey_stroke_dark));
+                tvTelco.setTextColor(getResources().getColor(R.color.color_grey_stroke_dark));
+                other.setClickable(false);
+                ivOther.setColorFilter(ContextCompat.getColor(this.getContext(), R.color.color_grey_stroke_dark));
+                tvOther.setTextColor(getResources().getColor(R.color.color_grey_stroke_dark));
+
+                Glide.with(getContext())
+                        .load(R.drawable.ic_remark)
+                        .into(ivPowerGrid);
+                powerGrid.setOnClickListener(this);
+            } else if (mSharePreference.getThirdPartyInfo().equals(OTHER_CONTRACTOR)) {
+                telco.setClickable(false);
+                ivTelco.setColorFilter(ContextCompat.getColor(this.getContext(), R.color.color_grey_stroke_dark));
+                tvTelco.setTextColor(getResources().getColor(R.color.color_grey_stroke_dark));
+                powerGrid.setClickable(false);
+                ivPowerGrid.setColorFilter(ContextCompat.getColor(this.getContext(), R.color.color_grey_stroke_dark));
+                tvPowerGrid.setTextColor(getResources().getColor(R.color.color_grey_stroke_dark));
+
+                Glide.with(getContext())
+                        .load(R.drawable.ic_remark)
+                        .into(ivOther);
+                other.setOnClickListener(this);
+            }
+        } else {
+            telco.setOnClickListener(this);
+            powerGrid.setOnClickListener(this);
+            other.setOnClickListener(this);
+        }
+
+    }
 }

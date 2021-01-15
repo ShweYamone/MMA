@@ -3,6 +3,8 @@ package com.digisoft.mma.util;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import static com.digisoft.mma.util.AppConstant.NO_TYPE;
+
 public class SharePreferenceHelper {
 
 	private SharedPreferences sharedPreference;
@@ -21,6 +23,7 @@ public class SharePreferenceHelper {
  	private static String CMStepOneClick = "CMStepONE";
  	private static String CMStepTwoClick = "CMStepTwo";
  	private static String PMStepOneClick = "PMStepOne";
+ 	private static String ThirdPartyInfo = "ThirdParty";
 
  	private static String CurrentMSOID = "CurrentMSOId";
 
@@ -29,6 +32,12 @@ public class SharePreferenceHelper {
  	public void setCurrentMSOID(String msoid) {
  		SharedPreferences.Editor editor = sharedPreference.edit();
  		editor.putString(CurrentMSOID, msoid);
+ 		editor.commit();
+	}
+
+	public void setThirdPartyInfo(String thirdPartyInfo) {
+ 		SharedPreferences.Editor editor = sharedPreference.edit();
+ 		editor.putString(ThirdPartyInfo, thirdPartyInfo);
  		editor.commit();
 	}
 
@@ -69,6 +78,10 @@ public class SharePreferenceHelper {
 
 	public boolean userClickStepTwoOrNot() {
  		return sharedPreference.getBoolean(CMStepTwoClick, false);
+	}
+
+	public String getThirdPartyInfo() {
+ 		return sharedPreference.getString(ThirdPartyInfo, NO_TYPE);
 	}
 
 
@@ -142,7 +155,7 @@ public class SharePreferenceHelper {
 		editor.remove(CMStepOneClick);
 		editor.remove(CMStepTwoClick);
 		editor.remove(PMStepOneClick);
-		editor.remove(CurrentMSOID);
+		//editor.remove(CurrentMSOID);
 
 		/*
 		* sharePreferenceHelper.userClickPMStepOne(false);
@@ -150,6 +163,12 @@ public class SharePreferenceHelper {
         sharePreferenceHelper.userClickCMStepTwo(false);
         sharePreferenceHelper.setCurrentMSOID("");*/
 		editor.commit();
+	}
+
+	public void removeCurrentMSOID() {
+ 		SharedPreferences.Editor editor = sharedPreference.edit();
+ 		editor.remove(CurrentMSOID);
+ 		editor.commit();
 	}
 
 	public void deletePinCode() {

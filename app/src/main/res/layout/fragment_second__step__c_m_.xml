@@ -311,73 +311,84 @@
                         android:textSize="@dimen/txt_size_large"/>
 
                     <!-- Telco Design -->
-                    <LinearLayout
+                    <RelativeLayout
                         android:id="@+id/ll_telco"
+                        android:clickable="false"
                         android:layout_width="match_parent"
                         android:layout_height="32dp"
-                        android:layout_marginTop="@dimen/margin_small"
-                        android:orientation="horizontal"
-                        android:weightSum="4">
+                        android:layout_marginTop="@dimen/margin_small">
                         <ImageView
-                            android:layout_width="0dp"
+                            android:id="@+id/ivTelco"
                             android:layout_gravity="center"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="0.5"
-                            android:src="@drawable/ic_remark"/>
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:layout_marginRight="@dimen/margin_small"
+                            android:layout_marginLeft="@dimen/margin_small"
+                            android:tint="@color/colorPrimary"
+                            android:src="@drawable/ic_remark_blank"/>
                         <TextView
-                            android:layout_width="0dp"
+                            android:layout_toRightOf="@id/ivTelco"
+                            android:id="@+id/tvTelco"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_weight="3.5"
                             android:text="@string/telco"
-                            android:textSize="@dimen/txt_size_small"
+                            android:textSize="@dimen/txt_size_middle"
                             android:textColor="@color/colorPrimary"
                             android:layout_gravity="center"/>
-                    </LinearLayout>
+                    </RelativeLayout>
 
                     <!-- Power Grid Design -->
-                    <LinearLayout
+                    <RelativeLayout
                         android:id="@+id/ll_power_grid"
+                        android:clickable="false"
                         android:layout_width="match_parent"
-                        android:layout_height="32dp"
-                        android:orientation="horizontal"
-                        android:weightSum="4">
+                        android:layout_height="32dp">
                         <ImageView
-                            android:layout_width="0dp"
+                            android:id="@+id/ivPowerGrid"
                             android:layout_gravity="center"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="0.5"
-                            android:src="@drawable/ic_remark"/>
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:layout_marginRight="@dimen/margin_small"
+                            android:layout_marginLeft="@dimen/margin_small"
+                            android:tint="@color/colorPrimary"
+                            android:src="@drawable/ic_remark_blank"/>
                         <TextView
-                            android:layout_width="0dp"
+                            android:id="@+id/tvPowerGrid"
+                            android:layout_toRightOf="@id/ivPowerGrid"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_weight="3.5"
                             android:text="@string/power_grid"
-                            android:textSize="@dimen/txt_size_small"
+                            android:textSize="@dimen/txt_size_middle"
                             android:textColor="@color/colorPrimary"
                             android:layout_gravity="center"/>
-                    </LinearLayout>
+                    </RelativeLayout>
 
-                    <LinearLayout
+                    <RelativeLayout
                         android:id="@+id/ll_other"
+                        android:clickable="false"
                         android:layout_width="match_parent"
                         android:layout_height="32dp"
                         android:orientation="horizontal"
                         android:weightSum="4">
                         <ImageView
-                            android:layout_width="0dp"
+                            android:id="@+id/ivOther"
                             android:layout_gravity="center"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="0.5"
-                            android:src="@drawable/ic_remark"/>
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:layout_marginRight="@dimen/margin_small"
+                            android:layout_marginLeft="@dimen/margin_small"
+                            android:tint="@color/colorPrimary"
+                            android:src="@drawable/ic_remark_blank"/>
                         <TextView
-                            android:layout_width="0dp"
+                            android:id="@+id/tvOther"
+                            android:layout_toRightOf="@id/ivOther"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_weight="3.5"
                             android:text="@string/others"
-                            android:textSize="@dimen/txt_size_small"
+                            android:textSize="@dimen/txt_size_middle"
                             android:textColor="@color/colorPrimary"
                             android:layout_gravity="center"/>
-                    </LinearLayout>
+                    </RelativeLayout>
 
                 </LinearLayout>
             </LinearLayout>
