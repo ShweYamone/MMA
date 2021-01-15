@@ -25,13 +25,6 @@ public class UploadPhotoModel implements Serializable {
     @ColumnInfo(name = "photoFilePath")
     public String photoFilePath;
 
-    @Ignore
-    public UploadPhotoModel(String updateEventBodyKey, String bucketName, String encodedPhotoString) {
-        this.updateEventBodyKey = updateEventBodyKey;
-        this.bucketName = bucketName;
-        this.encodedPhotoString = encodedPhotoString;
-    }
-
     public UploadPhotoModel(String updateEventBodyKey, String bucketName, String encodedPhotoString, String photoFilePath) {
         this.updateEventBodyKey = updateEventBodyKey;
         this.bucketName = bucketName;
@@ -71,5 +64,11 @@ public class UploadPhotoModel implements Serializable {
         this.encodedPhotoString = encodedPhotoString;
     }
 
+    public String getPhotoFilePath() {
+        return photoFilePath;
+    }
 
+    public void setPhotoFilePath(String photoFilePath) {
+        this.photoFilePath = photoFilePath;
+    }
 }

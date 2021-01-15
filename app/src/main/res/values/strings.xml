@@ -119,7 +119,7 @@
     <string name="power_grid">Power Grid</string>
     <string name="power_grid_no">Power Grid No:</string>
     <string name="power_grid_fault_status">Power Grid Fault Status:</string>
-    <string name="remarks_on_telco_fault">Remarks on Telco Fault:</string>
+    <string name="remarks_on_telco_fault">Remarks on Power Grid Fault:</string>
     <string name="power_grid_officer">Power Grid Officer</string>
     <string name="action_taken_by_power_grid">Action Taken By Power Grid</string>
 

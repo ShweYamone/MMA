@@ -485,7 +485,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
         postModelList.clear();
         // int imaCount = dbHelper.uploadPhotoDAO().getNumberOfPhotosToUpload();
         for (UploadPhotoModel uploadPhotoModel: dbHelper.uploadPhotoDAO().getPhotosToUploadByBucketName(POST_BUCKET_NAME)) {
-            postModelList.add(new PhotoModel(getDecodedString(uploadPhotoModel.getEncodedPhotoString()), 1));
+            postModelList.add(new PhotoModel(getDecodedString(uploadPhotoModel.getEncodedPhotoString()), 1, uploadPhotoModel.getPhotoFilePath()));
         }
         postPhotoAdapter.notifyDataSetChanged();
     }
@@ -936,7 +936,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
         dbHelper.uploadPhotoDAO().deleteById(CM_Step_TWO);
         for (PhotoModel photoModel: postModelList) {
             if(photoModel.getUid() == 1)
-                saveEncodePhotoToDatabase(CM_Step_TWO, POST_BUCKET_NAME, photoModel.getImage());
+                saveEncodePhotoToDatabase(CM_Step_TWO, POST_BUCKET_NAME, photoModel.getImage(), photoModel.getPhotoPath());
         }
     //    Toast.makeText(this.getContext(), dbHelper.uploadPhotoDAO().getNumberOfPhotosToUpload()+" photos have been saved.", Toast.LENGTH_SHORT).show();
 
@@ -1115,12 +1115,12 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
     /**
      * //To Do save to database photo
      */
-    private void saveEncodePhotoToDatabase(String updateEventKey, String bucketName, String sPhoto){
+    private void saveEncodePhotoToDatabase(String updateEventKey, String bucketName, String sPhoto, String photoPath){
         byte[] bytes = sPhoto.getBytes();
         String encodeToString = Base64.encodeToString(bytes,Base64.DEFAULT);
         Log.v("ENCODE",encodeToString);
         dbHelper.uploadPhotoDAO().insert(new UploadPhotoModel(
-                updateEventKey, bucketName, encodeToString
+                updateEventKey, bucketName, encodeToString, photoPath
         ));
 
     }

@@ -509,18 +509,20 @@ public class First_Step_PM_Fragment extends Fragment {
         postPhotoModels.clear();
         // int imaCount = dbHelper.uploadPhotoDAO().getNumberOfPhotosToUpload();
         for (UploadPhotoModel uploadPhotoModel: dbHelper.uploadPhotoDAO().getPhotosToUploadByBucketName(POST_BUCKET_NAME)) {
-            postPhotoModels.add(new PhotoModel(getDecodedString(uploadPhotoModel.getEncodedPhotoString()), 1));
+            postPhotoModels.add(new PhotoModel(getDecodedString(uploadPhotoModel.getEncodedPhotoString()), 1, uploadPhotoModel.getPhotoFilePath()));
         }
         postPhotoAdapter.notifyDataSetChanged();
     }
 
     public void savePhotosToDB(){
         dbHelper.uploadPhotoDAO().deleteById(PM_Step_ONE);
+        String temp = "";
         for (PhotoModel photoModel: postPhotoModels) {
             if(photoModel.getUid() == 1)
                 saveEncodePhotoToDatabase(PM_Step_ONE, POST_BUCKET_NAME, photoModel.getImage(), photoModel.getPhotoPath());
+            temp = photoModel.getPhotoPath()+"";
         }
-      //  Toast.makeText(this.getContext(), dbHelper.uploadPhotoDAO().getNumberOfPhotosToUpload()+" photos have been saved.", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this.getContext(), dbHelper.uploadPhotoDAO().getNumberOfPhotosToUpload()+ temp, Toast.LENGTH_SHORT).show();
     }
 
     /**

@@ -323,7 +323,7 @@
                             android:layout_gravity="center"
                             android:layout_height="wrap_content"
                             android:layout_weight="0.5"
-                            android:src="@drawable/ic_icon_add"/>
+                            android:src="@drawable/ic_remark"/>
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -346,7 +346,7 @@
                             android:layout_gravity="center"
                             android:layout_height="wrap_content"
                             android:layout_weight="0.5"
-                            android:src="@drawable/ic_icon_add"/>
+                            android:src="@drawable/ic_remark"/>
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -368,7 +368,7 @@
                             android:layout_gravity="center"
                             android:layout_height="wrap_content"
                             android:layout_weight="0.5"
-                            android:src="@drawable/ic_icon_add"/>
+                            android:src="@drawable/ic_remark"/>
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
