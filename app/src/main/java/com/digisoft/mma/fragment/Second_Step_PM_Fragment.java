@@ -217,6 +217,7 @@ public class Second_Step_PM_Fragment extends Fragment implements View.OnClickLis
     private void updateEvent() throws IOException {
         if (network.isNetworkAvailable()) {
 
+
             /**  STEP_ONE EVENT UPDATE */
             ArrayList<PhotoModel> postPhotoModels = new ArrayList<>();
             List<UploadPhotoModel> uploadPhotoModels = dbHelper.uploadPhotoDAO().getPhotosToUploadByBucketName(POST_BUCKET_NAME);
@@ -230,6 +231,13 @@ public class Second_Step_PM_Fragment extends Fragment implements View.OnClickLis
                     POST_BUCKET_NAME,
                     dbHelper.updateEventBodyDAO().getUpdateEventBodyByID(PM_Step_ONE))
                     .execute(uploadPhoto(postPhotoModels));
+
+            File file;
+            for(PhotoFilePathModel e : getPhotoFilePaths()){
+                file = new File(e.getFilePath());
+                if(file.exists())
+                    file.delete();
+            }
 
         } else {
             showDialog("Network Connetion", "The network connection is lost. Please, check your connectivity and try again");

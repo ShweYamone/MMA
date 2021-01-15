@@ -165,9 +165,7 @@ public class First_Step_PM_Fragment extends Fragment {
     ArrayList<CheckListModel> preCheckListModels;
 
     static final int REQUEST_PICTURE_CAPTURE = 1;
-    private ImageView image;
     private String pictureFilePath;
-    private String deviceIdentifier;
 
     String photo;
     ArrayList<PhotoModel>  postPhotoModels;
@@ -639,6 +637,7 @@ public class First_Step_PM_Fragment extends Fragment {
         File storageDir = getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(pictureFile,  ".jpg", storageDir);
         pictureFilePath = image.getAbsolutePath();
+        savePhotoFilePath(pictureFilePath);
         return image;
     }
 

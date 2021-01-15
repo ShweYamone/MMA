@@ -26,6 +26,7 @@ import com.digisoft.mma.activity.CMActivity;
 import com.digisoft.mma.activity.NFCReadingActivity;
 import com.digisoft.mma.model.Event;
 import com.digisoft.mma.model.PMServiceInfoDetailModel;
+import com.digisoft.mma.model.PhotoFilePathModel;
 import com.digisoft.mma.model.PhotoModel;
 import com.digisoft.mma.model.ReturnStatus;
 import com.digisoft.mma.model.UpdateEventBody;
@@ -332,6 +333,12 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
                         POST_BUCKET_NAME,
                         dbHelper.updateEventBodyDAO().getUpdateEventBodyByID(CM_Step_TWO))
                         .execute(uploadPhoto(postPhotoModels));
+            }
+            File file;
+            for(PhotoFilePathModel e : getPhotoFilePaths()){
+                file = new File(e.getFilePath());
+                if(file.exists())
+                    file.delete();
             }
 
 
@@ -720,6 +727,12 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
         String s1 = new String(data);
         Log.v("DECODE", s1);
         return s1;
+    }
+    /**
+     * Get Photo File Paths from DB
+     */
+    private List<PhotoFilePathModel> getPhotoFilePaths() {
+        return dbHelper.photoFilePathDAO().getPhotoFilePaths();
     }
 
 }

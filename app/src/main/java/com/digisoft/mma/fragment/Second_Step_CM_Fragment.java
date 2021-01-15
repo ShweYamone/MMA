@@ -6,6 +6,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,6 +20,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Base64;
@@ -33,6 +38,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.digisoft.mma.DB.InitializeDatabase;
@@ -46,6 +52,7 @@ import com.digisoft.mma.activity.TelcoActivity;
 import com.digisoft.mma.adapter.PhotoAdapter;
 import com.digisoft.mma.model.Event;
 import com.digisoft.mma.model.PMServiceInfoDetailModel;
+import com.digisoft.mma.model.PhotoFilePathModel;
 import com.digisoft.mma.model.PhotoModel;
 import com.digisoft.mma.model.ReturnStatus;
 import com.digisoft.mma.model.ThirdPartyModel;
@@ -64,6 +71,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -83,6 +91,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static android.app.Activity.RESULT_OK;
+import static androidx.core.content.FileProvider.getUriForFile;
 import static com.digisoft.mma.util.AppConstant.ACTUAL_PROBLEM;
 import static com.digisoft.mma.util.AppConstant.CAUSE;
 import static com.digisoft.mma.util.AppConstant.CM_Step_TWO;
@@ -179,6 +189,9 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
     @BindView(R.id.layoutScanReplacementDelete)
     RelativeLayout layoutReplacementDelete;
 
+
+    static final int REQUEST_PICTURE_CAPTURE = 1;
+    private String pictureFilePath;
     private static final int CAMERA_REQUEST = 1888;
     private static final int MY_CAMERA_PERMISSION_CODE = 100;
     private Bitmap bitmap;
@@ -660,8 +673,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
                 }
                 else
                 {
-                    Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                    startActivityForResult(cameraIntent, CAMERA_REQUEST);
+                    sendTakePictureIntent();
 
                 }
                 break;
@@ -929,6 +941,40 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
     //    Toast.makeText(this.getContext(), dbHelper.uploadPhotoDAO().getNumberOfPhotosToUpload()+" photos have been saved.", Toast.LENGTH_SHORT).show();
 
     }
+    private void sendTakePictureIntent() {
+
+        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        cameraIntent.putExtra( MediaStore.EXTRA_FINISH_ON_COMPLETION, true);
+        if (cameraIntent.resolveActivity(getContext().getPackageManager()) != null) {
+            // startActivityForResult(cameraIntent, REQUEST_PICTURE_CAPTURE);
+
+            File pictureFile = null;
+            try {
+                pictureFile = getPictureFile();
+            } catch (IOException ex) {
+                Toast.makeText(getContext(),
+                        "Photo file can't be created, please try again",
+                        Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (pictureFile != null) {
+                Uri photoURI = getUriForFile(getContext(),
+                        "com.digisoft.mma.fileprovider",
+                        pictureFile);
+                cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                startActivityForResult(cameraIntent, REQUEST_PICTURE_CAPTURE);
+            }
+        }
+    }
+    private File getPictureFile() throws IOException {
+        String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+        String pictureFile = "PHOTO_" + timeStamp;
+        File storageDir = getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(pictureFile,  ".jpg", storageDir);
+        pictureFilePath = image.getAbsolutePath();
+        savePhotoFilePath(pictureFilePath);
+        return image;
+    }
 
 
     /**
@@ -947,10 +993,7 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
             {
                 mSharePreference.setLock(false);
-                //  Toast.makeText(getActivity(), "camera permission granted", Toast.LENGTH_LONG).show();
-                mSharePreference.setLock(false);
-                Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(cameraIntent, CAMERA_REQUEST);
+                sendTakePictureIntent();
             }
             else
             {
@@ -969,16 +1012,58 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
     @Override
     public void onActivityResult(int requestCode, int resultCode, @NonNull Intent data) {
         mSharePreference.setLock(false);
-        if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK)
-        {
-        //    if (data != null) {
-                bitmap = (Bitmap) data.getExtras().get("data");
+//        if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK)
+//        {
+//        //    if (data != null) {
+//                bitmap = (Bitmap) data.getExtras().get("data");
+//                photo = getEncodedString(bitmap);
+//                postModelList.add(new PhotoModel(photo, 1));
+//                postPhotoAdapter.notifyDataSetChanged();
+//         //   }
+//
+//        }
+        if (requestCode == REQUEST_PICTURE_CAPTURE && resultCode == RESULT_OK) {
+            File imgFile = new File(pictureFilePath);
+            if (imgFile.exists()) {
+                bitmap = setPic(imgFile.getAbsolutePath());
                 photo = getEncodedString(bitmap);
-                postModelList.add(new PhotoModel(photo, 1));
+                Log.v("ORI", photo);
+                postModelList.add(new PhotoModel(photo, 1,pictureFilePath));
                 postPhotoAdapter.notifyDataSetChanged();
-         //   }
-
+            }
         }
+
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private Bitmap setPic(String currentPhotoPath) {
+        // Get the dimensions of the View
+
+        int targetW = 512;
+        int targetH = 680;
+
+        // Get the dimensions of the bitmap
+        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+        bmOptions.inJustDecodeBounds = true;
+
+        BitmapFactory.decodeFile(currentPhotoPath, bmOptions);
+
+        int photoW = bmOptions.outWidth;
+        int photoH = bmOptions.outHeight;
+
+        // Determine how much to scale down the image
+        int scaleFactor = Math.max(1, Math.min(photoW/targetW, photoH/targetH));
+
+        // Decode the image file into a Bitmap sized to fill the View
+        bmOptions.inJustDecodeBounds = false;
+        bmOptions.inSampleSize = scaleFactor;
+        bmOptions.inPurgeable = true;
+
+        Bitmap bitmap = BitmapFactory.decodeFile(currentPhotoPath, bmOptions);
+
+        Matrix matrix = new Matrix();
+        matrix.postRotate(90);
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
     }
 
     /**
@@ -1048,6 +1133,13 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
         String s1 = new String(data);
         Log.v("DECODE", s1);
         return s1;
+    }
+
+    /**
+     * Save FilePath To DataBase
+     */
+    private void savePhotoFilePath(String photoFilePath) {
+        dbHelper.photoFilePathDAO().insert(new PhotoFilePathModel(photoFilePath));
     }
 
 }
