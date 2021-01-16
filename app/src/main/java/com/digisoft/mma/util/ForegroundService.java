@@ -188,7 +188,7 @@ public class ForegroundService extends Service {
                 .setSmallIcon(R.drawable.mma_notification)
                 .setContentTitle(title)
                 .setContentText(type)
-                .setNumber(0)
+                //        .setNumber(0)
                 .setBadgeIconType(NotificationCompat.BADGE_ICON_SMALL)
                 .setAutoCancel(true)
                 .setStyle(new NotificationCompat.BigTextStyle()

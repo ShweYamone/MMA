@@ -789,10 +789,10 @@ public class First_Step_PM_Fragment extends Fragment {
 
 
         Bitmap bitmap = BitmapFactory.decodeFile(currentPhotoPath, bmOptions);
-        return bitmap;
-       // Matrix matrix = new Matrix();
-       // matrix.postRotate(90);
-       // return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+       // return bitmap;
+        Matrix matrix = new Matrix();
+        matrix.postRotate(90);
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
     }
     /**
      * Set two recycler view with adapter

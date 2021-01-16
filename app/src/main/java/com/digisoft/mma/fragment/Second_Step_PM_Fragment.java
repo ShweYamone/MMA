@@ -194,12 +194,7 @@ public class Second_Step_PM_Fragment extends Fragment implements View.OnClickLis
                     dbHelper.updateEventBodyDAO().getUpdateEventBodyByID(PM_Step_ONE))
                     .execute(uploadPhoto(postPhotoModels));
 
-            File file;
-            for(PhotoFilePathModel e : getPhotoFilePaths()){
-                file = new File(e.getFilePath());
-                if(file.exists())
-                    file.delete();
-            }
+
 
         } else {
             showDialog("Network Connetion", "The network connection is lost. Please, check your connectivity and try again");
@@ -265,6 +260,12 @@ public class Second_Step_PM_Fragment extends Fragment implements View.OnClickLis
      //   ((PMActivity)getActivity()).hideProgressBar();
         //  deleteWorkingData();
       //  completeWork();
+        File file;
+        for(PhotoFilePathModel e : getPhotoFilePaths()){
+            file = new File(e.getFilePath());
+            if(file.exists())
+                file.delete();
+        }
         new getCurrentNetworkTime().execute();
 
     }

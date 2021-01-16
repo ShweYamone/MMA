@@ -483,7 +483,7 @@ public class NFCReadingActivity extends AppCompatActivity {
         if(builder.toString().equals(pId)){
             perFormTagEvent();
         }else {
-            perFormTagEvent();
+          //  perFormTagEvent();
             new AlertDialog.Builder(this)
                     .setIcon(R.drawable.warning)
                     .setTitle("PID Mismatch!")

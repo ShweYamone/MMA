@@ -251,6 +251,7 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
                                         jobDone.setFocusable(false);
                                         jobDone.setBackground(getResources().getDrawable(R.drawable.round_rectangle_shape_button_grey));
                                     }
+
                                 }
                                 else {
                                 //    Toast.makeText(getContext(), response.code() + "", Toast.LENGTH_SHORT).show();
@@ -333,12 +334,7 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
                         dbHelper.updateEventBodyDAO().getUpdateEventBodyByID(CM_Step_TWO))
                         .execute(uploadPhoto(postPhotoModels));
             }
-            File file;
-            for(PhotoFilePathModel e : getPhotoFilePaths()){
-                file = new File(e.getFilePath());
-                if(file.exists())
-                    file.delete();
-            }
+
 
 
 
@@ -651,6 +647,12 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
 
 
        // completeWork();
+        File file;
+        for(PhotoFilePathModel e : getPhotoFilePaths()){
+            file = new File(e.getFilePath());
+            if(file.exists())
+                file.delete();
+        }
         new getCurrentNetworkTime().execute();
     }
 
