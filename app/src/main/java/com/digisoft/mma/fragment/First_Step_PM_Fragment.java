@@ -34,6 +34,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -156,6 +157,9 @@ public class First_Step_PM_Fragment extends Fragment {
     @BindView(R.id.iv_fault_found_remarks)
     ImageView ivFaultFoundRemarks;
 
+    @BindView(R.id.layoutFaultFoundHeader)
+    RelativeLayout headerFaultFound;
+
     private ApiInterface apiInterface;
     private static final int CAMERA_REQUEST = 1888;
     private static final int MY_CAMERA_PERMISSION_CODE = 100;
@@ -226,7 +230,7 @@ public class First_Step_PM_Fragment extends Fragment {
         preCheckListModels = cloneList(checkListModels);
         checkListAdapter.notifyDataSetChanged();
 
-        ivFaultFoundRemarks.setOnClickListener(new View.OnClickListener() {
+        headerFaultFound.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (etFaultFoundRemarks.getVisibility()==View.VISIBLE) {
@@ -314,18 +318,20 @@ public class First_Step_PM_Fragment extends Fragment {
                     tempStr = etFaultFoundRemarks.getText().toString();
                     Log.i("CheckListData", "onClick: here" );
 
+                    tempEvent = new Event(
+                            PM_FAULT_FOUND_UPDATE,
+                            PM_FAULT_FOUND_UPDATE,
+                            tempStr);
+                    tempEvent.setUpdateEventBodyKey(PM_Step_ONE);
+                    tempEvent.setEvent_id(PM_FAULT_FOUND_UPDATE + PM_FAULT_FOUND_UPDATE);
                     if (!tempStr.equals("")) {
-                        tempEvent = new Event(
-                                PM_FAULT_FOUND_UPDATE,
-                                PM_FAULT_FOUND_UPDATE,
-                                tempStr);
-                        tempEvent.setUpdateEventBodyKey(PM_Step_ONE);
-                        tempEvent.setEvent_id(PM_FAULT_FOUND_UPDATE + PM_FAULT_FOUND_UPDATE);
                         if (preFaultFoundRemarks.equals("") || !tempStr.equals(preFaultFoundRemarks)) {
                             tempEvent.setAlreadyUploaded(NO);
                             dbHelper.eventDAO().insert(tempEvent);
                         }
-
+                    } else {
+                        tempEvent.setAlreadyUploaded(YES);
+                        dbHelper.eventDAO().insert(tempEvent);
                     }
                     Log.i("CheckListData", "onClick: there");
 
