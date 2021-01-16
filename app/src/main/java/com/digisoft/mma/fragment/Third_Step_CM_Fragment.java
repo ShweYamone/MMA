@@ -251,8 +251,6 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
                                         jobDone.setFocusable(false);
                                         jobDone.setBackground(getResources().getDrawable(R.drawable.round_rectangle_shape_button_grey));
                                     }
-
-
                                 }
                                 else {
                                 //    Toast.makeText(getContext(), response.code() + "", Toast.LENGTH_SHORT).show();
@@ -310,7 +308,7 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
             ArrayList<PhotoModel>  prePhotoModels = new ArrayList<>();
             List<UploadPhotoModel> uploadPhotoModels = dbHelper.uploadPhotoDAO().getPhotosToUploadByBucketName(PRE_BUCKET_NAME);
             for (UploadPhotoModel photoModel: uploadPhotoModels) {
-                prePhotoModels.add(new PhotoModel(getDecodedString(photoModel.getEncodedPhotoString()), 1));
+                prePhotoModels.add(new PhotoModel(getDecodedString(photoModel.getEncodedPhotoString()), 1, photoModel.getPhotoFilePath()));
             }
 
             ((CMActivity)getActivity()).showProgressBar(false);
@@ -327,7 +325,7 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
                 ArrayList<PhotoModel>  postPhotoModels = new ArrayList<>();
                 uploadPhotoModels = dbHelper.uploadPhotoDAO().getPhotosToUploadByBucketName(POST_BUCKET_NAME);
                 for (UploadPhotoModel photoModel: uploadPhotoModels) {
-                    postPhotoModels.add(new PhotoModel(getDecodedString(photoModel.getEncodedPhotoString()), 1));
+                    postPhotoModels.add(new PhotoModel(getDecodedString(photoModel.getEncodedPhotoString()), 1, photoModel.getPhotoFilePath()));
                 }
                 new LoadPOSTImage(
                         dbHelper.eventDAO().getEventsToUpload(CM_Step_TWO),
@@ -357,25 +355,30 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
      */
     private File[] uploadPhoto(ArrayList<PhotoModel> p) throws IOException {
         File[] files = new File[p.size()];
-        date = new Date();
-       timestamp = new Timestamp(date.getTime());
-        String actualDateTime = new SimpleDateFormat("yyyy-MM-ddHH:mm:ss").format(timestamp);
+      //  date = new Date();
+      //  timestamp = new Timestamp(date.getTime());
+      //  String actualDateTime = new SimpleDateFormat("yyyy-MM-ddHH:mm:ss").format(timestamp);
         for(int i = 0 ; i < p.size(); i++) {
             File filesDir = getContext().getFilesDir();
-            File fileName = new File(filesDir, mSharePreferenceHelper.getUserId()+actualDateTime+ nextString()+ ".jpg");
+            String temp = p.get(i).getPhotoPath();
+            temp = temp.substring(temp.lastIndexOf("PHOTO_") + 5);
+            //     File fileName = new File(filesDir, mSharePreferenceHelper.getUserId()+actualDateTime+ nextString() + ".jpg");
+            File tempFile = new File(filesDir, mSharePreferenceHelper.getUserId()+ "_at_" + temp);
 
-            Log.i("FILE_NAME", fileName.toString());
+            //     Log.i("FILE_NAME", fileName.toString());
+            Log.i("FILE_TAMP", tempFile.toString());
             try {
-                os = new FileOutputStream(fileName);
+                os = new FileOutputStream(tempFile);
                 getBitmapFromEncodedString(p.get(i).getImage()).compress(Bitmap.CompressFormat.JPEG, 100, os);
                 os.flush();
                 os.close();
             } catch (Exception e) {
                 Log.e("PHOTO", "Error writing bitmap", e);
             }finally {
+                Log.i("FILE_NAME", tempFile.toString());
                 os.close();
             }
-            files[i]= fileName;
+            files[i]= tempFile;
         }
 
         return files;
@@ -444,7 +447,7 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
                             ArrayList<PhotoModel>  postPhotoModels = new ArrayList<>();
                             List<UploadPhotoModel> uploadPhotoModels = dbHelper.uploadPhotoDAO().getPhotosToUploadByBucketName(POST_BUCKET_NAME);
                             for (UploadPhotoModel photoModel: uploadPhotoModels) {
-                                postPhotoModels.add(new PhotoModel(getDecodedString(photoModel.getEncodedPhotoString()), 1));
+                                postPhotoModels.add(new PhotoModel(getDecodedString(photoModel.getEncodedPhotoString()), 1, photoModel.getPhotoFilePath()));
                             }
                             try {
                                 new LoadPOSTImage(

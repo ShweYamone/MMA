@@ -608,9 +608,8 @@ public class First_Step_PM_Fragment extends Fragment {
         }
         return clonedList;
     }
+
     private void sendTakePictureIntent() {
-
-
             // startActivityForResult(cameraIntent, REQUEST_PICTURE_CAPTURE);
 
 

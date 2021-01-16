@@ -163,10 +163,9 @@ public class NFCReadingActivity extends AppCompatActivity {
         else
             step = CM_Step_THREE;
 
-        /****To Fix when NFC can read*********/
         /*********************/
         /////////////////////////////////////
-        perFormTagEvent();
+       // perFormTagEvent();
 
         if(nfcAdapter == null){
        //     Toast.makeText(this, "No NFC", Toast.LENGTH_SHORT).show();

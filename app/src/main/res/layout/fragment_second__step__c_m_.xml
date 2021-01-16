@@ -260,6 +260,7 @@
                 android:orientation="vertical"
                 android:background="@drawable/round_rect_shape_line">
                 <RelativeLayout
+                    android:id="@+id/layoutThirdPartyHeader"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="@dimen/margin_small"
@@ -498,6 +499,7 @@
                 android:layout_marginTop="@dimen/margin_small"
                 android:background="@drawable/round_rect_shape_line">
                 <RelativeLayout
+                    android:id="@+id/layoutScanFaultHeader"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
