@@ -45,6 +45,7 @@ import com.digisoft.mma.model.UpdateEventBody;
 import com.digisoft.mma.model.UploadPhotoModel;
 import com.digisoft.mma.util.ApiClient;
 import com.digisoft.mma.util.ApiInterface;
+import com.digisoft.mma.util.CryptographyUtils;
 import com.digisoft.mma.util.Network;
 import com.digisoft.mma.util.SharePreferenceHelper;
 
@@ -53,14 +54,21 @@ import org.apache.commons.net.ntp.TimeInfo;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import javax.crypto.NoSuchPaddingException;
+import javax.security.auth.login.LoginException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -74,6 +82,7 @@ import static com.digisoft.mma.util.AppConstant.CM_Step_ONE;
 import static com.digisoft.mma.util.AppConstant.DATE_FORMAT;
 import static com.digisoft.mma.util.AppConstant.DATE_FORMAT_PHOTO;
 import static com.digisoft.mma.util.AppConstant.FAILURE;
+import static com.digisoft.mma.util.AppConstant.PID;
 import static com.digisoft.mma.util.AppConstant.PRE_BUCKET_NAME;
 import static com.digisoft.mma.util.AppConstant.TIME_SERVER;
 import static com.digisoft.mma.util.AppConstant.UPLOAD_ERROR;
@@ -167,7 +176,8 @@ public class First_Step_CM_Fragment extends Fragment {
             prePhotoModels.clear();
             // int imaCount = dbHelper.uploadPhotoDAO().getNumberOfPhotosToUpload();
             for (UploadPhotoModel uploadPhotoModel: dbHelper.uploadPhotoDAO().getPhotosToUploadByBucketName(PRE_BUCKET_NAME)) {
-                prePhotoModels.add(new PhotoModel(getDecodedString(uploadPhotoModel.getEncodedPhotoString()), 1, uploadPhotoModel.getPhotoFilePath()));
+                prePhotoModels.add(new PhotoModel(CryptographyUtils.getDecodedString(uploadPhotoModel.getEncodedPhotoString(),
+                        dbHelper.eventDAO().getEventValue(PID, PID)), 1, uploadPhotoModel.getPhotoFilePath()));
             }
             prePhotoAdapter.notifyDataSetChanged();
         }
@@ -344,8 +354,8 @@ public class First_Step_CM_Fragment extends Fragment {
      */
     private void saveEncodePhotoToDatabase(String updateEventKey, String bucketName, String sPhoto, String photoPath){
         byte[] bytes = sPhoto.getBytes();
-        String encodeToString = Base64.encodeToString(bytes,Base64.DEFAULT);
-        Log.v("ENCODE",encodeToString);
+        String encodeToString = CryptographyUtils.getEncryptedString(bytes,
+                dbHelper.eventDAO().getEventValue(PID, PID));
         dbHelper.uploadPhotoDAO().insert(new UploadPhotoModel(
                 updateEventKey, bucketName, encodeToString, photoPath
         ));
@@ -520,16 +530,21 @@ public class First_Step_CM_Fragment extends Fragment {
 //         //   }
 //
 //        }
+        File imgFile = new File(pictureFilePath);
         if (requestCode == REQUEST_PICTURE_CAPTURE && resultCode == RESULT_OK) {
-            File imgFile = new File(pictureFilePath);
+
             if (imgFile.exists()) {
+
                 theImage = setPic(imgFile.getAbsolutePath());
-                photo = getEncodedString(theImage);
-                Log.v("ORI", photo);
+                //compress to 50 percent and get encrypted String
+                photo = CryptographyUtils.getEncryptedString(compress(theImage),
+                        dbHelper.eventDAO().getEventValue(PID, PID));
                 prePhotoModels.add(new PhotoModel(photo, 1,pictureFilePath));
                 prePhotoAdapter.notifyDataSetChanged();
             }
         }
+        //delete after getting encrypted data
+        imgFile.delete();
 
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -572,18 +587,13 @@ public class First_Step_CM_Fragment extends Fragment {
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getContext(),3);
         //Pre Maintenance Photo Adapter Setup
         prePhoto.setLayoutManager(layoutManager);
-        prePhotoAdapter = new PhotoAdapter(getContext(), prePhotoModels);
+        prePhotoAdapter = new PhotoAdapter(getContext(), prePhotoModels,
+                dbHelper.eventDAO().getEventValue(PID, PID));
         prePhoto.setAdapter(prePhotoAdapter);
 
     }
 
-    /**
-     * Conver bitmap image to string
-     * @param bitmap
-     * @return
-     */
-    private String getEncodedString(Bitmap bitmap){
-
+    private byte[] compress(Bitmap bitmap) {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
 
         bitmap.compress(Bitmap.CompressFormat.JPEG,50, os);
@@ -591,21 +601,9 @@ public class First_Step_CM_Fragment extends Fragment {
        /* or use below if you want 32 bit images
 
         bitmap.compress(Bitmap.CompressFormat.PNG, (0â€“100 compression), os);*/
-        byte[] imageArr = os.toByteArray();
-
-        return Base64.encodeToString(imageArr, Base64.URL_SAFE);
-
+        return os.toByteArray();
     }
 
-    /**
-     * Encode photo string to decode string
-     */
-    private String getDecodedString(String s){
-        byte[] data = Base64.decode(s,Base64.DEFAULT);
-        String s1 = new String(data);
-        Log.v("DECODE", s1);
-        return s1;
-    }
 
     /**
      * Save FilePath To DataBase

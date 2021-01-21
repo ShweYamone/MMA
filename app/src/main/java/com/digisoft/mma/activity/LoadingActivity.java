@@ -41,6 +41,7 @@ import static com.digisoft.mma.util.AppConstant.FAILURE;
 import static com.digisoft.mma.util.AppConstant.IOEXCEPTION;
 import static com.digisoft.mma.util.AppConstant.NO_TYPE;
 import static com.digisoft.mma.util.AppConstant.OTHER_CONTRACTOR;
+import static com.digisoft.mma.util.AppConstant.PID;
 import static com.digisoft.mma.util.AppConstant.PM_CHECK_LIST_DONE;
 import static com.digisoft.mma.util.AppConstant.PM_CHECK_LIST_REMARK;
 import static com.digisoft.mma.util.AppConstant.PM_Step_ONE;
@@ -83,6 +84,7 @@ public class LoadingActivity extends AppCompatActivity {
 
         msoId = getIntent().getStringExtra("id");
         //check current working mso is changed. if, delete
+        String pid = dbHelper.eventDAO().getEventValue(PID, PID);
         if (!msoId.equals(mSharePrefrence.getCurrentMSOID())) {
             File file;
             for(PhotoFilePathModel e : getPhotoFilePaths()){
@@ -99,7 +101,12 @@ public class LoadingActivity extends AppCompatActivity {
             mSharePrefrence.setCurrentMSOID(msoId);
             mSharePrefrence.setThirdPartyInfo(NO_TYPE);
         }
-        Event tempEvent = new Event("start_tag_in_time", "start_tag_in_time", getIntent().getStringExtra(start_time));
+        Event tempEvent = new Event(PID, PID, pid);
+        tempEvent.setEvent_id("pidKey");
+        tempEvent.setUpdateEventBodyKey("PID");
+        dbHelper.eventDAO().insert(tempEvent);
+
+        tempEvent = new Event("start_tag_in_time", "start_tag_in_time", getIntent().getStringExtra(start_time));
         tempEvent.setEvent_id("start_timestart_time");
         dbHelper.eventDAO().insert(tempEvent);
 

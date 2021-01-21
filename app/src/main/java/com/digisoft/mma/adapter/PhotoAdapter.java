@@ -24,10 +24,12 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
 import com.bumptech.glide.request.RequestOptions;
+import com.digisoft.mma.DB.InitializeDatabase;
 import com.digisoft.mma.R;
 import com.digisoft.mma.activity.FullScreenActivity;
 import com.digisoft.mma.model.Event;
 import com.digisoft.mma.model.PhotoModel;
+import com.digisoft.mma.util.CryptographyUtils;
 import com.digisoft.mma.util.SharePreferenceHelper;
 
 import java.io.File;
@@ -38,6 +40,7 @@ import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 
 import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
+import static com.digisoft.mma.util.AppConstant.PID;
 
 public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.MyViewHolder>{
     Context context;
@@ -46,12 +49,14 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.MyViewHolder
     private GlideUrl glideUrl;
     private RequestOptions options;
     private String url;
-    public PhotoAdapter(Context context, ArrayList<PhotoModel> singleRowArrayList) {
+    private String  pid;
+    public PhotoAdapter(Context context, ArrayList<PhotoModel> singleRowArrayList, String pid) {
         this.context = context;
         this.singleRowArrayList = singleRowArrayList;
         mSharedPreferences = new SharePreferenceHelper(context);
         options = new RequestOptions()
                 .diskCacheStrategy(DiskCacheStrategy.NONE);
+        this.pid = pid;
 
     }
 
@@ -66,7 +71,8 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.MyViewHolder
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, final int i) {
         if(singleRowArrayList.get(i).getUid() == 1){
-            myViewHolder.newsImage.setImageBitmap(getBitmapFromEncodedString(singleRowArrayList.get(i).getImage()));
+            myViewHolder.newsImage.setImageBitmap(CryptographyUtils.getDecodedBitmap(singleRowArrayList.get(i).getImage(),
+                    pid));
         }else {
             myViewHolder.delete.setVisibility(View.GONE);
             Log.i("url",singleRowArrayList.get(i).getImage());
@@ -91,7 +97,8 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.MyViewHolder
                 Intent intent = new Intent(context, FullScreenActivity.class);
                 Bundle extras = new Bundle();
                 if(singleRowArrayList.get(i).getUid() == 1){
-                    extras.putString("image", singleRowArrayList.get(i).getPhotoPath());
+                    extras.putString("image", singleRowArrayList.get(i).getImage());
+                    extras.putString(PID, pid);
                     extras.putBoolean("isRejected",false);
                 }else {
                     extras.putString("image", singleRowArrayList.get(i).getImage());

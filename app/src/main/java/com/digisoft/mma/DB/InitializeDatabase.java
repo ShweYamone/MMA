@@ -43,7 +43,7 @@ public abstract class InitializeDatabase extends RoomDatabase {
     private static InitializeDatabase buildDatabase(final Context context) {
         return Room.databaseBuilder(context,
                 InitializeDatabase.class,
-                "my-database")
+                "mma-db")
                 .allowMainThreadQueries()
                 .build();
     }

@@ -61,6 +61,7 @@ import com.digisoft.mma.model.UpdateEventBody;
 import com.digisoft.mma.model.UploadPhotoModel;
 import com.digisoft.mma.util.ApiClient;
 import com.digisoft.mma.util.ApiInterface;
+import com.digisoft.mma.util.CryptographyUtils;
 import com.digisoft.mma.util.Network;
 import com.digisoft.mma.util.SharePreferenceHelper;
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -105,6 +106,7 @@ import static com.digisoft.mma.util.AppConstant.NO;
 import static com.digisoft.mma.util.AppConstant.NO_TYPE;
 import static com.digisoft.mma.util.AppConstant.OTHER_CONTRACTOR;
 import static com.digisoft.mma.util.AppConstant.PART_REPLACEMENT_UPDATE;
+import static com.digisoft.mma.util.AppConstant.PID;
 import static com.digisoft.mma.util.AppConstant.POST_BUCKET_NAME;
 import static com.digisoft.mma.util.AppConstant.POWER_GRIP;
 import static com.digisoft.mma.util.AppConstant.REMEDY;
@@ -511,7 +513,8 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
         postModelList.clear();
         // int imaCount = dbHelper.uploadPhotoDAO().getNumberOfPhotosToUpload();
         for (UploadPhotoModel uploadPhotoModel: dbHelper.uploadPhotoDAO().getPhotosToUploadByBucketName(POST_BUCKET_NAME)) {
-            postModelList.add(new PhotoModel(getDecodedString(uploadPhotoModel.getEncodedPhotoString()), 1, uploadPhotoModel.getPhotoFilePath()));
+            postModelList.add(new PhotoModel(CryptographyUtils.getDecodedString(uploadPhotoModel.getEncodedPhotoString(),
+                    dbHelper.eventDAO().getEventValue(PID, PID)), 1, uploadPhotoModel.getPhotoFilePath()));
         }
         postPhotoAdapter.notifyDataSetChanged();
     }
@@ -1140,16 +1143,17 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
 //         //   }
 //
 //        }
+        File imgFile = new File(pictureFilePath);
         if (requestCode == REQUEST_PICTURE_CAPTURE && resultCode == RESULT_OK) {
-            File imgFile = new File(pictureFilePath);
             if (imgFile.exists()) {
                 bitmap = setPic(imgFile.getAbsolutePath());
-                photo = getEncodedString(bitmap);
-                Log.v("ORI", photo);
+                photo = CryptographyUtils.getEncryptedString(compress(bitmap),
+                        dbHelper.eventDAO().getEventValue(PID, PID));;
                 postModelList.add(new PhotoModel(photo, 1,pictureFilePath));
                 postPhotoAdapter.notifyDataSetChanged();
             }
         }
+        imgFile.delete();
 
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -1191,7 +1195,8 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getContext(),3  );
         //Pre Maintenance Photo Adapter Setup
         postRecyclerView.setLayoutManager(layoutManager);
-        postPhotoAdapter = new PhotoAdapter(getContext(), postModelList);
+        postPhotoAdapter = new PhotoAdapter(getContext(), postModelList,
+                dbHelper.eventDAO().getEventValue(PID, PID));
         postRecyclerView.setAdapter(postPhotoAdapter);
 
     }
@@ -1212,45 +1217,27 @@ public class Second_Step_CM_Fragment extends Fragment implements View.OnClickLis
     }
 
     /**
-     * Conver bitmap image to string
-     * @param bitmap
-     * @return
-     */
-    private String getEncodedString(Bitmap bitmap){
-
-        ByteArrayOutputStream os = new ByteArrayOutputStream();
-
-        bitmap.compress(Bitmap.CompressFormat.JPEG,100, os);
-
-       /* or use below if you want 32 bit images
-
-        bitmap.compress(Bitmap.CompressFormat.PNG, (0â€“100 compression), os);*/
-        byte[] imageArr = os.toByteArray();
-
-        return Base64.encodeToString(imageArr, Base64.URL_SAFE);
-
-    }
-    /**
      * //To Do save to database photo
      */
     private void saveEncodePhotoToDatabase(String updateEventKey, String bucketName, String sPhoto, String photoPath){
         byte[] bytes = sPhoto.getBytes();
-        String encodeToString = Base64.encodeToString(bytes,Base64.DEFAULT);
-        Log.v("ENCODE",encodeToString);
+        String encodeToString = CryptographyUtils.getEncryptedString(bytes,
+                dbHelper.eventDAO().getEventValue(PID, PID));
         dbHelper.uploadPhotoDAO().insert(new UploadPhotoModel(
                 updateEventKey, bucketName, encodeToString, photoPath
         ));
 
     }
 
-    /**
-     * Encode photo string to decode string
-     */
-    private String getDecodedString(String s){
-        byte[] data = Base64.decode(s,Base64.DEFAULT);
-        String s1 = new String(data);
-        Log.v("DECODE", s1);
-        return s1;
+    private byte[] compress(Bitmap bitmap) {
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+
+        bitmap.compress(Bitmap.CompressFormat.JPEG,50, os);
+
+       /* or use below if you want 32 bit images
+
+        bitmap.compress(Bitmap.CompressFormat.PNG, (0â€“100 compression), os);*/
+        return os.toByteArray();
     }
 
     /**

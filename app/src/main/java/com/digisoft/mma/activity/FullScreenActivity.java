@@ -22,6 +22,7 @@ import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
 import com.bumptech.glide.request.RequestOptions;
 import com.digisoft.mma.R;
+import com.digisoft.mma.util.CryptographyUtils;
 import com.digisoft.mma.util.SharePreferenceHelper;
 
 import java.io.File;
@@ -30,6 +31,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
+import static com.digisoft.mma.util.AppConstant.PID;
 import static com.digisoft.mma.util.AppConstant.user_inactivity_time;
 
 public class FullScreenActivity extends AppCompatActivity {
@@ -86,10 +88,7 @@ public class FullScreenActivity extends AppCompatActivity {
                     .into(imgDisplay);
 
         }else {
-            File imgFile = new File(extras.get(IMAGE)+"");
-            if (imgFile.exists()) {
-                imgDisplay.setImageURI(Uri.fromFile(imgFile));
-            }
+            imgDisplay.setImageBitmap(CryptographyUtils.getDecodedBitmap(extras.getString(IMAGE), extras.getString(PID)));
         }
 
         imgClose.setOnClickListener(new View.OnClickListener() {

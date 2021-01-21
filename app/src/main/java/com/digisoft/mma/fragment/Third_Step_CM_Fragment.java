@@ -34,6 +34,7 @@ import com.digisoft.mma.model.UploadPhotoModel;
 import com.digisoft.mma.model.VerificationReturnBody;
 import com.digisoft.mma.util.ApiClient;
 import com.digisoft.mma.util.ApiInterface;
+import com.digisoft.mma.util.CryptographyUtils;
 import com.digisoft.mma.util.Network;
 import com.digisoft.mma.util.SharePreferenceHelper;
 
@@ -69,12 +70,14 @@ import static com.digisoft.mma.util.AppConstant.CM_Step_THREE;
 import static com.digisoft.mma.util.AppConstant.CM_Step_TWO;
 import static com.digisoft.mma.util.AppConstant.DATE_FORMAT;
 import static com.digisoft.mma.util.AppConstant.JOBDONE;
+import static com.digisoft.mma.util.AppConstant.PID;
 import static com.digisoft.mma.util.AppConstant.PM_Step_TWO;
 import static com.digisoft.mma.util.AppConstant.POST_BUCKET_NAME;
 import static com.digisoft.mma.util.AppConstant.PRE_BUCKET_NAME;
 import static com.digisoft.mma.util.AppConstant.TIME_SERVER;
 import static com.digisoft.mma.util.AppConstant.VERIFICATION_FAIL_MSG;
 import static com.digisoft.mma.util.AppConstant.YES;
+import static com.digisoft.mma.util.CryptographyUtils.getDecodedString;
 
 public class Third_Step_CM_Fragment extends Fragment implements View.OnClickListener{
 
@@ -309,7 +312,8 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
             ArrayList<PhotoModel>  prePhotoModels = new ArrayList<>();
             List<UploadPhotoModel> uploadPhotoModels = dbHelper.uploadPhotoDAO().getPhotosToUploadByBucketName(PRE_BUCKET_NAME);
             for (UploadPhotoModel photoModel: uploadPhotoModels) {
-                prePhotoModels.add(new PhotoModel(getDecodedString(photoModel.getEncodedPhotoString()), 1, photoModel.getPhotoFilePath()));
+                prePhotoModels.add(new PhotoModel(getDecodedString(photoModel.getEncodedPhotoString(),
+                        dbHelper.eventDAO().getEventValue(PID, PID)), 1, photoModel.getPhotoFilePath()));
             }
 
             ((CMActivity)getActivity()).showProgressBar(false);
@@ -326,7 +330,8 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
                 ArrayList<PhotoModel>  postPhotoModels = new ArrayList<>();
                 uploadPhotoModels = dbHelper.uploadPhotoDAO().getPhotosToUploadByBucketName(POST_BUCKET_NAME);
                 for (UploadPhotoModel photoModel: uploadPhotoModels) {
-                    postPhotoModels.add(new PhotoModel(getDecodedString(photoModel.getEncodedPhotoString()), 1, photoModel.getPhotoFilePath()));
+                    postPhotoModels.add(new PhotoModel(getDecodedString(photoModel.getEncodedPhotoString(),
+                            dbHelper.eventDAO().getEventValue(PID, PID)), 1, photoModel.getPhotoFilePath()));
                 }
                 new LoadPOSTImage(
                         dbHelper.eventDAO().getEventsToUpload(CM_Step_TWO),
@@ -381,20 +386,8 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
     }
 
     private Bitmap getBitmapFromEncodedString(String encodedString){
-
-        byte[] arr = Base64.decode(encodedString, Base64.URL_SAFE);
-
-        Bitmap img = BitmapFactory.decodeByteArray(arr, 0, arr.length);
-        return img;
-
-
-    }
-
-    public String nextString()
-    {
-        for (int idx = 0; idx < buf.length; ++idx)
-            buf[idx] = symbols.charAt(rnd.nextInt(symbols.length()));
-        return new String(buf);
+        return CryptographyUtils.getDecodedBitmap(encodedString,
+                dbHelper.eventDAO().getEventValue(PID, PID));
     }
 
     class LoadPREImage extends AsyncTask<File, Void, Boolean> {
@@ -443,7 +436,8 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
                             ArrayList<PhotoModel>  postPhotoModels = new ArrayList<>();
                             List<UploadPhotoModel> uploadPhotoModels = dbHelper.uploadPhotoDAO().getPhotosToUploadByBucketName(POST_BUCKET_NAME);
                             for (UploadPhotoModel photoModel: uploadPhotoModels) {
-                                postPhotoModels.add(new PhotoModel(getDecodedString(photoModel.getEncodedPhotoString()), 1, photoModel.getPhotoFilePath()));
+                                postPhotoModels.add(new PhotoModel(getDecodedString(photoModel.getEncodedPhotoString(),
+                                        dbHelper.eventDAO().getEventValue(PID, PID)), 1, photoModel.getPhotoFilePath()));
                             }
                             try {
                                 new LoadPOSTImage(
@@ -725,15 +719,6 @@ public class Third_Step_CM_Fragment extends Fragment implements View.OnClickList
 
     }
 
-    /**
-     * Encode photo string to decode string
-     */
-    private String getDecodedString(String s){
-        byte[] data = Base64.decode(s,Base64.DEFAULT);
-        String s1 = new String(data);
-        Log.v("DECODE", s1);
-        return s1;
-    }
     /**
      * Get Photo File Paths from DB
      */

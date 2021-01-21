@@ -18,15 +18,19 @@ public class UpdateEventBody implements Serializable {
     private String id;
 
     @ColumnInfo(name = "actor")
+    @NonNull
     private String actor;
 
     @ColumnInfo(name = "actorId")
+    @NonNull
     private String actorId;
 
     @ColumnInfo(name = "date")
+    @NonNull
     private String date;
 
     @ColumnInfo(name = "serviceOrderId")
+    @NonNull
     private String serviceOrderId;
 
     @ColumnInfo(name = "serviceOrderStatus", defaultValue = "DEFAULT")

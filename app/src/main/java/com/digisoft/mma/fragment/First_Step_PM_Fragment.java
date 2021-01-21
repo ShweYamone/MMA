@@ -54,11 +54,13 @@ import com.digisoft.mma.model.UpdateEventBody;
 import com.digisoft.mma.model.UploadPhotoModel;
 import com.digisoft.mma.util.ApiClient;
 import com.digisoft.mma.util.ApiInterface;
+import com.digisoft.mma.util.CryptographyUtils;
 import com.digisoft.mma.util.Network;
 import com.digisoft.mma.util.SharePreferenceHelper;
 
 import org.apache.commons.net.ntp.NTPUDPClient;
 import org.apache.commons.net.ntp.TimeInfo;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -87,6 +89,7 @@ import static com.digisoft.mma.util.AppConstant.DATE_FORMAT;
 import static com.digisoft.mma.util.AppConstant.DATE_FORMAT_PHOTO;
 import static com.digisoft.mma.util.AppConstant.FAILURE;
 import static com.digisoft.mma.util.AppConstant.NO;
+import static com.digisoft.mma.util.AppConstant.PID;
 import static com.digisoft.mma.util.AppConstant.PM_CHECK_LIST_DONE;
 import static com.digisoft.mma.util.AppConstant.PM_CHECK_LIST_REMARK;
 import static com.digisoft.mma.util.AppConstant.PM_FAULT_FOUND_UPDATE;
@@ -427,6 +430,7 @@ public class First_Step_PM_Fragment extends Fragment {
             showDialog("Photo", "Your photos must be minimum 2 and maximum 10.");
         }
     }
+
     class getCurrentNetworkTime extends AsyncTask<String, Void, Boolean> {
         //Step One Events
         private void updateEvent() {
@@ -515,7 +519,8 @@ public class First_Step_PM_Fragment extends Fragment {
         postPhotoModels.clear();
         // int imaCount = dbHelper.uploadPhotoDAO().getNumberOfPhotosToUpload();
         for (UploadPhotoModel uploadPhotoModel: dbHelper.uploadPhotoDAO().getPhotosToUploadByBucketName(POST_BUCKET_NAME)) {
-            postPhotoModels.add(new PhotoModel(getDecodedString(uploadPhotoModel.getEncodedPhotoString()), 1, uploadPhotoModel.getPhotoFilePath()));
+            postPhotoModels.add(new PhotoModel(CryptographyUtils.getDecodedString(uploadPhotoModel.getEncodedPhotoString(),
+                    dbHelper.eventDAO().getEventValue(PID, PID)), 1, uploadPhotoModel.getPhotoFilePath()));
         }
         postPhotoAdapter.notifyDataSetChanged();
     }
@@ -536,8 +541,9 @@ public class First_Step_PM_Fragment extends Fragment {
      */
     private void saveEncodePhotoToDatabase(String updateEventKey, String bucketName, String sPhoto, String photoPath){
         byte[] bytes = sPhoto.getBytes();
-        String encodeToString = Base64.encodeToString(bytes,Base64.DEFAULT);
-        Log.v("ENCODE",encodeToString);
+        String encodeToString = CryptographyUtils.getEncryptedString(bytes,
+                dbHelper.eventDAO().getEventValue(PID, PID));
+     //   Log.v("ENCODE",encodeToString);
         dbHelper.uploadPhotoDAO().insert(new UploadPhotoModel(
                 updateEventKey, bucketName, encodeToString, photoPath
         ));
@@ -756,17 +762,17 @@ public class First_Step_PM_Fragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @NonNull Intent data) {
         mSharePerferenceHelper.setLock(false);
+        File imgFile = new File(pictureFilePath);
         if (requestCode == REQUEST_PICTURE_CAPTURE && resultCode == RESULT_OK) {
-            File imgFile = new File(pictureFilePath);
             if (imgFile.exists()) {
-               theImage = setPic(imgFile.getAbsolutePath());
-                photo = getEncodedString(theImage);
-                Log.v("ORI", photo);
+                theImage = setPic(imgFile.getAbsolutePath());
+                photo = CryptographyUtils.getEncryptedString(compress(theImage),
+                        dbHelper.eventDAO().getEventValue(PID, PID));
                 postPhotoModels.add(new PhotoModel(photo, 1,pictureFilePath));
                 postPhotoAdapter.notifyDataSetChanged();
             }
         }
-
+        imgFile.delete();
         super.onActivityResult(requestCode, resultCode, data);
     }
 
@@ -808,7 +814,8 @@ public class First_Step_PM_Fragment extends Fragment {
         //Post Maintenance Photo Adapter Setup
         RecyclerView.LayoutManager postLayoutManager = new GridLayoutManager(getContext(),3);
         postPhoto.setLayoutManager(postLayoutManager);
-        postPhotoAdapter = new PhotoAdapter(getContext(), postPhotoModels);
+        postPhotoAdapter = new PhotoAdapter(getContext(), postPhotoModels,
+                dbHelper.eventDAO().getEventValue(PID, PID));
         postPhoto.setAdapter(postPhotoAdapter);
 
     }
@@ -842,6 +849,17 @@ public class First_Step_PM_Fragment extends Fragment {
         String s1 = new String(data);
         Log.v("DECODE", s1);
         return s1;
+    }
+
+    private byte[] compress(Bitmap bitmap) {
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+
+        bitmap.compress(Bitmap.CompressFormat.JPEG,50, os);
+
+       /* or use below if you want 32 bit images
+
+        bitmap.compress(Bitmap.CompressFormat.PNG, (0â€“100 compression), os);*/
+        return os.toByteArray();
     }
 
     /**

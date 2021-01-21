@@ -33,6 +33,7 @@ import com.digisoft.mma.model.UpdateEventBody;
 import com.digisoft.mma.model.UploadPhotoModel;
 import com.digisoft.mma.util.ApiClient;
 import com.digisoft.mma.util.ApiInterface;
+import com.digisoft.mma.util.CryptographyUtils;
 import com.digisoft.mma.util.Network;
 import com.digisoft.mma.util.SharePreferenceHelper;
 
@@ -66,6 +67,7 @@ import retrofit2.Response;
 import static com.digisoft.mma.util.AppConstant.CM_Step_ONE;
 import static com.digisoft.mma.util.AppConstant.DATE_FORMAT;
 import static com.digisoft.mma.util.AppConstant.JOBDONE;
+import static com.digisoft.mma.util.AppConstant.PID;
 import static com.digisoft.mma.util.AppConstant.PM_Step_ONE;
 import static com.digisoft.mma.util.AppConstant.PM_Step_TWO;
 import static com.digisoft.mma.util.AppConstant.POST_BUCKET_NAME;
@@ -184,7 +186,8 @@ public class Second_Step_PM_Fragment extends Fragment implements View.OnClickLis
             ArrayList<PhotoModel> postPhotoModels = new ArrayList<>();
             List<UploadPhotoModel> uploadPhotoModels = dbHelper.uploadPhotoDAO().getPhotosToUploadByBucketName(POST_BUCKET_NAME);
             for (UploadPhotoModel photoModel: uploadPhotoModels) {
-                postPhotoModels.add(new PhotoModel(getDecodedString(photoModel.getEncodedPhotoString()), 1, photoModel.getPhotoFilePath()));
+                postPhotoModels.add(new PhotoModel(CryptographyUtils.getDecodedString(photoModel.getEncodedPhotoString(),
+                        dbHelper.eventDAO().getEventValue(PID, PID)), 1, photoModel.getPhotoFilePath()));
             }
 
             ((PMActivity)getActivity()).showProgressBar(false);
@@ -237,17 +240,8 @@ public class Second_Step_PM_Fragment extends Fragment implements View.OnClickLis
     }
 
     private Bitmap getBitmapFromEncodedString(String encodedString){
-
-        byte[] arr = Base64.decode(encodedString, Base64.URL_SAFE);
-
-        Bitmap img = BitmapFactory.decodeByteArray(arr, 0, arr.length);
-        return img;
-    }
-    public String nextString()
-    {
-        for (int idx = 0; idx < buf.length; ++idx)
-            buf[idx] = symbols.charAt(rnd.nextInt(symbols.length()));
-        return new String(buf);
+        return CryptographyUtils.getDecodedBitmap(encodedString,
+                dbHelper.eventDAO().getEventValue(PID, PID));
     }
 
     private void updateSTEP_Two() {

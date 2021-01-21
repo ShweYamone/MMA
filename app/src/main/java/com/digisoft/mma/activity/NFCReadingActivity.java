@@ -153,7 +153,6 @@ public class NFCReadingActivity extends AppCompatActivity {
             tempEvent.setEvent_id("pidKey");
             tempEvent.setUpdateEventBodyKey("PID");
             dbHelper.eventDAO().insert(tempEvent);
-
         }
         if (getIntent().hasExtra("JOB_DONE")) {
             toPage = "COMPLETION";
@@ -165,7 +164,7 @@ public class NFCReadingActivity extends AppCompatActivity {
 
         /*********************/
         /////////////////////////////////////
-        //  perFormTagEvent();
+        //perFormTagEvent();
 
         if(nfcAdapter == null){
        //     Toast.makeText(this, "No NFC", Toast.LENGTH_SHORT).show();

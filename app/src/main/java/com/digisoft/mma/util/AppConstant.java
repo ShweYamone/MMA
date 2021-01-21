@@ -98,6 +98,9 @@ public class AppConstant {
 
     public static final String ANNOUNCEMENT = "Announcement";
     public static final String DEFAULT = "DEFAULT";
+    public static final String EXCEPTION = "Exception";
+    public static final String salt = "256";
+    public static final String PID = "pid";
 
 
 }
